@@ -269,11 +269,11 @@
                            <el-form-item label="商家名称" prop="addInfo.name">
                                <el-input v-model="informForm.addInfo.name" auto-complete="off"></el-input>
                            </el-form-item>
-                           <el-form-item label="商家地址" prop="addInfo.address">
-                               <el-input v-model="informForm.addInfo.address" auto-complete="off"></el-input>
+                           <el-form-item label="商家地址" prop="addInfo.location">
+                               <el-input v-model="informForm.addInfo.location" auto-complete="off"></el-input>
                            </el-form-item>
-                           <el-form-item label="商家电话" prop="addInfo.phone">
-                               <el-input v-model="informForm.addInfo.phone" auto-complete="off"></el-input>
+                           <el-form-item label="商家电话" prop="addInfo.telephone">
+                               <el-input v-model="informForm.addInfo.telephone" auto-complete="off"></el-input>
                            </el-form-item>
                            <el-form-item label="详细内容">
                                <UE :id=ue1 @editorChange="informAddChange"></UE>
@@ -395,8 +395,8 @@
                     title:'',
                     addInfo:{
                         name:'',
-                        addrress:'',
-                        phone:''
+                        location:'',
+                        telephone:''
                     }
                 },
                 selectLabel:'',
@@ -439,8 +439,9 @@
                 anCateTotal:3,
                 informCateTotal:3,
                 cateDic:{},
-                informCateDic:{}
-
+                informCateDic:{},
+                isEdit:false,
+                isEditId:'',
 
 
             }
@@ -524,6 +525,7 @@
             },
             informAdd(){  //惠通知 新增
                 this.addEditTitle='新增';
+                this.isEdit=false;
                 this.morePicList.length=0;
                 this.informContent='';
                 this.addEditInformVisible=true;
@@ -531,13 +533,14 @@
                     title:'',
                     addInfo:{
                         name:'',
-                        address:'',
-                        phone:''
+                        location:'',
+                        telephone:''
                     }
                 };
             },
             announceAdd(){
                 this.addEditTitle='新增';
+                this.isEdit=false;
                 this.morePicList.length=0;
                 this.announceContent='';
                 this.addEditAnVisible=true;
@@ -608,6 +611,9 @@
                                     themeContent:this.announceContent
                                 }
                             };
+                            if(this.isEdit){
+                                data.id=this.isEditId;
+                            }
                             this.$post(addDisplay,data)
                                 .then((res)=>{
                                     this.addEditAnLoading = false;
@@ -633,11 +639,14 @@
                                 addInfo:{
                                     subtype:this.selectLabel,
                                     themeContent:this.informContent,
-                                    location:this.informForm.addInfo.address,
-                                    telephone:this.informForm.addInfo.phone,
+                                    location:this.informForm.addInfo.location,
+                                    telephone:this.informForm.addInfo.telephone,
                                     name:this.informForm.addInfo.name
                                 }
                             };
+                            if(this.isEdit){
+                                data.id=this.isEditId;
+                            }
                             this.$post(addDisplay,data)
                                 .then((res)=>{
                                     this.addEditInformLoading = false;
@@ -650,12 +659,16 @@
             },
             AnEdit(index, row) { //园区公告 显示编辑界面
                 this.addEditTitle='编辑';
+                this.isEditId=row.id;
+                this.isEdit=true;
                 this.morePicList.length=0;
                 this.addEditAnVisible = true;
                 this.announceForm = Object.assign({}, row);
             },
             informEdit(index, row) { //惠通知 显示编辑界面
                 this.addEditTitle='编辑';
+                this.isEditId=row.id;
+                this.isEdit=true;
                 this.morePicList.length=0;
                 this.addEditInformVisible = true;
                 this.informForm = Object.assign({}, row);

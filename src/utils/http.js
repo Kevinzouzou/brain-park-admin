@@ -108,9 +108,13 @@ export function patch(url,data = {}){
  * @returns {Promise}
  */
 
-export function put(url,data = {}){
+// export function put(url,data = {}){
+export function put(url,params = {}){
     return new Promise((resolve,reject) => {
-        axios.put(url,data)
+        // axios.put(url,data)
+        axios.put(url,{
+            params:params
+        })
             .then(response => {
                 resolve(response.data);
             },err => {

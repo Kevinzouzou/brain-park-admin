@@ -46,7 +46,7 @@
                         </el-table-column>
                         <el-table-column type="index" width="60">
                         </el-table-column>
-                        <el-table-column prop="title" label="标题" sortable>
+                        <el-table-column prop="title" label="标题" sortable show-overflow-tooltip="">
                         </el-table-column>
                         <el-table-column prop="type" label="类别" sortable>
                         </el-table-column>
@@ -105,8 +105,8 @@
                                                 :default-time="['00:00:00', '23:59:59']">
                                 </el-date-picker>
                             </el-form-item>
-                            <el-form-item label="活动地址" prop="address">
-                                <el-input v-model="addEditForm.address" auto-complete="off"></el-input>
+                            <el-form-item label="活动地址" prop="addInfo.location">
+                                <el-input v-model="addEditForm.addInfo.location" auto-complete="off"></el-input>
                             </el-form-item>
                             <el-form-item label="详细介绍">
                                 <UE :id=ue @editorChange="hActAddChange"></UE>
@@ -118,23 +118,23 @@
                         </div>
                     </el-dialog>
                     <!--报名-->
-                    <el-dialog title="报名人员" :visible.sync="hASignsVisible" >
+                    <el-dialog title="报名人员" :visible.sync="hASignsVisible" width="80%">
                         <div>
                             <span>活动标题：</span>
-                            <span >{{message.title}}</span>
+                            <span >{{detailList.title}}</span>
                         </div>
                         <div>
                             <span>活动时间：</span>
-                            <span  >{{message.startTime}}</span> ~
-                            <span >{{message.endTime}}</span>
+                            <span  >{{detailList.addInfo.startTime}}</span> ~
+                            <span >{{detailList.addInfo.endTime}}</span>
                         </div>
                         <el-table :data="hASignsData.slice((page-1)*pagesize,page*pagesize)">
                             <el-table-column type="index" ></el-table-column>
-                            <el-table-column property="name" label="姓名"></el-table-column>
+                            <el-table-column property="addInfo.userInfo.addInfo.nickName" label="姓名"></el-table-column>
                             <el-table-column prop="addInfo.enterpriseName" label="公司" ></el-table-column>
-                            <el-table-column property="cellphone" label="手机"></el-table-column>
-                            <el-table-column prop="sex" label="性别" :formatter="forSex" ></el-table-column>
-                            <el-table-column prop="joinTime" label="报名时间" ></el-table-column>
+                            <el-table-column property="addInfo.userInfo.phone" label="手机"></el-table-column>
+                            <el-table-column prop="addInfo.userInfo.addInfo.gender" label="性别" :formatter="forSex" ></el-table-column>
+                            <el-table-column prop="createTime" label="报名时间" ></el-table-column>
                         </el-table>
                         <el-pagination class="el-pages" background
                                        @size-change="highActSizeChange"
@@ -192,7 +192,7 @@
                                     </el-table-column>
                                     <el-table-column type="index" width="60">
                                     </el-table-column>
-                                    <el-table-column prop="title" label="标题" sortable>
+                                    <el-table-column prop="title" label="标题" sortable show-overflow-tooltip>
                                     </el-table-column>
                                     <el-table-column prop="createTime" label="发布时间" sortable>
                                     </el-table-column>
@@ -386,7 +386,7 @@
                         </el-table-column>
                         <el-table-column type="index" width="60">
                         </el-table-column>
-                        <el-table-column prop="title" label="标题" sortable>
+                        <el-table-column prop="title" label="标题" sortable show-overflow-tooltip>
                         </el-table-column>
                         <el-table-column prop="createTime" label="发布时间" sortable>
                         </el-table-column>
@@ -428,8 +428,8 @@
                                     <img width="100%" :src="dialogInfoConImageUrl" >
                                 </el-dialog>
                             </el-form-item>
-                            <el-form-item label="咨询电话" prop="phone">
-                                <el-input v-model="infoConAEForm.phone" auto-complete="off"></el-input>
+                            <el-form-item label="咨询电话" prop="addInfo.telephone">
+                                <el-input v-model="infoConAEForm.addInfo.telephone" auto-complete="off"></el-input>
                             </el-form-item>
                             <el-form-item label="详细介绍">
                                 <UE :id=ue3 @editorChange="infoConAddChange"></UE>
@@ -513,7 +513,7 @@
 <script type="text/ecmascript-6">
     import util from '../../common/js/util'
     import UE from '../../components/ue'
-    import {showDisplay, addDisplay, deleteDisplay, findDic, showDict, addDict, deleteDict} from '../../api/api'
+    import {showDisplay, addDisplay, deleteDisplay, findDic, showDict, addDict, deleteDict,userTarget} from '../../api/api'
 
     export default {
         components: {UE},
@@ -535,7 +535,10 @@
                     timeValue:'',
                     actTimerValue:[],
                     price:'',
-                    priceValue:''
+                    priceValue:'',
+                    addInfo:{
+                        location:''
+                    }
                 },
                 addEditLoading:false,
                 highActLabel:'',
@@ -557,21 +560,16 @@
                 },
                 hASignsData:[
                     {
-                        name:"张三",
-                        cellphone:'13215698988',
-                        sex:1,
-                        joinTime:'2018-01-05',
+                        createTime:'2018-01-05',
                         addInfo:{
+                            userInfo:{
+                                phone:'',
+                                addInfo:{
+                                    gender:'',
+                                    nickName:''
+                                }
+                            },
                             enterpriseName:'松湖智谷'
-                        }
-                    },
-                    {
-                        name:"张小妹",
-                        cellphone:'13215698988',
-                        sex:0,
-                        joinTime:'2018-01-05',
-                        addInfo:{
-                            enterpriseName:'微品'
                         }
                     }
                 ],
@@ -610,7 +608,9 @@
                 },
                 infoConAEForm:{
                     title:'',
-                    phone:''
+                    addInfo:{
+                        phone:''
+                    }
                 },
                 comSerAEForm:{
                     title:''
@@ -652,6 +652,22 @@
                     pmCompany:'深圳一而再再而三有限公司',
                     pmPerson:'周吴郑',
                     pmPhone:'13789729878'
+                },
+                isEdit:false,
+                isEditId:'',
+                detailList:{
+                    addInfo:{
+                        publisher:{
+                            addInfo:{
+                                nickName:'',
+                                avatarUrl:''
+                            }
+                        },
+                        addInfo:{
+                            startTime:'',
+                            endTime:''
+                        }
+                    }
                 },
 
             }
@@ -695,6 +711,9 @@
                                     timeEnd:para.activityTime+" 23:59:59"
                                 }
                             };
+                            if(this.isEdit){
+                                data.id=this.isEditId;
+                            }
                             // let url='/api/displayContent/addDisplayContent';
                             this.$post(addDisplay,data)
                                 .then((res)=>{
@@ -756,9 +775,12 @@
                                 detailUrl:'null',
                                 addInfo:{
                                     themeContent:this.infoConContent,
-                                    telephone:this.infoConAEForm.phone
+                                    telephone:this.infoConAEForm.addInfo.telephone
                                 }
                             };
+                            if(this.isEdit){
+                                data.id=this.isEditId;
+                            }
                             // let url='/api/displayContent/addDisplayContent';
                             this.$post(addDisplay,data)
                                 .then((res)=>{
@@ -786,7 +808,9 @@
                                     themeContent:this.comSerContent
                                 }
                             };
-                            console.log(data)
+                            if(this.isEdit){
+                                data.id=this.isEditId;
+                            }
                             let url='/api/displayContent/addDisplayContent';
                             this.$post(addDisplay,data)
                                 .then((res)=>{
@@ -905,19 +929,26 @@
             },
             infoConEdit(index, row) { //信息化建设显示编辑界面
                 this.addEditTitle='编辑';
+                this.isEditId=row.id;
+                this.isEdit=true;
                 this.infoConAEVisible = true;
                 this.infoConAEForm = Object.assign({}, row);
             },
             //显示编辑界面
             comSerEdit(index, row) {
                 this.addEditTitle='编辑';
+                this.isEditId=row.id;
+                this.isEdit=true;
                 this.commerSerAEVisible = true;
                 this.comSerAEForm = Object.assign({}, row);
             },
             bookingEdit(index, row) { //显示编辑界面
                 this.addEditTitle='编辑';
+                this.isEditId=row.id;
+                this.isEdit=true;
                 this.bookingVisible = true;
                 this.bookingAEForm = Object.assign({}, row);
+                this.bookingAEForm.activityTime=row.addInfo.startTime;
             },
             bookingInfo(index, row) { //显示预约界面
                 this.bookingInfoVisible = true;
@@ -1020,15 +1051,19 @@
             comSerBatchRemove(){},
             infoConAdd(){  //信息化建设显示新增界面
                 this.addEditTitle='新增';
+                this.isEdit=false;
                 this.moreHAPicList.length=0;
                 this.infoConAEVisible=true;
                 this.infoConAEForm={
                     title:'',
-                    phone:''
+                    addInfo:{
+                        phone:''
+                    }
                 };
             },
             comSerAdd(){  //显示新增界面
                 this.addEditTitle='新增';
+                this.isEdit=false;
                 this.moreHAPicList.length=0;
                 this.commerSerAEVisible=true;
                 this.comSerAEForm={
@@ -1037,6 +1072,7 @@
             },
             bookingAdd(){  //显示新增界面
                 this.addEditTitle='新增';
+                this.isEdit=false;
                 this.bookingVisible=true;
                 this.bookingAEForm={
                     title:'',
@@ -1055,7 +1091,7 @@
             },
             //性别显示转换
             forSex: function (row, column) {
-                return row.sex == 1 ? '男' : row.sex == 0 ? '女' : '未知';
+                return row.addInfo.gender == 1 ? '男' : row.addInfo.gender == 2 ? '女' : '未知';
             },
             hActAddChange(html){
                 this.highActContent=html;
@@ -1086,11 +1122,14 @@
                                 addInfo:{
                                     subtype:this.highActLabel,
                                     themeContent:this.highActContent,
-                                    location:this.addEditForm.address,
+                                    location:this.addEditForm.addInfo.location,
                                     timeStart:this.addEditForm.actTimerValue[0],
                                     timeEnd:this.addEditForm.actTimerValue[1]
                                 }
                             };
+                            if(this.isEdit){
+                                data.id=this.isEditId;
+                            }
                             // let url='/api/displayContent/addDisplayContent';
                             this.$post(addDisplay,data)
                                 .then((res)=>{
@@ -1111,6 +1150,7 @@
             },
             highActAdd(){
                 this.addEditTitle='新增';
+                this.isEdit=false;
                 this.moreHAPicList.length=0;
                 this.highActContent='';
                 this.addEditVisible=true;
@@ -1119,7 +1159,10 @@
                     timeValue:'',
                     actTimerValue:[],
                     price:'',
-                    priceValue:''
+                    priceValue:'',
+                    addInfo:{
+                        location:''
+                    }
                 };
             },
             // 类别管理
@@ -1151,9 +1194,15 @@
             //显示编辑界面
             hAedit(index, row) {
                 this.addEditTitle='编辑';
+                this.isEditId=row.id;
+                this.isEdit=true;
                 this.moreHAPicList.length=0;
                 this.addEditVisible = true;
                 this.addEditForm = Object.assign({}, row);
+                let arr=[];
+                arr.push(row.addInfo.timeStart);
+                arr.push(row.addInfo.timeEnd);
+                this.addEditForm.actTimerValue=arr;
             },
             //删除
             hADel(index, row) {
@@ -1179,8 +1228,18 @@
 
                 });
             },
-            hASigns(){
+            hASigns(index,row){ //报名
                 this.hASignsVisible=true;
+                this.detailList=row;
+                let id=this.detailList.id;
+                this.getHighSigns(id);
+            },
+            getHighSigns(id){  //高端活动 报名人员列表
+                this.$get(userTarget+id)
+                    .then((res) => {
+                        this.hASignsData=res;
+                        this.hASignstotal=this.hASignsData.length>0?this.hASignsData.length:1;
+                    })
             },
             //高端活动批量删除
             highActBatchRemove: function () {
@@ -1214,9 +1273,6 @@
             highSignsCurChange(val) {
                 this.page = val;
                 this.getHighSigns();
-            },
-            getHighSigns(){  //高端活动 报名人员列表
-
             },
 
 

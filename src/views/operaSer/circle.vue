@@ -16,7 +16,7 @@
                 <el-table :data="circleList.slice((page-1)*pagesize,page*pagesize)" highlight-current-row v-loading="listLoading" style="width: 100%;">
                     <el-table-column type="index" >
                     </el-table-column>
-                    <el-table-column prop="title" label="圈子名称" sortable>
+                    <el-table-column prop="title" label="圈子名称" sortable show-overflow-tooltip>
                     </el-table-column>
                     <el-table-column label="圈子logo"  >
                         <template scope="scope">
@@ -26,7 +26,7 @@
                     </el-table-column>
                     <el-table-column prop="createTime" label="创建时间" sortable>
                     </el-table-column>
-                    <el-table-column prop="addInfo.participantsNum" label="已加入成员数" sortable>
+                    <el-table-column prop="joinNum" label="已加入成员数" sortable>
                     </el-table-column>
                     <el-table-column label="操作" width="150">
                         <template scope="scope">
@@ -88,7 +88,7 @@
                 </el-dialog>
 
                 <!--新增界面-->
-                <el-dialog title="新增" :visible.sync="addCircleVisible">
+                <el-dialog :title=addTitle :visible.sync="addCircleVisible">
                     <el-form :model="addForm" label-width="80px" :rules="addFormRules" ref="addForm">
                         <el-form-item label="圈子名称" prop="title">
                             <el-input v-model="addForm.title" auto-complete="off"></el-input>
@@ -115,7 +115,7 @@
                             <el-input type="textarea" v-model="addForm.addInfo.intro"></el-input>
                         </el-form-item>
                         <el-form-item label="详细内容">
-                            <UE  :id=ue1 @editorChange="editorChange"></UE>
+                            <UE :id=ue1 @editorChange="editorChange"></UE>
                         </el-form-item>
                     </el-form>
                     <div slot="footer" class="dialog-footer">
@@ -169,7 +169,7 @@
                     </el-table-column>
                     <el-table-column type="index" width="60">
                     </el-table-column>
-                    <el-table-column prop="title" label="标题" sortable>
+                    <el-table-column prop="title" label="标题" sortable show-overflow-tooltip>
                     </el-table-column>
                     <el-table-column prop="createTime" label="发布时间" sortable>
                     </el-table-column>
@@ -203,24 +203,23 @@
                 </el-col>
 
                 <!--报名-->
-                <el-dialog title="报名人员" :visible.sync="actApplicantVisible" class="actApply">
+                <el-dialog title="报名人员" :visible.sync="actApplicantVisible" class="actApply" width="70%">
                     <div>
                         <span>活动标题：</span>
-                        <span >{{message.title}}</span>
+                        <span >{{detailList.title}}</span>
                     </div>
                     <div>
                         <span>活动时间：</span>
-                        <span  >{{message.startTime}}</span> ~
-                        <span >{{message.endTime}}</span>
+                        <span  >{{detailList.addInfo.startTime}}</span> ~
+                        <span >{{detailList.addInfo.endTime}}</span>
                     </div>
                     <el-table :data="actAppliData">
                         <el-table-column type="index" ></el-table-column>
-                        <el-table-column property="name" label="姓名"></el-table-column>
-                        <el-table-column property="nickname" label="昵称"></el-table-column>
-                        <el-table-column property="cellphone" label="手机号"></el-table-column>
-                        <el-table-column prop="sex" label="性别" :formatter="formatSex" ></el-table-column>
+                        <el-table-column property="addInfo.userInfo.addInfo.nickName" label="姓名"></el-table-column>
+                        <el-table-column property="addInfo.userInfo.phone" label="手机号"></el-table-column>
+                        <el-table-column prop="addInfo.userInfo.addInfo.gender" label="性别" :formatter="formatSex" ></el-table-column>
                         <el-table-column prop="addInfo.enterpriseName" label="公司" ></el-table-column>
-                        <el-table-column prop="joinTime" label="报名时间" ></el-table-column>
+                        <el-table-column prop="createTime" label="报名时间" ></el-table-column>
                     </el-table>
                     <el-pagination class="el-pages" background
                                    @size-change="handleSizeChange"
@@ -229,7 +228,7 @@
                                    :page-size="pagesize"
                                    layout="total,sizes, prev, pager, next, jumper"
                                    :current-page="page"
-                                   :total="total">
+                                   :total="actAppTotal">
 
                     </el-pagination>
                 </el-dialog>
@@ -276,13 +275,13 @@
                 </el-dialog>
 
                 <!--新增界面-->
-                <el-dialog title="新增" :visible.sync="addActivityVisible">
+                <el-dialog :title=addTitle :visible.sync="addActivityVisible">
                     <el-form :model="addActForm" label-width="80px" ref="addActForm">
                         <el-form-item label="活动标题" prop="title">
                             <el-input v-model="addActForm.title" auto-complete="off"></el-input>
                         </el-form-item>
-                        <el-form-item label="活动地址" prop="address">
-                            <el-input v-model="addActForm.address" auto-complete="off"></el-input>
+                        <el-form-item label="活动地址" prop="addInfo.address">
+                            <el-input v-model="addActForm.addInfo.address" auto-complete="off"></el-input>
                         </el-form-item>
                         <el-form-item label="圈子选择" prop="circleSec">
                             <el-select v-model="secValue" placeholder="请选择" @change="secCirValue">
@@ -296,8 +295,8 @@
                                             :default-time="['00:00:00', '23:59:59']">
                             </el-date-picker>
                         </el-form-item>
-                        <el-form-item label="活动人数" prop="mems">
-                            <el-input v-model="addActForm.mems" auto-complete="off"></el-input>
+                        <el-form-item label="活动人数" prop="addInfo.mems">
+                            <el-input v-model="addActForm.addInfo.mems" auto-complete="off"></el-input>
                         </el-form-item>
                         <el-form-item label="费用说明">
                             <el-row>
@@ -308,7 +307,7 @@
                                     </el-radio-group>
                                 </el-col>
                                 <el-col :span="6">
-                                    <el-input placeholder="0" :number="true" size="large" v-model="addActForm.priceValue" :disabled=" editActForm.price === '0' "><template slot="append">元</template></el-input>
+                                    <el-input placeholder="0" :number="true" size="large" v-model="addActForm.priceValue" :disabled=isdisabled><template slot="append">元</template></el-input>
                                 </el-col>
                             </el-row>
                         </el-form-item>
@@ -335,7 +334,7 @@
     import wangEditor from 'wangeditor'
     //import NProgress from 'nprogress'
     // import { getUserListPage, removeUser, batchRemoveUser, editUser, addUser,} from '../../api/api';
-    import {showCircle, showActList, delCir,addCir,addAct,delAct,uploadPic, batchRemoveUser, editUser,} from '../../api/api'
+    import {showCircle, showActList, delCir,addCir,addAct,delAct,userTarget,uploadPic, batchRemoveUser, editUser,} from '../../api/api'
 
     export default {
         components: {UE},
@@ -429,11 +428,15 @@
                 //新增界面数据
                 addActForm: {
                     title: '',
-                    address: '',
                     actTimerValue:[],
-                    mems: 10,
                     price: 0,
                     priceValue:0,
+                    addInfo:{
+                        address: '',
+                        mems: 10,
+                        startTime:'',
+                        endTime:''
+                    }
                     // content: ''
                 },
                 actTimerValue: [],
@@ -498,6 +501,21 @@
                 imgList:[],
                 state:1,
                 type:"默认",
+                detailList:{
+                    addInfo:{
+                        publisher:{
+                            addInfo:{
+                                nickName:'',
+                                avatarUrl:''
+                            }
+                        }
+                    }
+                },
+                actAppTotal:1,
+                addTitle:'新增',
+                isEdit:false,
+                isEditId:'',
+                isdisabled:false,
             }
         },
         methods: {
@@ -522,7 +540,7 @@
             },
             //性别显示转换
             formatSex: function (row, column) {
-                return row.sex == 1 ? '男' : row.sex == 0 ? '女' : '未知';
+                return row.addInfo.userInfo.addInfo.gender == 1 ? '男' : row.addInfo.userInfo.addInfo.gender == 2 ? '女' : '未知';
             },
             handleSizeChange(val) {
                 this.pagesize=val;
@@ -579,11 +597,20 @@
             },
             //显示编辑界面
             circleEdit: function (index, row) {
-                this.editCircleVisible = true;
-                this.editForm = Object.assign({}, row);
+                this.addTitle='编辑';
+                // this.editCircleVisible = true;
+                // this.editForm = Object.assign({}, row);
+                this.addCircleVisible = true;
+                this.addForm = Object.assign({}, row);
+                this.imageUrl=row.thumbUrl;
+                this.logoImg=row.thumbUrl;
+                this.isEditId=row.id;
+                this.isEdit=true;
             },
             //显示新增界面
             circleAdd: function () {
+                this.addTitle='新增';
+                this.isEdit=false;
                 this.morePicList.length=0;
                 this.addCircleVisible = true;
                 this.addForm = {
@@ -651,6 +678,9 @@
                                     bgUrl:this.morePicList[0]
                                 }
                             };
+                            if(this.isEdit){
+                                data.id=this.isEditId;
+                            }
                             // let url='/api/socialCircle/addSocialCircle';
                             this.$post(addCir,data).then((res)=>{
                                     this.addLoading = false;
@@ -720,15 +750,21 @@
             },
             //显示新增界面
             activityAdd: function () {
+                this.addTitle='新增';
+                this.isEdit=false;
                 this.addActivityVisible = true;
                 this.addActForm = {
                     title: '',
-                    address: '',
                     actTimerValue:[],
-                    mems: 0,
                     price: 0,
                     priceValue:0,
-                    intro: ''
+                    intro: '',
+                    addInfo:{
+                        address: '',
+                        mems: 0,
+                        startTime:'',
+                        endTime:''
+                    }
                 };
             },
             //新增
@@ -742,19 +778,21 @@
                             let price=this.addActForm.price===0?this.addActForm.price:this.addActForm.priceValue;
                             let data={
                                 content:this.actAddContent,
-                                // content:this.addActForm.content,
                                 title:this.addActForm.title,
                                 parkId:localStorage.getItem("parkId"),
                                 socialCircleId:this.circleId,
                                 userId:localStorage.getItem("userId"),
                                 addInfo:{
-                                    address:this.addActForm.address,
+                                    address:this.addActForm.addInfo.address,
                                     startTime:this.addActForm.actTimerValue[0],
                                     endTime:this.addActForm.actTimerValue[1],
-                                    mems:this.addActForm.mems,
+                                    mems:this.addActForm.addInfo.mems,
                                     price:price
                                 }
                             };
+                            if(this.isEdit){
+                                data.id=this.isEditId;
+                            }
                             // let url='/api/socialCircle/addSocialCircleActive';
                             this.$post(addAct,data)
                                 .then((res)=>{
@@ -775,8 +813,15 @@
             },
             //显示编辑界面
             activityEdit: function (index, row) {
-                this.editActivityVisible = true;
-                this.editActForm = Object.assign({}, row);
+                this.addTitle='编辑';
+                this.isEdit=true;
+                this.isEditId=row.id;
+                this.addActivityVisible = true;
+                this.addActForm = Object.assign({}, row);
+                let arr=[];
+                arr.push(row.addInfo.startTime);
+                arr.push(row.addInfo.endTime);
+                this.addActForm.actTimerValue=arr;
             },
             //编辑
             editActSubmit: function () {
@@ -802,8 +847,18 @@
                     }
                 });
             },
-            actApplicant:function(){
+            actApplicant(index,row){
                 this.actApplicantVisible=true;
+                this.detailList=row;
+                let id=this.detailList.id;
+                this.getApply(id);
+            },
+            getApply(id){
+                this.$get(userTarget+id)
+                    .then((res) => {
+                        this.actAppliData=res;
+                        this.actAppTotal=this.actAppliData.length>0?this.actAppliData.length:1;
+                    })
             },
             //删除
             activityDel: function (index, row) {

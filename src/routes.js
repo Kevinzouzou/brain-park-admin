@@ -5,13 +5,6 @@ import Login from './views/Login.vue'
 import NotFound from './views/404.vue'
 import Home from './views/Home.vue'
 import Main from './views/Main.vue'
-import Table from './views/nav1/Table.vue'
-import Form from './views/nav1/Form.vue'
-import user from './views/nav1/user.vue'
-// import Page4 from './views/nav2/Page4.vue'
-// import Page5 from './views/nav2/Page5.vue'
-// import Page6 from './views/nav3/Page6.vue'
-import echarts from './views/charts/echarts.vue'
 
 import operaSitua from './views/operaSer/operaSitua.vue'
 import circle from './views/operaSer/circle.vue'
@@ -73,53 +66,61 @@ let routes = [
         ]
     },
     {
+        path: '/',
+        component: Home,
+        name: '物业服务',
+        iconCls: 'fa fa-bar-chart',
+        children: [
+            {
+                path: '/compRepair',
+                component: resolve => require(['./views/properSer/compRepair.vue'], resolve),
+                name: '投诉建议&报修处理'
+            },
+            {
+                path: '/proAnnounce',
+                component: resolve => require(['./views/properSer/proAnnounce.vue'], resolve),
+                name: '物业公告'
+            },
+            {
+                path: '/release',
+                component: resolve => require(['./views/properSer/release.vue'], resolve),
+                name: '放行申请'
+            },
+            {
+                path: '/equipInspect',
+                component: resolve => require(['./views/properSer/equipInspect.vue'], resolve),
+                name: '设备巡检'
+            }
+         ]
+    },
+    {
         path: '/404',
         component: NotFound,
         name: '',
         hidden: true
     },
     //{ path: '/main', component: Main },
-    {
-        path: '/',
-        component: Home,
-        name: '导航一',
-        iconCls: 'el-icon-message',//图标样式class
-        children: [
-            { path: '/main', component: Main, name: '主页', hidden: true },
-            { path: '/table', component: Table, name: 'Table' },
-            { path: '/form', component: Form, name: 'Form' },
-            { path: '/user', component: user, name: '列表' },
-        ]
-    },
     // {
     //     path: '/',
     //     component: Home,
-    //     name: '导航二',
-    //     iconCls: 'fa fa-id-card-o',
+    //     name: '导航一',
+    //     iconCls: 'el-icon-message',//图标样式class
     //     children: [
-    //         { path: '/page4', component: Page4, name: '页面4' },
-    //         { path: '/page5', component: Page5, name: '页面5' }
+    //         { path: '/main', component: Main, name: '主页', hidden: true },
+    //         { path: '/table', component: Table, name: 'Table' },
+    //         { path: '/form', component: Form, name: 'Form' },
+    //         { path: '/user', component: user, name: '列表' },
     //     ]
     // },
     // {
     //     path: '/',
     //     component: Home,
-    //     name: '',
-    //     iconCls: 'fa fa-address-card',
-    //     leaf: true,//只有一个节点
+    //     name: 'Charts',
+    //     iconCls: 'fa fa-bar-chart',
     //     children: [
-    //         { path: '/page6', component: Page6, name: '导航三' }
+    //         { path: '/echarts', component: echarts, name: 'echarts' }
     //     ]
-    // },
-    {
-        path: '/',
-        component: Home,
-        name: 'Charts',
-        iconCls: 'fa fa-bar-chart',
-        children: [
-            { path: '/echarts', component: echarts, name: 'echarts' }
-        ]
-    }
+    // }
 
 ];
 

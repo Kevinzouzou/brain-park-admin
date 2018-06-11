@@ -78,10 +78,8 @@
                 <el-form-item label="反馈人：">
                     {{detailList.addInfo.nickname}}
                 </el-form-item>
-                <el-form-item label="回复备注：">
-                    <div v-if="detailList.stage==='已处理'">
-                        {{detailList.addInfo.commentText}}
-                    </div>
+                <el-form-item label="回复备注："  v-if="detailList.stage==='已处理'">
+                    {{detailList.addInfo.reply}}
                 </el-form-item>
             </el-form>
         </el-dialog>
@@ -91,7 +89,7 @@
 </template>
 
 <script>
-    import {showDisplay, addDisplay,proList, deleteDisplay, findDic, showDict, addDict, deleteDict} from '../../api/api'
+    import {showDisplay,replyUrl, addDisplay,proList, deleteDisplay, findDic, showDict, addDict, deleteDict} from '../../api/api'
 
     export default {
         data(){
@@ -138,6 +136,7 @@
                     }
                 },
                 feBackViewVisible:false,
+                replyId:'',
 
             }
         },
@@ -176,6 +175,7 @@
                 this.addEditTitle='回复';
                 this.feBackReportVisible = true;
                 this.feBackForm = Object.assign({}, row);
+                this.replyId=row.id;
             },
             feBackView(index, row) {  //查看
                 this.feBackViewVisible=true;
@@ -220,14 +220,12 @@
                             this.feBackReportLoading = true;
                             let para = Object.assign({}, this.feBackForm);
                             let data={
-                                parkId:localStorage.getItem("parkId"),
-                                thumbUrl:this.morePicList[0],
-                                title:this.feBackForm.disc,
-                                type:'意见反馈',
-                                detailUrl:'null',
-                                addInfo:{}
+                                id:this.replyId,
+                                reply:this.feBackForm.disc
                             };
-                            this.$post(addDisplay,data)
+                            let url=replyUrl+'&id='+this.replyId+'&reply='+this.feBackForm.disc;
+                            console.log(data)
+                            this.$put(url)
                                 .then((res)=>{
                                     this.feBackReportLoading = false;
                                     this.feBackReportVisible = false;

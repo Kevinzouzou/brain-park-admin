@@ -100,11 +100,11 @@
                     <el-table :data="msgList.slice((page-1)*pagesize,page*pagesize)" highlight-current-row v-loading="msgLoading" style="width: 100%;">
                         <el-table-column type="index" width="60">
                         </el-table-column>
-                        <el-table-column prop="updateTime" label="时间" sortable>
+                        <el-table-column prop="createTime" label="时间" sortable>
                         </el-table-column>
-                        <el-table-column prop="addInfo.nickname" label="昵称" sortable>
+                        <el-table-column prop="addInfo.userInfo.addInfo.nickName" label="昵称" sortable>
                         </el-table-column>
-                        <el-table-column prop="content" label="内容" sortable>
+                        <el-table-column prop="comment" label="内容" sortable show-overflow-tooltip>
                         </el-table-column>
                         <el-table-column label="操作">
                             <template scope="scope">
@@ -136,18 +136,17 @@
                     <!--<img v-if="pubImg" src="../../assets/user.png" class="pub">-->
                 </li>
                 <li>{{detailList.addInfo.publisher.addInfo.nickName}}</li>
-                <!--<li>{{detailList.addInfo}}</li>-->
             </ul>
             <div class="mainContent">
                 <span class="left topicType">{{detailList.type}}</span>
                 <div class="center pubTime">发布时间：{{detailList.createTime}}</div>
                 <div class="content">{{detailList.content}}</div>
                 <div v-if="bannerUrl.length>0">
-                    <img v-for="item in bannerUrl" :src="item">
+                    <img v-for="item in bannerUrl" :src="item" @click="handlePictureCardPreview(item)">
+                    <el-dialog :visible.sync="dialogVisible">
+                        <img width="100%" style="height: 100%;" :src="dialogImageUrl" alt="">
+                    </el-dialog>
                 </div>
-                <!--<img src="../../assets/guide.jpg">-->
-                <!--<img src="../../assets/guide.jpg">-->
-                <!--<img src="../../assets/guide.jpg">-->
                 <ul class="tips">
                     <li>{{detailList.lookUpNum}}</li>
                     <li>{{detailList.likeNum}}</li>
@@ -217,11 +216,13 @@
 </template>
 
 <script type="text/ecmascript-6">
-    import {showTopic, delTopic, subsUrl,tipsOffUrl, delCir,addCir,addAct,delAct,uploadPic, batchRemoveUser, editUser,} from '../../api/api'
+    import {showTopic, delTopic, subsUrl,tipsOffUrl,subComs,delSubCom, delCir,addCir,addAct,delAct,uploadPic, batchRemoveUser, editUser,} from '../../api/api'
 
     export default {
         data(){
             return {
+                dialogImageUrl: '',
+                dialogVisible: false,
                 pagesize:7,
                 page:1,
                 mainPageVisible:true,
@@ -302,6 +303,10 @@
             }
         },
         methods:{
+            handlePictureCardPreview(item) {
+                this.dialogImageUrl = item;
+                this.dialogVisible = true;
+            },
             handleClick(tab, event) {
                 this.page=1;
             },
@@ -325,7 +330,13 @@
             },
             // 获取留言列表
             getMsg(){
-
+                this.msgLoading=true;
+                this.$get(subComs)
+                    .then((res) => {
+                        this.msgList=res;
+                        this.msgTotal=this.msgList.length>0?this.msgList.length:1;
+                        this.msgLoading=false;
+                    })
             },
             //话题批量屏蔽
             topicBatchRemove: function () {
@@ -456,17 +467,18 @@
                     type: 'warning'
                 }).then(() => {
                     this.msgLoading = true;
-                    //NProgress.start();
                     let para = { id: row.id };
-                    removeUser(para).then((res) => {
-                        this.msgLoading = false;
-                        //NProgress.done();
-                        this.$message({
-                            message: '删除成功',
-                            type: 'success'
+                    let self=this;
+                    this.$del(delSubCom+para.id)
+                        .then(function(response) {
+                            self.msgLoading = false;
+                            //NProgress.done();
+                            self.$message({
+                                message: '删除成功',
+                                type: 'success'
+                            });
+                            self.getMsg();
                         });
-                        this.getMsg();
-                    });
                 }).catch(() => {
 
                 });
@@ -474,23 +486,9 @@
 
 
         },
-        // getSubComment(id){ //获取留言
-        //     this.$get(subsUrl+id)
-        //         .then((res) => {
-        //             this.commentLists=res;
-        //            console.log(this.commentLists)
-        //         })
-        // },
-        // getTipsOff(id){ //举报
-        //     this.$get(tipsOffUrl+id)
-        //         .then((res) => {
-        //             this.reportLists=res;
-        //             console.log(this.reportLists)
-        //         })
-        // },
         mounted(){
             this.getTopic();
-            // this.getMsg();
+            this.getMsg();
         }
 
     }
@@ -551,6 +549,11 @@
         img{
             height: 120px;
             margin: 10px 15px;
+        }
+        .el-dialog__body{
+            img{
+                margin: 0;
+            }
         }
         .tips{
             &:after{

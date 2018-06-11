@@ -1,9 +1,9 @@
 <template>
     <section>
         <el-tabs v-model="activeName" type="card" @tab-click="handleClick">
-            <el-tab-pane label="入驻申请" name="first">
+            <el-tab-pane label="投诉建议" name="first">
                 <el-col :span="24" justify="center">
-                    <el-form :inline="true" :model="enterFilters">
+                    <el-form :inline="true" :model="complaintFilters">
                         <el-form-item>
                             <div class="block">
                                 <!--<p>组件值：{{ timerValue }}</p>-->
@@ -14,10 +14,10 @@
                             </div>
                         </el-form-item>
                         <el-form-item>
-                            <el-input v-model="enterFilters.searchTitle" placeholder="公司名称搜索"></el-input>
+                            <el-input v-model="complaintFilters.searchTitle" placeholder="问题搜索"></el-input>
                         </el-form-item>
                         <el-form-item>
-                            <el-button type="primary" v-on:click="getInApply">查询</el-button>
+                            <el-button type="primary" v-on:click="getComplaint">查询</el-button>
                         </el-form-item>
                     </el-form>
                 </el-col>
@@ -36,131 +36,14 @@
                     </el-form>
                 </el-col>
                 <!--列表-->
-                <el-table :data="inApplyList.slice((page-1)*pagesize,page*pagesize)" highlight-current-row v-loading="inApplyLoading" style="width: 100%;">
+                <el-table :data="compList.slice((page-1)*pagesize,page*pagesize)" highlight-current-row v-loading="complicantLoading" style="width: 100%;">
                     <el-table-column type="index" width="60">
                     </el-table-column>
-                    <el-table-column prop="addInfo.companyName" label="公司名称" sortable>
+                    <el-table-column prop="time" label="投诉时间" sortable>
                     </el-table-column>
-                    <el-table-column prop="addInfo.industry" label="所属行业" sortable>
+                    <el-table-column prop="addInfo.remark" label="问题描述" sortable show-overflow-tooltip="">
                     </el-table-column>
-                    <el-table-column prop="addInfo.contact" label="联系人" sortable>
-                    </el-table-column>
-                    <el-table-column prop="time" label="申请时间" sortable>
-                    </el-table-column>
-                    <el-table-column prop="stage" label="状态" sortable>
-                    </el-table-column>
-                    <el-table-column prop="addInfo.allocationName" label="管理人" sortable>
-                    </el-table-column>
-                    <el-table-column prop="addInfo.propertyName" label="对接人" sortable>
-                    </el-table-column>
-                    <el-table-column label="操作">
-                        <template scope="scope">
-                            <el-button type="success" size="small" @click="inApplyView(scope.$index, scope.row)">查看</el-button>
-                        </template>
-                    </el-table-column>
-                </el-table>
-                <!--分页-->
-                <el-col :span="24" class="toolbar">
-                    <el-pagination background
-                                   @size-change="highActSizeChange"
-                                   @current-change="inApplyCurChange"
-                                   :page-sizes="[7,8,10,20]"
-                                   :page-size="pagesize"
-                                   layout="total, sizes, prev, pager, next, jumper"
-                                   :total="inApplyTotal"
-                                   :current-page="page"
-                                   style="float:right;">
-                    </el-pagination>
-                </el-col>
-                <!--查看界面-->
-                <el-dialog class="inView" title="入驻申请" :visible.sync="viewVisible" width="70%">
-                    <span class="right">{{detailList.stage}}</span>
-                    <el-form label-width="90px">
-                        <el-form-item label="申请时间：">
-                            {{detailList.time}}
-                        </el-form-item>
-                        <el-form-item label="公司名称：">
-                            {{detailList.addInfo.companyName}}
-                        </el-form-item>
-                        <el-form-item label="联系人：">
-                            {{detailList.addInfo.contact}}
-                        </el-form-item>
-                        <el-form-item label="联系方式：">
-                            {{detailList.addInfo.phone}}
-                        </el-form-item>
-                        <el-form-item label="公司网址：">
-                            {{detailList.addInfo.website}}
-                        </el-form-item>
-                        <el-form-item label="企业行业：">
-                            {{detailList.addInfo.industry}}
-                        </el-form-item>
-                        <el-form-item label="入驻诉求：">
-                            {{detailList.addInfo.remark}}
-                        </el-form-item>
-                    </el-form>
-                    <span class="title">招商运营</span>
-                    <el-form label-width="90px">
-                        <el-form-item label="负责人：">
-                            {{detailList.addInfo.allocationName}}
-                        </el-form-item>
-                        <el-form-item label="处理时间：">
-                            {{detailList.addInfo.settlementTime}}
-                        </el-form-item>
-                        <el-form-item label="对接人：">
-                            {{detailList.addInfo.propertyName}}
-                        </el-form-item>
-                        <el-form-item label="处理意见：">
-                            {{detailList.settlement}}
-                        </el-form-item>
-                    </el-form>
-                </el-dialog>
-
-            </el-tab-pane>
-            <el-tab-pane label="装修申请" name="second">
-                <el-col :span="24" justify="center">
-                    <el-form :inline="true" :model="decorateFilters">
-                        <el-form-item>
-                            <div class="block">
-                                <!--<p>组件值：{{ timerValue }}</p>-->
-                                <el-date-picker v-model="timeDecValue" type="daterange" start-placeholder="开始日期"
-                                                end-placeholder="结束日期" value-format="yyyy-MM-dd HH:mm:ss"
-                                                :default-time="['00:00:00', '23:59:59']">
-                                </el-date-picker>
-                            </div>
-                        </el-form-item>
-                        <el-form-item>
-                            <el-input v-model="decorateFilters.searchTitle" placeholder="公司名称搜索"></el-input>
-                        </el-form-item>
-                        <el-form-item>
-                            <el-button type="primary" v-on:click="getDecorate">查询</el-button>
-                        </el-form-item>
-                    </el-form>
-                </el-col>
-                <!--工具条-->
-                <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
-                    <el-form :inline="true">
-                        <el-form-item>
-                            <el-button type="danger" @click="allDealDec">全部</el-button>
-                        </el-form-item>
-                        <el-form-item>
-                            <el-button type="success" @click="pendingDec">待处理</el-button>
-                        </el-form-item>
-                        <el-form-item>
-                            <el-button type="primary" @click="processedDec">已处理</el-button>
-                        </el-form-item>
-                    </el-form>
-                </el-col>
-                <!--列表-->
-                <el-table :data="decorateList.slice((page-1)*pagesize,page*pagesize)" highlight-current-row v-loading="decorateLoading" style="width: 100%;">
-                    <el-table-column type="index" width="60">
-                    </el-table-column>
-                    <el-table-column prop="addInfo.companyName" label="公司名称" sortable>
-                    </el-table-column>
-                    <el-table-column prop="addInfo.location" label="位置房号" sortable>
-                    </el-table-column>
-                    <el-table-column prop="addInfo.contact" label="联系人" sortable>
-                    </el-table-column>
-                    <el-table-column prop="time" label="申请时间" sortable>
+                    <el-table-column prop="addInfo.nickname" label="投诉人" sortable>
                     </el-table-column>
                     <el-table-column prop="stage" label="状态" sortable>
                     </el-table-column>
@@ -170,71 +53,193 @@
                     </el-table-column>
                     <el-table-column label="操作">
                         <template scope="scope">
-                            <el-button type="success" size="small" @click="decorateView(scope.$index, scope.row)">查看</el-button>
+                            <el-button type="success" size="small" @click="complicantView(scope.$index, scope.row)">查看</el-button>
                         </template>
                     </el-table-column>
                 </el-table>
                 <!--分页-->
                 <el-col :span="24" class="toolbar">
                     <el-pagination background
-                                   @size-change="highActSizeChange"
-                                   @current-change="decorateCurChange"
+                                   @size-change="sizeChange"
+                                   @current-change="compCurChange"
                                    :page-sizes="[7,8,10,20]"
                                    :page-size="pagesize"
                                    layout="total, sizes, prev, pager, next, jumper"
-                                   :total="decorateTotal"
+                                   :total="compTotal"
                                    :current-page="page"
                                    style="float:right;">
                     </el-pagination>
                 </el-col>
                 <!--查看界面-->
-                <el-dialog class="inView" title="装修申请" :visible.sync="decViewVisible" width="70%">
+                <el-dialog class="inView" title="投诉建议" :visible.sync="viewVisible" width="70%">
+                    <span class="right">{{detailList.stage}}</span>
+                    <el-form label-width="90px">
+                        <el-form-item label="投诉时间：">
+                            {{detailList.time}}
+                        </el-form-item>
+                        <el-form-item label="投诉人：">
+                            {{detailList.addInfo.contact}}
+                        </el-form-item>
+                        <el-form-item label="租赁位置：">
+                            {{detailList.addInfo.location}}
+                        </el-form-item>
+                        <el-form-item label="问题描述：" class="allWid">
+                            {{detailList.addInfo.remark}}
+                            <div v-if="detailList.addInfo.imageUrls && detailList.addInfo.imageUrls.length>0">
+                                <img v-for="item in detailList.addInfo.imageUrls.slice(0,6)" :src="item" @click="handlePictureCardPreview(item)">
+                                <el-dialog :visible.sync="dialogVisible" style="z-index: 2020;">
+                                    <img width="100%" style="height: 100%;" :src="dialogImageUrl" alt="">
+                                </el-dialog>
+                            </div>
+                        </el-form-item>
+                    </el-form>
+                    <span class="title">管理人员</span>
+                    <el-form label-width="90px">
+                        <el-form-item label="管理人：">
+                            {{detailList.addInfo.allocationName}}
+                        </el-form-item>
+                        <el-form-item label="处理时间：">
+                            {{detailList.addInfo.allocationTime}}
+                        </el-form-item>
+                        <el-form-item v-if="detailList.addInfo.propertyName" label="负责人：">
+                            {{detailList.addInfo.propertyName}}
+                        </el-form-item>
+                        <el-form-item v-if="detailList.addInfo.propertyName" label="处理时间：">
+                            {{detailList.addInfo.settlementTime}}
+                        </el-form-item>
+                        <el-form-item label="处理意见：">
+                            {{detailList.settlement}}
+                        </el-form-item>
+                    </el-form>
+                </el-dialog>
+
+            </el-tab-pane>
+            <el-tab-pane label="报修处理" name="second">
+                <el-col :span="24" justify="center">
+                    <el-form :inline="true" :model="reparisFilters">
+                        <el-form-item>
+                            <div class="block">
+                                <!--<p>组件值：{{ timerValue }}</p>-->
+                                <el-date-picker v-model="timeRepValue" type="daterange" start-placeholder="开始日期"
+                                                end-placeholder="结束日期" value-format="yyyy-MM-dd HH:mm:ss"
+                                                :default-time="['00:00:00', '23:59:59']">
+                                </el-date-picker>
+                            </div>
+                        </el-form-item>
+                        <el-form-item>
+                            <el-input v-model="reparisFilters.searchTitle" placeholder="公司名称搜索"></el-input>
+                        </el-form-item>
+                        <el-form-item>
+                            <el-button type="primary" v-on:click="getRepairs">查询</el-button>
+                        </el-form-item>
+                    </el-form>
+                </el-col>
+                <!--工具条-->
+                <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
+                    <el-form :inline="true">
+                        <el-form-item>
+                            <el-button type="danger" @click="allDealRep">全部</el-button>
+                        </el-form-item>
+                        <el-form-item>
+                            <el-button type="success" @click="pendingRep">待处理</el-button>
+                        </el-form-item>
+                        <el-form-item>
+                            <el-button type="primary" @click="processedRep">已处理</el-button>
+                        </el-form-item>
+                        <el-form-item>
+                            <el-button type="primary" @click="evaluation">已评价</el-button>
+                        </el-form-item>
+                    </el-form>
+                </el-col>
+                <!--列表-->
+                <el-table :data="reparisList.slice((page-1)*pagesize,page*pagesize)" highlight-current-row v-loading="repairLoading" style="width: 100%;">
+                    <el-table-column type="index" width="60">
+                    </el-table-column>
+                    <el-table-column prop="time" label="申请时间" sortable>
+                    </el-table-column>
+                    <el-table-column prop="addInfo.location" label="报修位置" sortable>
+                    </el-table-column>
+                    <el-table-column prop="addInfo.remark" label="问题描述" sortable show-overflow-tooltip="">
+                    </el-table-column>
+                    <el-table-column prop="stage" label="状态" sortable>
+                    </el-table-column>
+                    <el-table-column prop="addInfo.allocationName" label="管理人" sortable>
+                    </el-table-column>
+                    <el-table-column prop="addInfo.propertyName" label="维修人" sortable>
+                    </el-table-column>
+                    <el-table-column label="操作">
+                        <template scope="scope">
+                            <el-button type="success" size="small" @click="repairView(scope.$index, scope.row)">查看</el-button>
+                        </template>
+                    </el-table-column>
+                </el-table>
+                <!--分页-->
+                <el-col :span="24" class="toolbar">
+                    <el-pagination background
+                                   @size-change="sizeChange"
+                                   @current-change="repairCurChange"
+                                   :page-sizes="[7,8,10,20]"
+                                   :page-size="pagesize"
+                                   layout="total, sizes, prev, pager, next, jumper"
+                                   :total="repairTotal"
+                                   :current-page="page"
+                                   style="float:right;">
+                    </el-pagination>
+                </el-col>
+                <!--查看界面-->
+                <el-dialog class="inView" title="报修管理" :visible.sync="decViewVisible" width="70%">
                     <span class="right">{{detailList.stage}}</span>
                     <el-form label-width="90px">
                         <el-form-item label="申请时间：">
                             {{detailList.time}}
                         </el-form-item>
-                        <el-form-item label="公司名称：">
-                            {{detailList.addInfo.companyName}}
+                        <el-form-item label="报修人：">
+                            {{detailList.addInfo.nickname}}
                         </el-form-item>
-                        <el-form-item label="负责人：">
-                            {{detailList.addInfo.contact}}
+                        <el-form-item label="报修位置：">
+                            {{detailList.addInfo.location}}
                         </el-form-item>
-                        <el-form-item label="联系方式：">
-                            {{detailList.addInfo.phone}}
-                        </el-form-item>
-                        <el-form-item label="联系邮箱：">
-                            {{detailList.addInfo.email}}
-                        </el-form-item>
-                    </el-form>
-                    <span class="title">装修公司信息</span>
-                    <el-form label-width="90px">
-                        <el-form-item label="装修公司：">
-                            {{detailList.addInfo.decorationCompanyName}}
-                        </el-form-item>
-                        <el-form-item label="公司座机：">
-                            {{detailList.addInfo.decorationCompanyPhone}}
-                        </el-form-item>
-                        <el-form-item label="项目经理：">
-                            {{detailList.addInfo.decorationCompanyContact}}
-                        </el-form-item>
-                        <el-form-item label="联系手机：">
-                            {{detailList.addInfo.decorationCompanyContactPhone}}
+                        <el-form-item label="问题描述：" class="allWid">
+                            {{detailList.addInfo.remark}}
+                            <div v-if="detailList.addInfo.imageUrls && detailList.addInfo.imageUrls.length>0">
+                                <img v-for="item in detailList.addInfo.imageUrls.slice(0,6)" :src="item" @click="handlePictureCardPreview(item)">
+                                <el-dialog :visible.sync="dialogVisible" style="z-index: 2020;">
+                                    <img width="100%" style="height: 100%;" :src="dialogImageUrl" alt="">
+                                </el-dialog>
+                            </div>
                         </el-form-item>
                     </el-form>
-                    <span class="title">物业管理</span>
+                    <span class="title">管理人员</span>
                     <el-form label-width="90px">
-                        <el-form-item label="负责人：">
+                        <el-form-item label="管理人：">
                             {{detailList.addInfo.allocationName}}
+                        </el-form-item>
+                        <el-form-item label="处理时间：">
+                            {{detailList.addInfo.designateTime}}
+                        </el-form-item>
+                        <el-form-item label="负责人：">
+                            {{detailList.addInfo.propertyName}}
                         </el-form-item>
                         <el-form-item label="处理时间：">
                             {{detailList.addInfo.settlementTime}}
                         </el-form-item>
-                        <el-form-item label="对接人：">
-                            {{detailList.addInfo.propertyName}}
+                        <el-form-item label="维修反馈：" class="allWid">
+                            {{detailList.addInfo.feedback}}
+                            <div v-if="detailList.addInfo.images && detailList.addInfo.images.length>0">
+                                <img v-for="item in detailList.addInfo.images.slice(0,6)" :src="item" @click="handlePictureCardPreview(item)">
+                                <el-dialog :visible.sync="dialogVisible" style="z-index: 2020;">
+                                    <img width="100%" style="height: 100%;" :src="dialogImageUrl" alt="">
+                                </el-dialog>
+                            </div>
                         </el-form-item>
-                        <el-form-item label="处理意见：">
-                            {{detailList.settlement}}
+                    </el-form>
+                    <span class="title">评价</span>
+                    <el-form label-width="90px">
+                        <el-form-item label="服务星级：">
+                            {{detailList.addInfo.commentStar}}
+                        </el-form-item>
+                        <el-form-item label="维修反馈：">
+                            {{detailList.addInfo.commentText}}
                         </el-form-item>
                     </el-form>
                 </el-dialog>
@@ -250,49 +255,60 @@
     export default {
         data(){
             return {
+                dialogImageUrl: '',
+                dialogVisible: false,
                 page:1,
                 pagesize:7,
                 activeName:'first',
-                enterFilters: {
+                complaintFilters: {
                     searchTitle: ''
                 },
-                decorateFilters: {
+                reparisFilters: {
                     searchTitle: ''
                 },
                 timeValue:[],
-                timeDecValue:[],
-                inApplyList:[
+                timeRepValue:[],
+                compList:[
                     {
                         time:'',
                         addInfo:{
                             companyName:'',
-                            industry:'',
-                            allocationName:'',
-                            propertyName:''
+                            industry:''
                         }
                     }
                 ],
-                decorateList:[
+                reparisList:[
                     {
                         time:'',
                         addInfo:{
                             companyName:'',
                             location:'',
                             contact:'',
-                            allocationName:'',
-                            propertyName:''
+                            custodian:'',
+                            principal:''
                         }
                     }
                 ],
-                inApplyLoading:false,
-                decorateLoading:false,
+                complicantLoading:false,
+                repairLoading:false,
                 viewVisible:false,
                 decViewVisible:false,
                 detailList:{
                     stage:'',
+                    time:'',
+                    settlement:'',
                     addInfo:{
-                        companyName:'',
+                        location:'',
+                        remark:'',
                         contact:'',
+                        images:[],
+                        imageUrls:[],
+                        allocationName:'',
+                        allocationTime:'',
+                        propertyName:'',
+                        settlementTime:'',
+
+                        companyName:'',
                         phone:'',
                         website:'',
                         industry:'',
@@ -300,42 +316,44 @@
                         decorationCompanyName:'',
                         decorationCompanyPhone:'',
                         decorationCompanyContact:'',
-                        decorationCompanyContactPhone:'',
-                        allocationName:'',
-                        propertyName:''
+                        decorationCompanyContactPhone:''
                     }
                 },
-                inApplyTotal:1,
-                decorateTotal:1,
+                compTotal:1,
+                repairTotal:1,
 
             }
         },
         methods:{
+            handlePictureCardPreview(item) {
+                this.dialogImageUrl = item;
+                this.dialogVisible = true;
+            },
             handleClick(tab, event) {
                 this.page=1;
             },
-            getInApply(){ //入驻申请数据
-                let type='入驻申请';
-                this.inApplyLoading=true;
+            getComplaint(){ //投诉建议数据
+                let type='投诉建议';
+                this.complicantLoading=true;
                 this.$get(proList+type)
                     .then((res) => {
-                        this.inApplyList=res;
-                        this.inApplyTotal=this.inApplyList.length>0?this.inApplyList.length:1;
-                        this.inApplyLoading=false;
+                        this.compList=res;
+                        this.compTotal=this.compList.length>0?this.compList.length:1;
+                        this.complicantLoading=false;
                     })
             },
-            getDecorate(){ //装修申请数据
-                let type='装修申请';
-                this.decorateLoading=true;
+            getRepairs(){ //报修处理数据
+                let type='物业报修';
+                this.repairLoading=true;
                 this.$get(proList+type)
                     .then((res) => {
-                        this.decorateList=res;
-                        this.decorateTotal=this.decorateList.length>0?this.decorateList.length:1;
-                        this.decorateLoading=false;
+                        this.reparisList=res;
+                        this.repairTotal=this.reparisList.length>0?this.reparisList.length:1;
+                        this.repairLoading=false;
                     })
             },
             allDeal(){ //全部
-                this.getInApply();
+                this.getComplaint();
             },
             pending(){ //待处理
 
@@ -343,39 +361,42 @@
             processed(){ //已处理
 
             },
-            allDealDec(){ //全部
-                this.getDecorate();
+            allDealRep(){ //全部
+                this.getRepairs();
             },
-            pendingDec(){ //待处理
+            pendingRep(){ //待处理
 
             },
-            processedDec(){ //已处理
+            processedRep(){ //已处理
 
             },
-            inApplyView(index, row){
+            evaluation(){ //已评价
+
+            },
+            complicantView(index, row){
                 this.viewVisible=true;
                 this.detailList=row;
             },
-            decorateView(index, row){
+            repairView(index, row){
                 this.decViewVisible=true;
                 this.detailList=row;
             },
-            highActSizeChange(val) {
+            sizeChange(val) {
                 this.pagesize=val;
             },
-            inApplyCurChange(val) {
+            compCurChange(val) {
                 this.page = val;
-                this.getInApply();
+                this.getComplaint();
             },
-            decorateCurChange(val) {
+            repairCurChange(val) {
                 this.page = val;
-                this.getDecorate();
+                this.getRepairs();
             },
 
         },
         mounted(){
-            this.getInApply();
-            this.getDecorate();
+            this.getComplaint();
+            this.getRepairs();
         }
     }
 </script>
@@ -391,10 +412,19 @@
             .el-form-item{
                 display: inline-block;
                 width: 48%;
+                &.allWid{
+                    width: 100%;
+                }
             }
         }
         .title{
             font-weight: bold;
+        }
+    }
+    .allWid{
+        img{
+            height: 80px;
+            margin-right: 15px;
         }
     }
 </style>

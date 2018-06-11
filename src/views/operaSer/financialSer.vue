@@ -19,7 +19,7 @@
                     </el-table-column>
                     <el-table-column type="index" width="60">
                     </el-table-column>
-                    <el-table-column prop="title" label="标题" sortable>
+                    <el-table-column prop="title" label="标题" sortable show-overflow-tooltip>
                     </el-table-column>
                     <el-table-column prop="type" label="类别" sortable>
                     </el-table-column>
@@ -106,7 +106,8 @@
                 imgCorpList:[],
                 dialogCorpImageUrl: '',
                 dialogCorpVisible: false,
-
+                isEditId:'',
+                isEdit:false,
             }
         },
         methods:{
@@ -127,6 +128,7 @@
             },
             corporateAdd(){  //公司。。新增
                 this.addEditTitle='新增';
+                this.isEdit=false;
                 this.morePicList.length=0;
                 this.corporateContent='';
                 this.addEditCorporateVisible=true;
@@ -139,6 +141,8 @@
             },
             corporateEdit(index, row) { //公司。。 显示编辑界面
                 this.addEditTitle='编辑';
+                this.isEditId=row.id;
+                this.isEdit=true;
                 this.morePicList.length=0;
                 this.addEditCorporateVisible = true;
                 this.corporateForm = Object.assign({}, row);
@@ -209,6 +213,9 @@
                                     content:this.corporateContent
                                 }
                             };
+                            if(this.isEdit){
+                                data.id=this.isEditId;
+                            }
                             this.$post(addDisplay,data)
                                 .then((res)=>{
                                     this.addEditCorLoading = false;
