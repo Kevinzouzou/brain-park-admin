@@ -30,7 +30,7 @@
             <el-table-column prop="stage" label="状态" sortable>
             </el-table-column>
             <el-table-column label="操作">
-                <template scope="scope">
+                <template slot-scope="scope">
                     <el-button type="success" size="small" @click="feBackView(scope.$index, scope.row)">查看</el-button>
                     <el-button type="info" size="small" @click="feBackEdit(scope.$index, scope.row)" v-if="scope.row.stage!=='已处理'">回复</el-button>
                 </template>
@@ -71,8 +71,11 @@
                 </el-form-item>
                 <el-form-item label="反馈内容：">
                     <div class="content">{{detailList.addInfo.remark}}</div>
-                    <div class="imgs" v-if="detailList.addInfo.images.length>0">
-                        <img v-for="item in detailList.addInfo.images" :src="item">
+                    <div class="imgs" v-if="detailList.addInfo.images && detailList.addInfo.images.length>0">
+                        <img v-for="item in detailList.addInfo.images.slice(0,6)" :src="item" @click="handlePictureCardPreview(item)">
+                        <el-dialog :visible.sync="dialogVisible" style="z-index: 2020;">
+                            <img width="100%" style="height: 100%;" :src="dialogImageUrl" alt="">
+                        </el-dialog>
                     </div>
                 </el-form-item>
                 <el-form-item label="反馈人：">
@@ -89,11 +92,13 @@
 </template>
 
 <script>
-    import {showDisplay,replyUrl, addDisplay,proList, deleteDisplay, findDic, showDict, addDict, deleteDict} from '../../api/api'
+    import {findSuggest,showDisplay,replyUrl, addDisplay,proList, deleteDisplay, findDic, showDict, addDict, deleteDict} from '../../api/api'
 
     export default {
         data(){
             return {
+                dialogImageUrl: '',
+                dialogVisible: false,
                 userAppNum:0, //用户端APP数
                 proAppNum:0,  //物业端APP数
                 secFebackValue:'',
@@ -141,14 +146,23 @@
             }
         },
         methods:{
+            handlePictureCardPreview(item) {
+                this.dialogImageUrl = item;
+                this.dialogVisible = true;
+            },
             getFeedBack(){   //获取意见反馈列表
-                let type='意见反馈';
+                let type='&type=意见反馈';
+                this.getFeedBackList(findSuggest+type);
+            },
+            getFeedBackList(url){
                 this.feBackLoading=true;
-                this.$get(proList+type)
+                this.$get(url)
                     .then((res) => {
-                        this.feedBackList=res;
-                        this.feBackTotal=this.feedBackList.length>0?this.feedBackList.length:1;
-                        this.feBackLoading=false;
+                        if(res.length>0){
+                            this.feedBackList=res;
+                            this.feBackTotal=this.feedBackList.length>0?this.feedBackList.length:1;
+                            this.feBackLoading=false;
+                        }
                     })
             },
             adsBatchRemove () { //批量删除
@@ -204,7 +218,10 @@
                     return item.id === value;//筛选出匹配数据
                 });
                 this.selectLabel=obj.name;
-
+                let type='&type=意见反馈';
+                let url=findSuggest+type;
+                url=this.selectLabel==='全部来源'?url+'':url+'&source='+this.selectLabel;
+                this.getFeedBackList(url);
             },
             secAdsValue(value){
                 let obj = {};

@@ -5,7 +5,7 @@
             <el-tab-pane label="圈子管理" name="first">
                 <!--工具条-->
                 <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
-                    <el-form :inline="true" :model="filters">                        
+                    <el-form :inline="true">
                         <el-form-item>
                             <el-button type="primary" @click="circleAdd">新增</el-button>
                         </el-form-item>
@@ -19,7 +19,7 @@
                     <el-table-column prop="title" label="圈子名称" sortable show-overflow-tooltip>
                     </el-table-column>
                     <el-table-column label="圈子logo"  >
-                        <template scope="scope">
+                        <template slot-scope="scope">
                             <img :src="scope.row.thumbUrl" width="40" height="40"/>
                             <!--<img src="../../assets/logo4.png" width="40" height="40"/>-->
                         </template>
@@ -29,7 +29,7 @@
                     <el-table-column prop="joinNum" label="已加入成员数" sortable>
                     </el-table-column>
                     <el-table-column label="操作" width="150">
-                        <template scope="scope">
+                        <template slot-scope="scope">
                             <el-button type="info" size="small" @click="circleEdit(scope.$index, scope.row)">编辑</el-button>
                             <el-button type="danger" size="small" @click="circleDel(scope.$index, scope.row)">删除</el-button>
                         </template>
@@ -94,7 +94,7 @@
                             <el-input v-model="addForm.title" auto-complete="off"></el-input>
                         </el-form-item>
                         <el-form-item label="圈子logo">
-                            <el-upload class="avatar-uploader" action="/api/OperFile/uploadFile/"
+                            <el-upload class="avatar-uploader" :action=url
                                        :show-file-list="false" :on-success="handleAvatarSuccess"
                                        :before-upload="beforeAvatarUpload">
                                 <img v-if="imageUrl" :src="logoImg" class="avatar">
@@ -102,7 +102,7 @@
                             </el-upload>
                         </el-form-item>
                         <el-form-item label="背景图片">
-                            <el-upload action="/api/OperFile/uploadFile/" list-type="picture-card"
+                            <el-upload :action=url list-type="picture-card"
                                        :on-preview="handlePictureCardPreview" :on-remove="handleRemove"
                                        :file-list="imgList" :on-success="moreShow">
                                 <i class="el-icon-plus"></i>
@@ -126,9 +126,9 @@
             </el-tab-pane>
             <el-tab-pane label="活动管理" name="second">
                 <el-col :span="24" justify="center">
-                    <el-form :inline="true">
+                    <el-form :inline="true" :model="filters">
                         <el-form-item label="圈子筛选">
-                            <el-select v-model="secValue" placeholder="请选择">
+                            <el-select v-model="filters.secValue" placeholder="请选择">
                                 <el-option v-for="item in circleList" :key="item.id" :label="item.title" :value="item.id">
                                 </el-option>
                             </el-select>
@@ -136,7 +136,7 @@
                         <el-form-item>
                             <div class="block">
                                 <!--<p>组件值：{{ timerValue }}</p>-->
-                                <el-date-picker v-model="timerValue" type="daterange" start-placeholder="开始日期"
+                                <el-date-picker v-model="filters.timerValue" type="daterange" start-placeholder="开始日期"
                                                 end-placeholder="结束日期" value-format="yyyy-MM-dd HH:mm:ss"
                                                 :default-time="['00:00:00', '23:59:59']">
                                 </el-date-picker>
@@ -153,7 +153,7 @@
                 </el-col>
                 <!--工具条-->
                 <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
-                    <el-form :inline="true" :model="filters">
+                    <el-form :inline="true">
                         <el-form-item>
                             <el-button type="danger" @click="batchRemove" :disabled="this.sels.length===0">批量删除</el-button>
                         </el-form-item>
@@ -180,7 +180,7 @@
                     <el-table-column prop="addInfo.endTime" label="结束时间" sortable>
                     </el-table-column>
                     <el-table-column label="操作">
-                        <template scope="scope">
+                        <template slot-scope="scope">
                             <el-button type="success" size="small" @click="actApplicant(scope.$index, scope.row)">报名</el-button>
                             <el-button type="info" size="small" @click="activityEdit(scope.$index, scope.row)">编辑</el-button>
                             <el-button type="danger" size="small" @click="activityDel(scope.$index, scope.row)">删除</el-button>
@@ -340,6 +340,7 @@
         components: {UE},
         data() {
             return {
+                url:'',//图片上传路径
                 circleAddContent:'',
                 cirEditContent:'',
                 actEditContent:'',
@@ -452,6 +453,8 @@
                 dialogImageUrl: '',
                 dialogVisible: false,
                 filters: {
+                    secValue:'',
+                    timerValue:[],
                     searchTitle: ''
                 },
                 users: [],
@@ -522,10 +525,6 @@
             handleClick(tab, event) {
                 this.page=1;
             },
-            getActQuery(){
-                // 条件模糊查询
-
-            },
             actAddChange(html){
                 this.actAddContent=html;
             },
@@ -552,7 +551,6 @@
             //获取圈子列表
             getCircle(){
                 this.listLoading=true;
-                // this.$get('/api/socialCircle/socialCircleList?parkId='+localStorage.getItem("parkId"))
                 this.$get(showCircle)
                     .then((res) => {
                         this.circleList=res;
@@ -560,11 +558,30 @@
                         this.listLoading=false;
                     })
             },
-            //获取圈子活动列表
-            getActivity(){
+            getActQuery(){//圈子活动 条件模糊查询
+                let url=showActList;
+                let startTime=this.filters.timerValue[0];
+                let endTime=this.filters.timerValue[1];
+                let title=this.filters.searchTitle;
+                let circleId=this.filters.secValue;
+                url=startTime===undefined?url+'':url+'&startTime='+startTime.replace(/-/g,'/');
+                url=endTime===undefined?url+'':url+'&endTime='+endTime.replace(/-/g,'/');
+                url=title===''?url+'':url+'&title='+title;
+                url=circleId===''?url+'':url+'&circleId='+circleId;
+                this.getActivityList(url);
+                this.filters={
+                    timerValue:[],
+                    searchTitle:'',
+                    secValue:''
+                }
+
+            },
+            getActivity(){ //获取圈子活动列表
+                this.getActivityList(showActList);
+            },
+            getActivityList(url){//圈子活动 列表数据
                 this.actListLoading=true;
-                // this.$get('/api/socialCircle/socialCircleActiveList?parkId='+localStorage.getItem("parkId"))
-                this.$get(showActList)
+                this.$get(url)
                     .then((res) => {
                         this.activityList=res;
                         this.total=this.activityList.length>0?this.activityList.length:1;
@@ -579,7 +596,6 @@
                     this.listLoading = true;
                     //NProgress.start();
                     let para = { id: row.id };
-                    // let url='/api/socialCircle/deleteSocialCircle'+para.id;
                     let self=this;
                     this.$del(delCir+para.id)
                         .then(function(response) {
@@ -886,10 +902,10 @@
             },
 
         },
-
         mounted() {
             this.getCircle();
             this.getActivity();
+            this.url=localStorage.getItem("upUrl")+uploadPic;
         }
     }
 </script>

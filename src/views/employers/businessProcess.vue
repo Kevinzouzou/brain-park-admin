@@ -7,7 +7,7 @@
                         <el-form-item>
                             <div class="block">
                                 <!--<p>组件值：{{ timerValue }}</p>-->
-                                <el-date-picker v-model="timeValue" type="daterange" start-placeholder="开始日期"
+                                <el-date-picker v-model="enterFilters.timeValue" type="daterange" start-placeholder="开始日期"
                                                 end-placeholder="结束日期" value-format="yyyy-MM-dd HH:mm:ss"
                                                 :default-time="['00:00:00', '23:59:59']">
                                 </el-date-picker>
@@ -17,7 +17,7 @@
                             <el-input v-model="enterFilters.searchTitle" placeholder="公司名称搜索"></el-input>
                         </el-form-item>
                         <el-form-item>
-                            <el-button type="primary" v-on:click="getInApply">查询</el-button>
+                            <el-button type="primary" v-on:click="getQueryInApply">查询</el-button>
                         </el-form-item>
                     </el-form>
                 </el-col>
@@ -54,7 +54,7 @@
                     <el-table-column prop="addInfo.propertyName" label="对接人" sortable>
                     </el-table-column>
                     <el-table-column label="操作">
-                        <template scope="scope">
+                        <template slot-scope="scope">
                             <el-button type="success" size="small" @click="inApplyView(scope.$index, scope.row)">查看</el-button>
                         </template>
                     </el-table-column>
@@ -122,7 +122,7 @@
                         <el-form-item>
                             <div class="block">
                                 <!--<p>组件值：{{ timerValue }}</p>-->
-                                <el-date-picker v-model="timeDecValue" type="daterange" start-placeholder="开始日期"
+                                <el-date-picker v-model="decorateFilters.timeDecValue" type="daterange" start-placeholder="开始日期"
                                                 end-placeholder="结束日期" value-format="yyyy-MM-dd HH:mm:ss"
                                                 :default-time="['00:00:00', '23:59:59']">
                                 </el-date-picker>
@@ -132,7 +132,7 @@
                             <el-input v-model="decorateFilters.searchTitle" placeholder="公司名称搜索"></el-input>
                         </el-form-item>
                         <el-form-item>
-                            <el-button type="primary" v-on:click="getDecorate">查询</el-button>
+                            <el-button type="primary" v-on:click="getQueryDecorate">查询</el-button>
                         </el-form-item>
                     </el-form>
                 </el-col>
@@ -169,7 +169,7 @@
                     <el-table-column prop="addInfo.propertyName" label="负责人" sortable>
                     </el-table-column>
                     <el-table-column label="操作">
-                        <template scope="scope">
+                        <template slot-scope="scope">
                             <el-button type="success" size="small" @click="decorateView(scope.$index, scope.row)">查看</el-button>
                         </template>
                     </el-table-column>
@@ -245,7 +245,7 @@
 </template>
 
 <script>
-    import {showDisplay, addDisplay,proList, deleteDisplay, findDic, showDict, addDict, deleteDict} from '../../api/api'
+    import {findProperty,showDisplay, addDisplay,proList, deleteDisplay, findDic, showDict, addDict, deleteDict} from '../../api/api'
 
     export default {
         data(){
@@ -254,10 +254,12 @@
                 pagesize:7,
                 activeName:'first',
                 enterFilters: {
-                    searchTitle: ''
+                    searchTitle: '',
+                    timeValue:[]
                 },
                 decorateFilters: {
-                    searchTitle: ''
+                    searchTitle: '',
+                    timeDecValue:[]
                 },
                 timeValue:[],
                 timeDecValue:[],
@@ -314,20 +316,56 @@
             handleClick(tab, event) {
                 this.page=1;
             },
+            getQueryInApply(){//入驻申请 条件查询
+                let type='入驻申请';
+                let url=findProperty+type;
+                let startTime=this.enterFilters.timeValue[0];
+                let endTime=this.enterFilters.timeValue[1];
+                let companyName=this.enterFilters.searchTitle;
+                url=startTime===undefined?url+'':url+'&startTime='+startTime.replace(/-/g,'/');
+                url=endTime===undefined?url+'':url+'&endTime='+endTime.replace(/-/g,'/');
+                url=companyName===''?url+'':url+'&companyName='+companyName;
+                this.getInApplylist(url);
+                this.enterFilters={
+                    timeValue:[],
+                    searchTitle:''
+                }
+            },
             getInApply(){ //入驻申请数据
                 let type='入驻申请';
+                this.getInApplylist(findProperty+type);
+            },
+            getInApplylist(url){//入驻申请列表数据
                 this.inApplyLoading=true;
-                this.$get(proList+type)
+                this.$get(url)
                     .then((res) => {
                         this.inApplyList=res;
                         this.inApplyTotal=this.inApplyList.length>0?this.inApplyList.length:1;
                         this.inApplyLoading=false;
                     })
             },
+            getQueryDecorate(){//装修申请 条件查询
+                let type='装修申请';
+                let url=findProperty+type;
+                let startTime=this.decorateFilters.timeDecValue[0];
+                let endTime=this.decorateFilters.timeDecValue[1];
+                let companyName=this.decorateFilters.searchTitle;
+                url=startTime===undefined?url+'':url+'&startTime='+startTime.replace(/-/g,'/');
+                url=endTime===undefined?url+'':url+'&endTime='+endTime.replace(/-/g,'/');
+                url=companyName===''?url+'':url+'&companyName='+companyName;
+                this.getDecorateList(url);
+                this.decorateFilters={
+                    timeDecValue:[],
+                    searchTitle:''
+                }
+            },
             getDecorate(){ //装修申请数据
                 let type='装修申请';
+                this.getDecorateList(findProperty+type);
+            },
+            getDecorateList(url){//装修申请列表数据
                 this.decorateLoading=true;
-                this.$get(proList+type)
+                this.$get(url)
                     .then((res) => {
                         this.decorateList=res;
                         this.decorateTotal=this.decorateList.length>0?this.decorateList.length:1;
@@ -338,19 +376,23 @@
                 this.getInApply();
             },
             pending(){ //待处理
-
+                let url=findProperty+'入驻申请'+'&stage=待处理';
+                this.getInApplylist(url);
             },
             processed(){ //已处理
-
+                let url=findProperty+'入驻申请'+'&stage=已处理';
+                this.getInApplylist(url);
             },
             allDealDec(){ //全部
                 this.getDecorate();
             },
             pendingDec(){ //待处理
-
+                let url=findProperty+'装修申请'+'&stage=待处理';
+                this.getInApplylist(url);
             },
             processedDec(){ //已处理
-
+                let url=findProperty+'装修申请'+'&stage=已处理';
+                this.getInApplylist(url);
             },
             inApplyView(index, row){
                 this.viewVisible=true;

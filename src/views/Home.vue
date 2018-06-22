@@ -2,11 +2,12 @@
 	<el-row class="container">
 		<el-col :span="24" class="header">
 			<el-col :span="10" class="logo" :class="collapsed?'logo-collapse-width':'logo-width'">
-				{{collapsed?'':sysName}}
+				<img class="logoImg" v-if="!collapsed" src="../assets/logo.png">
 			</el-col>
 			<el-col :span="10">
 				<div class="tools" @click.prevent="collapse">
-					<i class="fa fa-align-justify"></i>
+					<!--<i class="fa fa-align-justify"></i>-->
+					<i class="el-icon-tickets"></i>
 				</div>
 			</el-col>
 			<!--<el-col :span="4" class="userinfo">-->
@@ -75,7 +76,6 @@
 	export default {
 		data() {
 			return {
-				sysName:'VUEADMIN',
 				collapsed:false,
 				sysUserName: '',
 				sysUserAvatar: '',
@@ -180,6 +180,11 @@
 					width: 40px;
 					float: left;
 					margin: 10px 10px 10px 18px;
+				}
+				.logoImg{
+					height: 30px;
+					width: 72%;
+					margin: 15px 0;
 				}
 				.txt {
 					color:#fff;

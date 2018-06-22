@@ -3,93 +3,159 @@
         <div class="mainPage" v-show="mainPageVisible">
             <el-tabs v-model="activeTopicName" type="card" @tab-click="handleClick">
                 <el-tab-pane label="话题管理" name="first">
-                    <el-col :span="24" justify="center">
-                        <el-form :inline="true" :model="topicFilters">
-                            <el-form-item>
-                                <el-button type="primary" @click="cateMg">类别管理</el-button>
-                                <el-select v-model="secCateValue" placeholder="请选择">
-                                    <el-option v-for="item in cateOptions" :key="item.value" :label="item.label" :value="item.value">
-                                    </el-option>
-                                </el-select>
-                            </el-form-item>
-                            <el-form-item>
-                                <div class="block">
-                                    <!--<p>组件值：{{ timerValue }}</p>-->
-                                    <el-date-picker v-model="timeTopicValue" type="daterange" start-placeholder="开始日期"
-                                                    end-placeholder="结束日期" value-format="yyyy-MM-dd HH:mm:ss"
-                                                    :default-time="['00:00:00', '23:59:59']">
-                                    </el-date-picker>
-                                </div>
-                            </el-form-item>
-                            <el-form-item>
-                                <el-input v-model="topicFilters.searchTitle" placeholder="搜索标题"></el-input>
-                            </el-form-item>
-                            <el-form-item>
-                                <el-button type="primary" v-on:click="getQueryTopic">查询</el-button>
-                            </el-form-item>
-                        </el-form>
-                    </el-col>
-                    <!--工具条-->
-                    <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
-                        <el-form :inline="true">
-                            <el-form-item>
-                                <el-button type="danger" @click="topicBatchRemove" :disabled="this.sels.length===0">批量屏蔽</el-button>
-                            </el-form-item>
-                        </el-form>
-                    </el-col>
-                    <!--列表-->
-                    <el-table :data="topicList.slice((page-1)*pagesize,page*pagesize)" highlight-current-row v-loading="topicLoading" @selection-change="selsTopicChange" style="width: 100%;">
-                        <el-table-column type="selection" width="55">
-                        </el-table-column>
-                        <el-table-column type="index" width="60">
-                        </el-table-column>
-                        <el-table-column prop="addInfo.publisher.addInfo.nickName" label="昵称" sortable>
-                        </el-table-column>
-                        <el-table-column prop="type" label="类别" sortable>
-                        </el-table-column>
-                        <el-table-column prop="content" label="内容" sortable show-overflow-tooltip>
-                        </el-table-column>
-                        <el-table-column prop="updateTime" label="时间" sortable>
-                        </el-table-column>
-                        <el-table-column label="操作">
-                            <template scope="scope">
-                                <el-button type="success" size="small" @click="topicInteract(scope.$index, scope.row)">互动</el-button>
-                                <el-button type="info" size="small" @click="topicView(scope.$index, scope.row)">查看</el-button>
-                                <el-button type="danger" size="small" @click="topicDel(scope.$index, scope.row)">屏蔽</el-button>
-                            </template>
-                        </el-table-column>
-                    </el-table>
-                    <!--分页-->
-                    <el-col :span="24" class="toolbar">
-                        <el-pagination background
-                                       @size-change="handleSizeChange"
-                                       @current-change="handleCurrentChange"
-                                       :page-sizes="[7,8,10,20]"
-                                       :page-size="pagesize"
-                                       layout="total,sizes, prev, pager, next, jumper"
-                                       :current-page="page"
-                                       :total="topicTotal"
-                                       style="float:right;">
-                        </el-pagination>
-                    </el-col>
-                    <!--互动-->
-                    <el-dialog title="互动数据" :visible.sync="topicInteractVisible" >
-                        <ul class="interact">
-                            <li>
-                                <label>点赞</label>
-                                <span>{{topicData.likeNum}}</span>
-                            </li>
-                            <li>
-                                <label>收藏</label>
-                                <span>{{topicData.collectNum}}</span>
-                            </li>
-                            <li>
-                                <label>举报</label>
-                                <span>{{topicData.tipOfNum}}</span>
-                            </li>
-                        </ul>
-                    </el-dialog>
+                    <div v-show="firstVisible">
+                        <el-col :span="24" justify="center">
+                            <el-form :inline="true" :model="topicFilters">
+                                <el-form-item>
+                                    <el-button type="primary" @click="cateMg">类别管理</el-button>
+                                    <el-select v-model="topicFilters.secCateValue" placeholder="请选择">
+                                        <el-option v-for="item in cateList" :key="item.id" :label="item.name" :value="item.name">
+                                        </el-option>
+                                    </el-select>
+                                </el-form-item>
+                                <el-form-item>
+                                    <div class="block">
+                                        <!--<p>组件值：{{ timerValue }}</p>-->
+                                        <el-date-picker v-model="topicFilters.timeTopicValue" type="daterange" start-placeholder="开始日期"
+                                                        end-placeholder="结束日期" value-format="yyyy-MM-dd HH:mm:ss"
+                                                        :default-time="['00:00:00', '23:59:59']">
+                                        </el-date-picker>
+                                    </div>
+                                </el-form-item>
+                                <el-form-item>
+                                    <el-input v-model="topicFilters.searchTitle" placeholder="搜索标题"></el-input>
+                                </el-form-item>
+                                <el-form-item>
+                                    <el-button type="primary" v-on:click="getQueryTopic">查询</el-button>
+                                </el-form-item>
+                            </el-form>
+                        </el-col>
+                        <!--工具条-->
+                        <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
+                            <el-form :inline="true">
+                                <el-form-item>
+                                    <el-button type="danger" @click="topicBatchRemove" :disabled="this.sels.length===0">批量屏蔽</el-button>
+                                </el-form-item>
+                            </el-form>
+                        </el-col>
+                        <!--列表-->
+                        <el-table :data="topicList.slice((page-1)*pagesize,page*pagesize)" highlight-current-row v-loading="topicLoading" @selection-change="selsTopicChange" style="width: 100%;">
+                            <el-table-column type="selection" width="55">
+                            </el-table-column>
+                            <el-table-column type="index" width="60">
+                            </el-table-column>
+                            <el-table-column prop="addInfo.publisher.addInfo.nickName" label="昵称" sortable>
+                            </el-table-column>
+                            <el-table-column prop="type" label="类别" sortable>
+                            </el-table-column>
+                            <el-table-column prop="content" label="内容" sortable show-overflow-tooltip>
+                            </el-table-column>
+                            <el-table-column prop="updateTime" label="时间" sortable>
+                            </el-table-column>
+                            <el-table-column label="操作">
+                                <template slot-scope="scope">
+                                    <el-button type="success" size="small" @click="topicInteract(scope.$index, scope.row)">互动</el-button>
+                                    <el-button type="info" size="small" @click="topicView(scope.$index, scope.row)">查看</el-button>
+                                    <el-button type="danger" size="small" @click="topicDel(scope.$index, scope.row)">屏蔽</el-button>
+                                </template>
+                            </el-table-column>
+                        </el-table>
+                        <!--分页-->
+                        <el-col :span="24" class="toolbar">
+                            <el-pagination background
+                                           @size-change="handleSizeChange"
+                                           @current-change="handleCurrentChange"
+                                           :page-sizes="[7,8,10,20]"
+                                           :page-size="pagesize"
+                                           layout="total,sizes, prev, pager, next, jumper"
+                                           :current-page="page"
+                                           :total="topicTotal"
+                                           style="float:right;">
+                            </el-pagination>
+                        </el-col>
+                        <!--互动-->
+                        <el-dialog title="互动数据" :visible.sync="topicInteractVisible" >
+                            <ul class="interact">
+                                <li>
+                                    <label>点赞</label>
+                                    <span>{{topicData.likeNum}}</span>
+                                </li>
+                                <li>
+                                    <label>收藏</label>
+                                    <span>{{topicData.collectNum}}</span>
+                                </li>
+                                <li>
+                                    <label>举报</label>
+                                    <span>{{topicData.tipOfNum}}</span>
+                                </li>
+                            </ul>
+                        </el-dialog>
 
+                    </div>
+                    <div v-show="secondVisible" title="类别管理">
+                        <el-button class="backUp" type="danger" @click="backToFirstAn">返回</el-button>
+                        <el-col :span="24" justify="center">
+                            <el-form :inline="true" :model="cateFilters">
+                                <el-form-item>
+                                    <span>快速添加分类：</span>
+                                </el-form-item>
+                                <el-form-item>
+                                    <el-input v-model="cateFilters.addType" placeholder="添加类别"></el-input>
+                                </el-form-item>
+                                <el-form-item>
+                                    <el-button type="primary" v-on:click="cateAdd">添加</el-button>
+                                </el-form-item>
+                            </el-form>
+                        </el-col>
+                        <!--工具条-->
+                        <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
+                            <el-form :inline="true">
+                                <el-form-item>
+                                    <el-button type="danger" @click="cateBatchRemove" :disabled="this.anCateSels.length===0">批量删除</el-button>
+                                </el-form-item>
+                            </el-form>
+                        </el-col>
+                        <!--列表-->
+                        <el-table :data="cateList.slice((page-1)*pagesize,page*pagesize)" highlight-current-row v-loading="cateLoading" @selection-change="selsCateChange" style="width: 100%;">
+                            <el-table-column type="selection" width="55">
+                            </el-table-column>
+                            <el-table-column type="index" width="60">
+                            </el-table-column>
+                            <el-table-column prop="name" label="类别" sortable>
+                            </el-table-column>
+                            <el-table-column label="操作">
+                                <template slot-scope="scope">
+                                    <el-button type="info" size="small" @click="anCateEdit(scope.$index, scope.row)">编辑</el-button>
+                                    <el-button type="danger" size="small" @click="anCateDel(scope.$index, scope.row)">删除</el-button>
+                                </template>
+                            </el-table-column>
+                        </el-table>
+                        <!--分页-->
+                        <el-col :span="24" class="toolbar">
+                            <el-pagination background
+                                           @size-change="handleSizeChange"
+                                           @current-change="cateCurrentChange"
+                                           :page-sizes="[7,8,10,20]"
+                                           :page-size="pagesize"
+                                           layout="total,sizes, prev, pager, next, jumper"
+                                           :total="cateTotal"
+                                           :current-page="page"
+                                           style="float:right;">
+                            </el-pagination>
+                        </el-col>
+                        <!--编辑界面-->
+                        <el-dialog title="编辑" :visible.sync="anCateVisible">
+                            <el-form :model="anCateForm" label-width="80px" ref="anCateForm">
+                                <el-form-item label="分类" prop="name">
+                                    <el-input v-model="anCateForm.name" auto-complete="off"></el-input>
+                                </el-form-item>
+                            </el-form>
+                            <div slot="footer" class="dialog-footer">
+                                <el-button @click.native="anCateVisible = false">取消</el-button>
+                                <el-button type="primary" @click.native="editAnCateSubmit" :loading="anCateLoading">提交</el-button>
+                            </div>
+                        </el-dialog>
+                    </div>
                 </el-tab-pane>
                 <el-tab-pane label="留言管理" name="second">
                     <!--工具条-->
@@ -107,7 +173,7 @@
                         <el-table-column prop="comment" label="内容" sortable show-overflow-tooltip>
                         </el-table-column>
                         <el-table-column label="操作">
-                            <template scope="scope">
+                            <template slot-scope="scope">
                                 <el-button type="danger" size="small" @click="msgDel(scope.$index, scope.row)">删除</el-button>
                             </template>
                         </el-table-column>
@@ -216,11 +282,13 @@
 </template>
 
 <script type="text/ecmascript-6">
-    import {showTopic, delTopic, subsUrl,tipsOffUrl,subComs,delSubCom, delCir,addCir,addAct,delAct,uploadPic, batchRemoveUser, editUser,} from '../../api/api'
+    import {showTopic, delTopic, subsUrl,tipsOffUrl,subComs,delSubCom,findDic,deleteDict,showDict,addDict, delCir,addCir,addAct,delAct,uploadPic, batchRemoveUser, editUser,} from '../../api/api'
 
     export default {
         data(){
             return {
+                firstVisible:true,
+                secondVisible:false,
                 dialogImageUrl: '',
                 dialogVisible: false,
                 pagesize:7,
@@ -249,7 +317,10 @@
                 secCateValue: '',
                 timeTopicValue:[],
                 topicFilters: {
-                    searchTitle: ''
+                    searchTitle: '',
+                    secCateValue:'',
+                    timeTopicValue:[]
+
                 },
                 topicList:[],
                 topicLoading:false,
@@ -266,23 +337,16 @@
                 type:'旅游',
                 publishTime:'2018-05-06 19:30',
                 pubContent:'美国商务部长威尔伯罗斯美国东部时间5月14日表示，愿意尽快改变对中国手机制造商中兴通讯的销售禁令，此前一天美国总统特朗普表示，要求美国商务部帮助中兴通讯恢复运营，“中国流失了很多工作岗位”。这一消息遭致很多美国媒体的质疑，一些评论批评标榜“美国优先”的特朗普在此事上把中国人的就业放到了优先考虑的地方。',
-                bannerUrl:[
-                    '../../assets/guide.jpg',
-                    '../../assets/guide.jpg',
-                    '../../assets/guide.jpg'
-                ],
+                bannerUrl:[],
                 looks:100,
                 praise:50,
                 comments:20,
                 informs:5,
                 activeBT:'firstTips',
-
                 commentTotal:2,
-
                 commentLists:[],
                 reportTotal:1,
                 reportLists:[],
-
                 msgList:[],
                 msgLoading:false,
                 msgTotal:2,
@@ -298,11 +362,123 @@
                 },
                 theComment:'',
                 theReport:'',
-
+                cateFilters: {
+                    addType: ''
+                },
+                cateList:[],
+                cateLoading:false,
+                anCateSels:[],  //类别管理列表选中项
+                cateTotal:3,
+                anCateVisible:false,
+                anCateForm:{
+                    type:''
+                },
+                anCateLoading:false,
+                cateDic:{},
 
             }
         },
         methods:{
+            editAnCateSubmit: function () {  //编辑  类别管理
+                this.$refs.anCateForm.validate((valid) => {
+                    if (valid) {
+                        this.$confirm('确认提交吗？', '提示', {}).then(() => {
+                            this.anCateLoading = true;
+                            let data={
+                                parkId:localStorage.getItem("parkId"),
+                                name:this.anCateForm.name,
+                                code:this.cateDic.code+'.'+this.anCateForm.name,
+                                pid:this.cateDic.id,
+                                pname:this.cateDic.name,
+                                id:this.anCateForm.id,
+                                addInfo:{}
+                            };
+                            this.$post(addDict,data)
+                                .then((res)=>{
+                                    this.anCateLoading = false;
+                                    this.anCateVisible = false;
+                                    this.getCategory();
+                                })
+                        });
+                    }
+                });
+            },
+            cateCurrentChange(val) {  //类别管理分页
+                this.page = val;
+                this.getCategory();
+            },
+            anCateEdit(index, row) { //类别管理显示编辑界面
+                this.anCateVisible = true;
+                this.anCateForm = Object.assign({}, row);
+            },
+            selsCateChange (sels) {
+                this.anCateSels = sels;
+            },
+            anCateDel(index, row) { // 类别管理列表删除
+                this.$confirm('确认删除该记录吗?', '提示', {
+                    type: 'warning'
+                }).then(() => {
+                    this.cateLoading = true;
+                    let para = { id: row.id };
+                    let self=this;
+                    this.$del(deleteDict+para.id)
+                        .then(function(response) {
+                            self.cateLoading = false;
+                            self.$message({
+                                message: '删除成功',
+                                type: 'success'
+                            });
+                            self.getCategory();
+                        });
+                }).catch(() => {
+
+                });
+            },
+            getCategory(){  // 类别管理列表
+                let pname='话题';
+                this.cateLoading=true;
+                this.$get(showDict+pname)
+                    .then((res) => {
+                        this.cateList=res;
+                        this.cateTotal=this.cateList.length>0?this.cateList.length:1;
+                        this.cateLoading=false;
+                    })
+            },
+            getAnCateDic(){     //类别管理获取Pid
+                this.$get(findDic+'话题').then((res)=>{
+                    this.cateDic=res[0];
+                })
+            },
+            cateAdd(){ //类别管理添加
+                this.cateLoading=true;
+                let data={
+                    parkId:localStorage.getItem("parkId"),
+                    name:this.cateFilters.addType,
+                    code:this.cateDic.code+'.'+this.cateFilters.addType,
+                    pid:this.cateDic.id,
+                    pname:this.cateDic.name,
+                    addInfo:{}
+                };
+                this.$post(addDict,data)
+                    .then((res)=>{
+                        this.cateLoading = false;
+                        this.getCategory();
+                    });
+                this.cateFilters.addType='';
+            },
+            cateBatchRemove(){ //  类别管理批量删除
+
+            },
+            cateMg(){// 话题管理 类别管理
+                this.firstVisible=false;
+                this.secondVisible=true;
+                this.page=1;
+            },
+            backToFirstAn(){
+                this.firstVisible=true;
+                this.secondVisible=false;
+                this.page=1;
+            },
             handlePictureCardPreview(item) {
                 this.dialogImageUrl = item;
                 this.dialogVisible = true;
@@ -310,14 +486,12 @@
             handleClick(tab, event) {
                 this.page=1;
             },
-            // 类别管理
-            cateMg(){
-
+            getTopic(){// 获取话题列表
+                this.getTopicList(showTopic)
             },
-            // 获取话题列表
-            getTopic(){
+            getTopicList(url){// 话题 列表数据
                 this.topicLoading=true;
-                this.$get(showTopic)
+                this.$get(url)
                     .then((res) => {
                         this.topicList=res;
                         this.topicTotal=this.topicList.length>0?this.topicList.length:1;
@@ -326,7 +500,22 @@
             },
             // 按条件模糊查询
             getQueryTopic(){
-
+                let url=showTopic;
+                let startTime=this.topicFilters.timeTopicValue[0];
+                let endTime=this.topicFilters.timeTopicValue[1];
+                let type=this.topicFilters.secCateValue;
+                let title=this.topicFilters.searchTitle;
+                url=startTime===undefined?url+'':url+'&startTime='+startTime.replace(/-/g,'/');
+                url=endTime===undefined?url+'':url+'&endTime='+endTime.replace(/-/g,'/');
+                url=title===''?url+'':url+'&title='+title;
+                url=type===''?url+'':url+'&type='+type;
+                // console.log(url)
+                this.getTopicList(url);
+                this.topicFilters={
+                    secCateValue:'',
+                    timeTopicValue:[],
+                    searchTitle:''
+                }
             },
             // 获取留言列表
             getMsg(){
@@ -489,6 +678,8 @@
         mounted(){
             this.getTopic();
             this.getMsg();
+            this.getAnCateDic();
+            this.getCategory();
         }
 
     }

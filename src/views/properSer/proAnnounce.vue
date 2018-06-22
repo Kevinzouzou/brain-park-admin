@@ -8,7 +8,7 @@
                 <el-form-item>
                     <div class="block">
                         <!--<p>组件值：{{ timerValue }}</p>-->
-                        <el-date-picker v-model="timeAnnounceValue" type="daterange" start-placeholder="开始日期"
+                        <el-date-picker v-model="announceFilters.timeAnnounceValue" type="daterange" start-placeholder="开始日期"
                                         end-placeholder="结束日期" value-format="yyyy-MM-dd HH:mm:ss"
                                         :default-time="['00:00:00', '23:59:59']">
                         </el-date-picker>
@@ -46,7 +46,7 @@
             <el-table-column prop="lookUpNum" label="浏览量" sortable>
             </el-table-column>
             <el-table-column label="操作">
-                <template scope="scope">
+                <template slot-scope="scope">
                     <el-button type="info" size="small" @click="announceEdit(scope.$index, scope.row)">编辑</el-button>
                     <el-button type="danger" size="small" @click="announceDel(scope.$index, scope.row)">删除</el-button>
                 </template>
@@ -95,7 +95,8 @@
                 page:1,
                 pagesize:7,
                 announceFilters: {
-                    searchTitle: ''
+                    searchTitle: '',
+                    timeAnnounceValue:[]
                 },
                 timeAnnounceValue:[],
                 addEditTitle:'新增',
@@ -116,9 +117,6 @@
             }
         },
         methods:{
-            getQueryAnnounce(){ // 物业公告模糊查询
-
-            },
             BatchRemove(){  // 批量删除
 
             },
@@ -130,10 +128,28 @@
                     title:''
                 };
             },
+            getQueryAnnounce(){ // 物业公告模糊查询
+                let type='物业公告';
+                let url=showDisplay+type;
+                let startTime=this.announceFilters.timeAnnounceValue[0];
+                let endTime=this.announceFilters.timeAnnounceValue[1];
+                let title=this.announceFilters.searchTitle;
+                url=startTime===undefined?url+'':url+'&startTime='+startTime.replace(/-/g,'/');
+                url=endTime===undefined?url+'':url+'&endTime='+endTime.replace(/-/g,'/');
+                url=title===''?url+'':url+'&title='+title;
+                this.getAnData(url);
+                this.announceFilters={
+                    timeAnnounceValue:[],
+                    searchTitle:''
+                }
+            },
             getAnnounceList(){    //物业公告列表
                 let type='物业公告';
+                this.getAnData(showDisplay+type);
+            },
+            getAnData(url){
                 this.announceLoading=true;
-                this.$get(showDisplay+type)
+                this.$get(url)
                     .then((res) => {
                         this.announceList=res;
                         this.announceTotal=this.announceList.length>0?this.announceList.length:1;
@@ -182,7 +198,7 @@
                     if (valid) {
                         this.$confirm('确认提交吗？', '提示', {}).then(() => {
                             this.annouAELoading = true;
-                            let para = Object.assign({}, this.addActForm);
+                            let para = Object.assign({}, this.announceAEForm);
                             let data={
                                 parkId:localStorage.getItem("parkId"),
                                 thumbUrl:'null',

@@ -6,17 +6,17 @@
                     <el-form :inline="true" :model="inspectFilters">
                         <el-form-item>
                             <div class="block">
-                                <el-date-picker v-model="timeValue" type="daterange" start-placeholder="开始日期"
+                                <el-date-picker v-model="inspectFilters.timeValue" type="daterange" start-placeholder="开始日期"
                                                 end-placeholder="结束日期" value-format="yyyy-MM-dd HH:mm:ss"
                                                 :default-time="['00:00:00', '23:59:59']">
                                 </el-date-picker>
                             </div>
                         </el-form-item>
                         <el-form-item>
-                            <el-input v-model="inspectFilters.searchTitle" placeholder="设备名称搜索"></el-input>
+                            <el-input v-model="inspectFilters.searchTitle" placeholder="设备名称或设备编号搜索"></el-input>
                         </el-form-item>
                         <el-form-item>
-                            <el-button type="primary" v-on:click="getInspection">查询</el-button>
+                            <el-button type="primary" v-on:click="getQueryInspection">查询</el-button>
                         </el-form-item>
                     </el-form>
                 </el-col>
@@ -32,14 +32,14 @@
                     </el-table-column>
                     <el-table-column prop="addInfo.equipmentInfo.location" label="设备地点" sortable show-overflow-tooltip="">
                     </el-table-column>
-                    <el-table-column prop="user" label="巡检人" sortable>
+                    <el-table-column prop="userName" label="巡检人" sortable>
                     </el-table-column>
                     <el-table-column prop="state" label="状态" sortable>
                     </el-table-column>
                     <el-table-column prop="createTime" label="巡检时间" sortable>
                     </el-table-column>
                     <el-table-column label="操作">
-                        <template scope="scope">
+                        <template slot-scope="scope">
                             <el-button type="success" size="small" @click="inspectView(scope.$index, scope.row)">查看</el-button>
                         </template>
                     </el-table-column>
@@ -58,7 +58,7 @@
                     </el-pagination>
                 </el-col>
                 <!--查看界面-->
-                <el-dialog class="inView" title="巡检详情" :visible.sync="viewVisible" width="70%">
+                <el-dialog class="inView" title="巡检详情" :visible.sync="viewVisible">
                     <span class="right">{{detailList.state}}</span>
                     <el-form label-width="90px">
                         <el-form-item label="设备名称：">
@@ -87,17 +87,17 @@
                     <el-form :inline="true" :model="deviceFilters">
                         <el-form-item>
                             <div class="block">
-                                <el-date-picker v-model="timeDeviceValue" type="daterange" start-placeholder="开始日期"
+                                <el-date-picker v-model="deviceFilters.timeDeviceValue" type="daterange" start-placeholder="开始日期"
                                                 end-placeholder="结束日期" value-format="yyyy-MM-dd HH:mm:ss"
                                                 :default-time="['00:00:00', '23:59:59']">
                                 </el-date-picker>
                             </div>
                         </el-form-item>
                         <el-form-item>
-                            <el-input v-model="deviceFilters.searchTitle" placeholder="标题搜索"></el-input>
+                            <el-input v-model="deviceFilters.searchTitle" placeholder="设备名称搜索"></el-input>
                         </el-form-item>
                         <el-form-item>
-                            <el-button type="primary" v-on:click="getDevice">查询</el-button>
+                            <el-button type="primary" v-on:click="getQueryDevice">查询</el-button>
                         </el-form-item>
                     </el-form>
                 </el-col>
@@ -121,10 +121,10 @@
                     </el-table-column>
                     <el-table-column prop="duration" label="巡检周期（天）" sortable>
                     </el-table-column>
-                    <el-table-column prop="state" label="状态" sortable>
+                    <el-table-column prop="recentSate" label="最近状态" sortable>
                     </el-table-column>
                     <el-table-column label="操作">
-                        <template scope="scope">
+                        <template slot-scope="scope">
                             <el-button type="success" size="small" @click="deviceInspect(scope.$index, scope.row)">巡检</el-button>
                             <el-button type="info" size="small" @click="deviceEdit(scope.$index, scope.row)">编辑</el-button>
                             <el-button type="danger" size="small" @click="deviceDel(scope.$index, scope.row)">删除</el-button>
@@ -191,9 +191,9 @@
                         <el-form-item label="设备编号" prop="serial">
                             <el-input v-model="deviceAEForm.serial" auto-complete="off"></el-input>
                         </el-form-item>
-                        <el-form-item label="">
-                            <el-button type="success" @click="printQrCode">生成并打印设备二维码</el-button>
-                        </el-form-item>
+                        <!--<el-form-item label="">-->
+                            <!--<el-button type="success" @click="printQrCode">生成并打印设备二维码</el-button>-->
+                        <!--</el-form-item>-->
                     </el-form>
                     <div slot="footer" class="dialog-footer">
                         <el-button @click.native="deviceAEVisible = false">取消</el-button>
@@ -221,10 +221,12 @@
                 pagesize:7,
                 activeName:'first',
                 inspectFilters: {
-                    searchTitle: ''
+                    searchTitle: '',
+                    timeValue:[]
                 },
                 deviceFilters: {
-                    searchTitle: ''
+                    searchTitle: '',
+                    timeDeviceValue:[]
                 },
                 timeValue:[],
                 timeDeviceValue:[],
@@ -308,18 +310,52 @@
             handleClick(tab, event) {
                 this.page=1;
             },
+            getQueryInspection(){ //巡检记录 条件查询
+                let url=inspectUrl;
+                let startTime=this.inspectFilters.timeValue[0];
+                let endTime=this.inspectFilters.timeValue[1];
+                let nameOrSerial=this.inspectFilters.searchTitle;
+                url=startTime===undefined?url+'':url+'&startTime='+startTime.replace(/-/g,'/');
+                url=endTime===undefined?url+'':url+'&endTime='+endTime.replace(/-/g,'/');
+                url=nameOrSerial===''?url+'':url+'&nameOrSerial='+nameOrSerial;
+                this.getInspect(url);
+                this.inspectFilters={
+                    timeValue:[],
+                    searchTitle:''
+                }
+            },
             getInspection(){ //巡检记录数据
+                this.getInspect(inspectUrl);
+            },
+            getInspect(url){//巡检记录 列表数据
                 this.inspectLoading=true;
-                this.$get(inspectUrl)
+                this.$get(url)
                     .then((res) => {
                         this.inspectList=res;
                         this.inspectTotal=this.inspectList.length>0?this.inspectList.length:1;
                         this.inspectLoading=false;
                     })
             },
+            getQueryDevice(){//设备管理 条件查询
+                let url=equipUrl;
+                let startTime=this.deviceFilters.timeDeviceValue[0];
+                let endTime=this.deviceFilters.timeDeviceValue[1];
+                let name=this.deviceFilters.searchTitle;
+                url=startTime===undefined?url+'':url+'&startTime='+startTime.replace(/-/g,'/');
+                url=endTime===undefined?url+'':url+'&endTime='+endTime.replace(/-/g,'/');
+                url=name===''?url+'':url+'&name='+name;
+                this.getDeviceList(url);
+                this.deviceFilters={
+                    timeDeviceValue:[],
+                    searchTitle:''
+                }
+            },
             getDevice(){ //设备管理列表
+                this.getDeviceList(equipUrl);
+            },
+            getDeviceList(url){//设备管理列表数据
                 this.deviceLoading=true;
-                this.$get(equipUrl)
+                this.$get(url)
                     .then((res) => {
                         this.deviceList=res;
                         this.deviceTotal=this.deviceList.length>0?this.deviceList.length:1;

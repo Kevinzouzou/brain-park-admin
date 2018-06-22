@@ -7,7 +7,7 @@
                         <el-form-item>
                             <div class="block">
                                 <!--<p>组件值：{{ timerValue }}</p>-->
-                                <el-date-picker v-model="timeValue" type="daterange" start-placeholder="开始日期"
+                                <el-date-picker v-model="complaintFilters.timeValue" type="daterange" start-placeholder="开始日期"
                                                 end-placeholder="结束日期" value-format="yyyy-MM-dd HH:mm:ss"
                                                 :default-time="['00:00:00', '23:59:59']">
                                 </el-date-picker>
@@ -17,7 +17,7 @@
                             <el-input v-model="complaintFilters.searchTitle" placeholder="问题搜索"></el-input>
                         </el-form-item>
                         <el-form-item>
-                            <el-button type="primary" v-on:click="getComplaint">查询</el-button>
+                            <el-button type="primary" v-on:click="getQueryComplaint">查询</el-button>
                         </el-form-item>
                     </el-form>
                 </el-col>
@@ -52,7 +52,7 @@
                     <el-table-column prop="addInfo.propertyName" label="负责人" sortable>
                     </el-table-column>
                     <el-table-column label="操作">
-                        <template scope="scope">
+                        <template slot-scope="scope">
                             <el-button type="success" size="small" @click="complicantView(scope.$index, scope.row)">查看</el-button>
                         </template>
                     </el-table-column>
@@ -120,17 +120,17 @@
                         <el-form-item>
                             <div class="block">
                                 <!--<p>组件值：{{ timerValue }}</p>-->
-                                <el-date-picker v-model="timeRepValue" type="daterange" start-placeholder="开始日期"
+                                <el-date-picker v-model="reparisFilters.timeRepValue" type="daterange" start-placeholder="开始日期"
                                                 end-placeholder="结束日期" value-format="yyyy-MM-dd HH:mm:ss"
                                                 :default-time="['00:00:00', '23:59:59']">
                                 </el-date-picker>
                             </div>
                         </el-form-item>
                         <el-form-item>
-                            <el-input v-model="reparisFilters.searchTitle" placeholder="公司名称搜索"></el-input>
+                            <el-input v-model="reparisFilters.searchTitle" placeholder="问题搜索"></el-input>
                         </el-form-item>
                         <el-form-item>
-                            <el-button type="primary" v-on:click="getRepairs">查询</el-button>
+                            <el-button type="primary" v-on:click="getQueryRepairs">查询</el-button>
                         </el-form-item>
                     </el-form>
                 </el-col>
@@ -168,7 +168,7 @@
                     <el-table-column prop="addInfo.propertyName" label="维修人" sortable>
                     </el-table-column>
                     <el-table-column label="操作">
-                        <template scope="scope">
+                        <template slot-scope="scope">
                             <el-button type="success" size="small" @click="repairView(scope.$index, scope.row)">查看</el-button>
                         </template>
                     </el-table-column>
@@ -250,7 +250,7 @@
 </template>
 
 <script>
-    import {showDisplay, addDisplay,proList, deleteDisplay, findDic, showDict, addDict, deleteDict} from '../../api/api'
+    import {repSuggest,showDisplay, addDisplay,proList, deleteDisplay, findDic, showDict, addDict, deleteDict} from '../../api/api'
 
     export default {
         data(){
@@ -261,10 +261,12 @@
                 pagesize:7,
                 activeName:'first',
                 complaintFilters: {
-                    searchTitle: ''
+                    searchTitle: '',
+                    timeValue:[]
                 },
                 reparisFilters: {
-                    searchTitle: ''
+                    searchTitle: '',
+                    timeRepValue:[]
                 },
                 timeValue:[],
                 timeRepValue:[],
@@ -332,20 +334,56 @@
             handleClick(tab, event) {
                 this.page=1;
             },
+            getQueryComplaint(){ //投诉建议 条件查询
+                let type='投诉建议';
+                let url=repSuggest+type;
+                let startTime=this.complaintFilters.timeValue[0];
+                let endTime=this.complaintFilters.timeValue[1];
+                let question=this.complaintFilters.searchTitle;
+                url=startTime===undefined?url+'':url+'&startTime='+startTime.replace(/-/g,'/');
+                url=endTime===undefined?url+'':url+'&endTime='+endTime.replace(/-/g,'/');
+                url=question===''?url+'':url+'&question='+question;
+                this.getComplaintList(url);
+                this.complaintFilters={
+                    timeValue:[],
+                    searchTitle:''
+                }
+            },
             getComplaint(){ //投诉建议数据
                 let type='投诉建议';
+                this.getComplaintList(repSuggest+type);
+            },
+            getComplaintList(url){//投诉建议 列表数据
                 this.complicantLoading=true;
-                this.$get(proList+type)
+                this.$get(url)
                     .then((res) => {
                         this.compList=res;
                         this.compTotal=this.compList.length>0?this.compList.length:1;
                         this.complicantLoading=false;
                     })
             },
+            getQueryRepairs(){ //报修处理 条件查询
+                let type='物业报修';
+                let url=repSuggest+type;
+                let startTime=this.reparisFilters.timeRepValue[0];
+                let endTime=this.reparisFilters.timeRepValue[1];
+                let question=this.reparisFilters.searchTitle;
+                url=startTime===undefined?url+'':url+'&startTime='+startTime.replace(/-/g,'/');
+                url=endTime===undefined?url+'':url+'&endTime='+endTime.replace(/-/g,'/');
+                url=question===''?url+'':url+'&question='+question;
+                this.getRepairsList(url);
+                this.reparisFilters={
+                    timeRepValue:[],
+                    searchTitle:''
+                }
+            },
             getRepairs(){ //报修处理数据
                 let type='物业报修';
+                this.getRepairsList(repSuggest+type);
+            },
+            getRepairsList(url){//报修处理 列表数据
                 this.repairLoading=true;
-                this.$get(proList+type)
+                this.$get(url)
                     .then((res) => {
                         this.reparisList=res;
                         this.repairTotal=this.reparisList.length>0?this.reparisList.length:1;
@@ -356,22 +394,27 @@
                 this.getComplaint();
             },
             pending(){ //待处理
-
+                let url=repSuggest+'投诉建议'+'&stage=待处理';
+                this.getComplaintList(url);
             },
             processed(){ //已处理
-
+                let url=repSuggest+'投诉建议'+'&stage=已处理';
+                this.getComplaintList(url);
             },
             allDealRep(){ //全部
                 this.getRepairs();
             },
             pendingRep(){ //待处理
-
+                let url=repSuggest+'物业报修'+'&stage=待处理';
+                this.getRepairsList(url);
             },
             processedRep(){ //已处理
-
+                let url=repSuggest+'物业报修'+'&stage=已处理';
+                this.getRepairsList(url);
             },
             evaluation(){ //已评价
-
+                let url=repSuggest+'物业报修'+'&stage=已评价';
+                this.getRepairsList(url);
             },
             complicantView(index, row){
                 this.viewVisible=true;

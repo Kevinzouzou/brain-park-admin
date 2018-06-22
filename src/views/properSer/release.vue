@@ -5,7 +5,7 @@
                 <el-form-item>
                     <div class="block">
                         <!--<p>组件值：{{ timerValue }}</p>-->
-                        <el-date-picker v-model="timeValue" type="daterange" start-placeholder="开始日期"
+                        <el-date-picker v-model="releaseFilters.timeValue" type="daterange" start-placeholder="开始日期"
                                         end-placeholder="结束日期" value-format="yyyy-MM-dd HH:mm:ss"
                                         :default-time="['00:00:00', '23:59:59']">
                         </el-date-picker>
@@ -15,7 +15,7 @@
                     <el-input v-model="releaseFilters.searchTitle" placeholder="公司名称或申请人搜索"></el-input>
                 </el-form-item>
                 <el-form-item>
-                    <el-button type="primary" v-on:click="getRelease">查询</el-button>
+                    <el-button type="primary" v-on:click="getQueryRelease">查询</el-button>
                 </el-form-item>
             </el-form>
         </el-col>
@@ -26,10 +26,10 @@
                     <el-button type="danger" @click="allDeal">全部</el-button>
                 </el-form-item>
                 <el-form-item>
-                    <el-button type="success" @click="pending">待处理</el-button>
+                    <el-button type="success" @click="pending">未完结</el-button>
                 </el-form-item>
                 <el-form-item>
-                    <el-button type="primary" @click="processed">已处理</el-button>
+                    <el-button type="primary" @click="processed">已完结</el-button>
                 </el-form-item>
             </el-form>
         </el-col>
@@ -37,20 +37,22 @@
         <el-table :data="releaseList.slice((page-1)*pagesize,page*pagesize)" highlight-current-row v-loading="releaseLoading" style="width: 100%;">
             <el-table-column type="index" width="60">
             </el-table-column>
-            <el-table-column prop="time" label="出行时间" sortable>
+            <el-table-column prop="addInfo.outTime" label="出行时间" sortable>
             </el-table-column>
-            <el-table-column prop="addInfo.contact" label="出行申请人" sortable>
+            <el-table-column prop="addInfo.userName" label="出行申请人" sortable>
             </el-table-column>
-            <el-table-column prop="addInfo.companyName" label="所属公司" sortable show-overflow-tooltip="">
+            <el-table-column prop="addInfo.enterprise" label="所属公司" sortable show-overflow-tooltip="">
             </el-table-column>
             <el-table-column prop="stage" label="状态" sortable>
             </el-table-column>
-            <el-table-column prop="addInfo.allocationName" label="管理人" sortable>
+            <el-table-column prop="addInfo.flows[0].name" label="公司负责人" sortable>
             </el-table-column>
-            <el-table-column prop="addInfo.propertyName" label="保安" sortable>
+            <el-table-column prop="addInfo.flows[1].name" label="物业管理人" sortable>
+            </el-table-column>
+            <el-table-column prop="addInfo.flows[2].name" label="保安" sortable>
             </el-table-column>
             <el-table-column label="操作">
-                <template scope="scope">
+                <template slot-scope="scope">
                     <el-button type="success" size="small" @click="releaseView(scope.$index, scope.row)">查看</el-button>
                 </template>
             </el-table-column>
@@ -69,59 +71,53 @@
             </el-pagination>
         </el-col>
         <!--查看界面-->
-        <el-dialog class="inView" title="投诉建议" :visible.sync="viewVisible" width="70%">
+        <el-dialog class="inView" title="放行详情" :visible.sync="viewVisible" width="70%">
             <span class="right">{{detailList.stage}}</span>
             <el-form label-width="90px">
                 <el-form-item label="申请时间：">
                     {{detailList.time}}
                 </el-form-item>
                 <el-form-item label="隶属公司：">
-                    {{detailList.addInfo.companyName}}
+                    {{detailList.addInfo.enterprise}}
                 </el-form-item>
-                <el-form-item label="公司地址：">
-                    {{detailList.addInfo.address}}
-                </el-form-item>
+                <!--<el-form-item label="公司地址：">-->
+                    <!--{{detailList.addInfo.address}}-->
+                <!--</el-form-item>-->
                 <el-form-item label="申请人：">
-                    {{detailList.addInfo.contact}}
+                    {{detailList.addInfo.userName}}
                 </el-form-item>
                 <el-form-item label="出行时间：">
-                    {{detailList.createTime}}
+                    {{detailList.addInfo.outTime}}
                 </el-form-item>
                 <el-form-item label="放行物品：" class="allWid">
-                    {{detailList.addInfo.remark}}
-                    <!--<div v-if="detailList.addInfo.images && detailList.addInfo.images.length>0">-->
-                        <!--<img v-for="item in detailList.addInfo.images.slice(0,6)" :src="item" @click="handlePictureCardPreview(item)">-->
-                        <!--<el-dialog :visible.sync="dialogVisible" style="z-index: 2020;">-->
-                            <!--<img width="100%" style="height: 100%;" :src="dialogImageUrl" alt="">-->
-                        <!--</el-dialog>-->
-                    <!--</div>-->
+                    {{detailList.addInfo.items}}
                 </el-form-item>
             </el-form>
-            <span class="title">公司审核</span>
-            <el-form label-width="90px">
+            <span class="title" v-if="dutys.step1===1">公司审核</span>
+            <el-form label-width="90px" v-if="dutys.step1===1">
                 <el-form-item label="审核人：">
-                    {{detailList.addInfo.allocationName}}
+                    {{dutys.name1}}
                 </el-form-item>
                 <el-form-item label="处理时间：">
-                    {{detailList.addInfo.allocationTime}}
+                    {{dutys.handleTime1}}
                 </el-form-item>
             </el-form>
-            <span class="title">管理处审核</span>
-            <el-form label-width="90px">
+            <span class="title" v-if="dutys.step2===2">管理处审核</span>
+            <el-form label-width="90px" v-if="dutys.step2===2">
                 <el-form-item label="负责人：">
-                    {{detailList.addInfo.nickName}}
+                    {{dutys.name2}}
                 </el-form-item>
                 <el-form-item label="处理时间：">
-                    {{detailList.addInfo.companyVerifyTime}}
+                    {{dutys.handleTime2}}
                 </el-form-item>
             </el-form>
-            <span class="title">保安审核</span>
-            <el-form label-width="90px">
+            <span class="title" v-if="dutys.step3===3">保安审核</span>
+            <el-form label-width="90px" v-if="dutys.step3===3">
                 <el-form-item label="负责人：">
-                    {{detailList.addInfo.propertyName}}
+                    {{dutys.name3}}
                 </el-form-item>
                 <el-form-item label="处理时间：">
-                    {{detailList.addInfo.settlementTime}}
+                    {{dutys.handleTime3}}
                 </el-form-item>
             </el-form>
         </el-dialog>
@@ -130,13 +126,14 @@
 </template>
 
 <script>
-    import {showDisplay, addDisplay,proList, deleteDisplay, findDic, showDict, addDict, deleteDict} from '../../api/api'
+    import {showDisplay, addDisplay,proList,throughApply, deleteDisplay, findDic, showDict, addDict, deleteDict} from '../../api/api'
 
     export default {
        data(){
            return {
                releaseFilters: {
-                   searchTitle: ''
+                   searchTitle: '',
+                   timeValue:[]
                },
                page:1,
                pagesize:7,
@@ -159,27 +156,43 @@
                    createTime:'',
                    settlement:'',
                    addInfo:{
-                       address:'',
-                       remark:'',
-                       contact:'',
-                       allocationName:'',
-                       allocationTime:'',
-                       propertyName:'',
-                       settlementTime:'',
-                       companyName:'',
-                       nickName:'',
-                       companyVerifyTime:'',
+                       enterprise:'',
+                       items:'',
+                       next:'',
+                       outTime:'',
+                       phone:'',
+                       userName:'',
+                       flows:[]
                    }
                },
+               dutys:{},
 
 
            }
        },
        methods:{
+           getQueryRelease(){//放行申请 条件查询
+               let type='&type=放行申请';
+               let url=throughApply+type;
+               let startTime=this.releaseFilters.timeValue[0];
+               let endTime=this.releaseFilters.timeValue[1];
+               let companyOrUserName=this.releaseFilters.searchTitle;
+               url=startTime===undefined?url+'':url+'&startTime='+startTime.replace(/-/g,'/');
+               url=endTime===undefined?url+'':url+'&endTime='+endTime.replace(/-/g,'/');
+               url=companyOrUserName===''?url+'':url+'&companyOrUserName='+companyOrUserName;
+               this.getReleaseList(url);
+               this.releaseFilters={
+                   timeValue:[],
+                   searchTitle:''
+               }
+           },
            getRelease(){ //放行申请数据
-               let type='放行申请';
+               let type='&type=放行申请';
+               this.getReleaseList(throughApply+type);
+           },
+           getReleaseList(url){//放行申请 列表数据
                this.releaseLoading=true;
-               this.$get(proList+type)
+               this.$get(url)
                    .then((res) => {
                        this.releaseList=res;
                        this.releaseTotal=this.releaseList.length>0?this.releaseList.length:1;
@@ -189,15 +202,32 @@
            allDeal(){ //全部
                this.getRelease();
            },
-           pending(){ //待处理
-
+           pending(){ //未完结
+               let url=throughApply+'&type=放行申请'+'&stage=未完结';
+               this.getReleaseList(url);
            },
-           processed(){ //已处理
-
+           processed(){ //已完结
+               let url=throughApply+'&type=放行申请'+'&stage=已完结';
+               this.getReleaseList(url);
            },
            releaseView(index, row){
                this.viewVisible=true;
                this.detailList=row;
+               this.detailList.addInfo.flows.forEach((item)=>{
+                    if(item.step===1){
+                        this.dutys.name1=item.name;
+                        this.dutys.step1=item.step;
+                        this.dutys.handleTime1=item.handleTime;
+                    }else if(item.step===2){
+                        this.dutys.name2=item.name;
+                        this.dutys.step2=item.step;
+                        this.dutys.handleTime2=item.handleTime;
+                    }else if(item.step===3){
+                        this.dutys.name3=item.name;
+                        this.dutys.step3=item.step;
+                        this.dutys.handleTime3=item.handleTime;
+                    }
+               })
            },
            sizeChange(val) {
                this.pagesize=val;

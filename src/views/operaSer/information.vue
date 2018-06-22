@@ -7,15 +7,15 @@
                       <el-form :inline="true" :model="announceFilters">
                           <el-form-item>
                               <el-button type="primary" @click="cateAnMg">类别管理</el-button>
-                              <el-select v-model="secCateAnValue" placeholder="请选择">
-                                  <el-option v-for="item in anCategoryList" :key="item.id" :label="item.name" :value="item.id">
+                              <el-select v-model="announceFilters.secCateAnValue" placeholder="请选择">
+                                  <el-option v-for="item in anCategoryList" :key="item.id" :label="item.name" :value="item.name">
                                   </el-option>
                               </el-select>
                           </el-form-item>
                           <el-form-item>
                               <div class="block">
                                   <!--<p>组件值：{{ timerValue }}</p>-->
-                                  <el-date-picker v-model="timeAnValue" type="daterange" start-placeholder="开始日期"
+                                  <el-date-picker v-model="announceFilters.timeAnValue" type="daterange" start-placeholder="开始日期"
                                                   end-placeholder="结束日期" value-format="yyyy-MM-dd HH:mm:ss"
                                                   :default-time="['00:00:00', '23:59:59']">
                                   </el-date-picker>
@@ -25,7 +25,7 @@
                               <el-input v-model="announceFilters.searchTitle" placeholder="搜索标题"></el-input>
                           </el-form-item>
                           <el-form-item>
-                              <el-button type="primary" v-on:click="getAnnounceMg">查询</el-button>
+                              <el-button type="primary" v-on:click="getQueryAnnou">查询</el-button>
                           </el-form-item>
                       </el-form>
                   </el-col>
@@ -46,7 +46,7 @@
                       </el-table-column>
                       <el-table-column type="index" width="60">
                       </el-table-column>
-                      <el-table-column prop="title" label="标题" sortable>
+                      <el-table-column prop="title" label="标题" sortable show-overflow-tooltip>
                       </el-table-column>
                       <el-table-column prop="type" label="类别" sortable>
                       </el-table-column>
@@ -55,7 +55,7 @@
                       <el-table-column prop="lookUpNum" label="浏览量" sortable>
                       </el-table-column>
                       <el-table-column label="操作">
-                          <template scope="scope">
+                          <template slot-scope="scope">
                               <el-button type="info" size="small" @click="AnEdit(scope.$index, scope.row)">编辑</el-button>
                               <el-button type="danger" size="small" @click="AnDel(scope.$index, scope.row)">删除</el-button>
                           </template>
@@ -87,7 +87,7 @@
                               </el-select>
                           </el-form-item>
                           <el-form-item label="缩略图">
-                              <el-upload action="/api/OperFile/uploadFile/" list-type="picture-card"
+                              <el-upload :action=url list-type="picture-card"
                                          :on-preview="handleAnPictureCardPreview" :on-remove="handleAnRemove"
                                          :file-list="imgAnList" :on-success="moreAnShow">
                                   <i class="el-icon-plus"></i>
@@ -138,7 +138,7 @@
                        <el-table-column prop="name" label="类别" sortable>
                        </el-table-column>
                        <el-table-column label="操作">
-                           <template scope="scope">
+                           <template slot-scope="scope">
                                <el-button type="info" size="small" @click="anCateEdit(scope.$index, scope.row)">编辑</el-button>
                                <el-button type="danger" size="small" @click="anCateDel(scope.$index, scope.row)">删除</el-button>
                            </template>
@@ -160,8 +160,8 @@
                    <!--编辑界面-->
                    <el-dialog title="编辑" :visible.sync="anCateVisible">
                        <el-form :model="anCateForm" label-width="80px" ref="anCateForm">
-                           <el-form-item label="分类" prop="type">
-                               <el-input v-model="anCateForm.type" auto-complete="off"></el-input>
+                           <el-form-item label="分类" prop="name">
+                               <el-input v-model="anCateForm.name" auto-complete="off"></el-input>
                            </el-form-item>
                        </el-form>
                        <div slot="footer" class="dialog-footer">
@@ -177,15 +177,15 @@
                        <el-form :inline="true" :model="informFilters">
                            <el-form-item>
                                <el-button type="primary" @click="cateInformMg">类别管理</el-button>
-                               <el-select v-model="secCateInformValue" placeholder="请选择">
-                                   <el-option v-for="item in informCateList" :key="item.id" :label="item.name" :value="item.id">
+                               <el-select v-model="informFilters.secCateInformValue" placeholder="请选择">
+                                   <el-option v-for="item in informCateList" :key="item.id" :label="item.name" :value="item.name">
                                    </el-option>
                                </el-select>
                            </el-form-item>
                            <el-form-item>
                                <div class="block">
                                    <!--<p>组件值：{{ timerValue }}</p>-->
-                                   <el-date-picker v-model="timeInformValue" type="daterange" start-placeholder="开始日期"
+                                   <el-date-picker v-model="informFilters.timeInformValue" type="daterange" start-placeholder="开始日期"
                                                    end-placeholder="结束日期" value-format="yyyy-MM-dd HH:mm:ss"
                                                    :default-time="['00:00:00', '23:59:59']">
                                    </el-date-picker>
@@ -195,7 +195,7 @@
                                <el-input v-model="informFilters.searchTitle" placeholder="搜索标题"></el-input>
                            </el-form-item>
                            <el-form-item>
-                               <el-button type="primary" v-on:click="getInform">查询</el-button>
+                               <el-button type="primary" v-on:click="getQueryInform">查询</el-button>
                            </el-form-item>
                        </el-form>
                    </el-col>
@@ -216,16 +216,16 @@
                        </el-table-column>
                        <el-table-column type="index" width="60">
                        </el-table-column>
-                       <el-table-column prop="title" label="标题" sortable>
+                       <el-table-column prop="title" label="标题" sortable show-overflow-tooltip>
                        </el-table-column>
                        <el-table-column prop="type" label="类别" sortable>
                        </el-table-column>
                        <el-table-column prop="createTime" label="发布时间" sortable>
                        </el-table-column>
-                       <el-table-column prop="lookUpNum" label="浏览量" sortable>
+                       <el-table-column prop="addInfo.lookUpNum" label="浏览量" sortable>
                        </el-table-column>
                        <el-table-column label="操作">
-                           <template scope="scope">
+                           <template slot-scope="scope">
                                <el-button type="info" size="small" @click="informEdit(scope.$index, scope.row)">编辑</el-button>
                                <el-button type="danger" size="small" @click="informDel(scope.$index, scope.row)">删除</el-button>
                            </template>
@@ -257,7 +257,7 @@
                                </el-select>
                            </el-form-item>
                            <el-form-item label="缩略图">
-                               <el-upload action="/api/OperFile/uploadFile/" list-type="picture-card"
+                               <el-upload :action=url list-type="picture-card"
                                           :on-preview="informPictureCardPreview" :on-remove="handleInformRemove"
                                           :file-list="imgInformList" :on-success="moreInformShow">
                                    <i class="el-icon-plus"></i>
@@ -317,7 +317,7 @@
                        <el-table-column prop="name" label="类别" sortable>
                        </el-table-column>
                        <el-table-column label="操作">
-                           <template scope="scope">
+                           <template slot-scope="scope">
                                <el-button type="info" size="small" @click="informCateEdit(scope.$index, scope.row)">编辑</el-button>
                                <el-button type="danger" size="small" @click="informCateDel(scope.$index, scope.row)">删除</el-button>
                            </template>
@@ -339,8 +339,8 @@
                    <!--编辑界面-->
                    <el-dialog title="编辑" :visible.sync="informCateVisible">
                        <el-form :model="informCateForm" label-width="80px" ref="informCateForm">
-                           <el-form-item label="分类" prop="type">
-                               <el-input v-model="informCateForm.type" auto-complete="off"></el-input>
+                           <el-form-item label="分类" prop="name">
+                               <el-input v-model="informCateForm.name" auto-complete="off"></el-input>
                            </el-form-item>
                        </el-form>
                        <div slot="footer" class="dialog-footer">
@@ -356,11 +356,12 @@
 
 <script>
     import UE from '../../components/ue'
-    import {showDisplay, addDisplay, deleteDisplay, findDic, showDict, addDict, deleteDict} from '../../api/api'
+    import {showDisplay, addDisplay, deleteDisplay, findDic, showDict, addDict, deleteDict,uploadPic} from '../../api/api'
     export default {
         components: {UE},
         data(){
             return {
+                url:'',
                 activeName:'first',
                 page:1,
                 pagesize:7,
@@ -369,10 +370,14 @@
                 firInformVisible:true,
                 secInformVisible:false,
                 announceFilters: {
-                    searchTitle: ''
+                    searchTitle: '',
+                    secCateAnValue:'',
+                    timeAnValue:[]
                 },
                 informFilters: {
-                    searchTitle: ''
+                    searchTitle: '',
+                    secCateInformValue:'',
+                    timeInformValue:[]
                 },
                 secCateAnValue:'',
                 secCateInformValue:'',
@@ -470,20 +475,62 @@
                 this.secInformVisible=true;
                 this.page=1;
             },
+            getQueryAnnou(){//园区公告 条件查询
+                let type='公告';
+                let url=showDisplay+type;
+                let startTime=this.announceFilters.timeAnValue[0];
+                let endTime=this.announceFilters.timeAnValue[1];
+                let subType=this.announceFilters.secCateAnValue;
+                let title=this.announceFilters.searchTitle;
+                url=startTime===undefined?url+'':url+'&startTime='+startTime.replace(/-/g,'/');
+                url=endTime===undefined?url+'':url+'&endTime='+endTime.replace(/-/g,'/');
+                url=title===''?url+'':url+'&title='+title;
+                url=subType===''?url+'':url+'&subType='+subType;
+                this.getAnnounce(url);
+                this.announceFilters={
+                    secCateAnValue:'',
+                    timeAnValue:[],
+                    searchTitle:''
+                }
+            },
             getAnnounceMg(){   //获取园区公告列表
                 let type='公告';
+                this.getAnnounce(showDisplay+type);
+            },
+            getAnnounce(url){//园区公告列表数据
                 this.announceLoading=true;
-                 this.$get(showDisplay+type)
+                this.$get(url)
                     .then((res) => {
                         this.announceList=res;
                         this.announceTotal=this.announceList.length>0?this.announceList.length:1;
                         this.announceLoading=false;
                     })
             },
+            getQueryInform(){//惠通知列表 条件查询
+                let type='惠通知';
+                let url=showDisplay+type;
+                let startTime=this.informFilters.timeInformValue[0];
+                let endTime=this.informFilters.timeInformValue[1];
+                let subType=this.informFilters.secCateInformValue;
+                let title=this.informFilters.searchTitle;
+                url=startTime===undefined?url+'':url+'&startTime='+startTime.replace(/-/g,'/');
+                url=endTime===undefined?url+'':url+'&endTime='+endTime.replace(/-/g,'/');
+                url=title===''?url+'':url+'&title='+title;
+                url=subType===''?url+'':url+'&subType='+subType;
+                this.getInformList(url);
+                this.informFilters={
+                    secCateInformValue:'',
+                    timeInformValue:[],
+                    searchTitle:''
+                }
+            },
             getInform(){   //获取惠通知列表
                 let type='惠通知';
+                this.getInformList(showDisplay+type);
+            },
+            getInformList(url){//惠通知列表 数据
                 this.informLoading=true;
-                this.$get(showDisplay+type)
+                this.$get(url)
                     .then((res) => {
                         this.informList=res;
                         this.informTotal=this.informList.length>0?this.informList.length:1;
@@ -599,7 +646,7 @@
                     if (valid) {
                         this.$confirm('确认提交吗？', '提示', {}).then(() => {
                             this.addEditAnLoading = true;
-                            let para = Object.assign({}, this.addActForm);
+                            let para = Object.assign({}, this.announceForm);
                             let data={
                                 parkId:localStorage.getItem("parkId"),
                                 thumbUrl:this.morePicList[0],
@@ -629,7 +676,7 @@
                     if (valid) {
                         this.$confirm('确认提交吗？', '提示', {}).then(() => {
                             this.addEditInformLoading = true;
-                            let para = Object.assign({}, this.addActForm);
+                            let para = Object.assign({}, this.informForm);
                             let data={
                                 parkId:localStorage.getItem("parkId"),
                                 thumbUrl:this.morePicList[0],
@@ -805,33 +852,21 @@
                     if (valid) {
                         this.$confirm('确认提交吗？', '提示', {}).then(() => {
                             this.anCateLoading = true;
-                            // NProgress.start();
-                            // let para = Object.assign({}, this.addActForm);
-                            // let price=this.addActForm.price===0?this.addActForm.price:this.addActForm.priceValue;
-                            // let data={
-                            //     content:this.$refs.ue.getUEContent(),
-                            //     // content:this.addActForm.content,
-                            //     title:this.addActForm.title,
-                            //     parkId:localStorage.getItem("parkId"),
-                            //     socialCircleId:this.circleId,
-                            //     userId:localStorage.getItem("userId"),
-                            //     addInfo:{
-                            //         address:this.addActForm.address,
-                            //         startTime:this.addActForm.actTimerValue[0],
-                            //         endTime:this.addActForm.actTimerValue[1],
-                            //         mems:this.addActForm.mems,
-                            //         price:price
-                            //     }
-                            // };
-                            // console.log(data)
-                            let url='/api/socialCircle/addSocialCircleActive';
-                            // this.$post(url,data)
-                            //     .then((res)=>{
-                            //         console.log(res)
-                            this.anCateLoading = false;
-                            this.anCateVisible = false;
-                            this.getAnCategory();
-                            // })
+                            let data={
+                                parkId:localStorage.getItem("parkId"),
+                                name:this.anCateForm.name,
+                                code:this.cateDic.code+'.'+this.anCateForm.name,
+                                pid:this.cateDic.id,
+                                pname:this.cateDic.name,
+                                id:this.anCateForm.id,
+                                addInfo:{}
+                            };
+                            this.$post(addDict,data)
+                                .then((res)=>{
+                                    this.anCateLoading = false;
+                                    this.anCateVisible = false;
+                                    this.getAnCategory();
+                                })
                         });
                     }
                 });
@@ -841,33 +876,21 @@
                     if (valid) {
                         this.$confirm('确认提交吗？', '提示', {}).then(() => {
                             this.informCateEditLoading = true;
-                            // NProgress.start();
-                            // let para = Object.assign({}, this.addActForm);
-                            // let price=this.addActForm.price===0?this.addActForm.price:this.addActForm.priceValue;
-                            // let data={
-                            //     content:this.$refs.ue.getUEContent(),
-                            //     // content:this.addActForm.content,
-                            //     title:this.addActForm.title,
-                            //     parkId:localStorage.getItem("parkId"),
-                            //     socialCircleId:this.circleId,
-                            //     userId:localStorage.getItem("userId"),
-                            //     addInfo:{
-                            //         address:this.addActForm.address,
-                            //         startTime:this.addActForm.actTimerValue[0],
-                            //         endTime:this.addActForm.actTimerValue[1],
-                            //         mems:this.addActForm.mems,
-                            //         price:price
-                            //     }
-                            // };
-                            // console.log(data)
-                            let url='/api/socialCircle/addSocialCircleActive';
-                            // this.$post(url,data)
-                            //     .then((res)=>{
-                            //         console.log(res)
-                            this.informCateEditLoading = false;
-                            this.informCateVisible = false;
-                            this.getInformCategory();
-                            // })
+                            let data={
+                                parkId:localStorage.getItem("parkId"),
+                                name:this.informCateForm.name,
+                                code:this.informCateDic.code+'.'+this.informCateForm.name,
+                                pid:this.informCateDic.id,
+                                pname:this.informCateDic.name,
+                                id:this.informCateForm.id,
+                                addInfo:{}
+                            };
+                            this.$post(addDict,data)
+                                .then((res)=>{
+                                    this.informCateEditLoading = false;
+                                    this.informCateVisible = false;
+                                    this.getInformCategory();
+                                })
                         });
                     }
                 });
@@ -928,9 +951,6 @@
                 this.page = val;
                 this.getInformCategory();
             },
-
-
-
         },
         mounted(){
             this.getAnnounceMg(); //园区公告列表
@@ -939,6 +959,7 @@
             this.getInform(); //惠通知列表
             this.getInformCateDic();
             this.getInformCategory()//惠通知 类别管理列表
+            this.url=localStorage.getItem("upUrl")+uploadPic;
         }
     }
 </script>

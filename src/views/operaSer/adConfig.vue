@@ -31,16 +31,24 @@
             </el-table-column>
             <el-table-column type="index" width="60">
             </el-table-column>
-            <el-table-column prop="title" label="标题" sortable>
+            <el-table-column label="缩略图" sortable>
+                <template slot-scope="scope">
+                    <img :src="scope.row.imageUrl" width="40" height="40"/>
+                </template>
             </el-table-column>
-            <el-table-column prop="type" label="类别" sortable>
+            <el-table-column prop="position" label="广告位" sortable>
             </el-table-column>
-            <el-table-column prop="createTime" label="发布时间" sortable>
+            <el-table-column label="链接" sortable>
+                <template slot-scope="scope">
+                    <a :href="scope.row.linkUrl" target="_blank">{{scope.row.linkUrl}}</a>
+                </template>
             </el-table-column>
-            <el-table-column prop="lookUpNum" label="浏览量" sortable>
+            <el-table-column prop="description" label="描述" sortable show-overflow-tooltip>
+            </el-table-column>
+            <el-table-column prop="clickCount" label="点击量" sortable>
             </el-table-column>
             <el-table-column label="操作">
-                <template scope="scope">
+                <template slot-scope="scope">
                     <el-button type="info" size="small" @click="AdsEdit(scope.$index, scope.row)">编辑</el-button>
                     <el-button type="danger" size="small" @click="AdsDel(scope.$index, scope.row)">删除</el-button>
                 </template>
@@ -63,7 +71,7 @@
         <el-dialog :title=addEditTitle :visible.sync="addEditAdsVisible">
             <el-form :model="adsForm" label-width="80px" ref="adsForm">
                 <el-form-item label="广告图">
-                    <el-upload action="/api/OperFile/uploadFile/" list-type="picture-card"
+                    <el-upload :action=url list-type="picture-card"
                                :on-preview="handleAdsPictureCardPreview" :on-remove="handleAdsRemove"
                                :file-list="imgAdsList" :on-success="moreAdsShow">
                         <i class="el-icon-plus"></i>
@@ -73,16 +81,16 @@
                     </el-dialog>
                 </el-form-item>
                 <el-form-item label="广告位">
-                    <el-select v-model="adsForm.secAdValue" placeholder="请选择" @change="secAdsValue">
+                    <el-select v-model="adsForm.position" placeholder="请选择" @change="secAdsValue">
                         <el-option v-for="item in adLocList" :key="item.id" :label="item.name" :value="item.id">
                         </el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item label="链接" prop="links">
-                    <el-input v-model="adsForm.links" auto-complete="off"></el-input>
+                    <el-input v-model="adsForm.linkUrl" auto-complete="off"></el-input>
                 </el-form-item>
                 <el-form-item label="描述" prop="disc">
-                    <el-input v-model="adsForm.disc" auto-complete="off"></el-input>
+                    <el-input v-model="adsForm.description" auto-complete="off"></el-input>
                 </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
@@ -95,13 +103,18 @@
 </template>
 
 <script>
-    import {showDisplay, addDisplay, deleteDisplay, findDic, showDict, addDict, deleteDict} from '../../api/api'
+    import {uploadPic, addDisplay, deleteDisplay, adsUrl, addAdsUrl, delAdsUrl} from '../../api/api'
 
     export default {
        data(){
            return {
-               secAdValue:'',
+               url:'',
+               secAdValue:'全部页面',
                adLocList:[
+                    {
+                        id:'000',
+                        name:'全部页面'
+                    },
                     {
                         id:'001',
                         name:'用户端-首页'
@@ -113,7 +126,31 @@
                     {
                         id:'003',
                         name:'用户端-信息页'
-                    }
+                    },
+                    {
+                        id:'004',
+                        name:'金融服务'
+                    },
+                    {
+                        id:'005',
+                        name:'商务服务'
+                    },
+                    {
+                        id:'006',
+                        name:'惠通知'
+                    },
+                    {
+                        id:'007',
+                        name:'公告'
+                    },
+                    {
+                        id:'008',
+                        name:'信息化建设'
+                    },
+                    {
+                        id:'009',
+                        name:'服务'
+                    },
                 ],
                page:1,
                pagesize:7,
@@ -126,22 +163,27 @@
                addEditAdsVisible:false,
                addEditAdsLoading:false,
                adsForm:{
-                   secAdValue:'',
-                   links:'',
-                   disc:''
+                   position:'',
+                   linkUrl:'',
+                   description:''
                },
                imgAdsList:[],
                dialogAdsImageUrl: '',
                dialogAdsVisible: false,
                selectLabel:'',
+               isEdit:false,
+               isEditId:'',
 
            }
        },
        methods:{
            getAdsMg(){   //获取广告管理列表
-               let type='广告管理';
+               let position='';
+               this.getAdsList(position);
+           },
+           getAdsList(position){
                this.adsLoading=true;
-               this.$get(showDisplay+type)
+               this.$get(adsUrl+position)
                    .then((res) => {
                        this.adsList=res;
                        this.adsTotal=this.adsList.length>0?this.adsList.length:1;
@@ -170,12 +212,13 @@
            },
            adsAdd(){
                this.addEditTitle='新增';
+               this.isEdit=false;
                this.morePicList.length=0;
                this.addEditAdsVisible=true;
                this.adsForm={
-                   secAdValue:'',
-                   links:'',
-                   disc:''
+                   position:'',
+                   linkUrl:'',
+                   description:''
                };
            },
            selsAdsChange(sels) {
@@ -183,6 +226,8 @@
            },
            AdsEdit(index, row) { // 显示编辑界面
                this.addEditTitle='编辑';
+               this.isEdit=true;
+               this.isEditId=row.id;
                this.morePicList.length=0;
                this.addEditAdsVisible = true;
                this.adsForm = Object.assign({}, row);
@@ -194,7 +239,7 @@
                    this.adsLoading = true;
                    let para = { id: row.id };
                    let self=this;
-                   this.$del(deleteDisplay+para.id)
+                   this.$del(delAdsUrl+para.id)
                        .then(function(response) {
                            self.adsLoading = false;
                            self.$message({
@@ -230,7 +275,9 @@
                    return item.id === value;//筛选出匹配数据
                });
                this.selectLabel=obj.name;
-
+               let position="";
+               position=this.selectLabel==='全部页面'?'':'&position='+this.selectLabel;
+               this.getAdsList(position);
            },
            secAdsValue(value){
                let obj = {};
@@ -247,15 +294,17 @@
                            let para = Object.assign({}, this.adsForm);
                            let data={
                                parkId:localStorage.getItem("parkId"),
-                               thumbUrl:this.morePicList[0],
-                               title:this.adsForm.disc,
-                               type:'公告',
-                               detailUrl:this.adsForm.links,
-                               addInfo:{
-                                   subtype:this.selectLabel
-                               }
+                               imageUrl:this.morePicList[0],
+                               // imageUrl:'string',
+                               description:this.adsForm.description,
+                               position:this.selectLabel,
+                               linkUrl:this.adsForm.linkUrl,
+                               addInfo:{}
                            };
-                           this.$post(addDisplay,data)
+                           if(this.isEdit){
+                               data.id=this.isEditId;
+                           }
+                           this.$post(addAdsUrl,data)
                                .then((res)=>{
                                    this.addEditAdsLoading = false;
                                    this.addEditAdsVisible = false;
@@ -266,6 +315,10 @@
                });
            },
 
+       },
+       mounted(){
+          this.getAdsMg();
+          this.url=localStorage.getItem("upUrl")+uploadPic;
        }
     }
 </script>

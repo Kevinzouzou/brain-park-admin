@@ -40,7 +40,7 @@ let routes = [
         component: Home,
         redirect:'/circle',
         name: '运营服务',
-        iconCls: 'fa fa-id-card-o',
+        iconCls: 'el-icon-document',
         children: [
             // { path: '/operaSitua', component: operaSitua, name: '运营概况' },
             { path: 'circle', component: circle, name: '圈子' },
@@ -57,7 +57,7 @@ let routes = [
         path: '/',
         component: Home,
         name: '企业服务',
-        iconCls: 'fa fa-address-card',
+        iconCls: 'el-icon-message',
         children: [
             // { path: '/serEffect', component: serEffect, name: '服务效能概况' },
             { path: '/corporationHome', component: corporationHome, name: '企业之家' },
@@ -69,7 +69,7 @@ let routes = [
         path: '/',
         component: Home,
         name: '物业服务',
-        iconCls: 'fa fa-bar-chart',
+        iconCls: 'el-icon-printer',
         children: [
             {
                 path: '/compRepair',
@@ -90,6 +90,39 @@ let routes = [
                 path: '/equipInspect',
                 component: resolve => require(['./views/properSer/equipInspect.vue'], resolve),
                 name: '设备巡检'
+            }
+         ]
+    },
+    {
+        path: '/',
+        component: Home,
+        name: '办公服务',
+        iconCls: 'el-icon-news',
+        children: [
+            {
+                path: '/attendance',
+                component: resolve => require(['./views/officeSer/attendance.vue'], resolve),
+                name: '考勤'
+            },
+            {
+                path: '/examine',
+                component: resolve => require(['./views/officeSer/examine.vue'], resolve),
+                name: '审批'
+            },
+            {
+                path: '/schedule',
+                component: resolve => require(['./views/officeSer/schedule.vue'], resolve),
+                name: '排班'
+            },
+            {
+                path: '/workBook',
+                component: resolve => require(['./views/officeSer/workBook.vue'], resolve),
+                name: '工作手册'
+            },
+            {
+                path: '/contacts',
+                component: resolve => require(['./views/officeSer/contacts.vue'], resolve),
+                name: '通讯录'
             }
          ]
     },

@@ -7,15 +7,15 @@
                         <el-form :inline="true" :model="highFilters">
                             <el-form-item>
                                 <el-button type="primary" @click="cateMg">类别管理</el-button>
-                                <el-select v-model="secCateValue" placeholder="请选择">
-                                    <el-option v-for="item in categoryList" :key="item.id" :label="item.name" :value="item.id">
+                                <el-select v-model="highFilters.secCateValue" placeholder="请选择">
+                                    <el-option v-for="item in categoryList" :key="item.id" :label="item.name" :value="item.name">
                                     </el-option>
                                 </el-select>
                             </el-form-item>
                             <el-form-item>
                                 <div class="block">
                                     <!--<p>组件值：{{ timerValue }}</p>-->
-                                    <el-date-picker v-model="timeValue" type="daterange" start-placeholder="开始日期"
+                                    <el-date-picker v-model="highFilters.timeValue" type="daterange" start-placeholder="开始日期"
                                                     end-placeholder="结束日期" value-format="yyyy-MM-dd HH:mm:ss"
                                                     :default-time="['00:00:00', '23:59:59']">
                                     </el-date-picker>
@@ -25,7 +25,7 @@
                                 <el-input v-model="highFilters.searchTitle" placeholder="搜索标题"></el-input>
                             </el-form-item>
                             <el-form-item>
-                                <el-button type="primary" v-on:click="getHighActivity">查询</el-button>
+                                <el-button type="primary" v-on:click="getQueryHighAct">查询</el-button>
                             </el-form-item>
                         </el-form>
                     </el-col>
@@ -57,7 +57,7 @@
                         <el-table-column prop="applyNum" label="报名" sortable>
                         </el-table-column>
                         <el-table-column label="操作">
-                            <template scope="scope">
+                            <template slot-scope="scope">
                                 <el-button type="success" size="small" @click="hASigns(scope.$index, scope.row)">报名</el-button>
                                 <el-button type="info" size="small" @click="hAedit(scope.$index, scope.row)">编辑</el-button>
                                 <el-button type="danger" size="small" @click="hADel(scope.$index, scope.row)">删除</el-button>
@@ -90,7 +90,7 @@
                                 </el-select>
                             </el-form-item>
                             <el-form-item label="缩略图">
-                                <el-upload action="/api/OperFile/uploadFile/" list-type="picture-card"
+                                <el-upload :action=url list-type="picture-card"
                                            :on-preview="handleHAPictureCardPreview" :on-remove="handleHARemove"
                                            :file-list="imgHAList" :on-success="moreHAShow">
                                     <i class="el-icon-plus"></i>
@@ -161,7 +161,7 @@
                                         <el-form-item>
                                             <div class="block">
                                                 <!--<p>组件值：{{ timerValue }}</p>-->
-                                                <el-date-picker v-model="timeComSerValue" type="daterange" start-placeholder="开始日期"
+                                                <el-date-picker v-model="commerSerFilters.timeComSerValue" type="daterange" start-placeholder="开始日期"
                                                                 end-placeholder="结束日期" value-format="yyyy-MM-dd HH:mm:ss"
                                                                 :default-time="['00:00:00', '23:59:59']">
                                                 </el-date-picker>
@@ -199,7 +199,7 @@
                                     <el-table-column prop="lookUpNum" label="浏览量" sortable>
                                     </el-table-column>
                                     <el-table-column label="操作">
-                                        <template scope="scope">
+                                        <template slot-scope="scope">
                                             <el-button type="info" size="small" @click="comSerEdit(scope.$index, scope.row)">编辑</el-button>
                                             <el-button type="danger" size="small" @click="comSerDel(scope.$index, scope.row)">删除</el-button>
                                         </template>
@@ -225,7 +225,7 @@
                                             <el-input v-model="comSerAEForm.title" auto-complete="off"></el-input>
                                         </el-form-item>
                                         <el-form-item label="缩略图">
-                                            <el-upload action="/api/OperFile/uploadFile/" list-type="picture-card"
+                                            <el-upload :action=url list-type="picture-card"
                                                        :on-preview="handleComSerCardPreview" :on-remove="handleComSerRemove"
                                                        :file-list="imgComSerList" :on-success="moreComSerShow">
                                                 <i class="el-icon-plus"></i>
@@ -253,7 +253,7 @@
                                         <el-form-item>
                                             <div class="block">
                                                 <!--<p>组件值：{{ timerValue }}</p>-->
-                                                <el-date-picker v-model="timeBookingValue" type="daterange" start-placeholder="开始日期"
+                                                <el-date-picker v-model="bookingFilters.timeBookingValue" type="daterange" start-placeholder="开始日期"
                                                                 end-placeholder="结束日期" value-format="yyyy-MM-dd HH:mm:ss"
                                                                 :default-time="['00:00:00', '23:59:59']">
                                                 </el-date-picker>
@@ -284,7 +284,7 @@
                                     <el-table-column prop="title" label="服务项目" sortable>
                                     </el-table-column>
                                     <el-table-column label="操作">
-                                        <template scope="scope">
+                                        <template slot-scope="scope">
                                             <el-button type="success" size="small" @click="bookingInfo(scope.$index, scope.row)">预约</el-button>
                                             <el-button type="info" size="small" @click="bookingEdit(scope.$index, scope.row)">编辑</el-button>
                                             <el-button type="danger" size="small" @click="bookingDel(scope.$index, scope.row)">删除</el-button>
@@ -355,7 +355,7 @@
                             <el-form-item>
                                 <div class="block">
                                     <!--<p>组件值：{{ timerValue }}</p>-->
-                                    <el-date-picker v-model="timeinfoConValue" type="daterange" start-placeholder="开始日期"
+                                    <el-date-picker v-model="infoConFilters.timeinfoConValue" type="daterange" start-placeholder="开始日期"
                                                     end-placeholder="结束日期" value-format="yyyy-MM-dd HH:mm:ss"
                                                     :default-time="['00:00:00', '23:59:59']">
                                     </el-date-picker>
@@ -393,7 +393,7 @@
                         <el-table-column prop="lookUpNum" label="浏览量" sortable>
                         </el-table-column>
                         <el-table-column label="操作">
-                            <template scope="scope">
+                            <template slot-scope="scope">
                                 <el-button type="info" size="small" @click="infoConEdit(scope.$index, scope.row)">编辑</el-button>
                                 <el-button type="danger" size="small" @click="infoConDel(scope.$index, scope.row)">删除</el-button>
                             </template>
@@ -419,7 +419,7 @@
                                 <el-input v-model="infoConAEForm.title" auto-complete="off"></el-input>
                             </el-form-item>
                             <el-form-item label="缩略图">
-                                <el-upload action="/api/OperFile/uploadFile/" list-type="picture-card"
+                                <el-upload :action=url list-type="picture-card"
                                            :on-preview="handleInfoConCardPreview" :on-remove="handleInfoConRemove"
                                            :file-list="imgInfoConList" :on-success="moreInfoConShow">
                                     <i class="el-icon-plus"></i>
@@ -475,7 +475,7 @@
                 <el-table-column prop="name" label="类别" sortable>
                 </el-table-column>
                 <el-table-column label="操作">
-                    <template scope="scope">
+                    <template slot-scope="scope">
                         <el-button type="info" size="small" @click="categoryEdit(scope.$index, scope.row)">编辑</el-button>
                         <el-button type="danger" size="small" @click="categoryDel(scope.$index, scope.row)">删除</el-button>
                     </template>
@@ -497,8 +497,8 @@
             <!--编辑界面-->
             <el-dialog title="编辑" :visible.sync="categoryAEVisible">
                 <el-form :model="categoryAEForm" label-width="80px" ref="categoryAEForm">
-                    <el-form-item label="分类" prop="type">
-                        <el-input v-model="categoryAEForm.type" auto-complete="off"></el-input>
+                    <el-form-item label="分类" prop="name">
+                        <el-input v-model="categoryAEForm.name" auto-complete="off"></el-input>
                     </el-form-item>
                 </el-form>
                 <div slot="footer" class="dialog-footer">
@@ -513,19 +513,22 @@
 <script type="text/ecmascript-6">
     import util from '../../common/js/util'
     import UE from '../../components/ue'
-    import {showDisplay, addDisplay, deleteDisplay, findDic, showDict, addDict, deleteDict,userTarget} from '../../api/api'
+    import {showDisplay, addDisplay, deleteDisplay, findDic, showDict, addDict, deleteDict,userTarget,uploadPic,} from '../../api/api'
 
     export default {
         components: {UE},
         data(){
             return {
+                url:'',
                 cateDic:{},
                 pagesize:7,
                 page:1,
                 activeName:'first',
                 secCateValue: '',
                 highFilters: {
-                    searchTitle: ''
+                    searchTitle: '',
+                    secCateValue:'',
+                    timeValue:[]
                 },
                 timeValue:[],
                 addEditTitle:'新增',
@@ -582,13 +585,16 @@
                     addType: ''
                 },
                 infoConFilters: {
-                    addType: ''
+                    searchTitle: '',
+                    timeinfoConValue:[]
                 },
                 commerSerFilters: {
-                    searchTitle: ''
+                    searchTitle: '',
+                    timeComSerValue:[]
                 },
                 bookingFilters: {
-                    searchTitle: ''
+                    searchTitle: '',
+                    timeBookingValue:[]
                 },
                 categoryList:[],
                 infoConList:[],
@@ -604,7 +610,7 @@
                 bookingVisible:false,
                 bookingInfoVisible:false,
                 categoryAEForm:{
-                  type:''
+                  name:''
                 },
                 infoConAEForm:{
                     title:'',
@@ -686,7 +692,6 @@
                     pname:this.cateDic.name,
                     addInfo:{}
                 };
-                // let url='/api/dict/addDict';
                 this.$post(addDict,data)
                     .then((res)=>{
                         this.categoryLoading = false;
@@ -730,33 +735,21 @@
                     if (valid) {
                         this.$confirm('确认提交吗？', '提示', {}).then(() => {
                             this.categoryAELoading = true;
-                            // NProgress.start();
-                            // let para = Object.assign({}, this.addActForm);
-                            // let price=this.addActForm.price===0?this.addActForm.price:this.addActForm.priceValue;
-                            // let data={
-                            //     content:this.$refs.ue.getUEContent(),
-                            //     // content:this.addActForm.content,
-                            //     title:this.addActForm.title,
-                            //     parkId:localStorage.getItem("parkId"),
-                            //     socialCircleId:this.circleId,
-                            //     userId:localStorage.getItem("userId"),
-                            //     addInfo:{
-                            //         address:this.addActForm.address,
-                            //         startTime:this.addActForm.actTimerValue[0],
-                            //         endTime:this.addActForm.actTimerValue[1],
-                            //         mems:this.addActForm.mems,
-                            //         price:price
-                            //     }
-                            // };
-                            // console.log(data)
-                            // let url='/api/socialCircle/addSocialCircleActive';
-                            // this.$post(url,data)
-                            //     .then((res)=>{
-                            //         console.log(res)
-                            this.categoryAELoading = false;
-                            this.categoryAEVisible = false;
-                            this.getCategory();
-                            // })
+                            let data={
+                                parkId:localStorage.getItem("parkId"),
+                                name:this.categoryAEForm.name,
+                                code:this.cateDic.code+'.'+this.categoryAEForm.name,
+                                pid:this.cateDic.id,
+                                pname:this.cateDic.name,
+                                id:this.categoryAEForm.id,
+                                addInfo:{}
+                            };
+                            this.$post(addDict,data)
+                                .then((res)=>{
+                                    this.categoryAELoading = false;
+                                    this.categoryAEVisible = false;
+                                    this.getCategory();
+                                })
                         });
                     }
                 });
@@ -766,7 +759,7 @@
                     if (valid) {
                         this.$confirm('确认提交吗？', '提示', {}).then(() => {
                             this.infoConAELoading = true;
-                            let para = Object.assign({}, this.bookingAEForm);
+                            let para = Object.assign({}, this.infoConAEForm);
                             let data={
                                 parkId:localStorage.getItem("parkId"),
                                 thumbUrl:this.moreHAPicList[0],
@@ -797,7 +790,7 @@
                     if (valid) {
                         this.$confirm('确认提交吗？', '提示', {}).then(() => {
                             this.comSerAELoading = true;
-                            let para = Object.assign({}, this.addActForm);
+                            let para = Object.assign({}, this.comSerAEForm);
                             let data={
                                 parkId:localStorage.getItem("parkId"),
                                 thumbUrl:this.moreHAPicList[0],
@@ -874,7 +867,6 @@
                 this.getBooking();
             },
             getCateDic(){     //高端活动 类别管理获取Pid
-                // let url='/api/dict/findDictByName?parkId='+localStorage.getItem("parkId")+'&name=高端活动';
                 this.$get(findDic+'高端活动').then((res)=>{
                     this.cateDic=res[0];
                 })
@@ -890,33 +882,84 @@
                         this.categoryLoading=false;
                     })
             },
+            getQueryInfoCon(){ // 信息化建设模糊查询
+                let type='信息化建设';
+                let url=showDisplay+type;
+                let startTime=this.infoConFilters.timeinfoConValue[0];
+                let endTime=this.infoConFilters.timeinfoConValue[1];
+                let title=this.infoConFilters.searchTitle;
+                url=startTime===undefined?url+'':url+'&startTime='+startTime.replace(/-/g,'/');
+                url=endTime===undefined?url+'':url+'&endTime='+endTime.replace(/-/g,'/');
+                url=title===''?url+'':url+'&title='+title;
+                this.getInfoConList(url);
+                this.infoConFilters={
+                    timeinfoConValue:[],
+                    searchTitle:''
+                }
+            },
             getInfoCon(){    //信息化建设列表
                 let type='信息化建设';
+                this.getInfoConList(showDisplay+type);
+            },
+            getInfoConList(url){//信息化建设列表 数据
                 this.infoConLoading=true;
-                // this.$get('/api/displayContent/displayContentList?parkId='+localStorage.getItem("parkId")+'&type='+type)
-                this.$get(showDisplay+type)
+                this.$get(url)
                     .then((res) => {
                         this.infoConList=res;
                         this.infoConTotal=this.infoConList.length>0?this.infoConList.length:1;
                         this.infoConLoading=false;
                     })
             },
+            getQueryCommer(){ // 商务服务模糊查询
+                let type='商务服务';
+                let url=showDisplay+type;
+                let startTime=this.commerSerFilters.timeComSerValue[0];
+                let endTime=this.commerSerFilters.timeComSerValue[1];
+                let title=this.commerSerFilters.searchTitle;
+                url=startTime===undefined?url+'':url+'&startTime='+startTime.replace(/-/g,'/');
+                url=endTime===undefined?url+'':url+'&endTime='+endTime.replace(/-/g,'/');
+                url=title===''?url+'':url+'&title='+title;
+                this.getComSerList(url);
+                this.commerSerFilters={
+                    timeComSerValue:[],
+                    searchTitle:''
+                }
+            },
             getComSer(){    //商务服务列表
                 let type='商务服务';
+                this.getComSerList(showDisplay+type);
+            },
+            getComSerList(url){//商务服务列表 数据
                 this.comSerLoading=true;
-                // this.$get('/api/displayContent/displayContentList?parkId='+localStorage.getItem("parkId")+'&type='+type)
-                this.$get(showDisplay+type)
+                this.$get(url)
                     .then((res) => {
                         this.comSerList=res;
                         this.comSerTotal=this.comSerList.length>0?this.comSerList.length:1;
                         this.comSerLoading=false;
                     })
             },
+            getQueryBooking(){   // 预约管理模糊查询
+                let type='预约管理';
+                let url=showDisplay+type;
+                let startTime=this.bookingFilters.timeBookingValue[0];
+                let endTime=this.bookingFilters.timeBookingValue[1];
+                let title=this.bookingFilters.searchTitle;
+                url=startTime===undefined?url+'':url+'&startTime='+startTime.replace(/-/g,'/');
+                url=endTime===undefined?url+'':url+'&endTime='+endTime.replace(/-/g,'/');
+                url=title===''?url+'':url+'&title='+title;
+                this.getBookingList(url);
+                this.bookingFilters={
+                    timeBookingValue:[],
+                    searchTitle:''
+                }
+            },
             getBooking(){    //商务预约管理
                 let type='预约管理';
+                this.getBookingList(showDisplay+type);
+            },
+            getBookingList(url){//商务预约管理 数据
                 this.bookingLoading=true;
-                // this.$get('/api/displayContent/displayContentList?parkId='+localStorage.getItem("parkId")+'&type='+type)
-                this.$get(showDisplay+type)
+                this.$get(url)
                     .then((res) => {
                         this.bookingList=res;
                         this.bookingTotal=this.bookingList.length>0?this.bookingList.length:1;
@@ -925,7 +968,7 @@
             },
             categoryEdit(index, row) { //类别管理显示编辑界面
                 this.categoryAEVisible = true;
-                this.infoConAEForm = Object.assign({}, row);
+                this.categoryAEForm = Object.assign({}, row);
             },
             infoConEdit(index, row) { //信息化建设显示编辑界面
                 this.addEditTitle='编辑';
@@ -1079,16 +1122,6 @@
                     activityTime:''
                 };
             },
-            getQueryInfoCon(){ // 信息化建设模糊查询
-
-            },
-            // 商务服务模糊查询
-            getQueryCommer(){
-
-            },
-            getQueryBooking(){   // 预约管理模糊查询
-
-            },
             //性别显示转换
             forSex: function (row, column) {
                 return row.addInfo.gender == 1 ? '男' : row.addInfo.gender == 2 ? '女' : '未知';
@@ -1112,7 +1145,7 @@
                     if (valid) {
                         this.$confirm('确认提交吗？', '提示', {}).then(() => {
                             this.addEditLoading = true;
-                            let para = Object.assign({}, this.addActForm);
+                            let para = Object.assign({}, this.addEditForm);
                             let data={
                                 parkId:localStorage.getItem("parkId"),
                                 thumbUrl:this.moreHAPicList[0],
@@ -1176,12 +1209,31 @@
                 this.secondPageVisible=false;
                 this.page=1;
             },
-            // 获取高端活动列表
-            getHighActivity(){
+            getQueryHighAct(){//高端活动列表 条件查询
                 let type='高端活动';
+                let url=showDisplay+type;
+                let startTime=this.highFilters.timeValue[0];
+                let endTime=this.highFilters.timeValue[1];
+                let subType=this.highFilters.secCateValue;
+                let title=this.highFilters.searchTitle;
+                url=startTime===undefined?url+'':url+'&startTime='+startTime.replace(/-/g,'/');
+                url=endTime===undefined?url+'':url+'&endTime='+endTime.replace(/-/g,'/');
+                url=title===''?url+'':url+'&title='+title;
+                url=subType===''?url+'':url+'&subType='+subType;
+                this.getHighActList(url);
+                this.highFilters={
+                    secCateValue:'',
+                    timeValue:[],
+                    searchTitle:''
+                }
+            },
+            getHighActivity(){ // 获取高端活动列表
+                let type='高端活动';
+                this.getHighActList(showDisplay+type);
+            },
+            getHighActList(url){//高端活动列表数据
                 this.highActLoading=true;
-                // this.$get('/api/displayContent/displayContentList?parkId='+localStorage.getItem("parkId")+'&type='+type)
-                this.$get(showDisplay+type)
+                this.$get(url)
                     .then((res) => {
                         this.highActList=res;
                         this.highActTotal=this.highActList.length>0?this.highActList.length:1;
@@ -1284,6 +1336,7 @@
             this.getInfoCon();   //信息化建设
             this.getCateDic();   //类别管理id
             this.getCategory();  //类别管理
+            this.url=localStorage.getItem("upUrl")+uploadPic;
         }
 
     }

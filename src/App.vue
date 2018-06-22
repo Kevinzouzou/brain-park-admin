@@ -22,8 +22,12 @@ export default {
         // }).then(res=>{
         //     console.log(res);
         // })
-        localStorage.setItem("parkId",'969878f1f1149e6a7afae38636c0abc');
-        localStorage.setItem("userId",'71f3df48263f4c74be2efbb83250e66b');
+        // localStorage.setItem("parkId",'969878f1f1149e6a7afae38636c0abc');
+        // localStorage.setItem("userId",'71f3df48263f4c74be2efbb83250e66b');
+	},
+	created(){
+
+
 	}
 }
 

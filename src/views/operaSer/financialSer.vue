@@ -25,10 +25,10 @@
                     </el-table-column>
                     <el-table-column prop="createTime" label="发布时间" sortable>
                     </el-table-column>
-                    <el-table-column prop="lookUpNum" label="浏览量" sortable>
+                    <el-table-column prop="addInfo.lookUpNum" label="浏览量" sortable>
                     </el-table-column>
                     <el-table-column label="操作">
-                        <template scope="scope">
+                        <template slot-scope="scope">
                             <el-button type="info" size="small" @click="corporateEdit(scope.$index, scope.row)">编辑</el-button>
                             <el-button type="danger" size="small" @click="corporateDel(scope.$index, scope.row)">删除</el-button>
                         </template>
@@ -54,7 +54,7 @@
                             <el-input v-model="corporateForm.title" auto-complete="off"></el-input>
                         </el-form-item>
                         <el-form-item label="缩略图">
-                            <el-upload action="/api/OperFile/uploadFile/" list-type="picture-card"
+                            <el-upload :action=url list-type="picture-card"
                                        :on-preview="corpPictureCardPreview" :on-remove="handleCorporateRemove"
                                        :file-list="imgCorpList" :on-success="moreCorporateShow">
                                 <i class="el-icon-plus"></i>
@@ -73,7 +73,7 @@
                     </div>
                 </el-dialog>
             </el-tab-pane>
-            <el-tab-pane label="个人金融服务" name="second">个人金融服务 。。。</el-tab-pane>
+            <!--<el-tab-pane label="个人金融服务" name="second">个人金融服务 。。。</el-tab-pane>-->
         </el-tabs>
 
     </section>
@@ -81,12 +81,13 @@
 
 <script>
     import UE from '../../components/ue'
-    import {showDisplay, addDisplay, deleteDisplay,} from '../../api/api'
+    import {showDisplay, addDisplay, deleteDisplay,uploadPic,} from '../../api/api'
 
     export default {
         components: {UE},
         data(){
             return {
+                url:'',
                 activeName:'first',
                 page:1,
                 pagesize:7,
@@ -210,7 +211,7 @@
                                 type:'金融服务',
                                 detailUrl:'null',
                                 addInfo:{
-                                    content:this.corporateContent
+                                    themeContent:this.corporateContent
                                 }
                             };
                             if(this.isEdit){
@@ -231,6 +232,7 @@
         },
         mounted(){
             this.getCorporate();  //公司金融服务列表
+            this.url=localStorage.getItem("upUrl")+uploadPic;
         }
     }
 </script>
