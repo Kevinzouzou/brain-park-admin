@@ -64,4 +64,6 @@ export const addAdsUrl=`/advertisement/addOrUpdateAdvertisement`;  //添加广�
 export const delAdsUrl=`/advertisement/deleteAdvertisement/`;  //删除广告
 
 export const attendList=`/attendance/attendanceList?parkId=`+localStorage.getItem("parkId");  //考勤列表
+// export const attendList=`/clock/clockList?parkId=`+localStorage.getItem("parkId");  //打卡列表
+export const unAttendList=`/attendance/unusualAttendanceList?parkId=`+localStorage.getItem("parkId");  //考勤异常接口
 export const approvalList=`/advertisement/approvalList?parkId=`+localStorage.getItem("parkId");  //审批

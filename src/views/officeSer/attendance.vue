@@ -25,12 +25,12 @@
                 <el-form :inline="true">
                     <el-form-item label="考勤分析">
                         <el-select v-model="secValue" placeholder="请选择">
-                            <el-option v-for="item in yearList" :key="item.id" :label="item.title" :value="item.id">
+                            <el-option v-for="item in yearList" :key="item.id" :label="item.title" :value="item.title">
                             </el-option>
                         </el-select>
                     </el-form-item>
                     <el-form-item>
-                        <el-button v-for="item in months.slice(0,monthNum)" :key="item.id" @click="monthAttend(item.value)">{{item.value}}</el-button>
+                        <el-button v-for="item in months.slice(0,monthNum)" :key="item.id" @click="monthAttend(item.value,item.id)">{{item.value}}</el-button>
                     </el-form-item>
 
                 </el-form>
@@ -41,11 +41,11 @@
                 </el-table-column>
                 <el-table-column prop="createTime" label="时间" sortable>
                 </el-table-column>
-                <el-table-column prop="userInfo.addInfo.nickName" label="姓名" sortable>
+                <el-table-column prop="addInfo.name" label="姓名" sortable>
                 </el-table-column>
-                <el-table-column prop="userInfo.addInfo.department" label="部门" sortable>
+                <el-table-column prop="addInfo.department" label="部门" sortable>
                 </el-table-column>
-                <el-table-column prop="address" label="GPS" sortable show-overflow-tooltip="">
+                <el-table-column prop="addInfo.address" label="地址" sortable show-overflow-tooltip="">
                 </el-table-column>
             </el-table>
             <!--分页-->
@@ -85,7 +85,10 @@
                 </el-table-column>
                 <el-table-column prop="addInfo.nickName" label="姓名" sortable>
                 </el-table-column>
-                <el-table-column prop="addInfo.exception" label="异常记录" sortable show-overflow-tooltip="">
+                <el-table-column label="异常记录" sortable show-overflow-tooltip="">
+                    <template slot-scope="scope">
+                        <el-button type="success" size="small" @click="monthAtView(scope.$index, scope.row)">查看</el-button>
+                    </template>
                 </el-table-column>
                 <el-table-column label="审批申请">
                     <template slot-scope="scope">
@@ -122,7 +125,7 @@
 </template>
 
 <script>
-    import {attendList,} from '../../api/api'
+    import {attendList,unAttendList,} from '../../api/api'
 
     export default {
         data(){
@@ -208,51 +211,51 @@
                 ],
                 months:[
                     {
-                        id:1,
+                        id:'01',
                         value:'一月'
                     },
                     {
-                        id:2,
+                        id:'02',
                         value:'二月'
                     },
                     {
-                        id:3,
+                        id:'03',
                         value:'三月'
                     },
                     {
-                        id:4,
+                        id:'04',
                         value:'四月'
                     },
                     {
-                        id:5,
+                        id:'05',
                         value:'五月'
                     },
                     {
-                        id:6,
+                        id:'06',
                         value:'六月'
                     },
                     {
-                        id:7,
+                        id:'07',
                         value:'七月'
                     },
                     {
-                        id:8,
+                        id:'08',
                         value:'八月'
                     },
                     {
-                        id:9,
+                        id:'09',
                         value:'九月'
                     },
                     {
-                        id:10,
+                        id:'10',
                         value:'十月'
                     },
                     {
-                        id:11,
+                        id:'11',
                         value:'十一月'
                     },
                     {
-                        id:12,
+                        id:'12',
                         value:'十二月'
                     }
                 ],
@@ -280,7 +283,9 @@
                 }
             },
             getAttendance(){ //考勤数据
-                this.getAttendanceList(attendList);
+                let year=this.secValue.substring(0,4);
+                let url=attendList+'&startTime='+year+'/01/01 00:00:00'+'&endTime='+year+'/12/31 23:59:59';
+                this.getAttendanceList(url);
             },
             getAttendanceList(url){//考勤数据列表
                 this.attendanceLoading=true;
@@ -294,11 +299,27 @@
             getMonthAttend(){ //月份考勤数据
 
             },
-            monthAttend(val){ //月份考勤
+            monthAttend(val,id){ //月份考勤
                 this.mainPage=false;
                 this.secondPage=true;
                 this.page=1;
                 this.monValue=val;
+                let monStr='&month='+this.secValue.substring(0,4)+'-'+id;
+                let url=unAttendList+monStr;
+                this.getUnAttendList(url);
+                console.log(monStr)
+                console.log(url)
+                // console.log(this.secValue.slice(0,4))
+                // console.log(this.secValue.substring(0,4))
+            },
+            getUnAttendList(url){//考勤异常 数据列表
+                this.monthAttendanceLoading=true;
+                this.$get(url)
+                    .then((res) => {
+                        this.monthAttendList=res;
+                        this.monAttTotal=this.monthAttendList.length>0?this.monthAttendList.length:1;
+                        this.monthAttendanceLoading=false;
+                    })
             },
             backToFirstAn(){
                 this.mainPage=true;
@@ -337,8 +358,8 @@
 
         },
         mounted(){
-            this.getAttendance();
             this.getCurTime();
+            this.getAttendance();
         }
     }
 </script>

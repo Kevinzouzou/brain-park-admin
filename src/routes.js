@@ -126,6 +126,18 @@ let routes = [
             }
          ]
     },
+    // {
+    //     path: '/',
+    //     component: Home,
+    //     name: '树形组件',
+    //     children: [
+    //         {
+    //             path: '/tree',
+    //             component: resolve => require(['./components/tree.vue'], resolve),
+    //             name: 'tree'
+    //         }
+    //     ]
+    // },
     {
         path: '/404',
         component: NotFound,

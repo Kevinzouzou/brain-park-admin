@@ -31,19 +31,19 @@
                 <el-table :data="leaveList.slice((page-1)*pagesize,page*pagesize)" highlight-current-row v-loading="leaveLoading" style="width: 100%;">
                     <el-table-column type="index" width="60">
                     </el-table-column>
-                    <el-table-column prop="applyUser.addInfo.nickName" label="姓名" sortable>
+                    <el-table-column prop="addInfo.userName" label="姓名" sortable>
                     </el-table-column>
-                    <el-table-column prop="applyUser.addInfo.department" label="部门" sortable>
+                    <el-table-column prop="addInfo.department" label="部门" sortable>
                     </el-table-column>
                     <el-table-column prop="beginTime" label="开始时间" sortable>
                     </el-table-column>
                     <el-table-column prop="endTime" label="结束时间" sortable>
                     </el-table-column>
-                    <el-table-column prop="addInfo.leaveType" label="类型" sortable>
+                    <el-table-column prop="addInfo.subtype" label="类型" sortable>
                     </el-table-column>
-                    <el-table-column prop="addInfo.leaveTime" label="请假时长（天）" sortable>
+                    <el-table-column prop="addInfo.duration" label="请假时长（天）" sortable>
                     </el-table-column>
-                    <el-table-column prop="applyTime" label="提交时间" sortable>
+                    <el-table-column prop="createTime" label="提交时间" sortable>
                     </el-table-column>
                     <el-table-column prop="state" label="状态" sortable>
                     </el-table-column>
@@ -70,16 +70,16 @@
                 <el-dialog class="inView" title="请假详情" :visible.sync="leaveVisible">
                     <el-form label-width="90px">
                         <el-form-item label="申请时间：">
-                            {{detailList.applyTime}}
+                            {{detailList.createTime}}
                         </el-form-item>
                         <el-form-item label="申请人：">
-                            {{detailList.applyUser.addInfo.nickName}}
+                            {{detailList.addInfo.userName}}
                         </el-form-item>
                         <el-form-item label="类型：">
-                            {{detailList.addInfo.leaveType}}
+                            {{detailList.addInfo.subtype}}
                         </el-form-item>
                         <el-form-item label="请假时长：">
-                            {{detailList.addInfo.leaveTime}}
+                            {{detailList.addInfo.duration}}
                         </el-form-item>
                         <el-form-item label="开始时间：">
                             {{detailList.beginTime}}
@@ -464,6 +464,7 @@
                     }
                 ],
                 detailList:{
+                    createTime:'',
                     applyTime:'',
                     beginTime:'',
                     endTime:'',
@@ -476,6 +477,9 @@
                         }
                     },
                     addInfo:{
+                        userName:'',
+                        duration:'',
+                        subtype:'',
                        leaveTime:'',
                        leaveType:'',
                         approver:'',
@@ -610,6 +614,7 @@
                 }else if(this.detailList.state==='待处理'){
                     this.detailList.addInfo.approvalState='暂未处理';
                 }
+                console.log(this.detailList)
             },
             goOutDetail(index,row){ //外出详情
                 this.goOutVisible=true;

@@ -4,10 +4,25 @@
 
         </el-col>
         <el-row :gutter="20">
-            <el-col :span="7">
-                fafad
+            <el-col :span="6">
+                <el-button @click="memAdd" class="right">+ 新增</el-button>
+                <span class="organizMg">组织架构管理</span>
+                <el-tree
+                        class="expand-tree"
+                        v-if="isLoadingTree"
+                        :data="dataTree"
+                        node-key="id"
+                        ref="tree"
+                        :props="defaultProps"
+                        highlight-current
+                        default-expand-all
+                        :render-content="renderContent"
+                        :expand-on-click-node="false"
+                        :default-expanded-keys="defaultExpandKeys"
+                        @node-click="handleNodeClick">
+                </el-tree>
             </el-col>
-            <el-col :span="17">
+            <el-col :span="18">
                 <!--工具条-->
                 <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
                     <el-form :inline="true">
@@ -104,13 +119,31 @@
                 <el-button type="primary" @click.native="transMember" :loading="memTransLoading">提交</el-button>
             </div>
         </el-dialog>
+        <!--组织架构-新增-->
+        <el-dialog :title=addEditTitle :visible.sync="organizationVisible">
+            <el-form :model="organizationForm" label-width="80px" ref="organizationForm">
+                <el-form-item label="部门名称" prop="addInfo.department">
+                    <el-input v-model="organizationForm.addInfo.departmentLevel" auto-complete="off"></el-input>
+                </el-form-item>
+                <el-form-item label="部门层级" prop="addInfo.department">
+                    <el-select v-model="organizationForm.addInfo.department" placeholder="请选择" @change="secDepartValue">
+                        <el-option v-for="item in departList" :key="item.id" :label="item.name" :value="item.id">
+                        </el-option>
+                    </el-select>
+                </el-form-item>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click.native="organizationVisible = false">取消</el-button>
+                <el-button type="primary" @click.native="organizationAdd" :loading="organizLoading">提交</el-button>
+            </div>
+        </el-dialog>
 
     </section>
 </template>
 
 <script type="text/ecmascript-6">
     import {showDisplay, addDisplay, deleteDisplay, findDic, showDict, addDict, deleteDict,userTarget} from '../../api/api'
-
+    import TreeRender from '../../components/tree-render';
     export default {
         data(){
             return {
@@ -122,6 +155,7 @@
                 isEditId:'',
                 memberAEVisible:false,
                 memberTransVisible:false,
+                organizationVisible:false,
                 memberAEForm:{
                     phone:'',
                     addInfo:{
@@ -134,6 +168,12 @@
                 memberTransForm:{
                     addInfo:{
                         department:''
+                    }
+                },
+                organizationForm:{
+                    addInfo:{
+                        department:'',
+                        departmentLevel:''
                     }
                 },
                 contactList:[
@@ -151,6 +191,7 @@
                 contactLoading:false,
                 memAELoading:false,
                 memTransLoading:false,
+                organizLoading:false,
                 memberTotal:1,
                 departList:[
                     {
@@ -167,10 +208,206 @@
                     }
                 ],
                 departSecLabel:'',
+                dataTree: [
+                    {
+                        id:1,
+                        isEdit:false,
+                        pid: '',
+                        remark: '',
+                        name: '总经办',
+                        children: [
+                            {
+                                id:101,
+                                pid: 1,
+                                isEdit:false,
+                                name: '周董',
+                                // children: [{
+                                //     label: '三级 1-1-1'
+                                // }]
+                            }
+                        ]
+                    },
+                    {
+                        id:2,
+                        pid: '',
+                        isEdit:false,
+                        name: '策划部',
+                        children: [
+                            {
+                                id:201,
+                                pid: 2,
+                                isEdit:false,
+                                name: '李总',
+                                // children: [{
+                                //     label: '三级 1-1-1'
+                                // }]
+                            }
+                        ]
+                    },
+                    {
+                        id:3,
+                        pid: '',
+                        isEdit:false,
+                        name: '运营部',
+                        children: [
+                            {
+                                id:301,
+                                pid: 3,
+                                isEdit:false,
+                                name: '企业服务部',
+                                children: [{
+                                    id:30101,
+                                    pid: 3,
+                                    isEdit:false,
+                                    name: '李潇潇'
+                                }]
+                            },
+                            {
+                                id:302,
+                                pid: 3,
+                                isEdit:false,
+                                name: '保安服务部',
+                                children: [
+                                    {id:30201, pid: 3,isEdit:false, name: '李国'},
+                                    {id:30202, pid: 3,isEdit:false, name: '李明'},
+                                    {id:30203, pid: 3,isEdit:false, name: '李靖'},
+                                    {id:30204, pid: 3,isEdit:false, name: '周杰'},
+                                    {id:30205, pid: 3,isEdit:false, name: '周黑鸭'}
+                                ]
+                            }
+                        ]
+                    }
+                ],
+                defaultProps: {
+                    children: 'children',
+                    label: 'name'
+                    // label: 'label'
+                },
+                isLoadingTree: true,//是否加载节点树
+                defaultExpandKeys: [],//默认展开节点列表
+                non_maxexpandId: 100,//api.maxexpandId,//新增节点开始id(不更改)
+                maxexpandId: 95,
 
             }
         },
         methods:{
+            initExpand(){
+                this.dataTree.map((a) => {
+                    this.defaultExpandKeys.push(a.id)
+                });
+                this.isLoadingTree = true;
+            },
+            renderContent(h,{node,data,store}){//加载节点
+                let that = this;
+                return h(TreeRender,{
+                    props: {
+                        DATA: data,
+                        NODE: node,
+                        STORE: store,
+                        maxexpandId: that.non_maxexpandId
+                    },
+                    on: {
+                        nodeAdd: ((s,d,n) => that.handleAdd(s,d,n)),
+                        nodeEdit: ((s,d,n) => that.handleEdit(s,d,n)),
+                        nodeDel: ((s,d,n) => that.handleDelete(s,d,n))
+                    }
+                });
+            },
+            handleAddTop(){
+                this.dataTree.push({
+                    id: ++this.maxexpandId,
+                    name: '新增节点',
+                    pid: '',
+                    isEdit: false,
+                    children: []
+                })
+            },
+            handleAdd(s,d,n){//增加节点
+                console.log(s,d,n)
+                if(n.level >=6){
+                    this.$message.error("最多只支持五级！")
+                    return false;
+                }
+                //添加数据
+                d.children.push({
+                    id: ++this.maxexpandId,
+                    name: '新增节点',
+                    pid: d.id,
+                    isEdit: false,
+                    children: []
+                });
+                //展开节点
+                if(!n.expanded){
+                    n.expanded = true;
+                }
+            },
+            handleEdit(s,d,n){//编辑节点
+                console.log(s,d,n)
+            },
+            handleDelete(s,d,n){//删除节点
+                console.log(s,d,n)
+                let that = this;
+                //有子级不删除
+                if(d.children && d.children.length !== 0){
+                    this.$message.error("此节点有子级，不可删除！")
+                    return false;
+                }else{
+                    //新增节点直接删除，否则要询问是否删除
+                    let delNode = () => {
+                        let list = n.parent.data.children || n.parent.data,//节点同级数据
+                            _index = 99999;//要删除的index
+                        /*if(!n.parent.data.children){//删除顶级节点，无children
+                          list = n.parent.data
+                        }*/
+                        list.map((c,i) => {
+                            if(d.id == c.id){
+                                _index = i;
+                            }
+                        })
+                        let k = list.splice(_index,1);
+                        //console.log(_index,k)
+                        this.$message.success("删除成功！")
+                    }
+                    let isDel = () => {
+                        that.$confirm("是否删除此节点？","提示",{
+                            confirmButtonText: "确认",
+                            cancelButtonText: "取消",
+                            type: "warning"
+                        }).then(() => {
+                            delNode()
+                        }).catch(() => {
+                            return false;
+                        })
+                    }
+                    //判断是否新增
+                    d.id > this.non_maxexpandId ? delNode() : isDel()
+
+                }
+            },
+            remove(node, data) {
+                const parent = node.parent;
+                const children = parent.data.children || parent.data;
+                const index = children.findIndex(d => d.id === data.id);
+                children.splice(index, 1);
+            },
+            handleCheckChange(data, checked, indeterminate) {
+                console.log(data, checked, indeterminate);
+            },
+            handleNodeClick(d,n,s){//点击节点
+                // console.log(d,n)
+                d.isEdit = false;//放弃编辑状态
+            },
+            memAdd(){//组织架构 显示新增成员
+                this.addEditTitle='组织框架 - 新增';
+                this.organizationVisible=true;
+                this.organizationForm={
+                    addInfo:{
+                        department:'',
+                        departmentLevel:''
+
+                    }
+                };
+            },
             secDepartValue(value){
                 let obj = {};
                 obj = this.departList.find((item)=>{//遍历的数据源
@@ -303,15 +540,51 @@
                     }
                 });
             },
+            organizationAdd(){//组织框架 新增
+                this.$refs.organizationForm.validate((valid) => {
+                    if (valid) {
+                        this.$confirm('确认提交吗？', '提示', {}).then(() => {
+                            this.organizLoading = true;
+                            let data={
+                                parkId:localStorage.getItem("parkId"),
+                                addInfo:{
+                                    department:this.organizationForm.addInfo.department,
+                                    departmentlevel:this.organizationForm.addInfo.departmentlevel
+                                }
+                            };
+                            // this.$post(addDisplay,data)
+                            //     .then((res)=>{
+                            this.organizLoading = false;
+                            this.organizationVisible = false;
+                            this.getcontactList();
+                            // })
+                        });
+                    }
+                });
+            },
 
         },
         mounted(){
-            // this.getcontactList();   //物业公告
+            // this.getcontactList();   //通讯录
+            this.initExpand()
         }
     }
 </script>
 
 <style lang="scss">
+    .right{
+        float: right;
+        &:after{
+            display: inline-block;
+            content: '';
+            clear: both;
+        }
+    }
+    .organizMg{
+        display: inline-block;
+        font-size: 18px;
+        margin: 10px 5px 15px;
+    }
     .inView{
         .el-form{
             .el-form-item{
@@ -324,6 +597,13 @@
         }
         .title{
             font-weight: bold;
+        }
+    }
+    .expand-tree .tree-expand .tree-label{
+        margin-right: 30px;
+        &.tree-new{
+            font-weight: normal;
+            margin-right: 30px;
         }
     }
 </style>
