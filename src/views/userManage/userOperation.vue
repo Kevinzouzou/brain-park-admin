@@ -1,25 +1,37 @@
 <template>
     <section>
         <!--工具条-->
-        <el-col :span="24" justify="center">
-            <el-form :inline="true"  >
+        <el-col :span="24"
+            justify="center">
+            <el-form :inline="true">
                 <el-form-item>
-                    <el-button type="primary" icon="el-icon-plus"  @click="dialogFormVisible = true">新增用户</el-button>
+                    <el-button type="primary"
+                        icon="el-icon-plus"
+                        @click="dialogFormVisible = true">新增用户</el-button>
                 </el-form-item>
                 <el-form-item>
-                        <span>搜索条件：</span>
+                    <span>搜索条件：</span>
                 </el-form-item>
                 <el-form-item>
-                <el-autocomplete popper-class="my-autocomplete" v-model="state3" :fetch-suggestions="querySearch" placeholder="输入企业名称搜索" @select="handleSelect">
-                <i class="el-icon-edit el-input__icon" slot="suffix" @click="handleIconClick"></i>
-                <template slot-scope="{ item }">
-                    <div class="name">{{ item.value }}</div>
-                    <span class="addr">{{ item.address }}</span>
-                </template>
-                </el-autocomplete>
+                    <el-autocomplete popper-class="my-autocomplete"
+                        v-model="state3"
+                        :fetch-suggestions="querySearch"
+                        placeholder="输入企业名称搜索"
+                        prefix-icon="el-icon-search"
+                        @select="handleSelect">
+                        <i class="el-icon-edit el-input__icon"
+                            slot="suffix"
+                            @click="handleIconClick"></i>
+                        <template slot-scope="{ item }">
+                            <div class="name">{{ item.value }}</div>
+                            <span class="addr">{{ item.address }}</span>
+                        </template>
+                    </el-autocomplete>
                 </el-form-item>
                 <el-form-item>
-                    <el-input class="userinfo-search" placeholder="用户搜索，如姓名、昵称、手机" ></el-input>
+                    <el-input class="userinfo-search"
+                        placeholder="用户搜索，如姓名、昵称、手机"
+                        prefix-icon="el-icon-search"></el-input>
                 </el-form-item>
                 <el-form-item>
                     <el-button type="primary">查询</el-button>
@@ -33,69 +45,185 @@
             </el-form>
         </el-col>
         <!--列表-->
-        <el-table   highlight-current-row v-loading="listLoading" style="width: 100%;">
-            <el-table-column type="index" label="ID">
+        <el-table highlight-current-row
+            v-loading="listLoading"
+            style="width: 100%;">
+            <el-table-column type="index"
+                label="ID">
             </el-table-column>
-            <el-table-column prop="title" label="姓名" sortable>
+            <el-table-column prop="title"
+                label="姓名"
+                sortable>
             </el-table-column>
-            <el-table-column prop="nickname" label="昵称" sortable>
+            <el-table-column prop="nickname"
+                label="昵称"
+                sortable>
             </el-table-column>
-            <el-table-column prop="telphone" label="手机号">
+            <el-table-column prop="telphone"
+                label="手机号">
             </el-table-column>
-            <el-table-column prop="nickname" label="性别">
+            <el-table-column prop="nickname"
+                label="性别">
             </el-table-column>
-            <el-table-column prop="company" label="所属企业" sortable>
+            <el-table-column prop="company"
+                label="所属企业"
+                sortable>
             </el-table-column>
-            <el-table-column prop="role" label="身份角色" sortable>
+            <el-table-column prop="role"
+                label="身份角色"
+                sortable>
             </el-table-column>
-            <el-table-column prop="lastLoginTime" label="最近登录时间">
+            <el-table-column prop="lastLoginTime"
+                label="最近登录时间">
             </el-table-column>
-            <el-table-column label="操作" width="150">
+            <el-table-column label="操作"
+                width="150">
                 <template slot-scope="scope">
-                    <el-button type="info" size="small" >编辑</el-button>
-                    <el-button type="danger" size="small"  >删除</el-button>
+                    <el-button type="info"
+                        size="small">编辑</el-button>
+                    <el-button type="danger"
+                        size="small">删除</el-button>
                 </template>
             </el-table-column>
         </el-table>
         <!--工具条-->
-        <el-col :span="24" class="toolbar">
+        <el-col :span="24"
+            class="toolbar">
             <el-pagination background
-            @size-change="handleSizeChange"
-            @current-change="handleCurrentChange"
-            :page-sizes="[7,8,10,20]"
-            :page-size="pagesize"
-            layout="total,sizes, prev, pager, next, jumper"
-            :current-page="page"
-            :total="circleTotal"
-            style="float:right;">
+                @size-change="handleSizeChange"
+                @current-change="handleCurrentChange"
+                :page-sizes="[7,8,10,20]"
+                :page-size="pagesize"
+                layout="total,sizes, prev, pager, next, jumper"
+                :current-page="page"
+                :total="circleTotal"
+                style="float:right;">
             </el-pagination>
-        </el-col>        
-        <!--弹出框-->
-        <el-dialog title="新增用户" :visible.sync="dialogFormVisible">
-            <el-form :model="form" :label-position="right" label-width="120px">
-                <el-form-item label="ID" :label-width="formLabelWidth">
+        </el-col>
+        <!--弹出框 新增用户-->
+        <el-dialog title="新增用户"
+            :visible.sync="dialogFormVisible">
+            <el-form :model="form"
+                :label-position="right"
+                label-width="160px">
+                <el-form-item label="ID">
                     <span>123456</span>
                 </el-form-item>
-                <el-form-item label="姓名" >
-                    <el-input placeholder="姓名"></el-input>
-                </el-form-item>
-                <el-form-item label="手机号码">
-                    <el-input placeholder="手机号码"></el-input>
-                </el-form-item>
-                <el-form-item label="所属企业">
-                    <el-input placeholder="所属企业"></el-input>
-                </el-form-item>
-                <el-form-item label="员工身份" prop="region">
-                    <el-select placeholder="请选择活动区域">
-                        <el-option label="员工" value="shanghai"></el-option>
-                        <el-option label="管理员" value="beijing"></el-option>
-                        <el-option label="企业所有者" value="beijing"></el-option>
-                    </el-select>
+            </el-form>
+            <el-row :gutter="20">
+                <el-col :span="10">
+                    <el-form :model="form"
+                        :label-position="right"
+                        label-width="160px">
+                        <el-form-item label="姓名">
+                            <el-input placeholder="姓名"></el-input>
+                        </el-form-item>
+                        <el-form-item label="所属企业">
+                            <el-autocomplete popper-class="my-autocomplete"
+                                v-model="state3"
+                                :fetch-suggestions="querySearch"
+                                placeholder="输入企业名称搜索"
+                                @select="handleSelect">
+                                <i class="el-icon-edit el-input__icon"
+                                    slot="suffix"
+                                    @click="handleIconClick"></i>
+                                <template slot-scope="{ item }">
+                                    <div class="name">{{ item.value }}</div>
+                                    <span class="addr">{{ item.address }}</span>
+                                </template>
+                            </el-autocomplete>
+                        </el-form-item>
+                    </el-form>
+                </el-col>
+                <el-col :span="10">
+                    <el-form :model="form"
+                        :label-position="right"
+                        label-width="160px">
+                        <el-form-item label="手机号码">
+                            <el-input placeholder="手机号码"></el-input>
+                        </el-form-item>
+                        <el-form-item label="员工身份"
+                            prop="region">
+                            <el-select placeholder="请选择活动区域">
+                                <el-option label="员工"
+                                    value="yungong"></el-option>
+                                <el-option label="管理员"
+                                    value="guanliyuan"></el-option>
+                                <el-option label="企业所有者"
+                                    value="boss"></el-option>
+                            </el-select>
+                        </el-form-item>
+                    </el-form>
+                </el-col>
+            </el-row>
+            <div slot="footer"
+                class="dialog-footer">
+                <el-button @click="dialogFormVisible = false">取 消</el-button>
+                <el-button type="primary"
+                    @click="dialogFormVisible = false">确 定</el-button>
+            </div>
+        </el-dialog>
+        <!--弹出框 查看用户-->
+        <el-dialog title="用户详情"
+            :visible.sync="dialoguserVisible">
+            <el-form :model="form"
+                :label-position="right"
+                label-width="160px">
+                <el-form-item label="ID">
+                    <span>123456</span>
                 </el-form-item>
             </el-form>
-            <div slot="footer" class="dialog-footer">
+            <el-row :gutter="20">
+                <el-col :span="10">
+                    <el-form :model="form"
+                        :label-position="right"
+                        label-width="160px">
+                        <el-form-item label="姓名">
+                            <el-input placeholder="姓名"></el-input>
+                        </el-form-item>
+                        <el-form-item label="所属企业">
+                            <el-autocomplete popper-class="my-autocomplete"
+                                v-model="state3"
+                                :fetch-suggestions="querySearch"
+                                placeholder="输入企业名称搜索"
+                                @select="handleSelect">
+                                <i class="el-icon-edit el-input__icon"
+                                    slot="suffix"
+                                    @click="handleIconClick"></i>
+                                <template slot-scope="{ item }">
+                                    <div class="name">{{ item.value }}</div>
+                                    <span class="addr">{{ item.address }}</span>
+                                </template>
+                            </el-autocomplete>
+                        </el-form-item>
+                    </el-form>
+                </el-col>
+                <el-col :span="10">
+                    <el-form :model="form"
+                        :label-position="right"
+                        label-width="160px">
+                        <el-form-item label="手机号码">
+                            <el-input placeholder="手机号码"></el-input>
+                        </el-form-item>
+                        <el-form-item label="员工身份"
+                            prop="region">
+                            <el-select placeholder="请选择活动区域">
+                                <el-option label="员工"
+                                    value="yungong"></el-option>
+                                <el-option label="管理员"
+                                    value="guanliyuan"></el-option>
+                                <el-option label="企业所有者"
+                                    value="boss"></el-option>
+                            </el-select>
+                        </el-form-item>
+                    </el-form>
+                </el-col>
+            </el-row>
+            <div slot="footer"
+                class="dialog-footer">
                 <el-button @click="dialogFormVisible = false">取 消</el-button>
-                <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+                <el-button type="primary"
+                    @click="dialogFormVisible = false">确 定</el-button>
             </div>
         </el-dialog>
     </section>
@@ -109,30 +237,9 @@ export default {
             pagesize: 7,
             restaurants: [],
             state3: "",
-            gridData: [
-                {
-                    date: "2016-05-02",
-                    name: "王小虎",
-                    address: "上海市普陀区金沙江路 1518 弄"
-                },
-                {
-                    date: "2016-05-04",
-                    name: "王小虎",
-                    address: "上海市普陀区金沙江路 1518 弄"
-                },
-                {
-                    date: "2016-05-01",
-                    name: "王小虎",
-                    address: "上海市普陀区金沙江路 1518 弄"
-                },
-                {
-                    date: "2016-05-03",
-                    name: "王小虎",
-                    address: "上海市普陀区金沙江路 1518 弄"
-                }
-            ],
             dialogTableVisible: false,
             dialogFormVisible: false,
+            dialoguserVisible:true,
             form: {
                 name: "",
                 region: "",
