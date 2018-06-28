@@ -46,12 +46,3 @@ You can change theme by
 ```
 4. Edit src/styles/vars.scss
 
-![theme-blue](https://raw.githubusercontent.com/taylorchen709/markdown-images/master/vueadmin/rec-demo.gif)
-![theme-green](https://raw.githubusercontent.com/taylorchen709/markdown-images/master/vueadmin/theme-green.png)
-
-# Browser support
-
-Modern browsers and IE 10+.
-
-# License
-[MIT](http://opensource.org/licenses/MIT)
