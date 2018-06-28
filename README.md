@@ -1,12 +1,12 @@
-园区大脑-后台管理
+# 园区大脑-后台管理
 
-# install dependencies
+安装依赖：
 npm install
 
-# serve with hot reload at localhost:8081
+运行：
 npm run dev
 
-# build for production with minification
+打包：
 npm run build
 
 
