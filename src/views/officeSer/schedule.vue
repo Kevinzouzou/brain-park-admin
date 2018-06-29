@@ -28,12 +28,12 @@
 
         </el-col>
         <!--列表-->
-        <el-table :data="scheduleList.slice((page-1)*pagesize,page*pagesize)" highlight-current-row v-loading="workBookLoading" @selection-change="selsChange" style="width: 100%;">
+        <el-table :data="scheduleList.slice((page-1)*pagesize,page*pagesize)" highlight-current-row v-loading="schduleLoading" @selection-change="selsChange" style="width: 100%;">
             <el-table-column type="index" width="60">
             </el-table-column>
-            <el-table-column prop="addInfo.nickName" label="姓名" sortable>
+            <el-table-column prop="addInfo.name" label="姓名" sortable>
                 <template slot-scope="scope">
-                    <el-button plain size="small" @click="perSched(scope.$index, scope.row)">{{scope.row.addInfo.nickName}}</el-button>
+                    <span @click="perSched(scope.$index, scope.row)" style="color: #00a2d4;">{{scope.row.addInfo.nickName}}</span>
                 </template>
             </el-table-column>
             <el-table-column prop="addInfo.position" label="职务" sortable>
@@ -41,10 +41,17 @@
             <el-table-column prop="addInfo.department" label="部门" sortable>
             </el-table-column>
             <template v-for="(data ,index) in datas">
-                <el-table-column :label="data" width="100" style="text-align: center;">
+                <el-table-column :label="data" width="120" style="text-align: center;">
                     <template slot-scope="scope">
+                      <!--<span v-if="scope.row.addInfo.scheduleInfo[data.slice(0,10)]" @click="individualSet(scope.$index, scope.row)" style="width: 100%;display: inline-block;">-->
+                          <!--{{scope.row.addInfo.scheduleInfo[data.slice(0,10)]}}-->
+                      <!--</span>-->
+                      <!--<span v-else @click="individualSet(scope.$index, scope.row)" style="width: 100%;display: inline-block;">-->
+                          <!-- - -->
+                      <!--</span>-->
                       <span @click="individualSet(scope.$index, scope.row)" style="width: 100%;display: inline-block;">
-                          {{scope.row.addInfo.list[data.slice(0,10)]?scope.row.addInfo.list[data.slice(0,10)]:'-' }}
+                          {{scope.row.addInfo.scheduleInfo[data.slice(0,10)]?scope.row.addInfo.scheduleInfo[data.slice(0,10)]:'-' }}
+                           <!--121-->
                       </span>
                     </template>
                 </el-table-column>
@@ -59,7 +66,7 @@
                            :page-sizes="[7,8,10,20]"
                            :page-size="pagesize"
                            layout="total,sizes, prev, pager, next, jumper"
-                           :total="workBookTotal"
+                           :total="scheduleTotal"
                            :current-page="page"
                            style="float:right;">
             </el-pagination>
@@ -108,10 +115,10 @@
                             <span v-else>
                             <!--今天  同年同月同日-->
                                         <!--<span v-if="dayobject.day.getFullYear() == new Date().getFullYear() && dayobject.day.getMonth() == new Date().getMonth() && dayobject.day.getDate() == new Date().getDate()" class="active">{{ dayobject.day.getDate() }}</span>-->
-                            <span v-if="perScheForm.addInfo.list[dayobject.day.getFullYear()+'-'+lt(parseInt(dayobject.day.getMonth()+1))+'-'+lt(dayobject.day.getDate())] =='早班'" class="zao-active">{{ dayobject.day.getDate() }}</span>
-                            <span v-else-if="perScheForm.addInfo.list[dayobject.day.getFullYear()+'-'+lt(parseInt(dayobject.day.getMonth()+1))+'-'+lt(dayobject.day.getDate())] =='中班'" class="zh-active">{{ dayobject.day.getDate() }}</span>
-                            <span v-else-if="perScheForm.addInfo.list[dayobject.day.getFullYear()+'-'+lt(parseInt(dayobject.day.getMonth()+1))+'-'+lt(dayobject.day.getDate())] =='晚班'" class="wan-active">{{ dayobject.day.getDate() }}</span>
-                            <span v-else-if="perScheForm.addInfo.list[dayobject.day.getFullYear()+'-'+lt(parseInt(dayobject.day.getMonth()+1))+'-'+lt(dayobject.day.getDate())] =='休息'" class="xiu-active">{{ dayobject.day.getDate() }}</span>
+                            <span v-if="perScheForm.addInfo.scheduleInfo[dayobject.day.getFullYear()+'-'+lt(parseInt(dayobject.day.getMonth()+1))+'-'+lt(dayobject.day.getDate())] =='早班'" class="zao-active">{{ dayobject.day.getDate() }}</span>
+                            <span v-else-if="perScheForm.addInfo.scheduleInfo[dayobject.day.getFullYear()+'-'+lt(parseInt(dayobject.day.getMonth()+1))+'-'+lt(dayobject.day.getDate())] =='中班'" class="zh-active">{{ dayobject.day.getDate() }}</span>
+                            <span v-else-if="perScheForm.addInfo.scheduleInfo[dayobject.day.getFullYear()+'-'+lt(parseInt(dayobject.day.getMonth()+1))+'-'+lt(dayobject.day.getDate())] =='晚班'" class="wan-active">{{ dayobject.day.getDate() }}</span>
+                            <span v-else-if="perScheForm.addInfo.scheduleInfo[dayobject.day.getFullYear()+'-'+lt(parseInt(dayobject.day.getMonth()+1))+'-'+lt(dayobject.day.getDate())] =='休息'" class="xiu-active">{{ dayobject.day.getDate() }}</span>
                             <span v-else>{{ dayobject.day.getDate() }}</span>
                         </span>
                         </li>
@@ -143,7 +150,7 @@
 
 <script type="text/ecmascript-6">
     import UE from '../../components/ue'
-    import {showDisplay, addDisplay, deleteDisplay, findDic, showDict, addDict, deleteDict,userTarget} from '../../api/api'
+    import {schedListUrl, userListUrl, showDisplay, addDisplay, deleteDisplay, findDic, showDict, addDict, deleteDict,userTarget} from '../../api/api'
 
     export default {
         components: {UE},
@@ -164,7 +171,7 @@
                             nickName:'张三',
                             position:'部门经理',
                             department:'研发部门',
-                            list:{
+                            scheduleInfo:{
                                 "2018-06-05":"早班",
                                 "2018-06-06":"中班",
                                 "2018-06-07":"晚班",
@@ -177,7 +184,7 @@
                             nickName:'张三',
                             position:'部门经理',
                             department:'研发部门',
-                            list:{
+                            scheduleInfo:{
                                 "2018-06-05":"中班",
                                 "2018-06-06":"晚班",
                                 "2018-06-07":"晚班",
@@ -190,7 +197,7 @@
                             nickName:'张四',
                             position:'总经理',
                             department:'研发部门',
-                            list:{
+                            scheduleInfo:{
                                 "2018-06-01":"早班",
                                 "2018-06-02":"早班",
                                 "2018-06-03":"早班",
@@ -227,9 +234,9 @@
                     "2018-06-03 星期日"
                 ],
                 sels:[],   //列表选中项
-                workBookLoading:false,
+                schduleLoading:false,
                 annouAELoading:false,
-                workBookTotal:1,
+                scheduleTotal:1,
                 fileList:[],
                 individualVisible:false,
                 individualForm:{
@@ -248,7 +255,7 @@
                 perScheVisible:false,
                 perScheForm:{
                     addInfo:{
-                        list:{}
+                        scheduleInfo:{}
                     }
                 },
                 dataTree: [
@@ -300,6 +307,7 @@
                     children: 'children',
                     label: 'label'
                 },
+                userList:[],
             }
         },
         methods:{
@@ -416,18 +424,18 @@
                     // console.log(aYear+aMon)
                     // console.log(bYear+bMon)
                     // this.scheduleList.forEach((item)=>{
-                    //    // this.moreList.push(item.addInfo.list);
+                    //    // this.moreList.push(item.addInfo.scheduleInfo);
                     //    //  debugger;
                     //     this.moreList.forEach((childitem)=>{
-                    //         // let obj = Object.assign(item.addInfo.list, childitem);
+                    //         // let obj = Object.assign(item.addInfo.scheduleInfo, childitem);
                     //         const list = [
-                    //             ...item.addInfo.list,
+                    //             ...item.addInfo.scheduleInfo,
                     //              ...childitem
                     //         ]
-                    //         console.log(list)
+                    //         console.log(scheduleInfo)
                     //         // this.moreList.push(obj)
                     //     })
-                    //     // let obj = Object.assign(item.addInfo.list, i);
+                    //     // let obj = Object.assign(item.addInfo.scheduleInfo, i);
                     //     // console.log(obj)
                     // })
 
@@ -465,14 +473,21 @@
                 };
             },
             getSchedule(){    //排班列表
-                let type='物业公告';
-                this.workBookLoading=true;
-                // this.$get(showDisplay+type)
-                //     .then((res) => {
-                //         this.scheduleList=res;
-                //         this.workBookTotal=this.scheduleList.length>0?this.scheduleList.length:1;
-                //         this.workBookLoading=false;
-                //     })
+                let now=new Date();
+                let year=now.getFullYear();
+                year += (year < 2000) ? 1900 : 0; //
+                let month=now.getMonth()+1;
+                month=month<10?'0'+month:''+month;
+                let url=schedListUrl+year+'-'+month;
+
+                this.schduleLoading=true;
+                this.$get(url)
+                    .then((res) => {
+                        this.scheduleList=res;
+                        this.scheduleTotal=this.scheduleList.length>0?this.scheduleList.length:1;
+                        this.schduleLoading=false;
+                    })
+                console.log(this.scheduleList[0])
             },
             selsChange: function (sels) {
                 this.sels = sels;
@@ -498,10 +513,19 @@
 
                 this.individualLoading=false;
             },
-
+            // getUser(url){// 获取用户列表
+            //     // this.monthAttendanceLoading=true;
+            //     this.$get(url)
+            //         .then((res) => {
+            //             this.userList=res;
+            //             // this.monAttTotal=this.monthAttendList.length>0?this.monthAttendList.length:1;
+            //             // this.monthAttendanceLoading=false;
+            //         })
+            //
+            // },
         },
         mounted(){
-            // this.getSchedule();   //物业公告
+            this.getSchedule();   //排班列表
             let now = new Date(); //当前日期
             let week = -now.getDay()+1; //今天本周的第几天
             this.changeWeek(now,week);

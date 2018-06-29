@@ -38,6 +38,19 @@ let routes = [
     {
         path: '/',
         component: Home,
+        name: '企业管理',
+        iconCls: 'el-icon-service',
+        children: [
+            {
+                path: '/busiAdmin',
+                component: resolve => require(['./views/businessAdmin/busiAdmin.vue'], resolve),
+                name: '企业操作'
+            }
+        ]
+    },
+    {
+        path: '/',
+        component: Home,
         redirect:'/circle',
         name: '运营服务',
         iconCls: 'el-icon-document',
@@ -125,6 +138,19 @@ let routes = [
                 name: '通讯录'
             }
          ]
+    },
+    {
+        path: '/',
+        component: Home,
+        name: '运维管理',
+        iconCls: 'el-icon-sold-out',
+        children: [
+            {
+                path: '/districtMg',
+                component: resolve => require(['./views/operationMg/districtMg.vue'], resolve),
+                name: '区域管理'
+            }
+        ]
     },
     // {
     //     path: '/',

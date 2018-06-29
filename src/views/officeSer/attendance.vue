@@ -71,13 +71,13 @@
                         <el-input v-model="monthFilters.searchTitle" placeholder="姓名搜索"></el-input>
                     </el-form-item>
                     <el-form-item>
-                        <el-button type="primary" v-on:click="getMonthAttend">查询</el-button>
+                        <el-button type="primary" v-on:click="getQueryMonthAttend">查询</el-button>
                     </el-form-item>
                 </el-form>
             </el-col>
             <!--工具条-->
             <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
-               {{secValue}}-{{monValue}}考勤异常统计表
+               {{secValue}}{{monValue}}考勤异常统计表
             </el-col>
             <!--列表-->
             <el-table :data="monthAttendList.slice((page-1)*pagesize,page*pagesize)" highlight-current-row v-loading="monthAttendanceLoading" style="width: 100%;">
@@ -85,9 +85,9 @@
                 </el-table-column>
                 <el-table-column prop="addInfo.nickName" label="姓名" sortable>
                 </el-table-column>
-                <el-table-column label="异常记录" sortable show-overflow-tooltip="">
+                <el-table-column label="异常记录" sortable>
                     <template slot-scope="scope">
-                        <el-button type="success" size="small" @click="monthAtView(scope.$index, scope.row)">查看</el-button>
+                        <span v-for="item in scope.row.unusualAttendanceInfo">{{item}}，</span>
                     </template>
                 </el-table-column>
                 <el-table-column label="审批申请">
@@ -263,6 +263,7 @@
                 secondPage:false,
                 monValue:'',
                 monthNum:1,
+                monDay:'',
 
 
             }
@@ -296,21 +297,25 @@
                         this.attendanceLoading=false;
                     })
             },
-            getMonthAttend(){ //月份考勤数据
-
+            getQueryMonthAttend(){ //月份考勤 条件查询
+                let monStr='&month='+this.secValue.substring(0,4)+'-'+this.monDay;
+                let url=unAttendList+monStr;
+                let userName=this.monthFilters.searchTitle;
+                url=userName===''?url+'':url+'&userName='+userName;
+                this.getUnAttendList(url);
+                this.monthFilters={
+                    searchTitle:''
+                }
             },
             monthAttend(val,id){ //月份考勤
                 this.mainPage=false;
                 this.secondPage=true;
                 this.page=1;
                 this.monValue=val;
+                this.monDay=id;
                 let monStr='&month='+this.secValue.substring(0,4)+'-'+id;
                 let url=unAttendList+monStr;
                 this.getUnAttendList(url);
-                console.log(monStr)
-                console.log(url)
-                // console.log(this.secValue.slice(0,4))
-                // console.log(this.secValue.substring(0,4))
             },
             getUnAttendList(url){//考勤异常 数据列表
                 this.monthAttendanceLoading=true;
