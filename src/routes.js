@@ -20,10 +20,13 @@ import serEffect from './views/employers/serEffect.vue'
 import corporationHome from './views/employers/corporationHome.vue'
 import businessProcess from './views/employers/businessProcess.vue'
 import leaseContract from './views/employers/leaseContract.vue'
-
+// 用户管理
 import userProfile from './views/userManage/userProfile.vue'
 import userOperation from './views/userManage/userOperation.vue'
-
+import employeeManage from './views/userManage/employeeManage.vue'
+import departmentOrganization from './views/userManage/departmentOrganization.vue'
+import operatorAccountManage from './views/userManage/operatorAccountManage.vue'
+import operatorRoleManage from './views/userManage/operatorRoleManage.vue'
 
 Vue.use(Router)
 let routes = [
@@ -47,10 +50,10 @@ let routes = [
         children: [
             { path: 'userProfile', component: userProfile, name: '用户概况' },
             { path: 'userOperation', component: userOperation, name: '用户操作' },
-            { path: '', component: circle, name: '员工管理' },
-            { path: '', component: circle, name: '部门组织架构' },
-            { path: '', component: circle, name: '操作员账号管理' },
-            { path: '', component: circle, name: '操作员角色管理' },
+            { path: 'employeeManage', component: employeeManage, name: '员工管理' },
+            { path: 'departmentOrganization', component: departmentOrganization, name: '部门组织架构' },
+            { path: 'operatorAccountManage', component: operatorAccountManage, name: '操作员账号管理' },
+            { path: 'operatorRoleManage', component: operatorRoleManage, name: '操作员角色管理' },
         ]
     },
     {
