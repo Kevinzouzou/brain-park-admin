@@ -219,6 +219,15 @@
 				// bottom: 0px;
 				.el-menu{
 					height: 100%;
+					.el-submenu{
+						.fa{
+							vertical-align: middle;
+							margin-right: 5px;
+							width: 24px;
+							text-align: center;
+							font-size: 18px;
+						}
+					}
 				}
 				.collapsed{
 					width:60px;

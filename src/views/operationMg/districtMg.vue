@@ -2,17 +2,14 @@
     <section>
         <el-row :gutter="20">
             <el-col :span="7">
-                <el-col :span="24" justify="center">
-                    <el-form :inline="true" :model="districtFilters">
+                <el-col :span="24" justify="center" class="topBar">
+                    <el-form :inline="true">
                         <el-form-item>
-                            <el-input v-model="districtFilters.keyword" placeholder="输入区域关键字"></el-input>
-                        </el-form-item>
-                        <el-form-item>
-                            <el-button type="primary" v-on:click="getQueryDistrict">查询</el-button>
+                            <el-input v-model="keyword" placeholder="输入区域关键字进行过滤"></el-input>
                         </el-form-item>
                     </el-form>
                 </el-col>
-                <el-col :span="24" style="padding-bottom: 0px;">
+                <el-col :span="24" style="padding-bottom: 0px;" class="toolbar">
                     <el-form :inline="true">
                         <el-form-item>
                             <el-button type="primary" @click="downloadTemp">下载模板</el-button>
@@ -38,41 +35,42 @@
                             :render-content="renderContent"
                             :expand-on-click-node="false"
                             :default-expanded-keys="defaultExpandKeys"
+                            :filter-node-method="filterNode"
                             @node-click="handleNodeClick">
                     </el-tree>
                 </el-col>
 
             </el-col>
             <el-col :span="17">
-                <el-col :span="24" style="padding-bottom: 0px;">
-                   松湖智谷 三期 3号楼 4层 A
+                <el-col :span="24" style="padding-bottom: 0px;margin: 10px 0 5px;">
+                   松湖智谷 {{area}} {{build}} {{floor}} {{room}}
                 </el-col>
-                <el-col :span="24" class="containArea">
-                    <span>包含区域数：0</span>
-                    <span>包含楼栋数：0</span>
-                    <span>包含楼层数：0 </span>
-                    <span>包含单元数：1</span>
+                <el-col :span="24" class="containArea" style="margin-bottom: 7px;">
+                    <span>包含区域数：{{areanum}}</span>
+                    <span>包含楼栋数：{{buildnum}}</span>
+                    <span>包含楼层数：{{floornum}} </span>
+                    <span>包含单元数：{{roomnum}}</span>
                 </el-col>
                 <!--工具条-->
-                <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
+                <el-col :span="24" v-show="showZone" class="toolbar" style="padding-bottom: 0px;">
                     <el-form :inline="true">
                         <el-form-item>
                             <el-button type="danger" @click="delAreaNodes">删除区域节点</el-button>
                         </el-form-item>
                     </el-form>
                 </el-col>
-                <el-form :model="areaForm" label-width="80px" ref="areaForm" :rules="rules" class="areaMg">
+                <el-form v-show="showZone" :model="zoneDatas" label-width="90px" ref="zoneDatas" :rules="rules" class="areaMg">
                     <el-form-item label="区域级别">
-                        5级
+                        {{zoneDatas.level}} 级
                     </el-form-item>
                     <el-form-item label="区域名称" prop="name">
-                        <el-input v-model="areaForm.name" auto-complete="off"></el-input>
+                        <el-input v-model="zoneDatas.name" auto-complete="off" placeholder="输入区域名称"></el-input>
                     </el-form-item>
                     <el-form-item label="门点">
-                        <ul class="doors">
-                            <li v-for="(item,index) in areaForm.doorTips">
-                                <el-input v-model="item.tip" auto-complete="off"></el-input>
-                                <el-select v-model="item.tipValue" placeholder="请选择">
+                        <ul class="doors" v-if="zoneDatas.addInfo.doors">
+                            <li v-for="(item,index) in zoneDatas.addInfo.doors">
+                                <el-input v-model="item.name" auto-complete="off" placeholder="输入门点"></el-input>
+                                <el-select v-model="item.type" placeholder="请选择">
                                     <el-option v-for="item in passagewayList" :key="item.id" :label="item.name" :value="item.name">
                                     </el-option>
                                 </el-select>
@@ -82,7 +80,7 @@
                     </el-form-item>
                     <el-form-item>
                         <el-button type="primary" @click="addDoors">新增门点</el-button>
-                        <el-button @click="saveChanges('areaForm')">保存修改</el-button>
+                        <el-button @click="saveChanges('zoneDatas')">保存修改</el-button>
                     </el-form-item>
                 </el-form>
             </el-col>
@@ -95,104 +93,14 @@
 </template>
 
 <script>
-    import {showDisplay, addDisplay, deleteDisplay, findDic, showDict, addDict, deleteDict,uploadPic} from '../../api/api'
+    import {treeUrl, upParkTreeUrl, delParkTreeUrl, } from '../../api/api'
     import TreeRender from '../../components/tree-render';
     export default {
        data(){
            return {
-               districtFilters:{
-                   keyword:''
-               },
+               keyword:'',
                isLoadingTree: true,//是否加载节点树
-               dataTree: [
-                   {
-                       id:0,
-                       isEdit:false,
-                       pid:'',
-                       remark:'',
-                       name:'松湖智谷',
-                       children:[
-                           {
-                               id:1,
-                               isEdit:false,
-                               pid: 0,
-                               remark: '',
-                               name: '一期'
-                           },
-                           {
-                               id:2,
-                               pid: 0,
-                               isEdit:false,
-                               name: '二期'
-                           },
-                           {
-                               id:3,
-                               pid: 0,
-                               isEdit:false,
-                               name: '三期',
-                               children: [
-                                   {
-                                       id:301,
-                                       pid: 3,
-                                       isEdit:false,
-                                       name: '3号楼',
-                                       children: [
-                                           {
-                                               id:30101,
-                                               pid: 301,
-                                               isEdit:false,
-                                               name: '3层'
-                                           },
-                                           {
-                                               id:30102,
-                                               pid: 301,
-                                               isEdit:false,
-                                               name: '4层',
-                                               children:[
-                                                   {id:3010201, pid:30102, idEdit:false, name:'A'},
-                                                   {id:3010202, pid:30102, idEdit:false, name:'B'},
-                                                   {id:3010203, pid:30102, idEdit:false, name:'C'},
-                                                   {id:3010204, pid:30102, idEdit:false, name:'F1'},
-                                                   {id:3010205, pid:30102, idEdit:false, name:'F2'}
-                                               ]
-                                           },
-                                           {
-                                               id:30103,
-                                               pid: 301,
-                                               isEdit:false,
-                                               name: '5层'
-                                           },
-                                           {
-                                               id:30104,
-                                               pid: 301,
-                                               isEdit:false,
-                                               name: '6层',
-                                               children:[
-                                                   {id:3010401, pid:30102, idEdit:false, name:'001'},
-                                                   {id:3010402, pid:30102, idEdit:false, name:'002'}
-                                               ]
-                                           },
-                                       ]
-                                   }
-                               ]
-                           },
-                           {
-                               id:4,
-                               isEdit:false,
-                               pid: 0,
-                               remark: '',
-                               name: '四期'
-                           },
-                           {
-                               id:5,
-                               isEdit:false,
-                               pid: 0,
-                               remark: '',
-                               name: '五期'
-                           }
-                       ]
-                   }
-               ],
+               dataTree: [],
                defaultProps: {
                    children: 'children',
                    label: 'name'
@@ -200,13 +108,12 @@
                defaultExpandKeys: [],//默认展开节点列表
                non_maxexpandId: 100,//api.maxexpandId,//新增节点开始id(不更改)
                maxexpandId: 95,
-               areaForm:{
+               zoneDatas:{
                    name:'',
-                   doorTips:[
-                       {tip:'大门', tipValue:'出入口'},
-                       {tip:'出口门', tipValue:'出口'},
-                       {tip:'入口门', tipValue:'入口'}
-                   ],
+                   level:0,
+                   addInfo:{
+                       doors:[],
+                   }
                },
                passagewayList:[
                    {
@@ -231,19 +138,34 @@
                pathTitle:'导入区域的路径',
                path:'本地路径',
                deviceNum:0,
+               zoneNodes:{},
+               areanum:0,
+               buildnum:0,
+               floornum:0,
+               roomnum:0,
+               area:'未选中区域',
+               build:'',
+               floor:'',
+               room:'',
+               showZone:false,
 
            }
        },
+        watch: {
+            keyword(val) {
+                this.$refs.tree.filter(val);
+            }
+        },
         methods:{
-            getQueryDistrict(){//条件查询
-                // let type='公告';
-                // let url=showDisplay+type;
-                // let title=this.districtFilters.keyword;
-                // url=title===''?url+'':url+'&title='+title;
-                // this.getDistrict(url);
-                // this.districtFilters={
-                //     keyword:''
-                // }
+            filterNode(value, data) {
+                if (!value) return true;
+                return data.name.indexOf(value) !== -1;
+            },
+            getTree(){//组织架构信息
+                let type='&type=区域';
+                this.$get(treeUrl+type).then((res)=>{
+                    this.dataTree=res;
+                })
             },
             getDistrictList(){//获取列表数据
                 // this.getDistrict(districtUrl);
@@ -261,12 +183,6 @@
             exportArea(){//导出区域
                 this.pathVisible=true;
                 this.pathTitle='导出区域的路径';
-            },
-            initExpand(){
-                this.dataTree.map((a) => {
-                    this.defaultExpandKeys.push(a.id)
-                });
-                this.isLoadingTree = true;
             },
             renderContent(h,{node,data,store}){//加载节点
                 let that = this;
@@ -289,7 +205,7 @@
                     id: ++this.maxexpandId,
                     name: '新增节点',
                     pid: '',
-                    isEdit: false,
+                    // isEdit: false,
                     children: []
                 })
             },
@@ -304,7 +220,7 @@
                     id: ++this.maxexpandId,
                     name: '新增节点',
                     pid: d.id,
-                    isEdit: false,
+                    // isEdit: false,
                     children: []
                 });
                 //展开节点
@@ -362,31 +278,103 @@
                 children.splice(index, 1);
             },
             handleNodeClick(d,n,s){//点击节点
-                // console.log(d,n)
-                d.isEdit = false;//放弃编辑状态
+                this.zoneDatas=d;
+                this.zoneNodes=n;
+                console.log(d,n)
+                // d.isEdit = false;//放弃编辑状态
+                this.showZone=true;
+                if(this.zoneDatas.level===4){
+                    this.areanum=0;this.buildnum=0;this.floornum=0;this.roomnum=1;
+                }else if(this.zoneDatas.level===3){
+                    this.areanum=0;this.buildnum=0;this.floornum=1;
+                    this.roomnum=this.zoneDatas.children && this.zoneDatas.children.length>0?this.zoneDatas.children.length:0;
+                }else if(this.zoneDatas.level===2){
+                    this.areanum=0;this.buildnum=1;
+                    if(this.zoneDatas.children && this.zoneDatas.children.length>0){
+                       let num=0;
+                       this.zoneDatas.children.forEach((item)=>{
+                           num=item.children && item.children.length>0?item.children.length+num:num;
+                       });
+                       this.floornum=this.zoneDatas.children.length;
+                       this.roomnum=num;
+                    }else{
+                        this.floornum=0;this.roomnum=0;
+                    }
+                }else if(this.zoneDatas.level===1){
+                    this.areanum=1;
+                    if(this.zoneDatas.children && this.zoneDatas.children.length>0){
+                        let num=0;let num2=0;
+                        this.zoneDatas.children.forEach((item)=>{
+                            num=item.children && item.children.length>0?item.children.length+num:num;
+                            if(item.children && item.children.length>0){
+                                item.children.forEach((item2)=>{
+                                    num2=item2.children && item2.children.length>0?item2.children.length+num2:num2;
+                                })
+                            }
+                        });
+                        this.buildnum=this.zoneDatas.children.length;
+                        this.floornum=num;this.roomnum=num2;
+                    }else{
+                        this.buildnum=0;this.floornum=0;this.roomnum=0;
+                    }
+                }
+                if(this.zoneNodes.level===1){
+                    this.area=this.zoneNodes.label;this.build='';this.floor='';this.room='';
+                }else if(this.zoneNodes.level===2){
+                    this.area=this.zoneNodes.parent.label;this.build=this.zoneNodes.label;this.floor='';this.room='';
+                }else if(this.zoneNodes.level===3){
+                    this.area=this.zoneNodes.parent.parent.label;this.build=this.zoneNodes.parent.label;
+                    this.floor=this.zoneNodes.label;this.room='';
+                }else if(this.zoneNodes.level===4){
+                    this.area=this.zoneNodes.parent.parent.parent.label;this.build=this.zoneNodes.parent.parent.label;
+                    this.floor=this.zoneNodes.parent.label;this.room=this.zoneNodes.label;
+                }
             },
             addDoors(){//新增门点
-                let obj={tip:'',tipValue:''}
-                this.areaForm.doorTips.push(obj)
+                console.log(this.zoneDatas.addInfo.doors)
+                let obj={name:'',type:'请选择'};
+                if(!this.zoneDatas.addInfo.doors){
+                    this.zoneDatas.addInfo.doors=[];
+                }
+                this.zoneDatas.addInfo.doors.push(obj)
             },
             delAreaNodes(){//删除区域节点
                 this.$confirm('区域内包括 '+this.deviceNum+' 家入驻企业！ 删除该门点将清除入驻企业的地址信息?', '提示', {
                     type: 'warning'
                 }).then(() => {
-                   console.log('相应的动作')
-                    this.$message({
-                        message: '区域门点删除成功',
-                        type: 'success'
-                    });
+                    let self=this;
+                    this.$del(delParkTreeUrl+this.zoneDatas.id)
+                        .then(function(response) {
+                            self.$message({
+                                message: '区域门点删除成功',
+                                type: 'success'
+                            });
+                            self.getTree();
+                        });
                 }).catch(() => {
 
                 });
             },
             deleteNode(index){//删除节点
-                this.$confirm('门口已被 '+this.deviceNum+' 个门禁设备绑定！ 删除该门点将解除设备的绑定关系?', '提示', {
+                this.$confirm('删除该门点将解除设备的绑定关系?', '提示', {
                     type: 'warning'
                 }).then(() => {
-                    this.areaForm.doorTips.splice(index,1)
+                    this.zoneDatas.addInfo.doors.splice(index,1);
+                    let parentId=this.zoneNodes.level===1?'':this.zoneNodes.parent.key;
+                    let data={
+                        addInfo: {
+                            doors:this.zoneDatas.addInfo.doors
+                        },
+                        id: this.zoneNodes.key,
+                        parkId:localStorage.getItem("parkId"),
+                        level:this.zoneNodes.level,
+                        parentId:parentId,
+                        name:this.zoneNodes.label
+                    };
+                    this.$post(upParkTreeUrl,data)
+                        .then((res)=>{
+                            this.getTree();
+                        })
                     this.$message({
                         message: '门点删除成功',
                         type: 'success'
@@ -401,7 +389,21 @@
                         this.$confirm('确认修改吗？', '提示', {
                             type:'warning'
                         }).then(() => {
-                            console.log(this.areaForm)
+                            let parentId=this.zoneNodes.level===1?'':this.zoneNodes.parent.key;
+                            let data={
+                                addInfo: {
+                                    doors:this.zoneDatas.addInfo.doors
+                                },
+                                id: this.zoneNodes.key,
+                                parkId:localStorage.getItem("parkId"),
+                                level:this.zoneNodes.level,
+                                parentId:parentId,
+                                name:this.zoneNodes.label
+                            };
+                            this.$post(upParkTreeUrl,data)
+                                .then((res)=>{
+                                    this.getTree();
+                                })
                         }).catch(() => {
 
                         });
@@ -416,12 +418,16 @@
 
         },
         mounted(){
-
+            this.getTree(); //区域信息
         }
     }
 </script>
 
 <style lang="scss" scoped>
+    .topBar{
+        padding: 0 10px;
+        margin: 10px 0 0;
+    }
     .expand-tree .tree-expand .tree-label{
         margin-right: 30px;
         &.tree-new{
@@ -436,6 +442,7 @@
         }
     }
     .areaMg{
+        margin-bottom: 30px;
         .el-input{
             width: 200px;
         }
@@ -443,7 +450,7 @@
             li{
                 margin-bottom: 15px;
                 .el-select{
-                    width: 150px;
+                    width: 200px;
                     margin: 0 15px;
                 }
             }

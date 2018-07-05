@@ -6,6 +6,7 @@ let base = '';
 localStorage.setItem("parkId",'969878f1f1149e6a7afae38636c0abc');
 localStorage.setItem("userId",'71f3df48263f4c74be2efbb83250e66b');
 localStorage.setItem("upUrl",'http://218.17.39.178:2040');  //微品云（开发）
+// localStorage.setItem("upUrl",'https://shbeta.vpclub.cn/api10005');//新阿里云
 // localStorage.setItem("upUrl",'http://39.107.252.186:10005');//阿里云地址（正式）
 // localStorage.setItem("upUrl",'http://192.168.7.109:2040');//another
 // localStorage.setItem("upUrl",'http://172.16.0.7:2040');//本地
@@ -60,4 +61,29 @@ export const attendList=`/clock/clockList?parkId=`+localStorage.getItem("parkId"
 export const unAttendList=`/attendance/unusualAttendanceList?parkId=`+localStorage.getItem("parkId");  //考勤异常接口
 export const approvalList=`/advertisement/approvalList?parkId=`+localStorage.getItem("parkId");  //审批
 export const userListUrl=`/parkUserPermission/parkUserList?parkId=`+localStorage.getItem("parkId")+'&type=2';  //查询用户列表
-export const schedListUrl=`scheduling/schedulingList?parkId=`+localStorage.getItem("parkId")+'&date=';  //查询用户列表
+export const schedListUrl=`/scheduling/schedulingList?parkId=`+localStorage.getItem("parkId")+'&date=';  //查询用户列表
+export const scheChange=`scheduling/operScheduling`;  //添加或修改某个人的排班信息
+
+export const enterpriseUrl=`/settledEnterprise/settledEnterpriseList?parkId=`+localStorage.getItem("parkId");  //查找企业信息
+export const addUpEnterUrl=`/settledEnterprise/addOrUpdatedEnterprise`;  //查找企业信息
+export const delEnterUrl=`/settledEnterprise/deleteEnterprise/`;  //删除企业信息
+export const treeUrl=`/parkInfoTree/parkInfoTreeList?parkId=`+localStorage.getItem("parkId");  //组织架构/区域列表
+export const findUserUrl=`/parkUser/findUserByDepartmentId/`+localStorage.getItem("parkId")+'/';  //查找部门下员工信息
+export const upSchUrl=`/parkUser/updateIfScheduling`;  //修改此用户是否排班信息
+export const upParkTreeUrl=`/parkInfoTree/addOrUpdateParkInfoTree`;  //添加或修改组织架构/区域
+export const delParkTreeUrl=`/parkInfoTree/deleteParkInfoTree/`;  //删除组织结构/区域
+
+
+
+// 用户管理
+export const parkStaffList = `/parkStaff/parkStaffList?parkId=` + localStorage.getItem("parkId"); // 获取用户列表
+export const addOrUpdateParkStaff = `/parkStaff/addOrUpdateParkStaff`; // 添加或更新用户
+export const deleteStaff = `/parkStaff/deleteStaff/`; // 删除用户
+export const settledEnterpriseList = `/settledEnterprise/settledEnterpriseList?parkId=` + localStorage.getItem("parkId"); // 获取企业名单
+export const parkUserList = `/parkUserPermission/parkUserList?parkId=` + localStorage.getItem("parkId") + `&type=2`; // 获取员工列表
+export const parkInfoTreeList = `/parkInfoTree/parkInfoTreeList?parkId=` + localStorage.getItem("parkId") + `&type=`; // 获取组织架构树形结构
+export const parkOperatorList = `/parkUser/parkOperatorList?parkId=` + localStorage.getItem("parkId") + `&type=3` // 获取操作员列表
+export const addParkUser = `/parkUser/addParkUser`; // 添加员工/操作员
+export const deleteUser = `/parkUser/deleteUser/`; // 删除员工/操作员
+export const parkRoleList = `/parkRole/parkRoleList?parkId=` + localStorage.getItem("parkId"); // 查询角色列表
+

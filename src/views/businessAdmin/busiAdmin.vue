@@ -1,6 +1,6 @@
 <template>
     <section>
-        <el-col :span="24" justify="center">
+        <el-col :span="24" justify="center" class="topBar">
             <el-form :inline="true" :model="adminFilters">
                 <el-form-item>
                     <span>搜索条件：</span>
@@ -33,17 +33,17 @@
             </el-table-column>
             <el-table-column prop="name" label="企业名称" sortable>
             </el-table-column>
-            <el-table-column prop="addInfo.area" label="区域" sortable>
+            <el-table-column prop="zoneInfo[0].name" label="区域" sortable>
             </el-table-column>
-            <el-table-column prop="addInfo.building" label="楼栋" sortable>
+            <el-table-column prop="zoneInfo[1].name" label="楼栋" sortable>
             </el-table-column>
-            <el-table-column prop="addInfo.floor" label="楼层" sortable>
+            <el-table-column prop="zoneInfo[2].name" label="楼层" sortable>
             </el-table-column>
-            <el-table-column prop="addInfo.room" label="房号" sortable>
+            <el-table-column prop="zoneInfo[3].name" label="房号" sortable>
             </el-table-column>
-            <el-table-column prop="industry" label="所属行业" sortable>
+            <el-table-column prop="addInfo.industry" label="所属行业" sortable>
             </el-table-column>
-            <el-table-column prop="inTime" label="入驻时间" sortable>
+            <el-table-column prop="addInfo.enterTime" label="入驻时间" sortable>
             </el-table-column>
             <el-table-column label="操作">
                 <template slot-scope="scope">
@@ -67,17 +67,17 @@
         </el-col>
         <!--新增/编辑界面-->
         <el-dialog :title=addEditTitle :visible.sync="adminAEVisible" class="dialog">
-            <el-form :model="adminAEForm" label-width="80px" ref="adminAEForm" :rules="rules">
+            <el-form :model="adminAEForm" label-width="90px" ref="adminAEForm" :rules="rules">
                 <el-form-item label="企业名称" prop="name">
                     <el-input v-model="adminAEForm.name" auto-complete="off"></el-input>
                 </el-form-item>
-                <el-form-item label="所属行业" prop="industry">
-                    <el-select v-model="adminAEForm.industry" placeholder="请选择" @change="secIndustry">
-                        <el-option v-for="item in indusList" :key="item.id" :label="item.name" :value="item.id">
+                <el-form-item label="所属行业" prop="addInfo.industry">
+                    <el-select v-model="adminAEForm.addInfo.industry" placeholder="请选择">
+                        <el-option v-for="item in indusList" :key="item.id" :label="item.name" :value="item.name">
                         </el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item label="企业图片">
+                <el-form-item label="企业图片" class="allLength">
                     <el-upload :action=picUrl list-type="picture-card"
                                :on-preview="handlePictureCardPreview" :on-remove="handleRemove"
                                :file-list="imgAnList" :on-success="moreShow">
@@ -89,48 +89,48 @@
                 </el-form-item>
                 <el-form-item label="地址" class="secAddress allLength">
                     <span>松湖智谷园区</span>
-                    <el-select v-model="adminAEForm.addInfo.area" placeholder="选择区域" @change="secArea">
-                        <el-option v-for="item in areaList" :key="item.id" :label="item.name" :value="item.id">
+                    <el-select v-if="adminAEForm.zoneInfo[0]" v-model="adminAEForm.zoneInfo[0].name" placeholder="选择区域">
+                        <el-option v-for="item in level1" :key="item.id" :label="item.name" :value="item.name">
                         </el-option>
                     </el-select>
-                    <el-select v-model="adminAEForm.addInfo.building" placeholder="选择楼栋" @change="secBuild">
-                        <el-option v-for="item in buildList" :key="item.id" :label="item.name" :value="item.id">
+                    <el-select v-if="adminAEForm.zoneInfo[1]" v-model="adminAEForm.zoneInfo[1].name" placeholder="选择楼栋">
+                        <el-option v-for="item in level2" :key="item.id" :label="item.name" :value="item.name">
                         </el-option>
                     </el-select>
-                    <el-select v-model="adminAEForm.addInfo.floor" placeholder="选择楼层" @change="secFloor">
-                        <el-option v-for="item in floorList" :key="item.id" :label="item.name" :value="item.id">
+                    <el-select v-if="adminAEForm.zoneInfo[2]" v-model="adminAEForm.zoneInfo[2].name" placeholder="选择楼层">
+                        <el-option v-for="item in level3" :key="item.id" :label="item.name" :value="item.name">
                         </el-option>
                     </el-select>
-                    <el-select v-model="adminAEForm.addInfo.room" placeholder="选择房号" @change="secRoom">
-                        <el-option v-for="item in roomList" :key="item.id" :label="item.name" :value="item.id">
+                    <el-select v-if="adminAEForm.zoneInfo[3]" v-model="adminAEForm.zoneInfo[3].name" placeholder="选择房号" @change="roomChange">
+                        <el-option v-for="item in level4" :key="item.id" :label="item.name" :value="item.id">
                         </el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item label="企业描述" class="allLength">
                     <el-input type="textarea" :rows="3" placeholder="请填写企业描述（200字内）"
-                              maxlength="200" v-model="adminAEForm.textarea">
+                              maxlength="200" v-model="adminAEForm.addInfo.intro">
                     </el-input>
                 </el-form-item>
-                <el-form-item label="入驻时间" class="allLength" prop="inTime">
-                    <el-date-picker v-model="adminAEForm.inTime" type="date" placeholder="选择日期">
+                <el-form-item label="入驻时间" class="allLength" prop="addInfo.enterTime">
+                    <el-date-picker value-format="yyyy-MM-dd HH:mm:ss" v-model="adminAEForm.addInfo.enterTime" type="date" placeholder="选择日期">
                     </el-date-picker>
                     <el-button type="success" @click="secDayTime">今日</el-button>
                 </el-form-item>
             </el-form>
-            <el-form label-width="100px" v-if="isEdit">
-                <el-form-item label="创建时间">
-                    {{modifyList.createTime}}
-                </el-form-item>
-                <el-form-item label="创建人">
-                    {{modifyList.createName}}
-                </el-form-item>
-                <el-form-item label="最后修改时间">
-                    {{modifyList.lastTime}}
-                </el-form-item>
-                <el-form-item label="修改人">
-                    {{modifyList.modifyName}}
-                </el-form-item>
-            </el-form>
+            <!--<el-form label-width="100px" v-if="isEdit">-->
+                <!--<el-form-item label="创建时间">-->
+                    <!--{{modifyList.createTime}}-->
+                <!--</el-form-item>-->
+                <!--<el-form-item label="创建人">-->
+                    <!--{{modifyList.createName}}-->
+                <!--</el-form-item>-->
+                <!--<el-form-item label="最后修改时间">-->
+                    <!--{{modifyList.lastTime}}-->
+                <!--</el-form-item>-->
+                <!--<el-form-item label="修改人">-->
+                    <!--{{modifyList.modifyName}}-->
+                <!--</el-form-item>-->
+            <!--</el-form>-->
 
             <div slot="footer" class="dialog-footer">
                 <el-button @click.native="adminAEVisible = false">取消</el-button>
@@ -143,12 +143,17 @@
 
 <script type="text/ecmascript-6">
     import UE from '../../components/ue'
-    import {showDisplay, addDisplay, deleteDisplay,uploadPic, findDic, showDict, addDict, deleteDict,userTarget} from '../../api/api'
+    import {enterpriseUrl,addUpEnterUrl,delEnterUrl,treeUrl, addDisplay, deleteDisplay,uploadPic, } from '../../api/api'
 
     export default {
         components: {UE},
         data(){
             return {
+                treeList:[],
+                level1:[],
+                level2:[],
+                level3:[],
+                level4:[],
                 industry:'',
                 secAreaValue:'',
                 secBuildValue:'',
@@ -159,10 +164,11 @@
                 buildLabel:'',
                 floorLabel:'',
                 roomLabel:'',
+                zoneId:'',
                 indusList:[
                     {
                         id:1,
-                        name:'计算机/互联网'
+                        name:'计算机/互联网/通讯/电子'
                     },
                     {
                         id:2,
@@ -171,7 +177,39 @@
                     {
                         id:3,
                         name:'服务业'
-                    }
+                    },
+                    {
+                        id:4,
+                        name:'会计/金融/银行/保险'
+                    },
+                    {
+                        id:5,
+                        name:'贸易/消费/制造/运营'
+                    },
+                    {
+                        id:6,
+                        name:'制药/医疗'
+                    },
+                    {
+                        id:7,
+                        name:'房地产/建筑'
+                    },
+                    {
+                        id:8,
+                        name:'专业服务/教育/培训'
+                    },
+                    {
+                        id:9,
+                        name:'物流/运输'
+                    },
+                    {
+                        id:10,
+                        name:'能源/原材料'
+                    },
+                    {
+                        id:11,
+                        name:'政府/非营利组织/其他'
+                    },
                 ],
                 areaList:[
                     {
@@ -244,15 +282,18 @@
                 adminAEVisible:false,
                 adminAEForm:{
                     name:'',
-                    textarea:'',
-                    inTime:'',
-                    industry:'',
                     addInfo:{
-                        area:'',
-                        building:'',
-                        floor:'',
-                        room:''
-                    }
+                        industry:'',
+                        logo:'',
+                        intro:'',
+                        enterTime:'',
+                    },
+                    zoneInfo:[
+                        {name:''},
+                        {name:''},
+                        {name:''},
+                        {name:''}
+                    ]
                 },
                 adminList:[
                     {
@@ -289,12 +330,12 @@
                     name: [
                         { required: true, message: '请填写企业名称', trigger: 'blur' }
                     ],
-                    industry: [
+                    addInfo:{industry: [
                         { required: true, message: '请选择所属行业', trigger: 'change' }
                     ],
-                    inTime: [
-                        { type: 'date', required: true, message: '请选择入驻时间', trigger: 'change' }
-                    ]
+                   enterTime: [
+                        { type: 'string', required: true, message: '请选择入驻时间', trigger: 'change' }
+                    ]}
                 },
                 modifyList:{
                     createTime:'2018-06-02 17:30:30',
@@ -302,6 +343,7 @@
                     lastTime:'2018-06-20 19:10:15',
                     modifyName:'李小四'
                 },
+                morePicList:[],
 
             }
         },
@@ -314,8 +356,8 @@
                 month=month<10?'0'+month:''+month;
                 let day = now.getDate() <10 ? '0' + now.getDate() : '' + now.getDate(); //
                 this.admAELoading=true;
-                this.adminAEForm.inTime=year+'-'+month+'-'+day;
-
+                this.adminAEForm.enterTime=year+'-'+month+'-'+day;
+                this.admAELoading = false;
             },
             handlePictureCardPreview(file) {
                 this.dialogAnImageUrl = file.url;
@@ -334,33 +376,13 @@
                 });
                 this.selectLabel=obj.name;
             },
-            secArea(value){
+            roomChange(value){
                 let obj = {};
-                obj = this.areaList.find((item)=>{//遍历的数据源
-                    return item.id === value;//筛选出匹配数据
-                });
-                this.areaLabel=obj.name;
-            },
-            secBuild(value){
-                let obj = {};
-                obj = this.buildList.find((item)=>{//遍历的数据源
-                    return item.id === value;//筛选出匹配数据
-                });
-                this.buildLabel=obj.name;
-            },
-            secFloor(value){
-                let obj = {};
-                obj = this.floorList.find((item)=>{//遍历的数据源
-                    return item.id === value;//筛选出匹配数据
-                });
-                this.floorLabel=obj.name;
-            },
-            secRoom(value){
-                let obj = {};
-                obj = this.roomList.find((item)=>{//遍历的数据源
+                obj = this.level4.find((item)=>{//遍历的数据源
                     return item.id === value;//筛选出匹配数据
                 });
                 this.roomLabel=obj.name;
+                this.zoneId=obj.id;
             },
             exportData(){//导出到表格
 
@@ -374,30 +396,85 @@
                 this.adminAEVisible=true;
                 this.adminAEForm={
                     name:'',
-                    textarea:'',
-                    inTime:'',
-                    industry:'',
                     addInfo:{
-                        area:'',
-                        building:'',
-                        floor:'',
-                        room:''
-                    }
+                        industry:'',
+                        enterTime:'',
+                        logo:'',
+                        intro:'',
+                    },
+                    zoneInfo:[
+                        {name:''},
+                        {name:''},
+                        {name:''},
+                        {name:''}
+                    ]
                 };
             },
             getQueryAdmin(){ // 企业管理模糊查询
-                let type='企业管理';
-                let url=showDisplay+type;
-                let title=this.adminFilters.enterName;
-                url=title===''?url+'':url+'&title='+title;
+                let url=enterpriseUrl;
+                let name=this.adminFilters.enterName;
+                url=name===''?url+'':url+'&name='+name;
                 this.getAnData(url);
                 this.adminFilters={
                     enterName:''
                 }
             },
+            getTree(){
+                let type='&type=区域';
+                this.$get(treeUrl+type)
+                    .then((res) => {
+                        this.treeList=res;
+                        // let obj={};
+                        this.treeList.forEach((item)=>{
+                            if(item.level===1){
+                                let obj={
+                                    level:item.level,
+                                    name:item.name,
+                                    id:item.id
+                                };
+                                this.level1.push(obj);
+                            }
+                            if(item.children.length>0){
+                                item.children.forEach((item2)=>{
+                                    if(item2.level===2) {
+                                        let obj = {
+                                            level: item2.level,
+                                            name: item2.name,
+                                            id: item2.id
+                                        };
+                                        this.level2.push(obj);
+                                    }
+                                    if(item2.children.length>0){
+                                        item2.children.forEach((item3)=>{
+                                            if(item3.level===3) {
+                                                let obj = {
+                                                    level: item3.level,
+                                                    name: item3.name,
+                                                    id: item3.id
+                                                };
+                                                this.level3.push(obj);
+                                            }
+                                            if(item3.children.length>0){
+                                                item3.children.forEach((item4)=>{
+                                                    if(item4.level===4) {
+                                                        let obj = {
+                                                            level: item4.level,
+                                                            name: item4.name,
+                                                            id: item4.id
+                                                        };
+                                                        this.level4.push(obj);
+                                                    }
+                                                })
+                                            }
+                                        })
+                                    }
+                                })
+                            }
+                        });
+                    })
+            },
             getAdminList(){    //企业管理列表
-                let type='企业管理';
-                this.getAnData(showDisplay+type);
+                this.getAnData(enterpriseUrl);
             },
             getAnData(url){
                 this.adminLoading=true;
@@ -415,7 +492,7 @@
                     this.adminLoading = true;
                     let para = { id: row.id };
                     let self=this;
-                    this.$del(deleteDisplay+para.id)
+                    this.$del(delEnterUrl+para.id)
                         .then(function(response) {
                             self.adminLoading = false;
                             self.$message({
@@ -434,6 +511,8 @@
                 this.isEdit=true;
                 this.adminAEVisible = true;
                 this.adminAEForm = Object.assign({}, row);
+                this.roomLabel=row.zoneInfo[3].name;
+                this.zoneId=row.zoneInfo[3].id;
             },
             sizeChange(val) {
                 this.pagesize=val;
@@ -447,21 +526,24 @@
                     if (valid) {
                         this.$confirm('确认提交吗？', '提示', {}).then(() => {
                             this.admAELoading = true;
-                            // let para = Object.assign({}, this.adminAEForm);
-                            // let data={
-                            //     parkId:localStorage.getItem("parkId"),
-                            //     thumbUrl:'null',
-                            //     title:this.adminAEForm.title,
-                            //     type:'企业管理',
-                            //     detailUrl:'null',
-                            //     addInfo:{
-                            //         themeContent:this.announceContent
-                            //     }
-                            // };
+                           let address='松湖智谷园区'+this.adminAEForm.zoneInfo[0].name+this.adminAEForm.zoneInfo[1].name+
+                                this.adminAEForm.zoneInfo[2].name+this.roomLabel;
+                            let data={
+                                parkId:localStorage.getItem("parkId"),
+                                address:address,
+                                name:this.adminAEForm.name,
+                                addInfo:{
+                                    zoneId:this.zoneId,
+                                    industry:this.adminAEForm.addInfo.industry,
+                                    logo:this.morePicList[0],
+                                    enterTime:this.adminAEForm.addInfo.enterTime,
+                                    intro:this.adminAEForm.addInfo.intro
+                                }
+                            };
                             if(this.isEdit){
                                 data.id=this.isEditId;
                             }
-                            this.$post(addDisplay,data)
+                            this.$post(addUpEnterUrl,data)
                                 .then((res)=>{
                                     this.admAELoading = false;
                                     this.adminAEVisible = false;
@@ -477,13 +559,18 @@
 
         },
         mounted(){
-            // this.getAdminList();   //企业管理
+            this.getAdminList();   //企业管理
             this.picUrl=localStorage.getItem("upUrl")+uploadPic;
+            this.getTree(); //获取区域信息
         }
     }
 </script>
 
 <style lang="scss">
+    .topBar{
+        padding: 0 10px;
+        margin: 10px 0 0;
+    }
     .dialog{
         .el-form{
             .el-form-item{
@@ -498,7 +585,7 @@
     .secAddress{
         .el-select{
             display: inline-block;
-            width: 120px;
+            width: 145px;
             margin-right: 10px;
         }
     }
