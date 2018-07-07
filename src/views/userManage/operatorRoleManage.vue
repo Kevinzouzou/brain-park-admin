@@ -18,9 +18,9 @@
             </el-table-column>
             <el-table-column prop="name" label="角色名称">
             </el-table-column>
-            <el-table-column prop="addInfo.permissionList" label="权限">
+            <el-table-column prop="addInfo.permissionList" label="权限" width="1000">
                 <template slot-scope="scope">
-                    <span :key="item.id" v-for="item in scope.row.permissionList">{{item}}；</span>
+                    <span :key="item" v-for="item in scope.row.addInfo.permissionList">{{item}}、</span>
                 </template>
             </el-table-column>
             <el-table-column label="操作" width="150">

@@ -16,17 +16,25 @@
                 <!--工具条-->
                 <div style="line-height: 40px;padding-left: 50px;color: #606266;margin-bottom: 22px;">
                     松湖智谷管理公司
-                    <span>{{departmentName}}</span>
+                    <span>{{currentDepartmentalOrganizational.name}}</span>
                 </div>
                 <el-card shadow="never">
-                    <el-form :inline="true" class="demo-form-inline" :label-position="'right'" label-width="120px">
-                        <el-form-item label="部门级别：">
-                            <span>{{departmentLevel}}级</span>
-                        </el-form-item>
-                        <el-form-item label="部门名称：">
-                            <el-input placeholder="部门名称" v-model="departmentName" style="width:300px;"></el-input>
-                        </el-form-item>
-                    </el-form>
+                    <el-row type="flex" justify="space-between">
+                        <el-col :span="12">
+                            <el-form :inline="true" class="demo-form-inline" :label-position="'right'" label-width="120px">
+                                <el-form-item label="部门级别：">
+                                    <span>{{currentDepartmentalOrganizational.level}} 级</span>
+                                </el-form-item>
+                                <el-form-item label="部门名称：">
+                                    <el-input placeholder="请选择左侧部门结构" v-model="currentDepartmentalOrganizational.name" style="width:300px;"></el-input>
+                                </el-form-item>
+                            </el-form>
+                        </el-col>
+                        <el-col :span="6">
+                            <el-button type="primary" @click="saveDepartmantChanges()">保存当前修改</el-button>
+                            <el-button type="danger" @click="delParkTreeUrl()">删除当前部门</el-button>
+                        </el-col>
+                    </el-row>
                     <el-card shadow="never">
                         <div style=" padding-left: 20px;color: #606266;">
                             办公区域关联
@@ -35,36 +43,36 @@
                             <el-table :data="parkInfoTreeAddZoneInfoData" style="width: 100%" height="250" v-loading="parkInfoTreeAddZoneInfoLoading">
                                 <el-table-column label="区域">
                                     <template slot-scope="scope">
-                                        {{scope.row[0].name}}
+                                        <span v-if="scope.row[0].name">{{scope.row[0].name}}</span>
                                     </template>
                                 </el-table-column>
                                 <el-table-column label="楼栋">
                                     <template slot-scope="scope">
-                                        {{scope.row[1].name}}
+                                        <span v-if="scope.row[1].name">{{scope.row[1].name}}</span>
                                     </template>
                                 </el-table-column>
                                 <el-table-column label="层">
                                     <template slot-scope="scope">
-                                        {{scope.row[2].name}}
+                                        <span v-if="scope.row[2].name">{{scope.row[2].name}}</span>
                                     </template>
                                 </el-table-column>
                                 <el-table-column label="房号">
                                     <template slot-scope="scope">
-                                        {{scope.row[3].name}}
+                                        <span v-if="scope.row[3].name">{{scope.row[3].name}}</span>
                                     </template>
                                 </el-table-column>
                                 <el-table-column label="操作">
                                     <template slot-scope="scope">
-                                        <el-button type="danger" size="small" @click="parkUserDel(scope.$index, scope.row)">删除</el-button>
+                                        <el-button type="danger" size="small" @click="parkInfoZoneDel(scope.$index, scope.row)">删除</el-button>
                                     </template>
                                 </el-table-column>
                             </el-table>
                         </el-card>
                         <el-form :inline="true" class="demo-form-inline" style="margin-top:20px;">
-                            <el-cascader style="width: 450px;" :separator="'-'" :options="departmentAreaList" v-model="selectedOptions" @change="handleChange"
-                                :props="departmentAreaListProps">
+                            <el-cascader placeholder="请选择办公区域关联" filterable clearable style="width: 450px;" :separator="'-'" :options="departmentAreaList"
+                                v-model="selectedOptions" :props="departmentAreaListProps">
                             </el-cascader>
-                            <el-button type="primary">新增</el-button>
+                            <el-button type="primary" @click="addOfficeArea()">新增</el-button>
                         </el-form>
                     </el-card>
                     <el-card shadow="never" style="margin-top:20px;">
@@ -72,15 +80,13 @@
                             管理端APP操作权限
                         </div>
                         <el-card shadow="never" style="margin-top:10px;">
-                            <el-row class="row-bg" style="margin:10px 0;">基本权限</el-row>
-                            <el-checkbox-group v-model="checkList">
+                            <el-checkbox-group v-model="currentDepartmentalOrganizational.addInfo.features" style="margin-bottom:20px;">
                                 <el-checkbox style="width: 200px;margin: 5px !important;" border label="门禁"></el-checkbox>
                                 <el-checkbox style="width: 200px;margin: 5px !important;" border label="打卡"></el-checkbox>
                                 <el-checkbox style="width: 200px;margin: 5px !important;" border label="排班"></el-checkbox>
                                 <el-checkbox style="width: 200px;margin: 5px !important;" border label="报修"></el-checkbox>
                             </el-checkbox-group>
-                            <el-row class="row-bg" style="margin:10px 0;">基本权限</el-row>
-                            <el-checkbox-group v-model="checkList">
+                            <el-checkbox-group v-model="currentDepartmentalOrganizational.addInfo.features" style="margin-bottom:20px;">
                                 <el-checkbox style="width: 200px;margin: 5px !important;" border label="入驻管理"></el-checkbox>
                                 <el-checkbox style="width: 200px;margin: 5px !important;" border label="投建管理"></el-checkbox>
                                 <el-checkbox style="width: 200px;margin: 5px !important;" border label="企业之家"></el-checkbox>
@@ -91,8 +97,7 @@
                                 <el-checkbox style="width: 200px;margin: 5px !important;" border label="商家联盟"></el-checkbox>
                                 <el-checkbox style="width: 200px;margin: 5px !important;" border label="租赁合同"></el-checkbox>
                             </el-checkbox-group>
-                            <el-row class="row-bg" style="margin:10px 0;">基本权限</el-row>
-                            <el-checkbox-group v-model="checkList">
+                            <el-checkbox-group v-model="currentDepartmentalOrganizational.addInfo.features">
                                 <el-checkbox style="width: 200px;margin: 5px !important;" border label="物业监控"></el-checkbox>
                                 <el-checkbox style="width: 200px;margin: 5px !important;" border label="维修管理"></el-checkbox>
                                 <el-checkbox style="width: 200px;margin: 5px !important;" border label="装修管理"></el-checkbox>
@@ -104,10 +109,7 @@
                             </el-checkbox-group>
                         </el-card>
                     </el-card>
-                    <el-row class="row-bg" style="margin-top:20px;">
-                        <el-button type="danger">删除部门</el-button>
-                        <el-button type="primary">保存修改</el-button>
-                    </el-row>
+
                 </el-card>
             </el-col>
         </el-row>
@@ -118,33 +120,44 @@
     import {
         parkInfoTreeList,
         parkInfoTreeAddZoneInfo,
+        addOrUpdateParkInfoTree,
         delParkTreeUrl
-    } from '../../api/api'
+    } from "../../api/api";
     export default {
         data() {
             return {
-                keyword: '',
-                departmentName: '',
-                departmentLevel: '1',
+                keyword: "",
                 parkInfoTreeListLoading: false,
                 parkInfoTreeList: [],
                 parkInfoTreeListProps: {
                     children: "children",
                     label: "name"
                 },
-                departmentAreaList: '',
+                departmentAreaList: "",
                 departmentAreaListProps: {
-                    value: 'id',
-                    children: 'children',
-                    label: 'name'
+                    value: "id",
+                    children: "children",
+                    label: "name"
                 },
                 parkInfoTreeAddZoneInfoLoading: false,
-                parkInfoTreeList: '',
-                selectedOptions: '',
-                options: '',
-                checkList: '',
-                parkInfoTreeAddZoneInfoData: '',
-                value: ''
+                selectedOptions: "",
+                options: "",
+                checkList: "",
+                parkInfoTreeAddZoneInfoData: [],
+                newArea: [],
+                value: "",
+                currentlySelectedNode: "",
+                currentDepartmentalOrganizational: {
+                    id: "",
+                    level: 1,
+                    name: "",
+                    parentId: "",
+                    parkId: "",
+                    addInfo: {
+                        features: [],
+                        zones: []
+                    }
+                }
             };
         },
         watch: {
@@ -171,44 +184,121 @@
             },
             // 点击树形结构查询员工列表
             handleNodeClick(data) {
-                if (data.parentId === '') {
-                    this.departmentName = '';
-                    this.departmentLevel = '1';
+                this.currentlySelectedNode = data.id;
+                this.currentDepartmentalOrganizational.addInfo.features =
+                    data.addInfo.features;
+                if (data.parentId === "") {
+                    this.currentDepartmentalOrganizational.name = "";
+                    this.currentDepartmentalOrganizational.level = 1;
                 } else {
-                    this.departmentName = data.name;
-                    this.departmentLevel = data.level;
-                    this.getParkInfoTreeAddZoneInfo(data.id);
+                    this.currentDepartmentalOrganizational.id = data.id;
+                    this.currentDepartmentalOrganizational.parentId = data.parentId;
+                    this.currentDepartmentalOrganizational.name = data.name;
+                    this.currentDepartmentalOrganizational.level = data.level;
+                    this.getParkInfoTreeAddZoneInfo(this.currentlySelectedNode);
                 }
             },
             // 获取部门组织结构
             getParkInfoTreeList() {
                 this.parkInfoTreeListLoading = true;
-                this.$get(parkInfoTreeList + '组织架构')
-                    .then((res) => {
-                        this.parkInfoTreeList = res;
-                        console.log(this.parkInfoTreeList);
-                        this.parkInfoTreeListLoading = false;
-                    })
+                this.$get(parkInfoTreeList + "组织架构").then(res => {
+                    this.parkInfoTreeList = res;
+                    this.parkInfoTreeListLoading = false;
+                });
             },
             // 获取部门区域列表
             getDepartmentAreaList() {
-                this.$get(parkInfoTreeList + '区域')
-                    .then((res) => {
-                        this.departmentAreaList = this.killChildren(res);
-                        console.log(this.departmentAreaList);
-                    })
+                this.$get(parkInfoTreeList + "区域").then(res => {
+                    this.departmentAreaList = this.killChildren(res);
+                });
             },
             // 获取当前部门的办公区域
             getParkInfoTreeAddZoneInfo(id) {
-                this.parkInfoTreeAddZoneInfoData = '';
+                this.parkInfoTreeAddZoneInfoData = [];
                 this.parkInfoTreeAddZoneInfoLoading = true;
-                this.$get(parkInfoTreeAddZoneInfo + id)
-                    .then((res) => {
-                        this.parkInfoTreeAddZoneInfoData = res;
-                        this.parkInfoTreeAddZoneInfoLoading = false;
-                        console.log(this.parkInfoTreeAddZoneInfoData);
-                    })
+                this.$get(parkInfoTreeAddZoneInfo + id).then(res => {
+                    for (let i in res) {
+                        this.parkInfoTreeAddZoneInfoData.push(res[i]);
+                    }
+                    this.parkInfoTreeAddZoneInfoLoading = false;
+                    console.log(this.parkInfoTreeAddZoneInfoData);
+                });
             },
+            //删除当前部门的办公区域
+            parkInfoZoneDel: function (index, row) {
+                // let data = this.parkInfoTreeAddZoneInfoData;
+                // data.splice(index, 1);
+                // this.parkInfoTreeAddZoneInfoData = data;
+                this.parkInfoTreeAddZoneInfoData.splice(index, 1);
+            },
+            // 保存当前部门信息
+            saveDepartmantChanges() {
+                this.currentDepartmentalOrganizational.parkId = localStorage.getItem(
+                    "parkId"
+                );
+                let zones = this.parkInfoTreeAddZoneInfoData;
+                for (let i = 0; i < zones.length; i++) {
+                    let index = zones[i].length - 1;
+                    this.currentDepartmentalOrganizational.addInfo.zones.push(
+                        zones[i][index].id
+                    );
+                }
+                let data = this.currentDepartmentalOrganizational;
+                this.$post(addOrUpdateParkInfoTree, data).then(res => {
+                    this.$message({
+                        message: "修改成功",
+                        type: "success"
+                    });
+                    this.getParkInfoTreeList();
+                });
+            },
+            // 新增办公区域
+            addOfficeArea() {
+                this.newArea = [];
+                let data = this.selectedOptions;
+                let areaList = this.departmentAreaList;
+                this.seachAreaName(data, areaList, 0);
+                this.parkInfoTreeAddZoneInfoData.push(this.newArea);
+            },
+            seachAreaName(data, beSeachData, index) {
+                for (let j = 0; j < beSeachData.length; j++) {
+                    if (beSeachData[j].id === data[index]) {
+                        let areaData = {};
+                        areaData.name = beSeachData[j].name;
+                        areaData.id = beSeachData[j].id;
+                        this.newArea.push(areaData);
+                        index = index + 1;
+                        if (index < data.length) {
+                            this.seachAreaName(
+                                data,
+                                beSeachData[j].children,
+                                index
+                            );
+                        } else {
+                            return;
+                        }
+                    }
+                }
+            },
+            // 删除当前部门
+            delParkTreeUrl() {
+                this.$confirm(`该部门内包括23位员工。删除该部门将清除员工的部门信息！确定删除？`, '警告！', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'error',
+                    center: true
+                }).then(() => {
+                    this.$message({
+                        type: 'success',
+                        message: '删除成功!'
+                    });
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消删除'
+                    });
+                });
+            }
         },
         mounted() {
             this.getParkInfoTreeList();

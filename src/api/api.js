@@ -86,4 +86,4 @@ export const addParkUser = `/parkUser/addParkUser`; // 添加员工/操作员
 export const deleteUser = `/parkUser/deleteUser/`; // 删除员工/操作员 
 export const parkRoleList = `/parkRole/parkRoleList?parkId=` + localStorage.getItem("parkId"); // 查询角色列表
 export const addOrUpdateParkRole = `/parkRole/addOrUpdateParkRole` //添加或修改角色
-
+export const addOrUpdateParkInfoTree = `/parkInfoTree/addOrUpdateParkInfoTree`; //添加或修改组织架构/区域

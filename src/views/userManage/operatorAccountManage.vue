@@ -134,7 +134,7 @@
                 </el-row>
             </el-form>
             <div slot="footer" class="dialog-footer">
-                <el-button @click="addParkOperatorFormVisible = false">取 消</el-button>
+                <el-button @click="clearSelection()">取 消</el-button>
                 <el-button type="primary" @click="addParkOperator('addParkOperatorForm')">添加</el-button>
             </div>
             <el-dialog width="40%" title="选择员工" :visible.sync="innerParkUserVisible" append-to-body>
@@ -320,10 +320,13 @@
                                                 departmentName: ""
                                             }
                                         };
+                                        this.resetForm("addParkOperatorForm");
                                         this.$message({
                                             message: "添加成功",
                                             type: "success"
                                         });
+                                        this.clearSelection();
+                                        this.addParkOperatorFormVisible = false;
                                     }
                                 });
                         }
@@ -418,6 +421,13 @@
                     this.assignedRoleText += i.name + "、";
                     this.addParkOperatorForm.addInfo.roleList.push(i.id);
                 });
+            },
+            resetForm(formName) {
+                this.$refs[formName].resetFields();
+            },
+            clearSelection() {
+                this.addParkOperatorFormVisible = false;
+                this.$refs.multipleTable.clearSelection();
             }
         },
         mounted() {

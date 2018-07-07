@@ -4,7 +4,7 @@
             <el-col :span="5">
                 <el-card shadow="never" style="height:750px;overflow-y: scroll;" v-loading="parkInfoTreeListLoading">
                     <el-tree :data="parkInfoTreeList" :props="parkInfoTreeListProps" @node-click="handleNodeClick" :highlight-current="true"
-                        default-expand-all="true"></el-tree>
+                        default-expand-all :expand-on-click-node="false"></el-tree>
                 </el-card>
             </el-col>
             <el-col :span="19">
@@ -154,7 +154,7 @@
                             <el-input placeholder="姓名" v-model="editParkUserForm.addInfo.name"></el-input>
                         </el-form-item>
                         <el-form-item label="所属部门：" required prop="addInfo.departmentId">
-                            <el-cascader :show-all-levels="false" :options="departmentTreeData" v-model="editParkUserForm.addInfo.departmentId"></el-cascader>
+                            <el-cascader clearable :show-all-levels="false" :options="departmentTreeData" v-model="editParkUserForm.addInfo.departmentId"></el-cascader>
                         </el-form-item>
                         <el-form-item label="手机号码：" prop="phone" required>
                             <el-input placeholder="手机号码" v-model="editParkUserForm.phone"></el-input>
