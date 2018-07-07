@@ -33,13 +33,13 @@
                 <!--列表-->
                 <el-table :data="parkUserList.slice((page-1)*pagesize,page*pagesize)" highlight-current-row v-loading="parkUserListLoading"
                     style="width: 100%;">
-                    <el-table-column prop="addInfo.empNo" label="工号" width="60">
+                    <el-table-column prop="addInfo.empNo" label="工号" width="80">
                     </el-table-column>
                     <el-table-column prop="addInfo.name" label="姓名" sortable>
                     </el-table-column>
                     <el-table-column prop="addInfo.gender" label="性别">
                     </el-table-column>
-                    <el-table-column prop="addInfo.department" label="部门" sortable>
+                    <el-table-column prop="departmentInfo.name" label="部门" sortable>
                     </el-table-column>
                     <el-table-column prop="addInfo.position" label="职位" sortable>
                     </el-table-column>

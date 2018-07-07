@@ -50,11 +50,11 @@ let routes = [
         iconCls: 'fa fa-user-o',
         children: [ 
             // { path: 'userProfile', component: userProfile, name: '用户概况' },
-            { path: 'userOperation', component: userOperation, name: '用户操作' },
-            { path: 'employeeManage', component: employeeManage, name: '员工管理' },
-            { path: 'departmentOrganization', component: departmentOrganization, name: '部门组织架构' },
-            { path: 'operatorAccountManage', component: operatorAccountManage, name: '操作员账号管理' },
-            { path: 'operatorRoleManage', component: operatorRoleManage, name: '操作员角色管理' },
+            { path: '/userOperation', component: userOperation, name: '用户操作' },
+            { path: '/employeeManage', component: employeeManage, name: '员工管理' },
+            { path: '/departmentOrganization', component: departmentOrganization, name: '部门组织架构' },
+            { path: '/operatorAccountManage', component: operatorAccountManage, name: '操作员账号管理' },
+            { path: '/operatorRoleManage', component: operatorRoleManage, name: '操作员角色管理' },
         ]
     },
     {

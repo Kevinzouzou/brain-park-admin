@@ -10,7 +10,7 @@ localStorage.setItem("upUrl",'http://218.17.39.178:2040');  //微品云（开发
 // localStorage.setItem("upUrl",'http://39.107.252.186:10005');//阿里云地址（正式）
 // localStorage.setItem("upUrl",'http://192.168.7.109:2040');//another
 // localStorage.setItem("upUrl",'http://172.16.0.7:2040');//本地
-
+const parkId = localStorage.getItem("parkId");
 
 export const requestLogin = params => { return axios.post(`${base}/login`, params).then(res => res.data); };
 export const getUserList = params => { return axios.get(`${base}/user/list`, { params: params }); };
@@ -80,10 +80,12 @@ export const deleteStaff = `/parkStaff/deleteStaff/`; // 删除用户
 export const settledEnterpriseList = `/settledEnterprise/settledEnterpriseList?parkId=` + localStorage.getItem("parkId"); // 获取企业名单
 export const parkUserList = `/parkUserPermission/parkUserList?parkId=` + localStorage.getItem("parkId") + `&type=2`; // 获取员工列表
 export const parkInfoTreeList = `/parkInfoTree/parkInfoTreeList?parkId=` + localStorage.getItem("parkId") + `&type=`; // 获取组织架构树形结构
-export const parkInfoTreeAddZoneInfo = `parkInfoTree/parkInfoTreeAddZoneInfo/` + localStorage.getItem("parkId") + `/`; // 查找组织架构所在区域信息
+export const parkInfoTreeAddZoneInfo = `/parkInfoTree/parkInfoTreeAddZoneInfo/` + localStorage.getItem("parkId") + `/`; // 查找组织架构所在区域信息
 export const parkOperatorList = `/parkUser/parkOperatorList?parkId=` + localStorage.getItem("parkId") + `&type=3` // 获取操作员列表
 export const addParkUser = `/parkUser/addParkUser`; // 添加员工/操作员
 export const deleteUser = `/parkUser/deleteUser/`; // 删除员工/操作员 
-export const parkRoleList = `/parkRole/parkRoleList?parkId=` + localStorage.getItem("parkId"); // 查询角色列表
+export const parkRoleList = `/parkRole/parkRoleList?parkId=${parkId}` // 查询角色列表
 export const addOrUpdateParkRole = `/parkRole/addOrUpdateParkRole` //添加或修改角色
+export const findUserByRoleId = `/parkUser/findUserByRoleId/${parkId}/`;  //查找使用此角色的操作员
+export const deleteParkRole = `/parkRole/deleteParkRole/`; //删除角色
 export const addOrUpdateParkInfoTree = `/parkInfoTree/addOrUpdateParkInfoTree`; //添加或修改组织架构/区域
