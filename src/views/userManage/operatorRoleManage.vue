@@ -214,7 +214,7 @@
                 </el-row>
             </el-dialog>
             <el-row :gutter="20" v-show="!editRoleFormInfoVisible">
-                <el-form :model="editRoleForm" :label-position="right" label-width="160px" :rules="editRoleFormRules" ref="addRoleForm">
+                <el-form :model="editRoleForm" :label-position="right" label-width="160px" :rules="editRoleFormRules" ref="editRoleForm">
                     <el-row :gutter="24">
                         <el-col :span="10">
                             <el-form-item label="角色名称：" required prop="name">
