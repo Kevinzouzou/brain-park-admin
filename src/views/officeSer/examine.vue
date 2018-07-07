@@ -97,24 +97,24 @@
                             </div>
                         </el-form-item>
                     </el-form>
-                    <span class="title">审批详情</span>
-                    <el-form label-width="90px">
+                    <span class="title" v-if="detailList.addInfo.flows && detailList.addInfo.flows.length>0">审批详情</span>
+                    <el-form label-width="90px" v-if="detailList.addInfo.flows && detailList.addInfo.flows.length>0">
                         <el-form-item label="审批人：">
-                            {{detailList.addInfo.approver}}
+                            {{detailList.addInfo.flows[0].name}}
                         </el-form-item>
                         <el-form-item label="审批时间：">
-                            {{detailList.addInfo.approverTime}}
+                            {{detailList.addInfo.flows[0].handleTime}}
                         </el-form-item>
                         <el-form-item label="状态：">
-                            {{detailList.addInfo.approvalState}}
+                            {{detailList.addInfo.flows[0].handleResult}}
                         </el-form-item>
-                        <el-form-item v-if="detailList.state==='驳回'" label="备注：">
-                            {{detailList.addInfo.remark}}
+                        <el-form-item v-if="detailList.addInfo.flows[0].handleResult!=='通过'" label="备注：">
+                            {{detailList.addInfo.flows[0].handleContent}}
                         </el-form-item>
                     </el-form>
-                    <el-form label-width="90px">
+                    <el-form label-width="90px" v-if="detailList.addInfo.recipients && detailList.addInfo.recipients.length>0">
                         <el-form-item label="抄送人：">
-                            {{detailList.addInfo.carbon}}
+                            <span v-for="item in detailList.addInfo.recipients">{{item.name}}，</span>
                         </el-form-item>
                     </el-form>
                 </el-dialog>
@@ -150,9 +150,9 @@
                 <el-table :data="evecList.slice((page-1)*pagesize,page*pagesize)" highlight-current-row v-loading="evectionLoading" style="width: 100%;">
                     <el-table-column type="index" width="60">
                     </el-table-column>
-                    <el-table-column prop="applyUser.addInfo.nickName" label="姓名" sortable>
+                    <el-table-column prop="addInfo.userName" label="姓名" sortable>
                     </el-table-column>
-                    <el-table-column prop="applyUser.addInfo.department" label="部门" sortable>
+                    <el-table-column prop="addInfo.department" label="部门" sortable>
                     </el-table-column>
                     <el-table-column prop="beginTime" label="开始时间" sortable>
                     </el-table-column>
@@ -160,9 +160,9 @@
                     </el-table-column>
                     <el-table-column prop="address" label="出差地" sortable>
                     </el-table-column>
-                    <el-table-column prop="addInfo.leaveTime" label="出差时长（天）" sortable>
+                    <el-table-column prop="addInfo.duration" label="出差时长（天）" sortable>
                     </el-table-column>
-                    <el-table-column prop="applyTime" label="提交时间" sortable>
+                    <el-table-column prop="createTime" label="提交时间" sortable>
                     </el-table-column>
                     <el-table-column prop="state" label="状态" sortable>
                     </el-table-column>
@@ -189,16 +189,16 @@
                 <el-dialog class="inView" title="出差详情" :visible.sync="evecVisible">
                     <el-form label-width="90px">
                         <el-form-item label="申请时间：">
-                            {{detailList.applyTime}}
+                            {{detailList.createTime}}
                         </el-form-item>
                         <el-form-item label="申请人：">
-                            {{detailList.applyUser.addInfo.nickName}}
+                            {{detailList.addInfo.userName}}
                         </el-form-item>
                         <el-form-item label="出差地点：">
-                            {{detailList.address}}
+                            {{detailList.addInfo.address}}
                         </el-form-item>
                         <el-form-item label="出差时长：">
-                            {{detailList.addInfo.leaveTime}}
+                            {{detailList.addInfo.duration}}
                         </el-form-item>
                         <el-form-item label="开始时间：">
                             {{detailList.beginTime}}
@@ -216,38 +216,38 @@
                             </div>
                         </el-form-item>
                     </el-form>
-                    <span class="title">审批详情</span>
-                    <el-form label-width="90px">
+                    <span class="title" v-if="detailList.addInfo.flows && detailList.addInfo.flows.length>0">审批详情</span>
+                    <el-form label-width="90px" v-if="detailList.addInfo.flows && detailList.addInfo.flows.length>0">
                         <el-form-item label="审批人：">
-                            {{detailList.addInfo.approver}}（部门经理）
+                            {{detailList.addInfo.flows[0].name}}（部门经理）
                         </el-form-item>
                         <el-form-item label="审批时间：">
-                            {{detailList.addInfo.approverTime}}
+                            {{detailList.addInfo.flows[0].handleTime}}
                         </el-form-item>
                         <el-form-item label="状态：">
-                            {{detailList.addInfo.approvalState}}
+                            {{detailList.addInfo.flows[0].handleResult}}
                         </el-form-item>
-                        <el-form-item v-if="detailList.addInfo.approvalState==='不同意'" label="备注：">
-                            {{detailList.addInfo.approvalRemark}}
+                        <el-form-item v-if="detailList.addInfo.flows[0].handleResult!=='通过'" label="备注：">
+                            {{detailList.addInfo.flows[0].handleContent}}
                         </el-form-item>
                     </el-form>
-                    <el-form label-width="90px">
+                    <el-form label-width="90px" v-if="detailList.addInfo.flows && detailList.addInfo.flows.length>1">
                         <el-form-item label="审批人：">
-                            {{detailList.addInfo.general}}（总经理）
+                            {{detailList.addInfo.flows[1].name}}（总经理）
                         </el-form-item>
-                        <el-form-item label="审批时间：" v-if="detailList.addInfo.approvalState==='同意'">
-                            {{detailList.addInfo.generalTime}}
+                        <el-form-item label="审批时间：" v-if="detailList.addInfo.flows[0].handleResult==='通过'">
+                            {{detailList.addInfo.flows[1].handleTime}}
                         </el-form-item>
-                        <el-form-item label="状态：" v-if="detailList.addInfo.approvalState==='同意'">
-                            {{detailList.addInfo.generalState}}
+                        <el-form-item label="状态：" v-if="detailList.addInfo.flows[0].handleResult==='通过'">
+                            {{detailList.addInfo.flows[1].handleResult}}
                         </el-form-item>
-                        <el-form-item v-if="detailList.addInfo.approvalState==='同意' && detailList.addInfo.generalState==='不同意'" label="备注：">
-                            {{detailList.addInfo.generalRemark}}
+                        <el-form-item v-if="detailList.addInfo.flows[0].handleResult==='通过' && detailList.addInfo.flows[1].handleResult!=='通过'" label="备注：">
+                            {{detailList.addInfo.flows[1].handleContent}}
                         </el-form-item>
                     </el-form>
-                    <el-form label-width="90px">
+                    <el-form label-width="90px" v-if="detailList.addInfo.recipients && detailList.addInfo.recipients.length>0">
                         <el-form-item label="抄送人：">
-                            {{detailList.addInfo.carbon}}
+                            <span v-for="item in detailList.addInfo.recipients">{{item.name}}，</span>
                         </el-form-item>
                     </el-form>
                 </el-dialog>
@@ -283,17 +283,17 @@
                 <el-table :data="goOutList.slice((page-1)*pagesize,page*pagesize)" highlight-current-row v-loading="goOutLoading" style="width: 100%;">
                     <el-table-column type="index" width="60">
                     </el-table-column>
-                    <el-table-column prop="applyUser.addInfo.nickName" label="姓名" sortable>
+                    <el-table-column prop="addInfo.userName" label="姓名" sortable>
                     </el-table-column>
-                    <el-table-column prop="applyUser.addInfo.department" label="部门" sortable>
+                    <el-table-column prop="addInfo.department" label="部门" sortable>
                     </el-table-column>
                     <el-table-column prop="beginTime" label="开始时间" sortable>
                     </el-table-column>
                     <el-table-column prop="endTime" label="结束时间" sortable>
                     </el-table-column>
-                    <el-table-column prop="addInfo.leaveTime" label="外出时长（天）" sortable>
+                    <el-table-column prop="addInfo.duration" label="外出时长（天）" sortable>
                     </el-table-column>
-                    <el-table-column prop="applyTime" label="提交时间" sortable>
+                    <el-table-column prop="createTime" label="提交时间" sortable>
                     </el-table-column>
                     <el-table-column prop="state" label="状态" sortable>
                     </el-table-column>
@@ -320,16 +320,16 @@
                 <el-dialog class="inView" title="外出详情" :visible.sync="goOutVisible">
                     <el-form label-width="90px">
                         <el-form-item label="申请时间：">
-                            {{detailList.applyTime}}
+                            {{detailList.createTime}}
                         </el-form-item>
                         <el-form-item label="申请人：">
-                            {{detailList.applyUser.addInfo.nickName}}
+                            {{detailList.addInfo.userName}}
                         </el-form-item>
                         <el-form-item label="外出地点：">
-                            {{detailList.address}}
+                            {{detailList.addInfo.address}}
                         </el-form-item>
                         <el-form-item label="外出时长：">
-                            {{detailList.addInfo.leaveTime}}
+                            {{detailList.addInfo.duration}}
                         </el-form-item>
                         <el-form-item label="开始时间：">
                             {{detailList.beginTime}}
@@ -350,24 +350,24 @@
                             <!---->
                         <!--</el-form-item>-->
                     </el-form>
-                    <span class="title">审批详情</span>
-                    <el-form label-width="90px">
+                    <span class="title" v-if="detailList.addInfo.flows && detailList.addInfo.flows.length>0">审批详情</span>
+                    <el-form label-width="90px" v-if="detailList.addInfo.flows && detailList.addInfo.flows.length>0">
                         <el-form-item label="审批人：">
-                            {{detailList.addInfo.approver}}
+                            {{detailList.addInfo.flows[0].name}}
                         </el-form-item>
                         <el-form-item label="审批时间：">
-                            {{detailList.addInfo.approverTime}}
+                            {{detailList.addInfo.flows[0].handleTime}}
                         </el-form-item>
                         <el-form-item label="状态：">
-                            {{detailList.addInfo.approvalState}}
+                            {{detailList.addInfo.flows[0].handleResult}}
                         </el-form-item>
-                        <el-form-item v-if="detailList.addInfo.approvalState==='不同意'" label="备注：">
-                            {{detailList.addInfo.remark}}
+                        <el-form-item v-if="detailList.addInfo.flows[0].handleResult!=='通过'" label="备注：">
+                            {{detailList.addInfo.flows[0].handleContent}}
                         </el-form-item>
                     </el-form>
-                    <el-form label-width="90px">
+                    <el-form label-width="90px" v-if="detailList.addInfo.recipients && detailList.addInfo.recipients.length>0">
                         <el-form-item label="抄送人：">
-                            {{detailList.addInfo.carbon}}
+                            <span v-for="item in detailList.addInfo.recipients">{{item.name}}，</span>
                         </el-form-item>
                     </el-form>
                 </el-dialog>
@@ -409,7 +409,22 @@
                 departGoOutValue:[],
                 departEveValue:[],
                 departLabel:'',
-                leaveList:[],
+                leaveList:[
+                    {
+                        createTime:'2018-01-01',
+                        beginTime:'2018-02-02',
+                        endTime:'2018-03-03',
+                        state:'已完结',
+                        typeDetail:'aaaaaa',
+                        addInfo:{
+                            userName:'enra',
+                            duration:'3',
+                            subtype:'事假',
+                            department:'研发部',
+                            images:[],
+                        }
+                    }
+                ],
                 goOutList:[],
                 evecList:[],
                 leaveLoading:false,
@@ -487,7 +502,10 @@
                         approvalState:'',
                         remark:'',
                         carbon:'',
-                        images:[]
+                        images:[],
+                        general:'',
+                        generalTime:'',
+                        generalRemark:'',
                     }
                 },
                 dialogImageUrl: '',
@@ -607,39 +625,14 @@
             leaveDetail(index,row){ //请假详情
                 this.leaveVisible=true;
                 this.detailList=row;
-                if(this.detailList.state==='审批通过'){
-                    this.detailList.addInfo.approvalState='同意';
-                }else if(this.detailList.state==='驳回'){
-                    this.detailList.addInfo.approvalState='不同意';
-                }else if(this.detailList.state==='待处理'){
-                    this.detailList.addInfo.approvalState='暂未处理';
-                }
-                console.log(this.detailList)
             },
             goOutDetail(index,row){ //外出详情
                 this.goOutVisible=true;
                 this.detailList=row;
-                if(this.detailList.state==='审批通过'){
-                    this.detailList.addInfo.approvalState='同意';
-                }else if(this.detailList.state==='驳回'){
-                    this.detailList.addInfo.approvalState='不同意';
-                }else if(this.detailList.state==='待处理'){
-                    this.detailList.addInfo.approvalState='暂未处理';
-                }
             },
             eveDetail(index,row){ //出差详情
                 this.evecVisible=true;
                 this.detailList=row;
-                if(this.detailList.state==='审批通过'){
-                    this.detailList.addInfo.approvalState='同意';
-                    this.detailList.addInfo.generalState='同意';
-                }else if(this.detailList.state==='驳回'){
-                    this.detailList.addInfo.approvalState='不同意';
-                    this.detailList.addInfo.generalState='不同意';
-                }else if(this.detailList.state==='待处理'){
-                    this.detailList.addInfo.approvalState='暂未处理';
-                    this.detailList.addInfo.generalState='暂未处理';
-                }
             },
             sizeChange(val) {
                 this.pagesize=val;

@@ -3,12 +3,13 @@
         <el-row :gutter="20">
             <el-col :span="5">
                 <el-card shadow="never" style="height:750px;overflow-y: scroll;" v-loading="parkInfoTreeListLoading">
-                    <el-tree :data="parkInfoTreeList" :props="parkInfoTreeListProps" @node-click="handleNodeClick" :highlight-current="true" default-expand-all="true"></el-tree>
+                    <el-tree :data="parkInfoTreeList" :props="parkInfoTreeListProps" @node-click="handleNodeClick" :highlight-current="true"
+                        default-expand-all="true"></el-tree>
                 </el-card>
             </el-col>
             <el-col :span="19">
                 <!--工具条-->
-                <div style="color: #606266;">松湖智谷管理公司
+                <div style="color: #606266;">松湖智谷
                     <span>{{departmentName}}</span>
                 </div>
                 <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
@@ -48,13 +49,13 @@
                     </el-table-column>
                     <el-table-column label="团队负责人">
                         <template slot-scope="scope">
-                            <span v-if="scope.row.addInfo.isManager === 1">是</span>
+                            <span v-if="scope.row.addInfo.isManager === true">是</span>
                             <span v-else>否</span>
                         </template>
                     </el-table-column>
                     <el-table-column label="操作">
                         <template slot-scope="scope">
-                            <el-button type="info" size="small" @click="parkUserEdit(scope.$index, scope.row)">编辑</el-button>
+                            <el-button type="info" size="small" @click="parkUserEdit(scope.$index, scope.row)">详情</el-button>
                             <el-button type="danger" size="small" @click="parkUserDel(scope.$index, scope.row)">删除</el-button>
                         </template>
                     </el-table-column>
@@ -86,7 +87,7 @@
                                 <el-input placeholder="姓名" v-model="addParkUserForm.addInfo.name"></el-input>
                             </el-form-item>
                             <el-form-item label="所属部门：" required prop="addInfo.departmentId">
-                                <el-cascader :show-all-levels="false" :options="departmentTreeData" v-model="addParkUserForm.addInfo.departmentId"></el-cascader>
+                                <el-cascader :show-all-levels="false" :options="departmentTreeData" v-model="addParkUserForm.addInfo.departmentId" :props="departmentTreeDataProps"></el-cascader>
                             </el-form-item>
                             <el-form-item label="手机号码：" prop="phone" required>
                                 <el-input placeholder="手机号码" v-model="addParkUserForm.phone"></el-input>
@@ -113,7 +114,7 @@
                     <el-row :gutter="20">
                         <el-col :span="10">
                             <el-form-item label="入职时间：" required prop="addInfo.hiredate">
-                                <el-date-picker v-model="addParkUserForm.addInfo.hiredate" type="date" placeholder="选择入职日期" align="right" :picker-options="pickerOptions1">
+                                <el-date-picker v-model="addParkUserForm.addInfo.hiredate" type="date" placeholder="选择入职日期" align="right" :picker-options="pickerOptions">
                                 </el-date-picker>
                             </el-form-item>
                         </el-col>
@@ -133,86 +134,65 @@
         </el-dialog>
         <!--弹出框 新增用户-->
         <!--弹出框 员工详情-->
-        <!-- <el-dialog title="员工详情" :visible.sync="dialogEmployeeDetailsVisible">
+        <el-dialog title="员工详情" :visible.sync="editParkUserFormVisible">
             <el-form :model="form" :label-position="right" label-width="160px">
                 <el-form-item label="员工照片：">
-                     <el-upload  action="https://jsonplaceholder.typicode.com/posts/" list-type="picture-card" :on-preview="handlePictureCardPreview"
+                    <el-upload action="https://jsonplaceholder.typicode.com/posts/" list-type="picture-card" :on-preview="handlePictureCardPreview"
                         :on-remove="handleRemove">
                         <i class="el-icon-plus"></i>
-                    </el-upload> 
-                    <img class="userImg" src="http://dingyue.nosdn.127.net/8ZIRto71kgyY0MB3pem8QyB0M9tXQ=NuWB3cgK5iOs1fS1518416187907.jpg">
+                    </el-upload>
+                    <!-- <img class="userImg" src="http://dingyue.nosdn.127.net/8ZIRto71kgyY0MB3pem8QyB0M9tXQ=NuWB3cgK5iOs1fS1518416187907.jpg"> -->
                 </el-form-item>
                 <el-form-item label="工号：">
                     <span>123456</span>
                 </el-form-item>
             </el-form>
-            <el-row :gutter="20">
-                <el-col :span="10">
-                    <el-form :label-position="right" label-width="160px">
-                        <el-form-item label="姓名：" required prop="name">
-                            <el-input v-show="false" placeholder="姓名"></el-input>
-                            <span>彭于晏</span>
+            <el-form :model="editParkUserForm" :label-position="right" label-width="160px" :rules="editParkUserFormRules" ref="editParkUserForm">
+                <el-row :gutter="24">
+                    <el-col :span="10">
+                        <el-form-item label="姓名：" required prop="addInfo.name">
+                            <el-input placeholder="姓名" v-model="editParkUserForm.addInfo.name"></el-input>
                         </el-form-item>
-                        <el-form-item label="所属部门：" prop="department" required>
-                            <el-select v-show="false">
-                                <el-option label="员工" value="yungong"></el-option>
-                                <el-option label="管理员" value="guanliyuan"></el-option>
-                                <el-option label="企业所有者" value="boss"></el-option>
-                            </el-select>
-                            <span>员工</span>
+                        <el-form-item label="所属部门：" required prop="addInfo.departmentId">
+                            <el-cascader :show-all-levels="false" :options="departmentTreeData" v-model="editParkUserForm.addInfo.departmentId"></el-cascader>
                         </el-form-item>
                         <el-form-item label="手机号码：" prop="phone" required>
-                            <el-input v-show="false" placeholder="手机号码"></el-input>
-                            <span>手机号码</span>
+                            <el-input placeholder="手机号码" v-model="editParkUserForm.phone"></el-input>
                         </el-form-item>
-                    </el-form>
-                </el-col>
-                <el-col :span="10">
-                    <el-form :model="ruleForm" :label-position="right" label-width="160px">
-                        <el-form-item label="性别：" prop="sex" required>
-                            <el-select v-show="false">
-                                <el-option label="男" value="yungong"></el-option>
-                                <el-option label="女" value="guanliyuan"></el-option>
+                    </el-col>
+                    <el-col :span="10">
+                        <el-form-item label="性别：" prop="addInfo.gender" required>
+                            <el-select v-model="editParkUserForm.addInfo.gender">
+                                <el-option label="男" value="男"></el-option>
+                                <el-option label="女" value="女"></el-option>
                             </el-select>
-                            <span>男</span>
                         </el-form-item>
-                        <el-form-item label="职位：" required prop="position">
-                            <el-input v-show="false" placeholder="职位"></el-input>
-                            <span>工头</span>
+                        <el-form-item label="职位：" required prop="addInfo.position">
+                            <el-input placeholder="职位" v-model="editParkUserForm.addInfo.position"></el-input>
                         </el-form-item>
-                        <el-form-item label="邮箱地址：">
-                            <el-input v-show="false" placeholder="邮箱地址"></el-input>
-                            <span>pengyuyan@qq.com</span>
+                        <el-form-item label="邮箱地址：" required prop="addInfo.email">
+                            <el-input placeholder="邮箱地址" v-model="editParkUserForm.addInfo.email"></el-input>
                         </el-form-item>
-                    </el-form>
-                </el-col>
-                <el-col :span="4">
-                    <el-button type="primary">修改资料</el-button>
-                    <el-checkbox v-model="checked" style="margin-top:30px;" disabled>团队负责人</el-checkbox>
-                </el-col>
-            </el-row>
-            <el-row :gutter="20">
-                <el-col :span="10">
-                    <el-form :model="ruleForm" :label-position="right" label-width="160px">
-                        <el-form-item label="入职时间：" required prop="date">
-                            <el-date-picker v-show="false" v-model="value1" type="date" placeholder="选择入职日期" align="right" :picker-options="pickerOptions1">
+                    </el-col>
+                    <el-col :span="4">
+                        <el-checkbox v-model="editParkUserForm.addInfo.isManager" style="margin-top:70px;">团队负责人</el-checkbox>
+                    </el-col>
+                </el-row>
+                <el-row :gutter="24">
+                    <el-col :span="10">
+                        <el-form-item label="入职时间：" required prop="addInfo.hiredate">
+                            <el-date-picker v-model="editParkUserForm.addInfo.hiredate" type="date" placeholder="选择入职日期" align="right" :picker-options="pickerOptions">
                             </el-date-picker>
-                            <span>2018-06-06</span>
                         </el-form-item>
-                    </el-form>
-                </el-col>
-            </el-row>
-           <el-row :gutter="20">
-                <el-col :span="10" offset="4">
-                    <el-switch v-model="value3" active-text="发送随机初始密码到用户手机">
-                    </el-switch>
-                </el-col>
-            </el-row>
-            <div v-show="false" slot="footer" class="dialog-footer">
-                <el-button @click="dialogEmployeeDetailsVisible = false">取 消</el-button>
-                <el-button type="primary" @click="dialogEmployeeDetailsVisible = false">提交</el-button>
+                    </el-col>
+                </el-row>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="editParkUserFormVisible = false">取 消</el-button>
+                <el-button type="primary" @click="dialogEmployeeDetailsVisible = false">修改</el-button>
             </div>
-        </el-dialog> -->
+        </el-dialog>
+
         <!--弹出框 员工详情-->
     </section>
 </template>
@@ -240,18 +220,23 @@
                     nameOrPhone: '',
                     male: false,
                     female: false,
-                    headOfTheTeam: false
+                    headOfTheTeam: false,
+                    departmentId: ''
                 },
                 parkInfoTreeList: [], // 组织结构数据
-                departmentTreeData: [],
+                departmentTreeData: '', // 员工所属部门数据
+                departmentTreeDataProps: {
+                    value: 'id',
+                    children: 'children',
+                    label: 'name'
+                },
                 parkInfoTreeListLoading: false, // 组织结构loading控件
                 // 左侧树形组件规则
                 parkInfoTreeListProps: {
                     children: "children",
                     label: "name"
                 },
-                // 弹框
-                addParkUserFormVisible: false,
+                addParkUserFormVisible: false, // 弹框
                 addParkUserForm: { //添加员工数据表单
                     phone: "",
                     addInfo: {
@@ -268,7 +253,7 @@
                 },
                 dialogEmployeeDetailsVisible: false,
                 // 时间组件
-                pickerOptions1: {
+                pickerOptions: {
                     shortcuts: [{
                         text: "今天",
                         onClick(picker) {
@@ -320,7 +305,65 @@
                             trigger: "change"
                         }],
                     }
-                }
+                },
+                editParkUserFormVisible: false,
+                editParkUserForm: {
+                    phone: "",
+                    addInfo: {
+                        name: "",
+                        gender: "",
+                        position: "",
+                        email: "",
+                        isManager: false,
+                        hiredate: "",
+                        departmentId: "",
+                        avatar: "",
+                    }
+                },
+                // 表单验证规则
+                editParkUserFormRules: {
+                    phone: [{
+                        required: true,
+                        message: "请输入正确的电话号码",
+                        trigger: "blur",
+                        pattern: /^((13[0-9]|14[579]|15[0-3,5-9]|16[6]|17[0135678]|18[0-9]|19[89])+\d{8})$/
+                    }],
+                    addInfo: {
+                        name: [{
+                            required: true,
+                            message: "请输入正确的中文姓名",
+                            trigger: "blur",
+                            pattern: /^[\u4E00-\u9FA5\uf900-\ufa2d·s]{2,20}$/
+                        }],
+                        gender: [{
+                            required: true,
+                            message: "请选择员工性别",
+                            trigger: "change"
+                        }],
+                        position: [{
+                            required: true,
+                            message: "请填写员工职位",
+                            trigger: "blur"
+                        }],
+                        email: [{
+                            required: true,
+                            message: "请填写正确格式的员工邮箱",
+                            trigger: "blur",
+                            pattern: /^[a-z0-9]+([._\\-]*[a-z0-9])*@([a-z0-9]+[-a-z0-9]*[a-z0-9]+.){1,63}[a-z0-9]+$/
+                        }],
+                        hiredate: [{
+                            type: "date",
+                            required: true,
+                            message: "请选择日期",
+                            trigger: "change"
+                        }],
+                        departmentId: [{
+                            required: true,
+                            message: "请选择所属部门",
+                            trigger: "change"
+                        }],
+                    }
+                },
             };
         },
         methods: {
@@ -331,8 +374,22 @@
                     .then((res) => {
                         this.parkInfoTreeList = res;
                         this.parkInfoTreeListLoading = false;
-                        this.departmentTreeData = this.getDepartmentTreeData(this.departmentTreeData, res[0]);
+
+                        // this.departmentTreeData = this.getDepartmentTreeData(this.departmentTreeData, res[0]);
+                        this.departmentTreeData = this.killChildren(res[0].children);
+                        console.log(JSON.stringify(this.departmentTreeData));
                     })
+            },
+            // 删除对象里孩子为空的属性
+            killChildren(data) {
+                for (let i = 0; i < data.length; i++) {
+                    if (data[i].children.length === 0) {
+                        delete data[i].children;
+                    } else {
+                        this.killChildren(data[i].children);
+                    }
+                }
+                return data;
             },
             //获取员工列表
             getParkUserList(url, headOfTheTeam) {
@@ -409,6 +466,12 @@
                 }
                 return isJPG && isLt2M;
             },
+            // 编辑员工窗口
+            parkUserEdit: function (index, row) {
+                this.editParkUserFormVisible = true;
+                this.resetForm("editParkUserForm");
+                this.editParkUserForm = this.deepCopy(this.editParkUserForm, row);
+            },
             //删除员工
             parkUserDel: function (index, row) {
                 this.$confirm('删除员工将同时取消该员工的物管服务APP登录权限，是否删除？', '注意', {
@@ -438,23 +501,27 @@
                 let male = this.parkUserListFilters.male;
                 let female = this.parkUserListFilters.female;
                 let headOfTheTeam = this.parkUserListFilters.headOfTheTeam;
+                let departmentId = this.parkUserListFilters.departmentId;
                 url = nameOrPhone === '' ? url + '' : url + '&nameOrPhone=' + nameOrPhone;
                 url = male === false ? (female === false ? url + '' : url + '&gender=女') : (female === true ? url + '' :
                     url + '&gender=男');
+                url = departmentId === '' ? url + '' : url + '&departmentId=' + departmentId
                 this.getParkUserList(url, headOfTheTeam);
             },
+            // 点击树形结构查询员工列表
             handleNodeClick(data) {
                 // this.parkInfoTreeList;
                 console.log(data);
-                if (data.parentId.id === '') {
+                if (data.parentId === '') {
                     this.departmentName = '';
-                    this.addParkUserForm.addInfo.departmentId = '';
+                    // this.addParkUserForm.addInfo.departmentId = '';
+                    this.parkUserListFilters.departmentId = '';
                 } else {
                     this.departmentName = data.name;
-                    this.addParkUserForm.addInfo.departmentId = data.parentId.id;
+                    // this.addParkUserForm.addInfo.departmentId = data.id;
+                    this.parkUserListFilters.departmentId = data.id;
                 }
-                let departmentId = data.id;
-                this.getParkUserList(parkUserList);
+                this.getQueryParkUserList();
             },
             // 组织架构数据格式重组
             getDepartmentTreeData(departmentTreeData, parkInfoTreeList) {
@@ -490,7 +557,30 @@
             },
             resetForm(formName) {
                 this.$refs[formName].resetFields();
-            }
+            },
+            // 拷贝对象
+            deepCopy(object, beCopied) {
+                for (let i in object) {
+                    if (
+                        typeof beCopied[i] !== "undefined" &&
+                        typeof beCopied[i] === "string"
+                    ) {
+                        object[i] = beCopied[i];
+                    } else if (
+                        Object.prototype.toString.call(beCopied[i]) ===
+                        "[object Object]"
+                    ) {
+                        this.deepCopy(object[i], beCopied[i]);
+                    } else if (typeof beCopied[i] === "undefined" && typeof beCopied[i] !== "boolean") {
+                        object[i] = object[i];
+                    } else if (typeof beCopied[i] === "boolean") {
+                        object[i] = beCopied[i];
+                    } else {
+                        object[i] = "";
+                    }
+                }
+                return object;
+            },
         },
         mounted() {
             this.getParkUserList(parkUserList);

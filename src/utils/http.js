@@ -3,8 +3,10 @@ import { Message } from 'element-ui';
 import qs from 'qs'
 
 axios.defaults.timeout = 5000;
-// axios.defaults.baseURL ='http://39.107.252.186:10005';  //阿里云地址（正式）
+ 
+// axios.defaults.baseURL ='https://shbeta.vpclub.cn/api10005';  //新阿里云
 axios.defaults.baseURL ='http://218.17.39.178:2040';  //微品云（开发）
+// axios.defaults.baseURL ='http://39.107.252.186:10005';  //阿里云地址（正式）
 // axios.defaults.baseURL ='http://192.168.7.109:2040';  //another
 // axios.defaults.baseURL ='http://172.16.0.7:2040';  //本地
 
@@ -111,13 +113,13 @@ export function patch(url,data = {}){
  * @returns {Promise}
  */
 
-// export function put(url,data = {}){
-export function put(url,params = {}){
+export function put(url,data = {}){
+// export function put(url,params = {}){
     return new Promise((resolve,reject) => {
-        // axios.put(url,data)
-        axios.put(url,{
-            params:params
-        })
+        axios.put(url,data)
+        // axios.put(url,{
+            // params:params
+        // })
             .then(response => {
                 resolve(response.data);
             },err => {

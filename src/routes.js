@@ -27,6 +27,7 @@ import employeeManage from './views/userManage/employeeManage.vue'
 import departmentOrganization from './views/userManage/departmentOrganization.vue'
 import operatorAccountManage from './views/userManage/operatorAccountManage.vue'
 import operatorRoleManage from './views/userManage/operatorRoleManage.vue'
+ 
 
 Vue.use(Router)
 let routes = [
@@ -47,13 +48,26 @@ let routes = [
         component: Home,
         name: '用户管理',
         iconCls: 'fa fa-user-o',
-        children: [
-            { path: 'userProfile', component: userProfile, name: '用户概况' },
+        children: [ 
+            // { path: 'userProfile', component: userProfile, name: '用户概况' },
             { path: 'userOperation', component: userOperation, name: '用户操作' },
             { path: 'employeeManage', component: employeeManage, name: '员工管理' },
             { path: 'departmentOrganization', component: departmentOrganization, name: '部门组织架构' },
             { path: 'operatorAccountManage', component: operatorAccountManage, name: '操作员账号管理' },
             { path: 'operatorRoleManage', component: operatorRoleManage, name: '操作员角色管理' },
+        ]
+    },
+    {
+        path: '/',
+        component: Home,
+        name: '企业管理',
+        iconCls: 'el-icon-service',
+        children: [
+            {
+                path: '/busiAdmin',
+                component: resolve => require(['./views/businessAdmin/busiAdmin.vue'], resolve),
+                name: '企业操作'
+            }
         ]
     },
     {
@@ -138,14 +152,27 @@ let routes = [
             {
                 path: '/workBook',
                 component: resolve => require(['./views/officeSer/workBook.vue'], resolve),
-                name: '工作手册'
-            },
-            {
-                path: '/contacts',
-                component: resolve => require(['./views/officeSer/contacts.vue'], resolve),
-                name: '通讯录'
+                name: '工作手册' 
             }
+            // {
+            //     path: '/contacts',
+            //     component: resolve => require(['./views/officeSer/contacts.vue'], resolve),
+            //     name: '通讯录'
+            // }
          ]
+    },
+    {
+        path: '/',
+        component: Home,
+        name: '运维管理',
+        iconCls: 'el-icon-sold-out',
+        children: [
+            {
+                path: '/districtMg',
+                component: resolve => require(['./views/operationMg/districtMg.vue'], resolve),
+                name: '区域管理'
+            }
+        ]
     },
     // {
     //     path: '/',

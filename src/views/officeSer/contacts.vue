@@ -441,7 +441,7 @@
                     }
                 };
             },
-            getcontactList(){    //物业公告列表
+            getcontactList(){    //通讯录列表
                 let type='物业公告';
                 // this.getAnData(showDisplay+type);
             },
