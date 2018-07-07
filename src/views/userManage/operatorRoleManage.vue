@@ -19,6 +19,9 @@
             <el-table-column prop="name" label="角色名称">
             </el-table-column>
             <el-table-column prop="addInfo.permissionList" label="权限">
+                <template slot-scope="scope">
+                    <span :key="item.id" v-for="item in scope.row.permissionList">{{item}}；</span>
+                </template>
             </el-table-column>
             <el-table-column label="操作" width="150">
                 <template slot-scope="scope">
@@ -162,6 +165,7 @@
     export default {
         data() {
             return {
+                right: 'right',
                 page: 1,
                 pagesize: 7,
                 parkRoleListLoading: false,
