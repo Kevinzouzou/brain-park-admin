@@ -2,28 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="77e9953a-888a-4940-9dc5-f6c00497cfe3" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/src/views/operationMg/deviceMg.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/api/api.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/api.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/tree-render.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/tree-render.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/routes.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/routes.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utils/http.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils/http.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/views/businessAdmin/busiAdmin.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/businessAdmin/busiAdmin.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/views/employers/businessProcess.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/employers/businessProcess.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/views/employers/corporationHome.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/employers/corporationHome.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/views/officeSer/attendance.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/officeSer/attendance.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/views/officeSer/examine.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/officeSer/examine.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/views/officeSer/schedule.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/officeSer/schedule.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/views/operaSer/circle.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/operaSer/circle.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/views/operaSer/financialSer.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/operaSer/financialSer.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/views/operaSer/topic.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/operaSer/topic.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/views/operaSer/userFeedback.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/operaSer/userFeedback.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/views/operationMg/districtMg.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/operationMg/districtMg.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/views/properSer/compRepair.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/properSer/compRepair.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/views/properSer/release.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/properSer/release.vue" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
@@ -152,8 +131,8 @@
           <file leaf-file-name="examine.vue" pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/src/views/officeSer/examine.vue">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="-11925">
-                  <caret line="343" column="118" selection-start-line="343" selection-start-column="118" selection-end-line="343" selection-end-column="118" />
+                <state relative-caret-position="252">
+                  <caret line="794" column="32" lean-forward="true" selection-start-line="794" selection-start-column="32" selection-end-line="794" selection-end-column="32" />
                 </state>
               </provider>
             </entry>
@@ -417,12 +396,10 @@
     <sorting>DEFINITION_ORDER</sorting>
   </component>
   <component name="NodeModulesDirectoryManager">
-    <handled-path value="$PROJECT_DIR$/helloworld/node_modules" />
     <handled-path value="$PROJECT_DIR$/node_modules" />
   </component>
   <component name="NodePackageJsonFileManager">
     <packageJsonPaths>
-      <path value="$PROJECT_DIR$/helloworld/package.json" />
       <path value="$PROJECT_DIR$/package.json" />
     </packageJsonPaths>
   </component>
@@ -449,103 +426,7 @@
             <path>
               <item name="shzg-admin-master" type="b2602c69:ProjectViewProjectNode" />
               <item name="shzg-admin-master" type="462c0819:PsiDirectoryNode" />
-              <item name="build" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="shzg-admin-master" type="b2602c69:ProjectViewProjectNode" />
-              <item name="shzg-admin-master" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="shzg-admin-master" type="b2602c69:ProjectViewProjectNode" />
-              <item name="shzg-admin-master" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="api" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="shzg-admin-master" type="b2602c69:ProjectViewProjectNode" />
-              <item name="shzg-admin-master" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="common" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="shzg-admin-master" type="b2602c69:ProjectViewProjectNode" />
-              <item name="shzg-admin-master" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="common" type="462c0819:PsiDirectoryNode" />
-              <item name="js" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="shzg-admin-master" type="b2602c69:ProjectViewProjectNode" />
-              <item name="shzg-admin-master" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="components" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="shzg-admin-master" type="b2602c69:ProjectViewProjectNode" />
-              <item name="shzg-admin-master" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="utils" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="shzg-admin-master" type="b2602c69:ProjectViewProjectNode" />
-              <item name="shzg-admin-master" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="views" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="shzg-admin-master" type="b2602c69:ProjectViewProjectNode" />
-              <item name="shzg-admin-master" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="views" type="462c0819:PsiDirectoryNode" />
-              <item name="businessAdmin" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="shzg-admin-master" type="b2602c69:ProjectViewProjectNode" />
-              <item name="shzg-admin-master" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="views" type="462c0819:PsiDirectoryNode" />
-              <item name="employers" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="shzg-admin-master" type="b2602c69:ProjectViewProjectNode" />
-              <item name="shzg-admin-master" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="views" type="462c0819:PsiDirectoryNode" />
-              <item name="officeSer" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="shzg-admin-master" type="b2602c69:ProjectViewProjectNode" />
-              <item name="shzg-admin-master" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="views" type="462c0819:PsiDirectoryNode" />
-              <item name="operaSer" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="shzg-admin-master" type="b2602c69:ProjectViewProjectNode" />
-              <item name="shzg-admin-master" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="views" type="462c0819:PsiDirectoryNode" />
-              <item name="operationMg" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="shzg-admin-master" type="b2602c69:ProjectViewProjectNode" />
-              <item name="shzg-admin-master" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="views" type="462c0819:PsiDirectoryNode" />
-              <item name="properSer" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="shzg-admin-master" type="b2602c69:ProjectViewProjectNode" />
-              <item name="shzg-admin-master" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="views" type="462c0819:PsiDirectoryNode" />
-              <item name="userManage" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="shzg-admin-master" type="b2602c69:ProjectViewProjectNode" />
-              <item name="shzg-admin-master" type="462c0819:PsiDirectoryNode" />
-              <item name="static" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -649,12 +530,12 @@
       <workItem from="1530755130219" duration="27202000" />
       <workItem from="1530840718161" duration="22146000" />
       <workItem from="1530926263458" duration="26062000" />
-      <workItem from="1531099510687" duration="21625000" />
+      <workItem from="1531099510687" duration="22619000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="927594000" />
+    <option name="totallyTimeSpent" value="928588000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -668,7 +549,7 @@
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.65031445" visible="true" weight="0.13540569" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.65031445" visible="true" weight="0.13540569" />
       <window_info anchor="bottom" id="TODO" order="6" weight="0.32824427" />
       <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
       <window_info anchor="bottom" id="Event Log" order="7" side_tool="true" />
@@ -676,7 +557,7 @@
       <window_info anchor="bottom" id="Run" order="2" weight="0.13304253" />
       <window_info id="npm" order="2" sideWeight="0.34968552" side_tool="true" weight="0.11064278" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
-      <window_info active="true" anchor="bottom" id="Terminal" order="7" visible="true" weight="0.23664123" />
+      <window_info anchor="bottom" id="Terminal" order="7" visible="true" weight="0.23336968" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="TypeScript" order="7" weight="0.32897604" />
@@ -1132,8 +1013,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/views/officeSer/examine.vue">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-11925">
-          <caret line="343" column="118" selection-start-line="343" selection-start-column="118" selection-end-line="343" selection-end-column="118" />
+        <state relative-caret-position="252">
+          <caret line="794" column="32" lean-forward="true" selection-start-line="794" selection-start-column="32" selection-end-line="794" selection-end-column="32" />
         </state>
       </provider>
     </entry>
