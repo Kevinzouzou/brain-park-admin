@@ -3,7 +3,8 @@
         <el-row :gutter="24">
             <el-col :span="5">
                 <el-card shadow="never" style="height:750px;overflow-y: scroll;" v-loading="parkInfoTreeListLoading">
-                    <el-tree :data="parkInfoTreeList" :props="parkInfoTreeListProps" @node-click="handleNodeClick" :highlight-current="true" default-expand-all :expand-on-click-node="false"></el-tree>
+                    <el-tree :data="parkInfoTreeList" :props="parkInfoTreeListProps" @node-click="handleNodeClick" :highlight-current="true"
+                        default-expand-all :expand-on-click-node="false"></el-tree>
                 </el-card>
             </el-col>
             <el-col :span="19">
@@ -30,7 +31,8 @@
                     </el-form>
                 </el-col>
                 <!--列表-->
-                <el-table :data="parkUserList.slice((page-1)*pagesize,page*pagesize)" highlight-current-row v-loading="parkUserListLoading" style="width: 100%;">
+                <el-table :data="parkUserList.slice((page-1)*pagesize,page*pagesize)" highlight-current-row v-loading="parkUserListLoading"
+                    style="width: 100%;">
                     <el-table-column prop="addInfo.empNo" label="工号" width="80">
                     </el-table-column>
                     <el-table-column prop="addInfo.name" label="姓名" sortable>
@@ -60,7 +62,8 @@
                 </el-table>
                 <!--分页-->
                 <el-col :span="24" class="toolbar">
-                    <el-pagination background @size-change="sizeChange" @current-change="currentChange" :page-sizes="[7,8,10,20]" :page-size="pagesize" layout="total,sizes, prev, pager, next, jumper" :total="parkUserListTotal" :current-page="page" style="float:right;">
+                    <el-pagination background @size-change="sizeChange" @current-change="currentChange" :page-sizes="[7,8,10,20]" :page-size="pagesize"
+                        layout="total,sizes, prev, pager, next, jumper" :total="parkUserListTotal" :current-page="page" style="float:right;">
                     </el-pagination>
                 </el-col>
                 <!--分页-->
@@ -132,7 +135,7 @@
         <!--弹出框 新增用户-->
         <!--弹出框 员工详情-->
         <el-dialog title="员工详情" :visible.sync="editParkUserFormVisible">
-            <el-form :model="editParkUserForm" :label-position="right" label-width="160px" v-show="true">
+            <el-form :model="editParkUserForm" :label-position="right" label-width="160px" v-show="!editParkUserFormShow">
                 <el-row :gutter="24">
                     <el-col :span="10">
                         <el-form-item label="员工照片：">
@@ -141,7 +144,7 @@
                         </el-form-item>
                     </el-col>
                     <el-col :span="4" :offset="10">
-                        <el-button type="primary">修改</el-button>
+                        <el-button type="primary" @click="editParkUserFormShow = true">修改</el-button>
                     </el-col>
                 </el-row>
                 <el-row :gutter="24">
@@ -185,11 +188,24 @@
                         </el-form-item>
                     </el-col>
                 </el-row>
+                <el-row :gutter="24">
+                    <el-col :span="10">
+                        <el-form-item label="手机APP登陆密码：">
+                            <el-input placeholder="重置密码将改变原来的密码" v-model="appPassword" disabled></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="10">
+                        <el-button @click="resetPassword()">重置密码</el-button>
+                        <el-button type="primary">发送手机短信</el-button>
+                    </el-col>
+                </el-row>
             </el-form>
 
-            <el-form :model="editParkUserForm" :label-position="right" label-width="160px" :rules="editParkUserFormRules" ref="editParkUserForm" v-show="false">
+            <el-form :model="editParkUserForm" :label-position="right" label-width="160px" :rules="editParkUserFormRules" ref="editParkUserForm"
+                v-show="editParkUserFormShow">
                 <el-form-item label="员工照片：">
-                    <el-upload class="avatar-uploader" :action="imageUploadUrl" :show-file-list="false" :on-success="handleEditParkUserAvatarSuccess" :before-upload="beforeAvatarUpload">
+                    <el-upload class="avatar-uploader" :action="imageUploadUrl" :show-file-list="false" :on-success="handleEditParkUserAvatarSuccess"
+                        :before-upload="beforeAvatarUpload">
                         <img v-if="editParkUserForm.addInfo.avatar" :src="editParkUserForm.addInfo.avatar" class="avatar">
                         <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                     </el-upload>
@@ -207,7 +223,7 @@
                             <el-input placeholder="姓名" v-model="editParkUserForm.addInfo.name"></el-input>
                         </el-form-item>
                         <el-form-item label="所属部门：" required prop="addInfo.departmentId">
-                            <el-cascader clearable :show-all-levels="false" :options="departmentTreeData" v-model="editParkUserForm.addInfo.departmentId"></el-cascader>
+                            <el-cascader :show-all-levels="false" :options="departmentTreeData" v-model="editParkUserForm.addInfo.departmentId" :props="departmentTreeDataProps"></el-cascader>
                         </el-form-item>
                         <el-form-item label="手机号码：" prop="phone" required>
                             <el-input placeholder="手机号码" v-model="editParkUserForm.phone"></el-input>
@@ -240,7 +256,7 @@
                     </el-col>
                 </el-row>
             </el-form>
-            <div slot="footer" class="dialog-footer" v-show="false">
+            <div slot="footer" class="dialog-footer" v-show="editParkUserFormShow">
                 <el-button @click="editParkUserFormVisible = false">取 消</el-button>
                 <el-button type="primary" @click="dialogEmployeeDetailsVisible = false">修改</el-button>
             </div>
@@ -251,477 +267,425 @@
 </template>
 
 <script>
-import {
-    parkUserList,
-    addParkUser,
-    deleteUser,
-    parkInfoTreeList,
-    uploadPic
-} from "../../api/api";
-export default {
-    data() {
-        return {
-            imageUploadUrl: "", //图片上传路径
-            right: "right",
-            page: 1,
-            pagesize: 7,
-            departmentName: "",
-            parkUserList: "", // 员工列表
-            parkUserListTotal: 0, // 员工总数
-            parkUserListLoading: false, // 员工列表loading控件
-            parkUserListFilters: {
-                //员工列表筛选
-                nameOrPhone: "",
-                male: false,
-                female: false,
-                headOfTheTeam: false,
-                departmentId: ""
-            },
-            parkInfoTreeList: [], // 组织结构数据
-            departmentTreeData: "", // 员工所属部门数据
-            departmentTreeDataProps: {
-                value: "id",
-                children: "children",
-                label: "name"
-            },
-            parkInfoTreeListLoading: false, // 组织结构loading控件
-            // 左侧树形组件规则
-            parkInfoTreeListProps: {
-                children: "children",
-                label: "name"
-            },
-            addParkUserFormVisible: false, // 弹框
-            addParkUserForm: {
-                //添加员工数据表单
-                phone: "",
-                addInfo: {
-                    name: "",
-                    gender: "",
-                    position: "",
-                    email: "",
-                    isManager: false,
-                    hiredate: "",
-                    departmentId: "",
-                    avatar: ""
+    import {
+        parkUserList,
+        addParkUser,
+        updateParkUserInfo,
+        deleteUser,
+        parkInfoTreeList,
+        uploadPic
+    } from "../../api/api";
+    export default {
+        data() {
+            return {
+                imageUploadUrl: "", //图片上传路径
+                right: "right",
+                page: 1,
+                pagesize: 7,
+                departmentName: "",
+                parkUserList: "", // 员工列表
+                parkUserListTotal: 0, // 员工总数
+                parkUserListLoading: false, // 员工列表loading控件
+                parkUserListFilters: {
+                    //员工列表筛选
+                    nameOrPhone: "",
+                    male: false,
+                    female: false,
+                    headOfTheTeam: false,
+                    departmentId: ""
                 },
-                isSendPwd: false
-            },
-            dialogEmployeeDetailsVisible: false,
-            // 时间组件
-            pickerOptions: {
-                shortcuts: [
-                    {
+                parkInfoTreeList: [], // 组织结构数据
+                departmentTreeData: "", // 员工所属部门数据
+                departmentTreeDataProps: {
+                    value: "id",
+                    children: "children",
+                    label: "name"
+                },
+                parkInfoTreeListLoading: false, // 组织结构loading控件
+                // 左侧树形组件规则
+                parkInfoTreeListProps: {
+                    children: "children",
+                    label: "name"
+                },
+                addParkUserFormVisible: false, // 弹框
+                addParkUserForm: {
+                    //添加员工数据表单
+                    phone: "",
+                    addInfo: {
+                        name: "",
+                        gender: "",
+                        position: "",
+                        email: "",
+                        isManager: false,
+                        hiredate: "",
+                        departmentId: "",
+                        avatar: ""
+                    },
+                    isSendPwd: false
+                },
+                dialogEmployeeDetailsVisible: false,
+                // 时间组件
+                pickerOptions: {
+                    shortcuts: [{
                         text: "今天",
                         onClick(picker) {
                             picker.$emit("pick", new Date());
                         }
-                    }
-                ]
-            },
-            value1: "",
-            // 表单验证规则
-            addParkUserFormRules: {
-                phone: [
-                    {
-                        required: true,
-                        message: "请输入正确的电话号码",
-                        trigger: "blur",
-                        pattern: /^((13[0-9]|14[579]|15[0-3,5-9]|16[6]|17[0135678]|18[0-9]|19[89])+\d{8})$/
-                    }
-                ],
-                addInfo: {
-                    name: [
-                        {
-                            required: true,
-                            message: "请输入正确的中文姓名",
-                            trigger: "blur",
-                            pattern: /^[\u4E00-\u9FA5\uf900-\ufa2d·s]{2,20}$/
-                        }
-                    ],
-                    gender: [
-                        {
-                            required: true,
-                            message: "请选择员工性别",
-                            trigger: "change"
-                        }
-                    ],
-                    position: [
-                        {
-                            required: true,
-                            message: "请填写员工职位",
-                            trigger: "blur"
-                        }
-                    ],
-                    email: [
-                        {
-                            required: true,
-                            message: "请填写正确格式的员工邮箱",
-                            trigger: "blur",
-                            pattern: /^[a-z0-9]+([._\\-]*[a-z0-9])*@([a-z0-9]+[-a-z0-9]*[a-z0-9]+.){1,63}[a-z0-9]+$/
-                        }
-                    ],
-                    hiredate: [
-                        {
-                            type: "date",
-                            required: true,
-                            message: "请选择日期",
-                            trigger: "change"
-                        }
-                    ],
-                    departmentId: [
-                        {
-                            required: true,
-                            message: "请选择所属部门",
-                            trigger: "change"
-                        }
-                    ]
-                }
-            },
-            editParkUserFormVisible: false,
-            editParkUserForm: {
-                phone: "",
-                addInfo: {
-                    empNo: "",
-                    name: "",
-                    gender: "",
-                    position: "",
-                    email: "",
-                    isManager: false,
-                    hiredate: "",
-                    departmentId: "",
-                    avatar: ""
+                    }]
                 },
-                departmentInfo: {
-                    name: ""
-                }
-            },
-            // 表单验证规则
-            editParkUserFormRules: {
-                phone: [
-                    {
+                appPassword: "", // 重置的新密码
+                // 表单验证规则
+                addParkUserFormRules: {
+                    phone: [{
                         required: true,
                         message: "请输入正确的电话号码",
                         trigger: "blur",
                         pattern: /^((13[0-9]|14[579]|15[0-3,5-9]|16[6]|17[0135678]|18[0-9]|19[89])+\d{8})$/
-                    }
-                ],
-                addInfo: {
-                    name: [
-                        {
+                    }],
+                    addInfo: {
+                        name: [{
                             required: true,
                             message: "请输入正确的中文姓名",
                             trigger: "blur",
                             pattern: /^[\u4E00-\u9FA5\uf900-\ufa2d·s]{2,20}$/
-                        }
-                    ],
-                    gender: [
-                        {
+                        }],
+                        gender: [{
                             required: true,
                             message: "请选择员工性别",
                             trigger: "change"
-                        }
-                    ],
-                    position: [
-                        {
+                        }],
+                        position: [{
                             required: true,
                             message: "请填写员工职位",
                             trigger: "blur"
-                        }
-                    ],
-                    email: [
-                        {
+                        }],
+                        email: [{
                             required: true,
                             message: "请填写正确格式的员工邮箱",
                             trigger: "blur",
                             pattern: /^[a-z0-9]+([._\\-]*[a-z0-9])*@([a-z0-9]+[-a-z0-9]*[a-z0-9]+.){1,63}[a-z0-9]+$/
-                        }
-                    ],
-                    hiredate: [
-                        {
+                        }],
+                        hiredate: [{
                             type: "date",
                             required: true,
                             message: "请选择日期",
                             trigger: "change"
-                        }
-                    ],
-                    departmentId: [
-                        {
+                        }],
+                        departmentId: [{
                             required: true,
                             message: "请选择所属部门",
                             trigger: "change"
-                        }
-                    ]
-                }
-            }
-        };
-    },
-    methods: {
-        // 获取部门组织结构
-        getParkInfoTreeList() {
-            this.parkInfoTreeListLoading = true;
-            this.$get(parkInfoTreeList + "组织架构").then(res => {
-                this.parkInfoTreeList = res;
-                this.parkInfoTreeListLoading = false;
-
-                // this.departmentTreeData = this.getDepartmentTreeData(this.departmentTreeData, res[0]);
-                this.departmentTreeData = this.killChildren(res[0].children);
-            });
-        },
-        // 删除对象里孩子为空的属性
-        killChildren(data) {
-            for (let i = 0; i < data.length; i++) {
-                if (data[i].children.length === 0) {
-                    delete data[i].children;
-                } else {
-                    this.killChildren(data[i].children);
-                }
-            }
-            return data;
-        },
-        //获取员工列表
-        getParkUserList(url, headOfTheTeam) {
-            this.parkUserListLoading = true;
-            this.$get(url).then(res => {
-                let data = [];
-                if (headOfTheTeam) {
-                    for (let value of res) {
-                        value.addInfo.isManager === 1 ? data.push(value) : "";
+                        }]
                     }
-                } else {
-                    data = res;
+                },
+                editParkUserFormVisible: false,
+                editParkUserFormShow: false,
+                editParkUserForm: {
+                    id: '',
+                    type: 2,
+                    phone: "",
+                    addInfo: {
+                        empNo: "",
+                        name: "",
+                        gender: "",
+                        position: "",
+                        email: "",
+                        isManager: false,
+                        hiredate: "",
+                        departmentId: [],
+                        avatar: ""
+                    },
+                    departmentInfo: {
+                        name: "",
+                        sequence: ''
+                    }
+                },
+                // 表单验证规则
+                editParkUserFormRules: {
+                    phone: [{
+                        required: true,
+                        message: "请输入正确的电话号码",
+                        trigger: "blur",
+                        pattern: /^((13[0-9]|14[579]|15[0-3,5-9]|16[6]|17[0135678]|18[0-9]|19[89])+\d{8})$/
+                    }],
+                    addInfo: {
+                        name: [{
+                            required: true,
+                            message: "请输入正确的中文姓名",
+                            trigger: "blur",
+                            pattern: /^[\u4E00-\u9FA5\uf900-\ufa2d·s]{2,20}$/
+                        }],
+                        gender: [{
+                            required: true,
+                            message: "请选择员工性别",
+                            trigger: "change"
+                        }],
+                        position: [{
+                            required: true,
+                            message: "请填写员工职位",
+                            trigger: "blur"
+                        }],
+                        email: [{
+                            required: true,
+                            message: "请填写正确格式的员工邮箱",
+                            trigger: "blur",
+                            pattern: /^[a-z0-9]+([._\\-]*[a-z0-9])*@([a-z0-9]+[-a-z0-9]*[a-z0-9]+.){1,63}[a-z0-9]+$/
+                        }],
+                        hiredate: [{
+                            type: "date",
+                            required: true,
+                            message: "请选择日期",
+                            trigger: "change"
+                        }],
+                        departmentId: [{
+                            required: true,
+                            message: "请选择所属部门",
+                            trigger: "change"
+                        }]
+                    }
                 }
-                this.parkUserList = data;
-                this.parkUserListTotal =
-                    this.parkUserList.length > 0 ? this.parkUserList.length : 1;
-                this.parkUserListLoading = false;
-            });
+            };
         },
-        // 添加员工
-        addParkUser(formName) {
-            this.$refs[formName].validate(valid => {
-                if (valid) {
-                    let data = this.addParkUserForm;
-                    data.parkId = localStorage.getItem("parkId");
-                    data.type = 2; // 添加员工
-                    this.addParkUserForm.addInfo.departmentId = this.addParkUserForm.addInfo.departmentId.pop();
-                    this.addParkUserForm.isSendPwd =
-                        this.addParkUserForm.isSendPwd === true ? 1 : 0;
-                    this.addParkUserForm.addInfo.isManager =
-                        this.addParkUserForm.addInfo.isManager === true ? 1 : 0;
-                    this.$post(addParkUser, data).then(res => {
-                        if (res.operationResult === "failure") {
-                            let title = res.failureMsg;
-                            let name = res.responseList.name;
-                            let phone = res.responseList.phone;
-                            let post = res.responseList.post;
-                            let id = res.responseList.id;
-                            this.$alert(
-                                `<span>姓名：${name}</span></br><span>电话：${phone}</span></br><span>职位：${post}</span></br><span>ID：${id}</span></br>`,
-                                title,
-                                {
-                                    dangerouslyUseHTMLString: true
-                                }
-                            );
-                        } else {
-                            this.getParkUserList(parkUserList);
-                            this.resetForm("addParkUserForm");
+        methods: {
+            // 获取部门组织结构
+            getParkInfoTreeList() {
+                this.parkInfoTreeListLoading = true;
+                this.$get(parkInfoTreeList + "组织架构").then(res => {
+                    this.parkInfoTreeList = res;
+                    this.parkInfoTreeListLoading = false;
+                    this.departmentTreeData = this.killChildren(res[0].children);
+                    console.log(JSON.stringify(this.departmentTreeData));
+                });
+            },
+            // 删除对象里孩子为空的属性
+            killChildren(data) {
+                for (let i = 0; i < data.length; i++) {
+                    if (data[i].children.length === 0) {
+                        delete data[i].children;
+                    } else {
+                        this.killChildren(data[i].children);
+                    }
+                }
+                return data;
+            },
+            //获取员工列表
+            getParkUserList(url, headOfTheTeam) {
+                this.parkUserListLoading = true;
+                this.$get(url).then(res => {
+                    let data = [];
+                    if (headOfTheTeam) {
+                        for (let value of res) {
+                            value.addInfo.isManager === 1 ? data.push(value) : "";
+                        }
+                    } else {
+                        data = res;
+                    }
+                    this.parkUserList = data;
+                    this.parkUserListTotal =
+                        this.parkUserList.length > 0 ? this.parkUserList.length : 1;
+                    this.parkUserListLoading = false;
+                });
+            },
+            // 添加员工
+            addParkUser(formName) {
+                this.$refs[formName].validate(valid => {
+                    if (valid) {
+                        let data = this.addParkUserForm;
+                        data.parkId = localStorage.getItem("parkId");
+                        data.type = 2; // 添加员工
+                        this.addParkUserForm.addInfo.departmentId = this.addParkUserForm.addInfo.departmentId.pop();
+                        this.addParkUserForm.isSendPwd =
+                            this.addParkUserForm.isSendPwd === true ? 1 : 0;
+                        this.addParkUserForm.addInfo.isManager =
+                            this.addParkUserForm.addInfo.isManager === true ? 1 : 0;
+                        this.$post(addParkUser, data).then(res => {
+                            if (res.operationResult === "failure") {
+                                let title = res.failureMsg;
+                                let name = res.responseList.name;
+                                let phone = res.responseList.phone;
+                                let post = res.responseList.post;
+                                let id = res.responseList.id;
+                                this.$alert(
+                                    `<span>姓名：${name}</span></br><span>电话：${phone}</span></br><span>职位：${post}</span></br><span>ID：${id}</span></br>`,
+                                    title, {
+                                        dangerouslyUseHTMLString: true
+                                    }
+                                );
+                            } else {
+                                this.getParkUserList(parkUserList);
+                                this.resetForm("addParkUserForm");
+                                this.$message({
+                                    message: "添加成功",
+                                    type: "success"
+                                });
+                            }
+                        });
+                    } else {
+                        console.log("error submit!!");
+                        return false;
+                    }
+                });
+            },
+            // 图片上传
+            handleAvatarSuccess(res, file) {
+                this.addParkUserForm.addInfo.avatar = URL.createObjectURL(file.raw);
+                this.addParkUserForm.addInfo.avatar = res.responseList;
+            },
+            handleEditParkUserAvatarSuccess(res, file) {
+                this.editParkUserForm.addInfo.avatar = URL.createObjectURL(
+                    file.raw
+                );
+                this.editParkUserForm.addInfo.avatar = res.responseList;
+            },
+            beforeAvatarUpload(file) {
+                const isJPG = file.type === "image/jpeg";
+                const isLt2M = file.size / 1024 / 1024 < 2;
+                if (!isJPG) {
+                    this.$message.error("上传头像图片只能是 JPG 格式!");
+                }
+                if (!isLt2M) {
+                    this.$message.error("上传头像图片大小不能超过 2MB!");
+                }
+                return isJPG && isLt2M;
+            },
+            // 编辑员工窗口
+            parkUserEdit: function (index, row) {
+                // this.resetForm("editParkUserForm");
+                this.appPassword = '';
+                this.editParkUserFormVisible = true;
+                this.editParkUserFormShow = false;
+                this.editParkUserForm = this.deepCopy(this.editParkUserForm, row);
+                this.editParkUserForm.addInfo.departmentId = this.editParkUserForm.departmentInfo.sequence.split(
+                    '.').slice(1);
+            },
+            //删除员工
+            parkUserDel: function (index, row) {
+                this.$confirm(
+                        "删除员工将同时取消该员工的物管服务APP登录权限，是否删除？",
+                        "注意", {
+                            type: "warning"
+                        }
+                    )
+                    .then(() => {
+                        this.parkUserListLoading = true;
+                        //NProgress.start();
+                        let para = {
+                            id: row.id
+                        };
+                        this.$del(deleteUser + para.id).then(response => {
                             this.$message({
-                                message: "添加成功",
+                                message: "删除成功",
                                 type: "success"
                             });
-                        }
-                    });
-                } else {
-                    console.log("error submit!!");
-                    return false;
-                }
-            });
-        },
-        // 图片上传
-        handleAvatarSuccess(res, file) {
-            this.addParkUserForm.addInfo.avatar = URL.createObjectURL(file.raw);
-            this.addParkUserForm.addInfo.avatar = res.responseList;
-        },
-        handleEditParkUserAvatarSuccess(res, file) {
-            this.editParkUserForm.addInfo.avatar = URL.createObjectURL(
-                file.raw
-            );
-            this.editParkUserForm.addInfo.avatar = res.responseList;
-        },
-        beforeAvatarUpload(file) {
-            const isJPG = file.type === "image/jpeg";
-            const isLt2M = file.size / 1024 / 1024 < 2;
-            if (!isJPG) {
-                this.$message.error("上传头像图片只能是 JPG 格式!");
-            }
-            if (!isLt2M) {
-                this.$message.error("上传头像图片大小不能超过 2MB!");
-            }
-            return isJPG && isLt2M;
-        },
-        // 编辑员工窗口
-        parkUserEdit: function(index, row) {
-            // this.resetForm("editParkUserForm");
-            this.editParkUserFormVisible = true;
-            this.editParkUserForm = this.deepCopy(this.editParkUserForm, row);
-        },
-        //删除员工
-        parkUserDel: function(index, row) {
-            this.$confirm(
-                "删除员工将同时取消该员工的物管服务APP登录权限，是否删除？",
-                "注意",
-                {
-                    type: "warning"
-                }
-            )
-                .then(() => {
-                    this.parkUserListLoading = true;
-                    //NProgress.start();
-                    let para = {
-                        id: row.id
-                    };
-                    this.$del(deleteUser + para.id).then(response => {
-                        this.$message({
-                            message: "删除成功",
-                            type: "success"
+                            this.getParkUserList(parkUserList);
                         });
-                        this.getParkUserList(parkUserList);
+                    })
+                    .catch(() => {});
+            },
+            // 查询公司或用户信息模糊查询
+            getQueryParkUserList() {
+                let url = parkUserList;
+                let nameOrPhone = this.parkUserListFilters.nameOrPhone;
+                let male = this.parkUserListFilters.male;
+                let female = this.parkUserListFilters.female;
+                let headOfTheTeam = this.parkUserListFilters.headOfTheTeam;
+                let departmentId = this.parkUserListFilters.departmentId;
+                url =
+                    nameOrPhone === "" ?
+                    url + "" :
+                    url + "&nameOrPhone=" + nameOrPhone;
+                url =
+                    male === false ?
+                    female === false ? url + "" : url + "&gender=女" :
+                    female === true ? url + "" : url + "&gender=男";
+                url =
+                    departmentId === "" ?
+                    url + "" :
+                    url + "&departmentId=" + departmentId;
+                this.getParkUserList(url, headOfTheTeam);
+            },
+            // 点击树形结构查询员工列表
+            handleNodeClick(data) {
+                if (data.parentId === "") {
+                    this.departmentName = "";
+                    this.parkUserListFilters.departmentId = "";
+                } else {
+                    this.departmentName = data.name;
+                    this.parkUserListFilters.departmentId = data.id;
+                }
+                this.getQueryParkUserList();
+            },
+            // 重置员工密码并保存数据库
+            resetPassword() {
+                this.$confirm('此操作将重置该员工密码并保存数据库, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning',
+                    center: true
+                }).then(() => {
+                    this.appPassword = Math.random().toString().slice(-8);
+                    let data = {};
+                    data.id = this.editParkUserForm.id;
+                    data.password = this.appPassword;
+                    data.type = 2;
+                    this.$put(updateParkUserInfo, data).then(res => {
+                        this.$message({
+                            type: 'success',
+                            message: '重置成功!'
+                        });
                     });
-                })
-                .catch(() => {});
-        },
-        // 查询公司或用户信息模糊查询
-        getQueryParkUserList() {
-            let url = parkUserList;
-            let nameOrPhone = this.parkUserListFilters.nameOrPhone;
-            let male = this.parkUserListFilters.male;
-            let female = this.parkUserListFilters.female;
-            let headOfTheTeam = this.parkUserListFilters.headOfTheTeam;
-            let departmentId = this.parkUserListFilters.departmentId;
-            url =
-                nameOrPhone === ""
-                    ? url + ""
-                    : url + "&nameOrPhone=" + nameOrPhone;
-            url =
-                male === false
-                    ? female === false ? url + "" : url + "&gender=女"
-                    : female === true ? url + "" : url + "&gender=男";
-            url =
-                departmentId === ""
-                    ? url + ""
-                    : url + "&departmentId=" + departmentId;
-            this.getParkUserList(url, headOfTheTeam);
-        },
-        // 点击树形结构查询员工列表
-        handleNodeClick(data) {
-            if (data.parentId === "") {
-                this.departmentName = "";
-                this.parkUserListFilters.departmentId = "";
-            } else {
-                this.departmentName = data.name;
-                this.parkUserListFilters.departmentId = data.id;
-            }
-            this.getQueryParkUserList();
-        },
-        // 组织架构数据格式重组
-        getDepartmentTreeData(departmentTreeData, parkInfoTreeList) {
-            let data = {};
-            data.label = parkInfoTreeList.name;
-            data.value = parkInfoTreeList.id;
-            if (parkInfoTreeList.children.length === 0) {
-                departmentTreeData.push(data);
-            } else {
-                data.children = [];
-                for (let i = 0; i < parkInfoTreeList.children.length; i++) {
-                    let deepData = {};
-                    deepData.label = parkInfoTreeList.children[i].name;
-                    deepData.value = parkInfoTreeList.children[i].id;
-                    if (parkInfoTreeList.children[i].children.length === 0) {
-                        data.children.push(deepData);
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消'
+                    });
+                });
+            },
+            sizeChange(val) {
+                this.pagesize = val;
+            },
+            currentChange(val) {
+                this.page = val;
+                this.getQueryParkUserList();
+            },
+            resetForm(formName) {
+                this.$refs[formName].resetFields();
+            },
+            // 拷贝对象
+            deepCopy(object, beCopied) {
+                for (let i in object) {
+                    if (Object.prototype.toString.call(beCopied[i]) === "[object String]") {
+                        object[i] = beCopied[i];
+                    } else if (Object.prototype.toString.call(beCopied[i]) === "[object Number]") {
+                        object[i] = beCopied[i];
+                    } else if (Object.prototype.toString.call(beCopied[i]) === "[object Object]") {
+                        this.deepCopy(object[i], beCopied[i]);
+                    } else if (Object.prototype.toString.call(beCopied[i]) === "[object Undefined]") {
+                        object[i] = object[i];
+                    } else if (Object.prototype.toString.call(beCopied[i]) === "[object Boolean]") {
+                        object[i] = beCopied[i];
+                    } else if (Object.prototype.toString.call(beCopied[i]) === "[object Array]") {
+                        object[i] = beCopied[i];
                     } else {
-                        deepData.children = [];
-                        let returnData = this.getDepartmentTreeData(
-                            deepData.children,
-                            parkInfoTreeList.children[i]
-                        );
-                        data.children = returnData;
+                        object[i] = "";
                     }
                 }
+                return object;
             }
-            departmentTreeData.push(data);
-            return departmentTreeData;
         },
-        sizeChange(val) {
-            this.pagesize = val;
-        },
-        currentChange(val) {
-            this.page = val;
-            this.getQueryParkUserList();
-        },
-        resetForm(formName) {
-            this.$refs[formName].resetFields();
-        },
-        // 拷贝对象
-        deepCopy(object, beCopied) {
-            for (let i in object) {
-                if (
-                    typeof beCopied[i] !== "undefined" &&
-                    typeof beCopied[i] === "string"
-                ) {
-                    object[i] = beCopied[i];
-                } else if (
-                    Object.prototype.toString.call(beCopied[i]) ===
-                    "[object Object]"
-                ) {
-                    this.deepCopy(object[i], beCopied[i]);
-                } else if (
-                    typeof beCopied[i] === "undefined" &&
-                    typeof beCopied[i] !== "boolean"
-                ) {
-                    object[i] = object[i];
-                } else if (typeof beCopied[i] === "boolean") {
-                    object[i] = beCopied[i];
-                } else {
-                    object[i] = "";
-                }
-            }
-            return object;
-        },
-        parseTreeJson(treeNodes, id) {
-            let arry = [];
-            for (let i = 0, len = treeNodes.length; i < len; i++) {
-                let childs = treeNodes[i].children;
-                if (childs && childs.length > 0) {
-                    arry.push[treeNodes[i].id];
-                    if (id === treeNodes[i].id) {
-                        return;
-                    } else {
-                        parseTreeJson(childs, id);
-                    }
-                } else {
-                    if (id === treeNodes[i].id) {
-                        arry.push[treeNodes[i].id];
-                        return;
-                    }
-                }
-                console.log(treeNodes[i].id);
-            }
-            return arry;
+        mounted() {
+            this.getParkUserList(parkUserList);
+            this.getParkInfoTreeList();
+            this.imageUploadUrl = localStorage.getItem("upUrl") + uploadPic;
         }
-    },
-    mounted() {
-        this.getParkUserList(parkUserList);
-        this.getParkInfoTreeList();
-        this.imageUploadUrl = localStorage.getItem("upUrl") + uploadPic;
-    }
-};
+    };
 </script>
 
 <style lang="scss">
-.avatar {
-    width: 178px;
-    height: auto;
-    display: block;
-    border-radius: 6px;
-}
+    .avatar {
+        width: 178px;
+        height: auto;
+        display: block;
+        border-radius: 6px;
+    }
 </style>
