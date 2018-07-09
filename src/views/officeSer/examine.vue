@@ -70,28 +70,28 @@
                 <el-dialog class="inView" title="请假详情" :visible.sync="leaveVisible">
                     <el-form label-width="90px">
                         <el-form-item label="申请时间：">
-                            {{detailList.createTime}}
+                            {{detailList.createTime || ' - '}}
                         </el-form-item>
                         <el-form-item label="申请人：">
-                            {{detailList.addInfo.userName}}
+                            {{detailList.addInfo.userName || ' - '}}
                         </el-form-item>
                         <el-form-item label="类型：">
-                            {{detailList.addInfo.subtype}}
+                            {{detailList.addInfo.subtype || ' - '}}
                         </el-form-item>
                         <el-form-item label="请假时长：">
-                            {{detailList.addInfo.duration}}
+                            {{detailList.addInfo.duration || ' - '}}
                         </el-form-item>
                         <el-form-item label="开始时间：">
-                            {{detailList.beginTime}}
+                            {{detailList.beginTime || ' - '}}
                         </el-form-item>
                         <el-form-item label="结束时间：">
-                            {{detailList.endTime}}
+                            {{detailList.endTime || ' - '}}
                         </el-form-item>
                         <el-form-item label="请假事由：" class="allWid">
-                            {{detailList.typeDetail}}
+                            {{detailList.typeDetail || ' - '}}
                             <div v-if="detailList.addInfo.images && detailList.addInfo.images.length>0">
                                 <img v-for="item in detailList.addInfo.images.slice(0,6)" :src="item" @click="handlePictureCardPreview(item)">
-                                <el-dialog :visible.sync="dialogVisible" style="z-index: 2020;">
+                                <el-dialog :visible.sync="dialogVisible" style="z-index: 2020;" :append-to-body="true">
                                     <img width="100%" style="height: 100%;" :src="dialogImageUrl" alt="">
                                 </el-dialog>
                             </div>
@@ -100,21 +100,21 @@
                     <span class="title" v-if="detailList.addInfo.flows && detailList.addInfo.flows.length>0">审批详情</span>
                     <el-form label-width="90px" v-if="detailList.addInfo.flows && detailList.addInfo.flows.length>0">
                         <el-form-item label="审批人：">
-                            {{detailList.addInfo.flows[0].name}}
+                            {{detailList.addInfo.flows[0].name || ' - '}}
                         </el-form-item>
                         <el-form-item label="审批时间：">
-                            {{detailList.addInfo.flows[0].handleTime}}
+                            {{detailList.addInfo.flows[0].handleTime || ' - '}}
                         </el-form-item>
                         <el-form-item label="状态：">
-                            {{detailList.addInfo.flows[0].handleResult}}
+                            {{detailList.addInfo.flows[0].handleResult || ' - '}}
                         </el-form-item>
                         <el-form-item v-if="detailList.addInfo.flows[0].handleResult!=='通过'" label="备注：">
-                            {{detailList.addInfo.flows[0].handleContent}}
+                            {{detailList.addInfo.flows[0].handleContent || ' - '}}
                         </el-form-item>
                     </el-form>
                     <el-form label-width="90px" v-if="detailList.addInfo.recipients && detailList.addInfo.recipients.length>0">
                         <el-form-item label="抄送人：">
-                            <span v-for="item in detailList.addInfo.recipients">{{item.name}}，</span>
+                            <span v-for="item in detailList.addInfo.recipients">{{item.name || ' - '}}，</span>
                         </el-form-item>
                     </el-form>
                 </el-dialog>
@@ -158,7 +158,7 @@
                     </el-table-column>
                     <el-table-column prop="endTime" label="结束时间" sortable>
                     </el-table-column>
-                    <el-table-column prop="address" label="出差地" sortable>
+                    <el-table-column prop="addInfo.address" label="出差地" sortable>
                     </el-table-column>
                     <el-table-column prop="addInfo.duration" label="出差时长（天）" sortable>
                     </el-table-column>
@@ -189,28 +189,28 @@
                 <el-dialog class="inView" title="出差详情" :visible.sync="evecVisible">
                     <el-form label-width="90px">
                         <el-form-item label="申请时间：">
-                            {{detailList.createTime}}
+                            {{detailList.createTime || ' - '}}
                         </el-form-item>
                         <el-form-item label="申请人：">
-                            {{detailList.addInfo.userName}}
+                            {{detailList.addInfo.userName || ' - '}}
                         </el-form-item>
                         <el-form-item label="出差地点：">
-                            {{detailList.addInfo.address}}
+                            {{detailList.addInfo.address || ' - '}}
                         </el-form-item>
                         <el-form-item label="出差时长：">
-                            {{detailList.addInfo.duration}}
+                            {{detailList.addInfo.duration || ' - '}}
                         </el-form-item>
                         <el-form-item label="开始时间：">
-                            {{detailList.beginTime}}
+                            {{detailList.beginTime || ' - '}}
                         </el-form-item>
                         <el-form-item label="结束时间：">
-                            {{detailList.endTime}}
+                            {{detailList.endTime || ' - '}}
                         </el-form-item>
                         <el-form-item label="出差事由：" class="allWid">
-                            {{detailList.typeDetail}}
+                            {{detailList.typeDetail || ' - '}}
                             <div v-if="detailList.addInfo.images && detailList.addInfo.images.length>0">
                                 <img v-for="item in detailList.addInfo.images.slice(0,6)" :src="item" @click="handlePictureCardPreview(item)">
-                                <el-dialog :visible.sync="dialogVisible" style="z-index: 2020;">
+                                <el-dialog :visible.sync="dialogVisible" style="z-index: 2020;" :append-to-body="true">
                                     <img width="100%" style="height: 100%;" :src="dialogImageUrl" alt="">
                                 </el-dialog>
                             </div>
@@ -219,35 +219,35 @@
                     <span class="title" v-if="detailList.addInfo.flows && detailList.addInfo.flows.length>0">审批详情</span>
                     <el-form label-width="90px" v-if="detailList.addInfo.flows && detailList.addInfo.flows.length>0">
                         <el-form-item label="审批人：">
-                            {{detailList.addInfo.flows[0].name}}（部门经理）
+                            {{detailList.addInfo.flows[0].name || ' - '}}（部门经理）
                         </el-form-item>
                         <el-form-item label="审批时间：">
-                            {{detailList.addInfo.flows[0].handleTime}}
+                            {{detailList.addInfo.flows[0].handleTime || ' - '}}
                         </el-form-item>
                         <el-form-item label="状态：">
-                            {{detailList.addInfo.flows[0].handleResult}}
+                            {{detailList.addInfo.flows[0].handleResult || ' - '}}
                         </el-form-item>
                         <el-form-item v-if="detailList.addInfo.flows[0].handleResult!=='通过'" label="备注：">
-                            {{detailList.addInfo.flows[0].handleContent}}
+                            {{detailList.addInfo.flows[0].handleContent || ' - '}}
                         </el-form-item>
                     </el-form>
                     <el-form label-width="90px" v-if="detailList.addInfo.flows && detailList.addInfo.flows.length>1">
                         <el-form-item label="审批人：">
-                            {{detailList.addInfo.flows[1].name}}（总经理）
+                            {{detailList.addInfo.flows[1].name || ' - '}}（总经理）
                         </el-form-item>
                         <el-form-item label="审批时间：" v-if="detailList.addInfo.flows[0].handleResult==='通过'">
-                            {{detailList.addInfo.flows[1].handleTime}}
+                            {{detailList.addInfo.flows[1].handleTime || ' - '}}
                         </el-form-item>
                         <el-form-item label="状态：" v-if="detailList.addInfo.flows[0].handleResult==='通过'">
-                            {{detailList.addInfo.flows[1].handleResult}}
+                            {{detailList.addInfo.flows[1].handleResult || ' - '}}
                         </el-form-item>
                         <el-form-item v-if="detailList.addInfo.flows[0].handleResult==='通过' && detailList.addInfo.flows[1].handleResult!=='通过'" label="备注：">
-                            {{detailList.addInfo.flows[1].handleContent}}
+                            {{detailList.addInfo.flows[1].handleContent || ' - '}}
                         </el-form-item>
                     </el-form>
                     <el-form label-width="90px" v-if="detailList.addInfo.recipients && detailList.addInfo.recipients.length>0">
                         <el-form-item label="抄送人：">
-                            <span v-for="item in detailList.addInfo.recipients">{{item.name}}，</span>
+                            <span v-for="item in detailList.addInfo.recipients">{{item.name || ' - '}}，</span>
                         </el-form-item>
                     </el-form>
                 </el-dialog>
@@ -320,28 +320,28 @@
                 <el-dialog class="inView" title="外出详情" :visible.sync="goOutVisible">
                     <el-form label-width="90px">
                         <el-form-item label="申请时间：">
-                            {{detailList.createTime}}
+                            {{detailList.createTime || ' - '}}
                         </el-form-item>
                         <el-form-item label="申请人：">
-                            {{detailList.addInfo.userName}}
+                            {{detailList.addInfo.userName || ' - '}}
                         </el-form-item>
                         <el-form-item label="外出地点：">
-                            {{detailList.addInfo.address}}
+                            {{detailList.addInfo.address || ' - '}}
                         </el-form-item>
                         <el-form-item label="外出时长：">
-                            {{detailList.addInfo.duration}}
+                            {{detailList.addInfo.duration || ' - '}}
                         </el-form-item>
                         <el-form-item label="开始时间：">
-                            {{detailList.beginTime}}
+                            {{detailList.beginTime || ' - '}}
                         </el-form-item>
                         <el-form-item label="结束时间：">
-                            {{detailList.endTime}}
+                            {{detailList.endTime || ' - '}}
                         </el-form-item>
                         <el-form-item label="外出事由：" class="allWid">
-                            {{detailList.typeDetail}}
+                            {{detailList.typeDetail || ' - '}}
                             <div v-if="detailList.addInfo.images && detailList.addInfo.images.length>0">
                                 <img v-for="item in detailList.addInfo.images.slice(0,6)" :src="item" @click="handlePictureCardPreview(item)">
-                                <el-dialog :visible.sync="dialogVisible" style="z-index: 2020;">
+                                <el-dialog :visible.sync="dialogVisible" style="z-index: 2020;" :append-to-body="true">
                                     <img width="100%" style="height: 100%;" :src="dialogImageUrl" alt="">
                                 </el-dialog>
                             </div>
@@ -353,21 +353,21 @@
                     <span class="title" v-if="detailList.addInfo.flows && detailList.addInfo.flows.length>0">审批详情</span>
                     <el-form label-width="90px" v-if="detailList.addInfo.flows && detailList.addInfo.flows.length>0">
                         <el-form-item label="审批人：">
-                            {{detailList.addInfo.flows[0].name}}
+                            {{detailList.addInfo.flows[0].name || ' - '}}
                         </el-form-item>
                         <el-form-item label="审批时间：">
-                            {{detailList.addInfo.flows[0].handleTime}}
+                            {{detailList.addInfo.flows[0].handleTime || ' - '}}
                         </el-form-item>
                         <el-form-item label="状态：">
-                            {{detailList.addInfo.flows[0].handleResult}}
+                            {{detailList.addInfo.flows[0].handleResult || ' - '}}
                         </el-form-item>
                         <el-form-item v-if="detailList.addInfo.flows[0].handleResult!=='通过'" label="备注：">
-                            {{detailList.addInfo.flows[0].handleContent}}
+                            {{detailList.addInfo.flows[0].handleContent || ' - '}}
                         </el-form-item>
                     </el-form>
                     <el-form label-width="90px" v-if="detailList.addInfo.recipients && detailList.addInfo.recipients.length>0">
                         <el-form-item label="抄送人：">
-                            <span v-for="item in detailList.addInfo.recipients">{{item.name}}，</span>
+                            <span v-for="item in detailList.addInfo.recipients">{{item.name || ' - '}}，</span>
                         </el-form-item>
                     </el-form>
                 </el-dialog>

@@ -24,7 +24,7 @@
                 </el-col>
                 <el-col :span="24">
                     <el-tree
-                            class="expand-tree"
+                            class="district-tree"
                             v-if="isLoadingTree"
                             :data="dataTree"
                             node-key="id"
@@ -93,7 +93,7 @@
 </template>
 
 <script>
-    import {treeUrl, upParkTreeUrl, delParkTreeUrl, } from '../../api/api'
+    import {treeUrl, upParkTreeUrl, delParkTreeUrl, countsEnterUrl,} from '../../api/api'
     import TreeRender from '../../components/tree-render';
     export default {
        data(){
@@ -143,7 +143,7 @@
                buildnum:0,
                floornum:0,
                roomnum:0,
-               area:'未选中区域',
+               area:'没有选中区域',
                build:'',
                floor:'',
                room:'',
@@ -167,12 +167,6 @@
                     this.dataTree=res;
                 })
             },
-            getDistrictList(){//获取列表数据
-                // this.getDistrict(districtUrl);
-            },
-            getDistrict(url){//获取数据
-
-            },
             downloadTemp(){//下载模板
 
             },
@@ -195,8 +189,8 @@
                     },
                     on: {
                         nodeAdd: ((s,d,n) => that.handleAdd(s,d,n)),
-                        nodeEdit: ((s,d,n) => that.handleEdit(s,d,n)),
-                        nodeDel: ((s,d,n) => that.handleDelete(s,d,n))
+                        // nodeEdit: ((s,d,n) => that.handleEdit(s,d,n)),
+                        // nodeDel: ((s,d,n) => that.handleDelete(s,d,n))
                     }
                 });
             },
@@ -211,8 +205,8 @@
             },
             handleAdd(s,d,n){//增加节点
                 console.log(s,d,n)
-                if(n.level >=6){
-                    this.$message.error("最多只支持五级！")
+                if(n.level >=4){
+                    this.$message.error("最多只支持四级！")
                     return false;
                 }
                 //添加数据
@@ -220,9 +214,27 @@
                     id: ++this.maxexpandId,
                     name: '新增节点',
                     pid: d.id,
-                    // isEdit: false,
+                    level:d.level+1,
+                    isEdit: false,
+                    addInfo:{
+                        doors:[]
+                    },
                     children: []
                 });
+                let datas={
+                    addInfo: {
+                        doors:[]
+                    },
+                    parkId:localStorage.getItem("parkId"),
+                    level:d.level+1,
+                    parentId:d.id,
+                    name:'新增节点',
+                    type:'区域',
+                };
+                this.$post(upParkTreeUrl,datas)
+                    .then((res)=>{
+                        this.getTree();
+                    });
                 //展开节点
                 if(!n.expanded){
                     n.expanded = true;
@@ -280,7 +292,6 @@
             handleNodeClick(d,n,s){//点击节点
                 this.zoneDatas=d;
                 this.zoneNodes=n;
-                console.log(d,n)
                 // d.isEdit = false;//放弃编辑状态
                 this.showZone=true;
                 if(this.zoneDatas.level===4){
@@ -329,6 +340,12 @@
                     this.area=this.zoneNodes.parent.parent.parent.label;this.build=this.zoneNodes.parent.parent.label;
                     this.floor=this.zoneNodes.parent.label;this.room=this.zoneNodes.label;
                 }
+                this.getEnterpriseCounts(this.zoneDatas.id);
+            },
+            getEnterpriseCounts(id){//查询区域中企业的数量
+                this.$get(countsEnterUrl+id).then((res)=>{
+                    this.deviceNum=res;
+                })
             },
             addDoors(){//新增门点
                 console.log(this.zoneDatas.addInfo.doors)
@@ -374,7 +391,7 @@
                     this.$post(upParkTreeUrl,data)
                         .then((res)=>{
                             this.getTree();
-                        })
+                        });
                     this.$message({
                         message: '门点删除成功',
                         type: 'success'
@@ -428,13 +445,6 @@
         padding: 0 10px;
         margin: 10px 0 0;
     }
-    .expand-tree .tree-expand .tree-label{
-        margin-right: 30px;
-        &.tree-new{
-            font-weight: normal;
-            margin-right: 30px;
-        }
-    }
     .containArea{
         margin-top: 10px;
         span{
@@ -456,4 +466,6 @@
             }
         }
     }
+
+
 </style>

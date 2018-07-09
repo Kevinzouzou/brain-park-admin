@@ -14,8 +14,8 @@
 		</span>
 		<span class="tree-btn" v-show="!DATA.isEdit">
 			<i class="el-icon-plus" @click.stop="nodeAdd(STORE,DATA,NODE)"></i>
-			<i class="el-icon-edit" @click.stop="nodeEdit(STORE,DATA,NODE)"></i>
-			<i class="el-icon-delete" @click.stop="nodeDel(STORE,DATA,NODE)"></i>
+			<!--<i class="el-icon-edit" @click.stop="nodeEdit(STORE,DATA,NODE)"></i>-->
+			<!--<i class="el-icon-delete" @click.stop="nodeDel(STORE,DATA,NODE)"></i>-->
 		</span>
 	</span>
 </template>
@@ -53,7 +53,8 @@
         overflow:hidden;
     }
     .tree-expand .tree-label.tree-new{
-        font-weight:600;
+        /*font-weight:600;*/
+		font-weight: normal;
     }
     .tree-expand .tree-label{
         font-size:0.9em;
@@ -64,11 +65,16 @@
     .tree-expand .tree-btn{
         display:none;
         float:right;
-        margin-right:20px;
+        /*margin-right:20px;*/
+		margin-left: 20px;
     }
     .tree-expand .tree-btn i{
         color:#8492a6;
         font-size:0.9em;
         margin-right:3px;
     }
+	.is-current>.el-tree-node__content .tree-expand .tree-btn,
+	.el-tree-node__content:hover .tree-expand .tree-btn{
+		display:inline-block;
+	}
 </style>

@@ -72,6 +72,7 @@ export const findUserUrl=`/parkUser/findUserByDepartmentId/`+localStorage.getIte
 export const upSchUrl=`/parkUser/updateIfScheduling`;  //修改此用户是否排班信息
 export const upParkTreeUrl=`/parkInfoTree/addOrUpdateParkInfoTree`;  //添加或修改组织架构/区域
 export const delParkTreeUrl=`/parkInfoTree/deleteParkInfoTree/`;  //删除组织结构/区域
+export const countsEnterUrl=`/settledEnterprise/findSettledEnterpriseCountByZoneId/`+localStorage.getItem("parkId")+'/';  //查询区域中企业的数量
 
 
 

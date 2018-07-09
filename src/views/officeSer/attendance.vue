@@ -83,7 +83,7 @@
             <el-table :data="monthAttendList.slice((page-1)*pagesize,page*pagesize)" highlight-current-row v-loading="monthAttendanceLoading" style="width: 100%;">
                 <el-table-column type="index" width="60">
                 </el-table-column>
-                <el-table-column prop="addInfo.nickName" label="姓名" sortable>
+                <el-table-column prop="addInfo.name" label="姓名" sortable>
                 </el-table-column>
                 <el-table-column label="异常记录" sortable>
                     <template slot-scope="scope">
@@ -112,11 +112,11 @@
             <!--查看界面-->
             <el-dialog class="inView" title="审批申请-记录" :visible.sync="viewVisible">
                 <span class="title">请假</span>
-                <div>{{detailList.addInfo.leave}}</div>
+                <div>{{detailList.addInfo.leave || '无记录'}}</div>
                 <span class="title">出差</span>
-                <div>{{detailList.addInfo.leave}}</div>
+                <div>{{detailList.addInfo.leave || '无记录'}}</div>
                 <span class="title">外出</span>
-                <div>{{detailList.addInfo.goOut}}</div>
+                <div>{{detailList.addInfo.goOut || '无记录'}}</div>
             </el-dialog>
 
         </div>

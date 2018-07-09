@@ -25,7 +25,7 @@
             </el-table-column>
             <el-table-column prop="addInfo.source" label="来源" sortable>
             </el-table-column>
-            <el-table-column prop="addInfo.nickname" label="反馈人" sortable>
+            <el-table-column prop="userName" label="反馈人" sortable>
             </el-table-column>
             <el-table-column prop="stage" label="状态" sortable>
             </el-table-column>
@@ -50,7 +50,7 @@
             </el-pagination>
         </el-col>
         <!--回复界面-->
-        <el-dialog :title=addEditTitle :visible.sync="feBackReportVisible">
+        <el-dialog :title=addEditTitle :visible.sync="feBackReportVisible" width="40%">
             <el-form :model="feBackForm" ref="feBackForm">
                <el-form-item prop="disc">
                    <el-input type="textarea" :rows="4" placeholder="请输入内容" v-model="feBackForm.disc">
@@ -67,22 +67,22 @@
         <el-dialog title="反馈详情" :visible.sync="feBackViewVisible">
             <el-form label-width="90px">
                 <el-form-item label="反馈时间：">
-                   {{detailList.time}}
+                   {{detailList.time || ' - '}}
                 </el-form-item>
                 <el-form-item label="反馈内容：">
-                    <div class="content">{{detailList.addInfo.remark}}</div>
+                    <div class="content">{{detailList.addInfo.remark || ' - '}}</div>
                     <div class="imgs" v-if="detailList.addInfo.images && detailList.addInfo.images.length>0">
                         <img v-for="item in detailList.addInfo.images.slice(0,6)" :src="item" @click="handlePictureCardPreview(item)">
-                        <el-dialog :visible.sync="dialogVisible" style="z-index: 2020;">
+                        <el-dialog :visible.sync="dialogVisible" style="z-index: 2020;" :append-to-body="true">
                             <img width="100%" style="height: 100%;" :src="dialogImageUrl" alt="">
                         </el-dialog>
                     </div>
                 </el-form-item>
                 <el-form-item label="反馈人：">
-                    {{detailList.addInfo.nickname}}
+                    {{detailList.userName || ' - '}}
                 </el-form-item>
                 <el-form-item label="回复备注："  v-if="detailList.stage==='已处理'">
-                    {{detailList.addInfo.reply}}
+                    {{detailList.addInfo.reply || ' - '}}
                 </el-form-item>
             </el-form>
         </el-dialog>
@@ -241,8 +241,7 @@
                                 reply:this.feBackForm.disc
                             };
                             let url=replyUrl+'&id='+this.replyId+'&reply='+this.feBackForm.disc;
-                            console.log(data)
-                            this.$put(url)
+                            this.$get(url)
                                 .then((res)=>{
                                     this.feBackReportLoading = false;
                                     this.feBackReportVisible = false;

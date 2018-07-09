@@ -26,6 +26,9 @@
                     <el-table-column prop="createTime" label="发布时间" sortable>
                     </el-table-column>
                     <el-table-column prop="addInfo.lookUpNum" label="浏览量" sortable>
+                        <template slot-scope="scope">
+                            <span>{{scope.row.addInfo.lookUpNum?scope.row.addInfo.lookUpNum:0}}</span>
+                        </template>
                     </el-table-column>
                     <el-table-column label="操作">
                         <template slot-scope="scope">

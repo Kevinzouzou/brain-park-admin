@@ -694,7 +694,6 @@
     }
     body {
         font-family: Verdana, sans-serif;
-        background: #E8F0F3;
     }
     .tag{
         margin-bottom: 15px;

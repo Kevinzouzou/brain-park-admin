@@ -50,11 +50,11 @@ let routes = [
         iconCls: 'fa fa-user-o',
         children: [
             // { path: 'userProfile', component: userProfile, name: '用户概况' },
-            { path: 'userOperation', component: userOperation, name: '用户操作' },
-            { path: 'employeeManage', component: employeeManage, name: '员工管理' },
-            { path: 'departmentOrganization', component: departmentOrganization, name: '部门组织架构' },
-            { path: 'operatorAccountManage', component: operatorAccountManage, name: '操作员账号管理' },
-            { path: 'operatorRoleManage', component: operatorRoleManage, name: '操作员角色管理' },
+            { path: '/userOperation', component: userOperation, name: '用户操作' },
+            { path: '/employeeManage', component: employeeManage, name: '员工管理' },
+            { path: '/departmentOrganization', component: departmentOrganization, name: '部门组织架构' },
+            { path: '/operatorAccountManage', component: operatorAccountManage, name: '操作员账号管理' },
+            { path: '/operatorRoleManage', component: operatorRoleManage, name: '操作员角色管理' },
         ]
     },
     {
@@ -121,11 +121,11 @@ let routes = [
                 component: resolve => require(['./views/properSer/release.vue'], resolve),
                 name: '放行申请'
             },
-            {
-                path: '/equipInspect',
-                component: resolve => require(['./views/properSer/equipInspect.vue'], resolve),
-                name: '设备巡检'
-            }
+            // {
+            //     path: '/equipInspect',
+            //     component: resolve => require(['./views/properSer/equipInspect.vue'], resolve),
+            //     name: '设备巡检'
+            // }
          ]
     },
     {
@@ -171,7 +171,12 @@ let routes = [
                 path: '/districtMg',
                 component: resolve => require(['./views/operationMg/districtMg.vue'], resolve),
                 name: '区域管理'
-            }
+            },
+            {
+                path: '/deviceMg',
+                component: resolve => require(['./views/operationMg/deviceMg.vue'], resolve),
+                name: '设备管理'
+            },
         ]
     },
     // {

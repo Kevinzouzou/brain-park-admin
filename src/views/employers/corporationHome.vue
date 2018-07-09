@@ -118,7 +118,7 @@
                         </div>
                     </el-dialog>
                     <!--报名-->
-                    <el-dialog title="报名人员" :visible.sync="hASignsVisible" width="80%">
+                    <el-dialog title="报名人员" :visible.sync="hASignsVisible" width="70%">
                         <div>
                             <span>活动标题：</span>
                             <span >{{detailList.title}}</span>
@@ -1124,7 +1124,7 @@
             },
             //性别显示转换
             forSex: function (row, column) {
-                return row.addInfo.gender == 1 ? '男' : row.addInfo.gender == 2 ? '女' : '未知';
+                return row.addInfo.userInfo.addInfo.gender == 1 ? '男' : row.addInfo.userInfo.addInfo.gender == 2 ? '女' : '未知';
             },
             hActAddChange(html){
                 this.highActContent=html;

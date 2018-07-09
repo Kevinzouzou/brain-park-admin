@@ -73,44 +73,44 @@
                     </el-pagination>
                 </el-col>
                 <!--查看界面-->
-                <el-dialog class="inView" title="入驻申请" :visible.sync="viewVisible" width="70%">
+                <el-dialog class="inView" title="入驻申请" :visible.sync="viewVisible">
                     <span class="right">{{detailList.stage}}</span>
                     <el-form label-width="90px">
                         <el-form-item label="申请时间：">
-                            {{detailList.time}}
+                            {{detailList.time || ' - '}}
                         </el-form-item>
                         <el-form-item label="公司名称：">
-                            {{detailList.addInfo.companyName}}
+                            {{detailList.addInfo.companyName || ' - '}}
                         </el-form-item>
                         <el-form-item label="联系人：">
-                            {{detailList.addInfo.contact}}
+                            {{detailList.addInfo.contact || ' - '}}
                         </el-form-item>
                         <el-form-item label="联系方式：">
-                            {{detailList.addInfo.phone}}
+                            {{detailList.addInfo.phone || ' - '}}
                         </el-form-item>
                         <el-form-item label="公司网址：">
-                            {{detailList.addInfo.website}}
+                            {{detailList.addInfo.website || ' - '}}
                         </el-form-item>
                         <el-form-item label="企业行业：">
-                            {{detailList.addInfo.industry}}
+                            {{detailList.addInfo.industry || ' - '}}
                         </el-form-item>
                         <el-form-item label="入驻诉求：">
-                            {{detailList.addInfo.remark}}
+                            {{detailList.addInfo.remark || ' - '}}
                         </el-form-item>
                     </el-form>
                     <span class="title">招商运营</span>
                     <el-form label-width="90px">
                         <el-form-item label="负责人：">
-                            {{detailList.addInfo.allocationName}}
+                            {{detailList.addInfo.allocationName || ' - '}}
                         </el-form-item>
                         <el-form-item label="处理时间：">
-                            {{detailList.addInfo.settlementTime}}
+                            {{detailList.addInfo.settlementTime || ' - '}}
                         </el-form-item>
                         <el-form-item label="对接人：">
-                            {{detailList.addInfo.propertyName}}
+                            {{detailList.addInfo.propertyName || ' - '}}
                         </el-form-item>
                         <el-form-item label="处理意见：">
-                            {{detailList.settlement}}
+                            {{detailList.settlement || ' - '}}
                         </el-form-item>
                     </el-form>
                 </el-dialog>
@@ -188,53 +188,53 @@
                     </el-pagination>
                 </el-col>
                 <!--查看界面-->
-                <el-dialog class="inView" title="装修申请" :visible.sync="decViewVisible" width="70%">
+                <el-dialog class="inView" title="装修申请" :visible.sync="decViewVisible">
                     <span class="right">{{detailList.stage}}</span>
                     <el-form label-width="90px">
                         <el-form-item label="申请时间：">
-                            {{detailList.time}}
+                            {{detailList.time || ' - '}}
                         </el-form-item>
                         <el-form-item label="公司名称：">
-                            {{detailList.addInfo.companyName}}
+                            {{detailList.addInfo.companyName || ' - '}}
                         </el-form-item>
                         <el-form-item label="负责人：">
-                            {{detailList.addInfo.contact}}
+                            {{detailList.addInfo.contact || ' - '}}
                         </el-form-item>
                         <el-form-item label="联系方式：">
-                            {{detailList.addInfo.phone}}
+                            {{detailList.addInfo.phone || ' - '}}
                         </el-form-item>
                         <el-form-item label="联系邮箱：">
-                            {{detailList.addInfo.email}}
+                            {{detailList.addInfo.email || ' - '}}
                         </el-form-item>
                     </el-form>
                     <span class="title">装修公司信息</span>
                     <el-form label-width="90px">
                         <el-form-item label="装修公司：">
-                            {{detailList.addInfo.decorationCompanyName}}
+                            {{detailList.addInfo.decorationCompanyName || ' - '}}
                         </el-form-item>
                         <el-form-item label="公司座机：">
-                            {{detailList.addInfo.decorationCompanyPhone}}
+                            {{detailList.addInfo.decorationCompanyPhone || ' - '}}
                         </el-form-item>
                         <el-form-item label="项目经理：">
-                            {{detailList.addInfo.decorationCompanyContact}}
+                            {{detailList.addInfo.decorationCompanyContact || ' - '}}
                         </el-form-item>
                         <el-form-item label="联系手机：">
-                            {{detailList.addInfo.decorationCompanyContactPhone}}
+                            {{detailList.addInfo.decorationCompanyContactPhone || ' - '}}
                         </el-form-item>
                     </el-form>
                     <span class="title">物业管理</span>
                     <el-form label-width="90px">
                         <el-form-item label="负责人：">
-                            {{detailList.addInfo.allocationName}}
+                            {{detailList.addInfo.allocationName || ' - '}}
                         </el-form-item>
                         <el-form-item label="处理时间：">
-                            {{detailList.addInfo.settlementTime}}
+                            {{detailList.addInfo.settlementTime || ' - '}}
                         </el-form-item>
                         <el-form-item label="对接人：">
-                            {{detailList.addInfo.propertyName}}
+                            {{detailList.addInfo.propertyName || ' - '}}
                         </el-form-item>
                         <el-form-item label="处理意见：">
-                            {{detailList.settlement}}
+                            {{detailList.settlement || ' - '}}
                         </el-form-item>
                     </el-form>
                 </el-dialog>
