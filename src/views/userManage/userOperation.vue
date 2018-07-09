@@ -136,12 +136,12 @@
         <el-dialog title="用户详情" :visible.sync="editUserFormVisible">
             <el-row :gutter="20">
                 <el-col :span="5" :offset="1">
-                    <!-- <img class="userImg" src="http://dingyue.nosdn.127.net/8ZIRto71kgyY0MB3pem8QyB0M9tXQ=NuWB3cgK5iOs1fS1518416187907.jpg"> -->
-                    <el-upload class="avatar-uploader" action="https://jsonplaceholder.typicode.com/posts/" :show-file-list="false" :on-success="handleAvatarSuccess"
-                        :before-upload="beforeAvatarUpload">
-                        <img v-if="editUserInfoForm.userInfo.addInfo.avatarUrl" :src="editUserInfoForm.userInfo.addInfo.avatarUrl" class="avatar userImg">
-                        <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-                    </el-upload>
+                    <el-form :label-position="right" label-width="150px">
+                        <el-upload class="avatar-uploader" :action=imageUploadUrl :show-file-list="false" :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload">
+                            <img v-if="editUserInfoForm.userInfo.addInfo.avatarUrl" :src="editUserInfoForm.userInfo.addInfo.avatarUrl" class="avatar userImg">
+                            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                        </el-upload>
+                    </el-form>
                 </el-col>
                 <el-row :gutter="24">
                     <el-form :model="editUserInfoForm" :rules="editUserInfoFormRules" ref="editUserInfoForm" :label-position="'right'" label-width="100px">
@@ -209,392 +209,395 @@
 </template>
 
 <script>
-    import axios from "axios";
-    import TreeRender from "../../components/tree-render";
-    import {
-        parkStaffList,
-        addOrUpdateParkStaff,
-        deleteStaff,
-        settledEnterpriseList
-    } from "../../api/api";
-    export default {
-        data() {
-            return {
-                page: 1,
-                pagesize: 7,
-                ParkStaffListLoading: false,
-                parkStaffList: [],
-                parkStaffListTotal: 0,
-                basicStatistics: {
-                    ownerNum: 0,
-                    managerNum: 0,
-                    staffNum: 0,
-                    allMun: 0
-                },
-                ParkStaffListFilters: {
-                    nameOrNickNameOrPhone: "",
-                    enterpriseName: ""
-                },
-                restaurants: [],
-                addUserFormVisible: false,
-                editUserFormVisible: false,
-                addUserForm: {
-                    name: "",
-                    phone: "",
-                    post: "",
-                    enterpriseId: "",
-                    addInfo: {}
-                },
-                addUserFormRules: {
-                    name: [{
-                        required: true,
-                        message: "请输入正确姓名",
-                        trigger: "blur",
-                        pattern: /^[\u4E00-\u9FA5\uf900-\ufa2d·s]{2,20}$/
-                    }],
-                    phone: [{
-                        required: true,
-                        message: "请输入正确的电话号码",
-                        trigger: "blur",
-                        pattern: /^((13[0-9]|14[579]|15[0-3,5-9]|16[6]|17[0135678]|18[0-9]|19[89])+\d{8})$/
-                    }],
-                    enterpriseId: [{
-                        required: true,
-                        message: "请选择所属企业",
-                        trigger: "change"
-                    }],
-                    post: [{
-                        required: true,
-                        message: "请选择员工身份",
-                        trigger: "change"
-                    }]
-                },
-                editUserInfoForm: {
-                    id: "",
-                    name: "",
-                    enterpriseInfo: {
-                        name: ""
-                    },
-                    userInfo: {
-                        createTime: "",
-                        addInfo: {
-                            gender: "",
-                            nickName: "",
-                            position: "",
-                            lastLoginTime: "",
-                            avatarUrl: ""
-                        }
-                    },
-                    phone: "",
-                    enterpriseId: "",
-                    post: ""
-                },
-                editUserInfoFormRules: {
-                    name: [{
-                        required: true,
-                        message: "请输入正确姓名",
-                        trigger: "blur",
-                        pattern: /^[\u4E00-\u9FA5\uf900-\ufa2d·s]{2,20}$/
-                    }],
-                    phone: [{
-                        required: true,
-                        message: "请输入正确的电话号码",
-                        trigger: "blur",
-                        pattern: /^((13[0-9]|14[579]|15[0-3,5-9]|16[6]|17[0135678]|18[0-9]|19[89])+\d{8})$/
-                    }],
-                    enterpriseId: [{
-                        required: true,
-                        message: "请选择所属企业",
-                        trigger: "change"
-                    }],
-                    // userInfo: {
-                    //     addInfo: {
-                    //         gender: [{
-                    //             required: true,
-                    //             message: "请选择性别",
-                    //             trigger: "change"
-                    //         }]
-                    //     }
-                    // },
-                    post: [{
-                        required: true,
-                        message: "请选择员工身份",
-                        trigger: "change"
-                    }]
-                }
-            };
+import axios from "axios";
+import TreeRender from "../../components/tree-render";
+import {
+  parkStaffList,
+  addOrUpdateParkStaff,
+  deleteStaff,
+  settledEnterpriseList,
+  uploadPic
+} from "../../api/api";
+export default {
+  data() {
+    return {
+      right: "right",
+      imageUploadUrl: "", //图片上传路径
+      page: 1,
+      pagesize: 7,
+      ParkStaffListLoading: false,
+      parkStaffList: [],
+      parkStaffListTotal: 0,
+      basicStatistics: {
+        ownerNum: 0,
+        managerNum: 0,
+        staffNum: 0,
+        allMun: 0
+      },
+      ParkStaffListFilters: {
+        nameOrNickNameOrPhone: "",
+        enterpriseName: ""
+      },
+      restaurants: [],
+      addUserFormVisible: false,
+      editUserFormVisible: false,
+      addUserForm: {
+        name: "",
+        phone: "",
+        post: "",
+        enterpriseId: "",
+        addInfo: {}
+      },
+      addUserFormRules: {
+        name: [
+          {
+            required: true,
+            message: "请输入正确姓名",
+            trigger: "blur",
+            pattern: /^[\u4E00-\u9FA5\uf900-\ufa2d·s]{2,20}$/
+          }
+        ],
+        phone: [
+          {
+            required: true,
+            message: "请输入正确的电话号码",
+            trigger: "blur",
+            pattern: /^((13[0-9]|14[579]|15[0-3,5-9]|16[6]|17[0135678]|18[0-9]|19[89])+\d{8})$/
+          }
+        ],
+        enterpriseId: [
+          {
+            required: true,
+            message: "请选择所属企业",
+            trigger: "change"
+          }
+        ],
+        post: [
+          {
+            required: true,
+            message: "请选择员工身份",
+            trigger: "change"
+          }
+        ]
+      },
+      editUserInfoForm: {
+        id: "",
+        name: "",
+        enterpriseInfo: {
+          name: ""
         },
-        methods: {
-            // 拷贝对象
-            deepCopy(object, beCopied) {
-                for (let i in object) {
-                    if (
-                        typeof beCopied[i] !== "undefined" &&
-                        typeof beCopied[i] === "string"
-                    ) {
-                        object[i] = beCopied[i];
-                    } else if (
-                        Object.prototype.toString.call(beCopied[i]) ===
-                        "[object Object]"
-                    ) {
-                        this.deepCopy(object[i], beCopied[i]);
-                    } else if (typeof beCopied[i] === "undefined") {
-                        // object[i] = Object.prototype.toString.call(object[i]) === '[object Object]' ? object[i] : '';
-                        object[i] = object[i];
-                    } else {
-                        object[i] = "";
-                    }
-                }
-                return object;
-            },
-            // 获取用户列表
-            getParkStaffList(url) {
-                this.ParkStaffListLoading = true;
-                this.$get(url).then(res => {
-                    this.parkStaffList = res.staffList;
-                    console.log(this.parkStaffList);
-                    this.parkStaffListTotal =
-                        this.parkStaffList.length > 0 ?
-                        this.parkStaffList.length :
-                        0;
-                    this.ParkStaffListLoading = false;
-                    this.basicStatistics.ownerNum = res.ownerNum;
-                    this.basicStatistics.managerNum = res.managerNum;
-                    this.basicStatistics.staffNum = res.staffNum;
-                    this.basicStatistics.allMun = res.allMun;
-                });
-            },
-            // 编辑用户窗口
-            parkStaffEdit(index, row) {
-                this.editUserInfoForm = this.deepCopy(this.editUserInfoForm, row);
-                this.editUserFormVisible = true;
-                console.log(this.editUserInfoForm);
-                // 重置对象
-                // this.editUserInfoForm = {
-                //     name: '',
-                //     enterpriseInfo: {
-                //         name: ''
-                //     },
-                //     userInfo: {
-                //         createTime: '',
-                //         addInfo: {
-                //             gender: '',
-                //             nickName: '',
-                //             position: '',
-                //             lastLoginTime: '',
-                //             avatarUrl: '',
-                //         }
-                //     },
-                //     phone: '',
-                //     enterpriseId: '',
-                //     post: "",
-                // };
-            },
-            // 修改用户
-            modifyParkStaffEdit(formName) {
-                this.$refs[formName].validate(valid => {
-                    if (valid) {
-                        let data = {};
-                        data.id = this.editUserInfoForm.id;
-                        data.name = this.editUserInfoForm.name;
-                        data.phone = this.editUserInfoForm.phone;
-                        data.post = this.editUserInfoForm.post;
-                        data.enterpriseId = this.editUserInfoForm.enterpriseId;
-                        data.parkId = localStorage.getItem("parkId");
-                        this.$post(addOrUpdateParkStaff, data).then(res => {
-                            this.resetForm("editUserInfoForm");
-                            if (res.operationResult === "failure") {
-                                let title = res.failureMsg;
-                                let name = res.responseList.name;
-                                let phone = res.responseList.phone;
-                                let post = res.responseList.post;
-                                let id = res.responseList.id;
-                                this.$alert(
-                                    `<span>姓名：${name}</span></br><span>电话：${phone}</span></br><span>职位：${post}</span></br><span>ID：${id}</span></br>`,
-                                    title, {
-                                        dangerouslyUseHTMLString: true
-                                    }
-                                );
-                            } else {
-                                this.editUserFormVisible = false;
-                                this.$message({
-                                    message: "修改成功",
-                                    type: "success"
-                                });
-                                this.getParkStaffList(parkStaffList);
-                            }
-                            console.log(res);
-                        });
-                    } else {
-                        console.log("error submit!!");
-                        return false;
-                    }
-                });
-            },
-            // 添加用户
-            addParkStaff(formName) {
-                this.$refs[formName].validate(valid => {
-                    if (valid) {
-                        let data = this.addUserForm;
-                        data.parkId = localStorage.getItem("parkId");
-                        this.$post(addOrUpdateParkStaff, data).then(res => {
-                            if (res.operationResult === "failure") {
-                                let title = res.failureMsg;
-                                let name = res.responseList.name;
-                                let phone = res.responseList.phone;
-                                let post = res.responseList.post;
-                                let id = res.responseList.id;
-                                this.$alert(
-                                    `<span>姓名：${name}</span></br><span>电话：${phone}</span></br><span>职位：${post}</span></br><span>ID：${id}</span></br>`,
-                                    title, {
-                                        dangerouslyUseHTMLString: true
-                                    }
-                                );
-                            } else {
-                                this.getParkStaffList(parkStaffList);
-                                this.resetForm("addUserForm");
-                                this.$message({
-                                    message: "添加成功",
-                                    type: "success"
-                                });
-                            }
-                        });
-                    } else {
-                        console.log("error submit!!");
-                        return false;
-                    }
-                });
-            },
-            // 删除用户
-            parkStaffDel: function (index, row) {
-                this.$confirm("确认删除该用户吗?", "提示", {
-                        type: "warning"
-                    })
-                    .then(() => {
-                        this.ParkStaffListLoading = true;
-                        let para = {
-                            id: row.id
-                        };
-                        let self = this;
-                        this.$del(deleteStaff + para.id).then(function (response) {
-                            self.actListLoading = false;
-                            self.$message({
-                                message: "删除成功",
-                                type: "success"
-                            });
-                            self.getParkStaffList();
-                        });
-                    })
-                    .catch(() => {});
-            },
-            // 查询公司或用户信息模糊查询
-            getQueryParkStaffList() {
-                let url = parkStaffList;
-                let nameOrNickNameOrPhone = this.ParkStaffListFilters
-                    .nameOrNickNameOrPhone;
-                let enterpriseName = this.ParkStaffListFilters.enterpriseName;
-                url =
-                    nameOrNickNameOrPhone === "" ?
-                    url + "" :
-                    url + "&nameOrNickNameOrPhone=" + nameOrNickNameOrPhone;
-                url =
-                    enterpriseName === "" ?
-                    url + "" :
-                    url + "&enterpriseName=" + enterpriseName;
-                this.getParkStaffList(url);
-            },
-            pageSizeChange(val) {
-                this.pagesize = val;
-            },
-            pageCurrentChange(val) {
-                this.page = val;
-                this.getQueryParkStaffList();
-                // this.getParkStaffList(parkStaffList);
-            },
-            // 获取企业名单
-            getSettledEnterpriseList() {
-                this.$get(settledEnterpriseList).then(res => {
-                    let data = [];
-                    for (let value of res) {
-                        let singleEnterpriseData = {};
-                        singleEnterpriseData.value = value.name;
-                        singleEnterpriseData.address = value.address;
-                        singleEnterpriseData.enterpriseId = value.id;
-                        data.push(singleEnterpriseData);
-                    }
-                    this.restaurants = data;
-                });
-            },
-            // 企业筛选
-            querySearch(queryString, cb) {
-                var restaurants = this.restaurants;
-                var results = queryString ?
-                    restaurants.filter(this.createFilter(queryString)) :
-                    restaurants;
-                // 调用 callback 返回建议列表的数据
-                cb(results);
-            },
-            createFilter(queryString) {
-                return restaurant => {
-                    return (
-                        restaurant.value
-                        .toLowerCase()
-                        .indexOf(queryString.toLowerCase()) === 0
-                    );
-                };
-            },
-
-            handleSelect(item) {
-                console.log(item);
-            },
-            handleIconClick(ev) {
-                console.log(ev);
-            },
-            resetForm(formName) {
-                this.$refs[formName].resetFields();
-            }
+        userInfo: {
+          createTime: "",
+          addInfo: {
+            gender: "",
+            nickName: "",
+            position: "",
+            lastLoginTime: "",
+            avatarUrl: ""
+          }
         },
-        mounted() {
-            this.getParkStaffList(parkStaffList);
-            this.getSettledEnterpriseList();
-        }
+        phone: "",
+        enterpriseId: "",
+        post: ""
+      },
+      editUserInfoFormRules: {
+        name: [
+          {
+            required: true,
+            message: "请输入正确姓名",
+            trigger: "blur",
+            pattern: /^[\u4E00-\u9FA5\uf900-\ufa2d·s]{2,20}$/
+          }
+        ],
+        phone: [
+          {
+            required: true,
+            message: "请输入正确的电话号码",
+            trigger: "blur",
+            pattern: /^((13[0-9]|14[579]|15[0-3,5-9]|16[6]|17[0135678]|18[0-9]|19[89])+\d{8})$/
+          }
+        ],
+        enterpriseId: [
+          {
+            required: true,
+            message: "请选择所属企业",
+            trigger: "change"
+          }
+        ],
+        post: [
+          {
+            required: true,
+            message: "请选择员工身份",
+            trigger: "change"
+          }
+        ]
+      }
     };
+  },
+  methods: {
+    // 拷贝对象
+    deepCopy(object, beCopied) {
+      for (let i in object) {
+        if (
+          typeof beCopied[i] !== "undefined" &&
+          typeof beCopied[i] === "string"
+        ) {
+          object[i] = beCopied[i];
+        } else if (
+          Object.prototype.toString.call(beCopied[i]) === "[object Object]"
+        ) {
+          this.deepCopy(object[i], beCopied[i]);
+        } else if (typeof beCopied[i] === "undefined") {
+          // object[i] = Object.prototype.toString.call(object[i]) === '[object Object]' ? object[i] : '';
+          object[i] = object[i];
+        } else {
+          object[i] = "";
+        }
+      }
+      return object;
+    },
+    // 获取用户列表
+    getParkStaffList(url) {
+      this.ParkStaffListLoading = true;
+      this.$get(url).then(res => {
+        this.parkStaffList = res.staffList;
+        console.log(this.parkStaffList);
+        this.parkStaffListTotal =
+          this.parkStaffList.length > 0 ? this.parkStaffList.length : 0;
+        this.ParkStaffListLoading = false;
+        this.basicStatistics.ownerNum = res.ownerNum;
+        this.basicStatistics.managerNum = res.managerNum;
+        this.basicStatistics.staffNum = res.staffNum;
+        this.basicStatistics.allMun = res.allMun;
+      });
+    },
+    // 编辑用户窗口
+    parkStaffEdit(index, row) {
+      this.editUserInfoForm = this.deepCopy(this.editUserInfoForm, row);
+      this.editUserFormVisible = true;
+      console.log(this.editUserInfoForm);
+    },
+    // 修改用户
+    modifyParkStaffEdit(formName) {
+      this.$refs[formName].validate(valid => {
+        if (valid) {
+          let data = {};
+          data.id = this.editUserInfoForm.id;
+          data.name = this.editUserInfoForm.name;
+          data.phone = this.editUserInfoForm.phone;
+          data.post = this.editUserInfoForm.post;
+          data.enterpriseId = this.editUserInfoForm.enterpriseId;
+          data.parkId = localStorage.getItem("parkId");
+          this.$post(addOrUpdateParkStaff, data).then(res => {
+            this.resetForm("editUserInfoForm");
+            if (res.operationResult === "failure") {
+              let title = res.failureMsg;
+              let name = res.responseList.name;
+              let phone = res.responseList.phone;
+              let post = res.responseList.post;
+              let id = res.responseList.id;
+              this.$alert(
+                `<span>姓名：${name}</span></br><span>电话：${phone}</span></br><span>职位：${post}</span></br><span>ID：${id}</span></br>`,
+                title,
+                {
+                  dangerouslyUseHTMLString: true
+                }
+              );
+            } else {
+              this.editUserFormVisible = false;
+              this.$message({
+                message: "修改成功",
+                type: "success"
+              });
+              this.getParkStaffList(parkStaffList);
+            }
+            console.log(res);
+          });
+        } else {
+          console.log("error submit!!");
+          return false;
+        }
+      });
+    },
+    // 添加用户
+    addParkStaff(formName) {
+      this.$refs[formName].validate(valid => {
+        if (valid) {
+          let data = this.addUserForm;
+          data.parkId = localStorage.getItem("parkId");
+          this.$post(addOrUpdateParkStaff, data).then(res => {
+            if (res.operationResult === "failure") {
+              let title = res.failureMsg;
+              let name = res.responseList.name;
+              let phone = res.responseList.phone;
+              let post = res.responseList.post;
+              let id = res.responseList.id;
+              this.$alert(
+                `<span>姓名：${name}</span></br><span>电话：${phone}</span></br><span>职位：${post}</span></br><span>ID：${id}</span></br>`,
+                title,
+                {
+                  dangerouslyUseHTMLString: true
+                }
+              );
+            } else {
+              this.getParkStaffList(parkStaffList);
+              this.resetForm("addUserForm");
+              this.$message({
+                message: "添加成功",
+                type: "success"
+              });
+            }
+          });
+        } else {
+          console.log("error submit!!");
+          return false;
+        }
+      });
+    },
+    // 删除用户
+    parkStaffDel: function(index, row) {
+      this.$confirm("确认删除该用户吗?", "提示", {
+        type: "warning"
+      })
+        .then(() => {
+          this.ParkStaffListLoading = true;
+          let para = {
+            id: row.id
+          };
+          let self = this;
+          this.$del(deleteStaff + para.id).then(function(response) {
+            self.actListLoading = false;
+            self.$message({
+              message: "删除成功",
+              type: "success"
+            });
+            self.getParkStaffList();
+          });
+        })
+        .catch(() => {});
+    },
+    // 查询公司或用户信息模糊查询
+    getQueryParkStaffList() {
+      let url = parkStaffList;
+      let nameOrNickNameOrPhone = this.ParkStaffListFilters
+        .nameOrNickNameOrPhone;
+      let enterpriseName = this.ParkStaffListFilters.enterpriseName;
+      url =
+        nameOrNickNameOrPhone === ""
+          ? url + ""
+          : url + "&nameOrNickNameOrPhone=" + nameOrNickNameOrPhone;
+      url =
+        enterpriseName === ""
+          ? url + ""
+          : url + "&enterpriseName=" + enterpriseName;
+      this.getParkStaffList(url);
+    },
+    // 图片上传
+    handleAvatarSuccess(res, file) {
+      this.editUserInfoForm.addInfo.avatarUrl = res.responseList;
+    },
+    beforeAvatarUpload(file) {
+      const isJPG = file.type === "image/jpeg";
+      const isLt2M = file.size / 1024 / 1024 < 2;
+      if (!isJPG) {
+        this.$message.error("上传头像图片只能是 JPG 格式!");
+      }
+      if (!isLt2M) {
+        this.$message.error("上传头像图片大小不能超过 2MB!");
+      }
+      return isJPG && isLt2M;
+    },
+    pageSizeChange(val) {
+      this.pagesize = val;
+    },
+    pageCurrentChange(val) {
+      this.page = val;
+      this.getQueryParkStaffList();
+      // this.getParkStaffList(parkStaffList);
+    },
+    // 获取企业名单
+    getSettledEnterpriseList() {
+      this.$get(settledEnterpriseList).then(res => {
+        let data = [];
+        for (let value of res) {
+          let singleEnterpriseData = {};
+          singleEnterpriseData.value = value.name;
+          singleEnterpriseData.address = value.address;
+          singleEnterpriseData.enterpriseId = value.id;
+          data.push(singleEnterpriseData);
+        }
+        this.restaurants = data;
+      });
+    },
+    // 企业筛选
+    querySearch(queryString, cb) {
+      var restaurants = this.restaurants;
+      var results = queryString
+        ? restaurants.filter(this.createFilter(queryString))
+        : restaurants;
+      // 调用 callback 返回建议列表的数据
+      cb(results);
+    },
+    createFilter(queryString) {
+      return restaurant => {
+        return (
+          restaurant.value.toLowerCase().indexOf(queryString.toLowerCase()) ===
+          0
+        );
+      };
+    },
+
+    handleSelect(item) {
+      console.log(item);
+    },
+    handleIconClick(ev) {
+      console.log(ev);
+    },
+    resetForm(formName) {
+      this.$refs[formName].resetFields();
+    }
+  },
+  mounted() {
+    this.getParkStaffList(parkStaffList);
+    this.getSettledEnterpriseList();
+  }
+};
 </script>
 
 <style lang="scss">
-    .el-input.userinfo-search {
-        input {
-            width: 230px;
-        }
+.el-input.userinfo-search {
+  input {
+    width: 230px;
+  }
+}
+
+.my-autocomplete {
+  li {
+    line-height: normal;
+    padding: 7px;
+
+    .name {
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+    .addr {
+      font-size: 12px;
+      color: #b4b4b4;
     }
 
-    .my-autocomplete {
-        li {
-            line-height: normal;
-            padding: 7px;
-
-            .name {
-                text-overflow: ellipsis;
-                overflow: hidden;
-            }
-            .addr {
-                font-size: 12px;
-                color: #b4b4b4;
-            }
-
-            .highlighted .addr {
-                color: #ddd;
-            }
-        }
+    .highlighted .addr {
+      color: #ddd;
     }
+  }
+}
 
-    .userImg {
-        width: 150px;
-        height: 150px;
-        border-radius: 6px;
-    }
+.userImg {
+  width: 150px;
+  height: 150px;
+  border-radius: 6px;
+}
 
-    .ml-3 {
-        margin-left: 30px;
-    }
+.ml-3 {
+  margin-left: 30px;
+}
 </style>

@@ -244,6 +244,7 @@
                     );
                 }
                 let data = this.currentDepartmentalOrganizational;
+                console.log(JSON.stringify(data))
                 this.$post(addOrUpdateParkInfoTree, data).then(res => {
                     this.$message({
                         message: "修改成功",

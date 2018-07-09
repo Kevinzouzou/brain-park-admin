@@ -164,7 +164,7 @@
                                 {{editRoleForm.name}}
                             </el-form-item>
                         </el-col>
-                        <el-col :span="4" offset="10">
+                        <el-col :span="4" :offset="10">
                             <el-button type="primary" @click="editRoleFormInfoVisible = false">修改</el-button>
                         </el-col>
                     </el-row>
