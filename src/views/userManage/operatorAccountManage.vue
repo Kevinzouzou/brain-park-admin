@@ -348,7 +348,8 @@
         parkOperatorList,
         addParkUser,
         deleteStaff,
-        parkRoleList
+        parkRoleList,
+        updateParkUserInfo
     } from "../../api/api";
     export default {
         data() {
@@ -599,7 +600,7 @@
                             delete data.ownerInfo;
                             data.parkId = localStorage.getItem("parkId");
                             data.addInfo.state = data.addInfo.state === "1" ? 1 : 2;
-                            this.$post(addParkUser, data).then(res => {
+                            this.$post(updateParkUserInfo, data).then(res => {
                                 if (res.operationResult === "failure") {
                                     let title = res.failureMsg;
                                     let name = res.responseList.name;
@@ -614,25 +615,10 @@
                                     );
                                 } else {
                                     this.getParkOperatorList(parkOperatorList);
-                                    this.addParkOperatorForm = {
-                                        addInfo: {
-                                            state: "1",
-                                            roleList: [],
-                                            ownerId: ""
-                                        },
-                                        phone: "",
-                                        password: "",
-                                        type: 3,
-                                        ownerInfo: {
-                                            name: "",
-                                            empNo: "",
-                                            position: "",
-                                            departmentName: ""
-                                        }
-                                    };
+                                     
                                     this.resetForm("addParkOperatorForm");
                                     this.$message({
-                                        message: "添加成功",
+                                        message: "修改成功",
                                         type: "success"
                                     });
                                     this.clearSelection();
