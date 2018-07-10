@@ -301,7 +301,7 @@
             </el-form>
             <div slot="footer" class="dialog-footer" v-show="editParkOperatorFormIsShow">
                 <el-button @click="editParkOperatorFormVisible = false">取 消</el-button>
-                <el-button type="primary" @click="updateParkOperator('editParkOperatorForm')">添加</el-button>
+                <el-button type="primary" @click="updateParkOperator('editParkOperatorForm')">修改</el-button>
             </div>
             <el-dialog width="40%" title="选择员工" :visible.sync="editInnerParkUserVisible" append-to-body>
                 <el-row :gutter="24" type="flex" justify="center">
@@ -588,7 +588,7 @@
             updateParkOperator(formName) {
                 this.$refs[formName].validate(valid => {
                     if (valid) {
-                        let data = this.addParkOperatorForm;
+                        let data = this.editParkOperatorForm;
                         if (data.addInfo.roleList.length === 0) {
                             this.$message.error("请给操作员分配角色");
                         } else if (data.addInfo.ownerId === "") {
