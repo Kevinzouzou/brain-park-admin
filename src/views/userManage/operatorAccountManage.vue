@@ -600,6 +600,7 @@
                             delete data.ownerInfo;
                             data.parkId = localStorage.getItem("parkId");
                             data.addInfo.state = data.addInfo.state === "1" ? 1 : 2;
+                            console.log(JSON.stringify(data))
                             this.$post(updateParkUserInfo, data).then(res => {
                                 if (res.operationResult === "failure") {
                                     let title = res.failureMsg;
@@ -615,14 +616,12 @@
                                     );
                                 } else {
                                     this.getParkOperatorList(parkOperatorList);
-                                     
-                                    this.resetForm("addParkOperatorForm");
+                                    this.resetForm("editParkOperatorForm");
                                     this.$message({
                                         message: "修改成功",
                                         type: "success"
                                     });
-                                    this.clearSelection();
-                                    this.addParkOperatorFormVisible = false;
+                                    this.editParkOperatorFormVisible = false;
                                 }
                             });
                         }
