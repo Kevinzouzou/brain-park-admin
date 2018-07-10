@@ -356,7 +356,7 @@
                 month=month<10?'0'+month:''+month;
                 let day = now.getDate() <10 ? '0' + now.getDate() : '' + now.getDate(); //
                 this.admAELoading=true;
-                this.adminAEForm.enterTime=year+'-'+month+'-'+day;
+                this.adminAEForm.addInfo.enterTime=year+'-'+month+'-'+day;
                 this.admAELoading = false;
             },
             handlePictureCardPreview(file) {

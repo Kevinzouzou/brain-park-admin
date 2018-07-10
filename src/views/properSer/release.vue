@@ -71,53 +71,53 @@
             </el-pagination>
         </el-col>
         <!--查看界面-->
-        <el-dialog class="inView" title="放行详情" :visible.sync="viewVisible" width="70%">
+        <el-dialog class="inView" title="放行详情" :visible.sync="viewVisible" width="50%">
             <span class="right">{{detailList.stage}}</span>
             <el-form label-width="90px">
                 <el-form-item label="申请时间：">
-                    {{detailList.time}}
+                    {{detailList.time || ' - '}}
                 </el-form-item>
                 <el-form-item label="隶属公司：">
-                    {{detailList.addInfo.enterprise}}
+                    {{detailList.addInfo.enterprise || ' - '}}
                 </el-form-item>
                 <!--<el-form-item label="公司地址：">-->
-                    <!--{{detailList.addInfo.address}}-->
+                    <!--{{detailList.addInfo.address || ' - }}-->
                 <!--</el-form-item>-->
                 <el-form-item label="申请人：">
-                    {{detailList.addInfo.userName}}
+                    {{detailList.addInfo.userName || ' - '}}
                 </el-form-item>
                 <el-form-item label="出行时间：">
-                    {{detailList.addInfo.outTime}}
+                    {{detailList.addInfo.outTime || ' - '}}
                 </el-form-item>
                 <el-form-item label="放行物品：" class="allWid">
-                    {{detailList.addInfo.items}}
+                    {{detailList.addInfo.items || ' - '}}
                 </el-form-item>
             </el-form>
             <span class="title" v-if="dutys.step1===1">公司审核</span>
             <el-form label-width="90px" v-if="dutys.step1===1">
                 <el-form-item label="审核人：">
-                    {{dutys.name1}}
+                    {{dutys.name1 || ' - '}}
                 </el-form-item>
                 <el-form-item label="处理时间：">
-                    {{dutys.handleTime1}}
+                    {{dutys.handleTime1 || ' - '}}
                 </el-form-item>
             </el-form>
             <span class="title" v-if="dutys.step2===2">管理处审核</span>
             <el-form label-width="90px" v-if="dutys.step2===2">
                 <el-form-item label="负责人：">
-                    {{dutys.name2}}
+                    {{dutys.name2 || ' - '}}
                 </el-form-item>
                 <el-form-item label="处理时间：">
-                    {{dutys.handleTime2}}
+                    {{dutys.handleTime2 || ' - '}}
                 </el-form-item>
             </el-form>
             <span class="title" v-if="dutys.step3===3">保安审核</span>
             <el-form label-width="90px" v-if="dutys.step3===3">
                 <el-form-item label="负责人：">
-                    {{dutys.name3}}
+                    {{dutys.name3 || ' - '}}
                 </el-form-item>
                 <el-form-item label="处理时间：">
-                    {{dutys.handleTime3}}
+                    {{dutys.handleTime3 || ' - '}}
                 </el-form-item>
             </el-form>
         </el-dialog>
@@ -213,21 +213,23 @@
            releaseView(index, row){
                this.viewVisible=true;
                this.detailList=row;
-               this.detailList.addInfo.flows.forEach((item)=>{
-                    if(item.step===1){
-                        this.dutys.name1=item.name;
-                        this.dutys.step1=item.step;
-                        this.dutys.handleTime1=item.handleTime;
-                    }else if(item.step===2){
-                        this.dutys.name2=item.name;
-                        this.dutys.step2=item.step;
-                        this.dutys.handleTime2=item.handleTime;
-                    }else if(item.step===3){
-                        this.dutys.name3=item.name;
-                        this.dutys.step3=item.step;
-                        this.dutys.handleTime3=item.handleTime;
-                    }
-               })
+               if(this.detailList.addInfo.flows && this.detailList.addInfo.flows.length>0){
+                   this.detailList.addInfo.flows.forEach((item)=>{
+                       if(item.step===1){
+                           this.dutys.name1=item.name;
+                           this.dutys.step1=item.step;
+                           this.dutys.handleTime1=item.handleTime;
+                       }else if(item.step===2){
+                           this.dutys.name2=item.name;
+                           this.dutys.step2=item.step;
+                           this.dutys.handleTime2=item.handleTime;
+                       }else if(item.step===3){
+                           this.dutys.name3=item.name;
+                           this.dutys.step3=item.step;
+                           this.dutys.handleTime3=item.handleTime;
+                       }
+                   })
+               }
            },
            sizeChange(val) {
                this.pagesize=val;

@@ -126,11 +126,11 @@ let routes = [
                 component: resolve => require(['./views/properSer/release.vue'], resolve),
                 name: '放行申请'
             },
-            {
-                path: '/equipInspect',
-                component: resolve => require(['./views/properSer/equipInspect.vue'], resolve),
-                name: '设备巡检'
-            }
+            // {
+            //     path: '/equipInspect',
+            //     component: resolve => require(['./views/properSer/equipInspect.vue'], resolve),
+            //     name: '设备巡检'
+            // }
          ]
     },
     {
@@ -176,7 +176,12 @@ let routes = [
                 path: '/districtMg',
                 component: resolve => require(['./views/operationMg/districtMg.vue'], resolve),
                 name: '区域管理'
-            }
+            },
+            {
+                path: '/deviceMg',
+                component: resolve => require(['./views/operationMg/deviceMg.vue'], resolve),
+                name: '设备管理'
+            },
         ]
     },
     // {

@@ -118,7 +118,7 @@ export function put(url,data = {}){
     return new Promise((resolve,reject) => {
         axios.put(url,data)
         // axios.put(url,{
-            // params:params
+        //     params:params
         // })
             .then(response => {
                 resolve(response.data);

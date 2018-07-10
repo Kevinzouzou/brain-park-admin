@@ -44,7 +44,10 @@
                             </el-table-column>
                             <el-table-column type="index" width="60">
                             </el-table-column>
-                            <el-table-column prop="addInfo.publisher.addInfo.nickName" label="昵称" sortable>
+                            <el-table-column prop="addInfo.name" label="昵称" sortable>
+                                <template slot-scope="scope">
+                                    <span>{{scope.row.addInfo.isRealName===true?scope.row.addInfo.name:'匿名'}}</span>
+                                </template>
                             </el-table-column>
                             <el-table-column prop="type" label="类别" sortable>
                             </el-table-column>
@@ -168,7 +171,10 @@
                         </el-table-column>
                         <el-table-column prop="createTime" label="时间" sortable>
                         </el-table-column>
-                        <el-table-column prop="addInfo.userInfo.addInfo.nickName" label="昵称" sortable>
+                        <el-table-column prop="addInfo.name" label="昵称" sortable>
+                            <template slot-scope="scope">
+                                <span>{{scope.row.addInfo.isRealName===true?scope.row.addInfo.name:'匿名'}}</span>
+                            </template>
                         </el-table-column>
                         <el-table-column prop="comment" label="内容" sortable show-overflow-tooltip>
                         </el-table-column>
@@ -198,15 +204,15 @@
            <el-button class="backUp" type="danger" @click="backMainPage">返回</el-button>
             <ul class="publish center">
                 <li>
-                    <img :src="detailList.addInfo.publisher.addInfo.avatarUrl" class="pub">
+                    <img :src="detailList.addInfo.avatarUrl" class="pub">
                     <!--<img v-if="pubImg" src="../../assets/user.png" class="pub">-->
                 </li>
-                <li>{{detailList.addInfo.publisher.addInfo.nickName}}</li>
+                <li>{{detailList.addInfo.isRealName===true?detailList.addInfo.name:'匿名'}}</li>
             </ul>
             <div class="mainContent">
-                <span class="left topicType">{{detailList.type}}</span>
-                <div class="center pubTime">发布时间：{{detailList.createTime}}</div>
-                <div class="content">{{detailList.content}}</div>
+                <span class="left topicType">{{detailList.type || ' - '}}</span>
+                <div class="center pubTime">发布时间：{{detailList.createTime || ' - '}}</div>
+                <div class="content">{{detailList.content || ' - '}}</div>
                 <div v-if="bannerUrl.length>0">
                     <img v-for="item in bannerUrl" :src="item" @click="handlePictureCardPreview(item)">
                     <el-dialog :visible.sync="dialogVisible">
@@ -214,7 +220,7 @@
                     </el-dialog>
                 </div>
                 <ul class="tips">
-                    <li>{{detailList.lookUpNum}}</li>
+                    <li></li>
                     <li>{{detailList.likeNum}}</li>
                     <li>{{detailList.commentNum}}</li>
                 </ul>
@@ -225,11 +231,11 @@
                         <el-tab-pane :label=theComment name="firstTips">
                             <ul class="comCont">
                                 <li v-for="item in commentLists">
-                                    <label>{{item.addInfo.userInfo.addInfo.nickName}} {{item.createTime}}</label>
+                                    <label>{{item.addInfo.isRealName===true?item.addInfo.name:'匿名'}} {{item.createTime}}</label>
                                     <div class="commentR">
                                         {{item.comment}}
-                                        <div v-if="item.replyList.length>0" class="comRBody" v-for="childitem in item.replyList">
-                                            回复{{childitem.addInfo.userInfo.addInfo.nickName}} （{{childitem.createTime}}）：{{childitem.reply}}
+                                        <div v-if="item.replyList && item.replyList.length>0" class="comRBody" v-for="childitem in item.replyList">
+                                            回复 {{childitem.addInfo.isRealName===true?childitem.addInfo.name:'匿名'}} （{{childitem.createTime}}）：{{childitem.reply}}
                                         </div>
                                     </div>
                                 </li>
@@ -351,7 +357,13 @@
                 msgLoading:false,
                 msgTotal:2,
                 detailList:{
+                    lookUpNum:0,
+                    likeNum:0,
+                    commentNum:0,
                     addInfo:{
+                        isRealName:'',
+                        name:'',
+                        avatarUrl:'',
                         publisher:{
                             addInfo:{
                                 nickName:'',
@@ -617,7 +629,7 @@
                 this.mainPageVisible=false;
                 this.secondPageVisible=true;
                 this.detailList=row;
-                this.bannerUrl=this.detailList.addInfo.urlList;
+                this.bannerUrl=this.detailList.addInfo.urlList?this.detailList.addInfo.urlList:[];
                 let id=this.detailList.id;
                 this.getSubComment(id);
                 this.getTipsOff(id);
@@ -634,7 +646,8 @@
                 this.$get(tipsOffUrl+id)
                     .then((res) => {
                         this.reportLists=res;
-                        this.theReport='举报（'+this.reportLists.length+'）';
+                        let length=this.reportLists && this.reportLists.length>0?this.reportLists.length:0;
+                        this.theReport='举报（'+length+'）';
                         this.reportTotal=this.reportLists.length>0?this.reportLists.length:1;
                     })
             },
@@ -754,6 +767,7 @@
             }
             li{
                 display: inline-block;
+                vertical-align: middle;
                 padding-left: 45px;
                 margin: 5px 5px 15px;
                 width: 40px;

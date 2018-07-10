@@ -71,23 +71,23 @@
                     </el-pagination>
                 </el-col>
                 <!--查看界面-->
-                <el-dialog class="inView" title="投诉建议" :visible.sync="viewVisible" width="70%">
+                <el-dialog class="inView" title="投诉建议" :visible.sync="viewVisible">
                     <span class="right">{{detailList.stage}}</span>
                     <el-form label-width="90px">
                         <el-form-item label="投诉时间：">
-                            {{detailList.time}}
+                            {{detailList.time || '无数据'}}
                         </el-form-item>
                         <el-form-item label="投诉人：">
-                            {{detailList.addInfo.contact}}
+                            {{detailList.addInfo.contact || '无数据'}}
                         </el-form-item>
                         <el-form-item label="租赁位置：">
-                            {{detailList.addInfo.location}}
+                            {{detailList.addInfo.location || '无数据'}}
                         </el-form-item>
                         <el-form-item label="问题描述：" class="allWid">
-                            {{detailList.addInfo.remark}}
+                            {{detailList.addInfo.remark || '无数据'}}
                             <div v-if="detailList.addInfo.imageUrls && detailList.addInfo.imageUrls.length>0">
                                 <img v-for="item in detailList.addInfo.imageUrls.slice(0,6)" :src="item" @click="handlePictureCardPreview(item)">
-                                <el-dialog :visible.sync="dialogVisible" style="z-index: 2020;">
+                                <el-dialog :visible.sync="dialogVisible" style="z-index: 2020;" :append-to-body="true">
                                     <img width="100%" style="height: 100%;" :src="dialogImageUrl" alt="">
                                 </el-dialog>
                             </div>
@@ -96,19 +96,19 @@
                     <span class="title">管理人员</span>
                     <el-form label-width="90px">
                         <el-form-item label="管理人：">
-                            {{detailList.addInfo.allocationName}}
+                            {{detailList.addInfo.allocationName || '无数据'}}
                         </el-form-item>
                         <el-form-item label="处理时间：">
-                            {{detailList.addInfo.allocationTime}}
+                            {{detailList.addInfo.allocationTime || '无数据'}}
                         </el-form-item>
                         <el-form-item v-if="detailList.addInfo.propertyName" label="负责人：">
-                            {{detailList.addInfo.propertyName}}
+                            {{detailList.addInfo.propertyName || '无数据'}}
                         </el-form-item>
                         <el-form-item v-if="detailList.addInfo.propertyName" label="处理时间：">
-                            {{detailList.addInfo.settlementTime}}
+                            {{detailList.addInfo.settlementTime || '无数据'}}
                         </el-form-item>
                         <el-form-item label="处理意见：">
-                            {{detailList.settlement}}
+                            {{detailList.settlement || '无数据'}}
                         </el-form-item>
                     </el-form>
                 </el-dialog>
@@ -159,7 +159,7 @@
                     </el-table-column>
                     <el-table-column prop="addInfo.location" label="报修位置" sortable>
                     </el-table-column>
-                    <el-table-column prop="addInfo.remark" label="问题描述" sortable show-overflow-tooltip="">
+                    <el-table-column prop="addInfo.remark" label="问题描述" sortable show-overflow-tooltip>
                     </el-table-column>
                     <el-table-column prop="stage" label="状态" sortable>
                     </el-table-column>
@@ -187,23 +187,23 @@
                     </el-pagination>
                 </el-col>
                 <!--查看界面-->
-                <el-dialog class="inView" title="报修管理" :visible.sync="decViewVisible" width="70%">
+                <el-dialog class="inView" title="报修管理" :visible.sync="decViewVisible">
                     <span class="right">{{detailList.stage}}</span>
                     <el-form label-width="90px">
                         <el-form-item label="申请时间：">
-                            {{detailList.time}}
+                            {{detailList.time || '无数据'}}
                         </el-form-item>
                         <el-form-item label="报修人：">
-                            {{detailList.addInfo.nickname}}
+                            {{detailList.addInfo.nickname || '无数据'}}
                         </el-form-item>
                         <el-form-item label="报修位置：">
-                            {{detailList.addInfo.location}}
+                            {{detailList.addInfo.location || '无数据'}}
                         </el-form-item>
                         <el-form-item label="问题描述：" class="allWid">
-                            {{detailList.addInfo.remark}}
+                            {{detailList.addInfo.remark || '无数据'}}
                             <div v-if="detailList.addInfo.imageUrls && detailList.addInfo.imageUrls.length>0">
                                 <img v-for="item in detailList.addInfo.imageUrls.slice(0,6)" :src="item" @click="handlePictureCardPreview(item)">
-                                <el-dialog :visible.sync="dialogVisible" style="z-index: 2020;">
+                                <el-dialog :visible.sync="dialogVisible" style="z-index: 2020;" :append-to-body="true">
                                     <img width="100%" style="height: 100%;" :src="dialogImageUrl" alt="">
                                 </el-dialog>
                             </div>
@@ -212,22 +212,22 @@
                     <span class="title">管理人员</span>
                     <el-form label-width="90px">
                         <el-form-item label="管理人：">
-                            {{detailList.addInfo.allocationName}}
+                            {{detailList.addInfo.allocationName || '无数据'}}
                         </el-form-item>
                         <el-form-item label="处理时间：">
-                            {{detailList.addInfo.designateTime}}
+                            {{detailList.addInfo.designateTime || '无数据'}}
                         </el-form-item>
                         <el-form-item label="负责人：">
-                            {{detailList.addInfo.propertyName}}
+                            {{detailList.addInfo.propertyName || '无数据'}}
                         </el-form-item>
                         <el-form-item label="处理时间：">
-                            {{detailList.addInfo.settlementTime}}
+                            {{detailList.addInfo.settlementTime || '无数据'}}
                         </el-form-item>
                         <el-form-item label="维修反馈：" class="allWid">
-                            {{detailList.addInfo.feedback}}
+                            {{detailList.addInfo.feedback || '无数据'}}
                             <div v-if="detailList.addInfo.images && detailList.addInfo.images.length>0">
                                 <img v-for="item in detailList.addInfo.images.slice(0,6)" :src="item" @click="handlePictureCardPreview(item)">
-                                <el-dialog :visible.sync="dialogVisible" style="z-index: 2020;">
+                                <el-dialog :visible.sync="dialogVisible" style="z-index: 2020;" :append-to-body="true">
                                     <img width="100%" style="height: 100%;" :src="dialogImageUrl" alt="">
                                 </el-dialog>
                             </div>
@@ -236,10 +236,10 @@
                     <span class="title">评价</span>
                     <el-form label-width="90px">
                         <el-form-item label="服务星级：">
-                            {{detailList.addInfo.commentStar}}
+                            {{detailList.addInfo.commentStar || '无数据'}}
                         </el-form-item>
                         <el-form-item label="维修反馈：">
-                            {{detailList.addInfo.commentText}}
+                            {{detailList.addInfo.commentText || '无数据'}}
                         </el-form-item>
                     </el-form>
                 </el-dialog>

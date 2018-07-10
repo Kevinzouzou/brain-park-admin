@@ -213,7 +213,7 @@
                         <span  >{{detailList.addInfo.startTime}}</span> ~
                         <span >{{detailList.addInfo.endTime}}</span>
                     </div>
-                    <el-table :data="actAppliData">
+                    <el-table v-if="actAppliData.length>0" :data="actAppliData">
                         <el-table-column type="index" ></el-table-column>
                         <el-table-column property="addInfo.userInfo.addInfo.nickName" label="姓名"></el-table-column>
                         <el-table-column property="addInfo.userInfo.phone" label="手机号"></el-table-column>
@@ -394,20 +394,19 @@
                         cellphone:'13215698988',
                         sex:1,
                         joinTime:'2018-01-05',
+                        createTime:'2018-01-05',
                         addInfo:{
-                            enterpriseName:'松湖智谷'
+                            enterpriseName:'松湖智谷',
+                            userInfo:{
+                                enterpriseName:'abcdefg',
+                                phone:'12345678911',
+                                addInfo:{
+                                    nickName:'',
+                                    gender:2,
+                                }
+                            }
                         }
                     },
-                    {
-                        name:"张小妹",
-                        nickname:'rose',
-                        cellphone:'13215698988',
-                        sex:0,
-                        joinTime:'2018-01-05',
-                        addInfo:{
-                            enterpriseName:'微品'
-                        }
-                    }
                 ],
                 message:{
                   title:'外交部:朝方关闭核试验场有助于政治解决半岛问题',
