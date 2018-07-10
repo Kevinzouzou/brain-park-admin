@@ -76,7 +76,6 @@
                             :props="defaultProps"
                             highlight-current
                             default-expand-all
-                            :render-content="renderContent"
                             :expand-on-click-node="false"
                             :default-expanded-keys="defaultExpandKeys"
                             @node-click="handleNodeClick">
@@ -308,11 +307,11 @@
                         STORE: store,
                         maxexpandId: that.non_maxexpandId
                     },
-                    on: {
-                        nodeAdd: ((s,d,n) => that.handleAdd(s,d,n)),
-                        nodeEdit: ((s,d,n) => that.handleEdit(s,d,n)),
-                        nodeDel: ((s,d,n) => that.handleDelete(s,d,n))
-                    }
+                    // on: {
+                    //     nodeAdd: ((s,d,n) => that.handleAdd(s,d,n)),
+                    //     nodeEdit: ((s,d,n) => that.handleEdit(s,d,n)),
+                    //     nodeDel: ((s,d,n) => that.handleDelete(s,d,n))
+                    // }
                 });
             },
             handleAddTop(){
