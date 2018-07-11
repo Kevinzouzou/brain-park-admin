@@ -71,7 +71,7 @@
         <el-dialog :title=addEditTitle :visible.sync="addEditAdsVisible">
             <el-form :model="adsForm" label-width="80px" ref="adsForm">
                 <el-form-item label="广告图">
-                    <el-upload :action=url list-type="picture-card"
+                    <el-upload :action=url list-type="picture-card" :data="othParams"
                                :on-preview="handleAdsPictureCardPreview" :on-remove="handleAdsRemove"
                                :file-list="imgAdsList" :on-success="moreAdsShow">
                         <i class="el-icon-plus"></i>
@@ -82,7 +82,7 @@
                 </el-form-item>
                 <el-form-item label="广告位">
                     <el-select v-model="adsForm.position" placeholder="请选择" @change="secAdsValue">
-                        <el-option v-for="item in adLocList" :key="item.id" :label="item.name" :value="item.id">
+                        <el-option v-for="item in adLocList.slice(1)" :key="item.id" :label="item.name" :value="item.id">
                         </el-option>
                     </el-select>
                 </el-form-item>
@@ -108,6 +108,10 @@
     export default {
        data(){
            return {
+               othParams:{
+                   bucketName:'shared-resource',
+                   folderName:''
+               },
                url:'',
                secAdValue:'全部页面',
                adLocList:[
@@ -117,39 +121,11 @@
                     },
                     {
                         id:'001',
-                        name:'用户端-首页'
+                        name:'首页'
                     },
                     {
                         id:'002',
-                        name:'用户端-服务页'
-                    },
-                    {
-                        id:'003',
-                        name:'用户端-信息页'
-                    },
-                    {
-                        id:'004',
-                        name:'金融服务'
-                    },
-                    {
-                        id:'005',
-                        name:'商务服务'
-                    },
-                    {
-                        id:'006',
-                        name:'惠通知'
-                    },
-                    {
-                        id:'007',
-                        name:'公告'
-                    },
-                    {
-                        id:'008',
-                        name:'信息化建设'
-                    },
-                    {
-                        id:'009',
-                        name:'服务'
+                        name:'园区wifi页'
                     },
                 ],
                page:1,
@@ -260,7 +236,7 @@
                this.getAdsMg();
            },
            moreAdsShow(res,file,fileList){
-               this.morePicList.push(res.responseList)
+               this.morePicList.push(res.responseList.url)
            },
            handleAdsRemove(file, fileLists) {
                console.log(file, fileLists);
@@ -319,6 +295,10 @@
        mounted(){
           this.getAdsMg();
           this.url=localStorage.getItem("upUrl")+uploadPic;
+          this. othParams={
+               bucketName:'shared-resource',
+               folderName:localStorage.getItem("parkId")
+           };
        }
     }
 </script>

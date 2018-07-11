@@ -27,7 +27,7 @@ import employeeManage from './views/userManage/employeeManage.vue'
 import departmentOrganization from './views/userManage/departmentOrganization.vue'
 import operatorAccountManage from './views/userManage/operatorAccountManage.vue'
 import operatorRoleManage from './views/userManage/operatorRoleManage.vue'
-
+ 
 
 Vue.use(Router)
 let routes = [
@@ -48,7 +48,7 @@ let routes = [
         component: Home,
         name: '用户管理',
         iconCls: 'fa fa-user-o',
-        children: [
+        children: [ 
             // { path: 'userProfile', component: userProfile, name: '用户概况' },
             { path: '/userOperation', component: userOperation, name: '用户操作' },
             { path: '/employeeManage', component: employeeManage, name: '员工管理' },
@@ -96,6 +96,11 @@ let routes = [
         children: [
             // { path: '/serEffect', component: serEffect, name: '服务效能概况' },
             { path: '/corporationHome', component: corporationHome, name: '企业之家' },
+            {
+                path: '/new',
+                component: resolve => require(['./views/employers/new.vue'], resolve),
+                name: '企业'
+            },
             { path: '/businessProcess', component: businessProcess, name: '流程业务' },
             // { path: '/leaseContract', component: leaseContract, name: '租赁合同管理' }
         ]
@@ -152,7 +157,7 @@ let routes = [
             {
                 path: '/workBook',
                 component: resolve => require(['./views/officeSer/workBook.vue'], resolve),
-                name: '工作手册'
+                name: '工作手册' 
             }
             // {
             //     path: '/contacts',

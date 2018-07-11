@@ -15,7 +15,13 @@ import routes from './routes'
 import 'font-awesome/css/font-awesome.min.css'
 import axios from 'axios'
 // import {post,fetch,patch,put} from './utils/http'
-import {post,get,patch,put,del} from './utils/http'
+import {
+  post,
+  get,
+  patch,
+  put,
+  del
+} from './utils/http'
 
 import '../static/ueditor/ueditor.config'
 import '../static/ueditor/ueditor.all.min'
@@ -30,11 +36,11 @@ import 'quill/dist/quill.snow.css'
 import 'quill/dist/quill.bubble.css'
 
 //定义全局变量
-Vue.prototype.$post=post;
-Vue.prototype.$get=get;
-Vue.prototype.$patch=patch;
-Vue.prototype.$put=put;
-Vue.prototype.$del=del;
+Vue.prototype.$post = post;
+Vue.prototype.$get = get;
+Vue.prototype.$patch = patch;
+Vue.prototype.$put = put;
+Vue.prototype.$del = del;
 
 Vue.use(ElementUI)
 Vue.use(VueRouter)
@@ -45,7 +51,8 @@ Vue.use(VueQuillEditor)
 //NProgress.configure({ showSpinner: false });
 
 const router = new VueRouter({
-  routes
+  routes,
+  mode: 'history',
 })
 
 // router.beforeEach((to, from, next) => {
@@ -73,4 +80,3 @@ new Vue({
   //components: { App }
   render: h => h(App)
 }).$mount('#app')
-

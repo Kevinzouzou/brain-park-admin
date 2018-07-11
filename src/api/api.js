@@ -5,12 +5,12 @@ let base = '';
 // let test='http://218.17.39.178:2040';
 localStorage.setItem("parkId",'969878f1f1149e6a7afae38636c0abc');
 localStorage.setItem("userId",'71f3df48263f4c74be2efbb83250e66b');
-localStorage.setItem("upUrl",'http://218.17.39.178:2040');  //微品云（开发）
+localStorage.setItem("upUrl",'http://218.17.39.178:2040');  //微品云（开发） 
 // localStorage.setItem("upUrl",'https://shbeta.vpclub.cn/api10005');//新阿里云
 // localStorage.setItem("upUrl",'http://39.107.252.186:10005');//阿里云地址（正式）
 // localStorage.setItem("upUrl",'http://192.168.7.109:2040');//another
 // localStorage.setItem("upUrl",'http://172.16.0.7:2040');//本地
-
+const parkId = localStorage.getItem("parkId");
 
 export const requestLogin = params => { return axios.post(`${base}/login`, params).then(res => res.data); };
 export const getUserList = params => { return axios.get(`${base}/user/list`, { params: params }); };
@@ -19,7 +19,7 @@ export const removeUser = params => { return axios.get(`${base}/user/remove`, { 
 export const batchRemoveUser = params => { return axios.get(`${base}/user/batchremove`, { params: params }); };
 export const editUser = params => { return axios.get(`${base}/user/edit`, { params: params }); };
 export const addUser = params => { return axios.get(`${base}/user/add`, { params: params }); };
-
+ 
 export const showCircle=`/socialCircle/socialCircleList?parkId=`+localStorage.getItem("parkId");  //圈子列表
 export const showActList=`/socialCircle/socialCircleActiveList?parkId=`+localStorage.getItem("parkId");  //圈子活动列表
 export const delCir=`/socialCircle/deleteSocialCircle/`+localStorage.getItem("parkId")+'/';  //圈子 删除
@@ -74,17 +74,23 @@ export const upParkTreeUrl=`/parkInfoTree/addOrUpdateParkInfoTree`;  //添加或
 export const delParkTreeUrl=`/parkInfoTree/deleteParkInfoTree/`;  //删除组织结构/区域
 export const countsEnterUrl=`/settledEnterprise/findSettledEnterpriseCountByZoneId/`+localStorage.getItem("parkId")+'/';  //查询区域中企业的数量
 
-
-
 // 用户管理
-export const parkStaffList = `/parkStaff/parkStaffList?parkId=` + localStorage.getItem("parkId"); // 获取用户列表
-export const addOrUpdateParkStaff = `/parkStaff/addOrUpdateParkStaff`; // 添加或更新用户
-export const deleteStaff = `/parkStaff/deleteStaff/`; // 删除用户
-export const settledEnterpriseList = `/settledEnterprise/settledEnterpriseList?parkId=` + localStorage.getItem("parkId"); // 获取企业名单
-export const parkUserList = `/parkUserPermission/parkUserList?parkId=` + localStorage.getItem("parkId") + `&type=2`; // 获取员工列表
-export const parkInfoTreeList = `/parkInfoTree/parkInfoTreeList?parkId=` + localStorage.getItem("parkId") + `&type=`; // 获取组织架构树形结构
-export const parkOperatorList = `/parkUser/parkOperatorList?parkId=` + localStorage.getItem("parkId") + `&type=3` // 获取操作员列表
-export const addParkUser = `/parkUser/addParkUser`; // 添加员工/操作员
-export const deleteUser = `/parkUser/deleteUser/`; // 删除员工/操作员
-export const parkRoleList = `/parkRole/parkRoleList?parkId=` + localStorage.getItem("parkId"); // 查询角色列表
-
+export const parkStaffList = `/parkStaff/parkStaffList?parkId=${parkId}`;                               // 获取用户列表
+export const addOrUpdateParkStaff = `/parkStaff/addOrUpdateParkStaff`;                                  // 添加或更新用户
+export const deleteStaff = `/parkStaff/deleteStaff/`;                                                   // 删除用户
+export const settledEnterpriseList = `/settledEnterprise/settledEnterpriseList?parkId=${parkId}`;       // 获取企业名单
+export const parkUserList = `/parkUserPermission/parkUserList?parkId=${parkId}&type=2`;                 // 获取员工列表
+export const parkOperatorList = `/parkUser/parkOperatorList?parkId=${parkId}&type=3`                    // 获取操作员列表
+export const addParkUser = `/parkUser/addParkUser`;                                                     // 添加员工/操作员
+export const updateParkUserInfo = `/parkUser/updateParkUserInfo`;                                       // 修改员工/操作员
+export const deleteUser = `/parkUser/deleteUser/`;                                                      // 删除员工/操作员 
+export const findUserByRoleId = `/parkUser/findUserByRoleId/${parkId}/`;                                // 查找使用此角色的操作员
+export const findUserNumByDepartmentId = `/parkUser/findUserNumByDepartmentId/${parkId}/`;              // 通过部门Id查找用户数量
+export const parkRoleList = `/parkRole/parkRoleList?parkId=${parkId}`                                   // 查询角色列表
+export const addOrUpdateParkRole = `/parkRole/addOrUpdateParkRole`                                      // 添加或修改角色
+export const deleteParkRole = `/parkRole/deleteParkRole/`;                                              // 删除角色
+export const parkInfoTreeList = `/parkInfoTree/parkInfoTreeList?parkId=${parkId}&type=`;                // 获取组织架构树形结构
+export const deleteParkInfoTree =`/parkInfoTree/deleteParkInfoTree/`;                                   // 删除组织结构/区域
+export const parkInfoTreeAddZoneInfo = `/parkInfoTree/parkInfoTreeAddZoneInfo/${parkId}/`;              // 查找组织架构所在区域信息
+export const addOrUpdateParkInfoTree = `/parkInfoTree/addOrUpdateParkInfoTree`;                         // 添加或修改组织架构/区域
+export const sendMessage = `/shortMessage/sendMessage`                                                  // 发送短信

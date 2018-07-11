@@ -70,13 +70,13 @@
                    <el-form-item>
                         <el-input v-model="monthFilters.searchTitle" placeholder="姓名搜索"></el-input>
                     </el-form-item>
-                    <el-form-item>
+                    <el-form-item> 
                         <el-button type="primary" v-on:click="getQueryMonthAttend">查询</el-button>
                     </el-form-item>
                 </el-form>
             </el-col>
             <!--工具条-->
-            <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
+            <el-col :span="24" class="toolbar" style="padding-bottom: 0px;"> 
                {{secValue}}{{monValue}}考勤异常统计表
             </el-col>
             <!--列表-->
@@ -262,7 +262,7 @@
                 mainPage:true,
                 secondPage:false,
                 monValue:'',
-                monthNum:1,
+                monthNum:1, 
                 monDay:'',
 
 
@@ -296,7 +296,7 @@
                         this.attendTotal=this.attendList.length>0?this.attendList.length:1;
                         this.attendanceLoading=false;
                     })
-            },
+            }, 
             getQueryMonthAttend(){ //月份考勤 条件查询
                 let monStr='&month='+this.secValue.substring(0,4)+'-'+this.monDay;
                 let url=unAttendList+monStr;
@@ -311,7 +311,7 @@
                 this.mainPage=false;
                 this.secondPage=true;
                 this.page=1;
-                this.monValue=val;
+                this.monValue=val; 
                 this.monDay=id;
                 let monStr='&month='+this.secValue.substring(0,4)+'-'+id;
                 let url=unAttendList+monStr;
