@@ -75,19 +75,22 @@ export const delParkTreeUrl=`/parkInfoTree/deleteParkInfoTree/`;  //删除组织
 export const countsEnterUrl=`/settledEnterprise/findSettledEnterpriseCountByZoneId/`+localStorage.getItem("parkId")+'/';  //查询区域中企业的数量
 
 // 用户管理
-export const parkStaffList = `/parkStaff/parkStaffList?parkId=` + localStorage.getItem("parkId");       // 获取用户列表
+export const parkStaffList = `/parkStaff/parkStaffList?parkId=${parkId}`;                               // 获取用户列表
 export const addOrUpdateParkStaff = `/parkStaff/addOrUpdateParkStaff`;                                  // 添加或更新用户
 export const deleteStaff = `/parkStaff/deleteStaff/`;                                                   // 删除用户
 export const settledEnterpriseList = `/settledEnterprise/settledEnterpriseList?parkId=${parkId}`;       // 获取企业名单
 export const parkUserList = `/parkUserPermission/parkUserList?parkId=${parkId}&type=2`;                 // 获取员工列表
-export const parkInfoTreeList = `/parkInfoTree/parkInfoTreeList?parkId=${parkId}&type=`;                // 获取组织架构树形结构
-export const parkInfoTreeAddZoneInfo = `/parkInfoTree/parkInfoTreeAddZoneInfo/${parkId}/`;              // 查找组织架构所在区域信息
 export const parkOperatorList = `/parkUser/parkOperatorList?parkId=${parkId}&type=3`                    // 获取操作员列表
 export const addParkUser = `/parkUser/addParkUser`;                                                     // 添加员工/操作员
 export const updateParkUserInfo = `/parkUser/updateParkUserInfo`;                                       // 修改员工/操作员
 export const deleteUser = `/parkUser/deleteUser/`;                                                      // 删除员工/操作员 
+export const findUserByRoleId = `/parkUser/findUserByRoleId/${parkId}/`;                                // 查找使用此角色的操作员
+export const findUserNumByDepartmentId = `/parkUser/findUserNumByDepartmentId/${parkId}/`;              // 通过部门Id查找用户数量
 export const parkRoleList = `/parkRole/parkRoleList?parkId=${parkId}`                                   // 查询角色列表
 export const addOrUpdateParkRole = `/parkRole/addOrUpdateParkRole`                                      // 添加或修改角色
-export const findUserByRoleId = `/parkUser/findUserByRoleId/${parkId}/`;                                // 查找使用此角色的操作员
 export const deleteParkRole = `/parkRole/deleteParkRole/`;                                              // 删除角色
+export const parkInfoTreeList = `/parkInfoTree/parkInfoTreeList?parkId=${parkId}&type=`;                // 获取组织架构树形结构
+export const deleteParkInfoTree =`/parkInfoTree/deleteParkInfoTree/`;                                   // 删除组织结构/区域
+export const parkInfoTreeAddZoneInfo = `/parkInfoTree/parkInfoTreeAddZoneInfo/${parkId}/`;              // 查找组织架构所在区域信息
 export const addOrUpdateParkInfoTree = `/parkInfoTree/addOrUpdateParkInfoTree`;                         // 添加或修改组织架构/区域
+export const sendMessage = `/shortMessage/sendMessage`                                                  // 发送短信
