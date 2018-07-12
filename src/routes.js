@@ -5,7 +5,7 @@ import Login from './views/Login.vue'
 import NotFound from './views/404.vue'
 import Home from './views/Home.vue'
 import Main from './views/Main.vue'
-
+// 运营服务
 import operaSitua from './views/operaSer/operaSitua.vue'
 import circle from './views/operaSer/circle.vue'
 import topic from './views/operaSer/topic.vue'
@@ -15,6 +15,7 @@ import financialSer from './views/operaSer/financialSer.vue'
 import merchants from './views/operaSer/merchants.vue'
 import information from './views/operaSer/information.vue'
 import userFeedback from './views/operaSer/userFeedback.vue'
+import houseKeeping from './views/operaSer/houseKeeping.vue'
 
 import serEffect from './views/employers/serEffect.vue'
 import corporationHome from './views/employers/corporationHome.vue'
@@ -50,7 +51,7 @@ let routes = [
         name: '用户管理',
         iconCls: 'fa fa-user-o',
         children: [ 
-            // { path: 'userProfile', component: userProfile, name: '用户概况' },
+            { path: '/userProfile', component: userProfile, name: '用户概况' },
             { path: '/userOperation', component: userOperation, name: '用户操作' },
             { path: '/employeeManage', component: employeeManage, name: '员工管理' },
             { path: '/departmentOrganization', component: departmentOrganization, name: '部门组织架构' },
@@ -86,7 +87,8 @@ let routes = [
             { path: '/financialSer', component: financialSer, name: '金融服务' },
             // { path: '/merchants', component: merchants, name: '商家联盟' },
             { path: '/userFeedback', component: userFeedback, name: '用户反馈处理' },
-            { path: '/information', component: information, name: '信息公告' }
+            { path: '/information', component: information, name: '信息公告' },
+            { path: '/houseKeeping', component: houseKeeping, name: '家政服务' },
         ]
     },
     {

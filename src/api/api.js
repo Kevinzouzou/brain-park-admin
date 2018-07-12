@@ -1,10 +1,9 @@
 // import axios from 'axios';
 
 let base = '';
-
-const parkId = localStorage.getItem("parkId");
-console.log(parkId+"  --api.js parkid")
-console.log(sessionStorage.getItem("parkId")+"  --api.js parkid sessionStorage")
+const parkId='969878f1f1149e6a7afae38636c0abc';
+localStorage.setItem("parkId",parkId);
+// const parkId = localStorage.getItem("parkId");
 
 // export const showCircle=`/socialCircle/socialCircleList?parkId=`+localStorage.getItem("parkId");  //圈子列表
 export const showCircle=`/socialCircle/socialCircleList?parkId=`;  //圈子列表
@@ -82,3 +81,7 @@ export const deleteParkInfoTree =`/parkInfoTree/deleteParkInfoTree/`;           
 export const parkInfoTreeAddZoneInfo = `/parkInfoTree/parkInfoTreeAddZoneInfo/${parkId}/`;              // 查找组织架构所在区域信息
 export const addOrUpdateParkInfoTree = `/parkInfoTree/addOrUpdateParkInfoTree`;                         // 添加或修改组织架构/区域
 export const sendMessage = `/shortMessage/sendMessage`                                                  // 发送短信
+
+export const housekeepingList = `/displayContent/housekeepingList?parkId=${parkId}`                     // 家政服务列表
+export const addOrUpdateDisplayContent = `/displayContent/addOrUpdateDisplayContent`                    // 添加或修改展示性信息
+export const crowdorderingApplication = `/propertyApplication/crowdorderingApplication`                 // 拼单记录列表

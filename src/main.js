@@ -15,6 +15,7 @@ import routes from './routes'
 import 'font-awesome/css/font-awesome.min.css'
 import axios from 'axios'
 // import {post,fetch,patch,put} from './utils/http'
+import echarts from "echarts"
 import {
   post,
   get,

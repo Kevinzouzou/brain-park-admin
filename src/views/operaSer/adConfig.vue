@@ -103,7 +103,14 @@
 </template>
 
 <script>
-    import {uploadPic, addDisplay, deleteDisplay, adsUrl, addAdsUrl, delAdsUrl} from '../../api/api'
+import {
+    uploadPic,
+    addDisplay,
+    deleteDisplay,
+    adsUrl,
+    addAdsUrl,
+    delAdsUrl
+} from '../../api/api';
 
     export default {
        data(){
@@ -304,5 +311,4 @@
 </script>
 
 <style scoped>
-
 </style>

@@ -373,8 +373,8 @@ export default {
         // 增加节点
         handleAdd(s, d, n) {
             console.log(s, d, n);
-            if (n.level >= 4) {
-                this.$message.error('最多只支持四级！');
+            if (n.level >= 3) {
+                this.$message.error('最多只支持三级！');
                 return false;
             }
             //添加数据
