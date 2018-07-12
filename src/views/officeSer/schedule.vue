@@ -324,7 +324,6 @@
                 })
             },
             handleAdd(s,d,n){//增加节点
-                console.log(s,d,n)
                 if(n.level >=6){
                     this.$message.error("最多只支持五级！")
                     return false;
@@ -346,7 +345,6 @@
                 console.log(s,d,n)
             },
             handleDelete(s,d,n){//删除节点
-                console.log(s,d,n)
                 let that = this;
                 //有子级不删除
                 if(d.children && d.children.length !== 0){
@@ -639,20 +637,17 @@
                     });
             },
             secChange(id,name){
-                console.log(this.checkList)
                 let data=[];
                 if(this.checkList.indexOf(name)!==-1){
                     data=[{
                         userId:id,
                         isScheduling:"1"
                     }];
-                    console.log(id+" - "+name)
                 }else{
                     data=[{
                         userId:id,
                         isScheduling:"0"
                     }];
-                    console.log(id+'no')
                 }
                 this.updateSchedule(data);
             },
