@@ -33,7 +33,7 @@ import operatorRoleManage from './views/userManage/operatorRoleManage.vue'
 Vue.use(Router)
 let routes = [
     {
-        path: '/login',
+        path: '/',
         component: Login,
         name: '',
         hidden: true
@@ -49,8 +49,9 @@ let routes = [
         path: '/',
         component: Home,
         name: '用户管理',
+        // redirect:'/userProfile',
         iconCls: 'fa fa-user-o',
-        children: [ 
+        children: [
             { path: '/userProfile', component: userProfile, name: '用户概况' },
             { path: '/userOperation', component: userOperation, name: '用户操作' },
             { path: '/employeeManage', component: employeeManage, name: '员工管理' },

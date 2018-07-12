@@ -71,7 +71,7 @@
         <el-dialog :title=addEditTitle :visible.sync="addEditAdsVisible">
             <el-form :model="adsForm" label-width="80px" ref="adsForm">
                 <el-form-item label="广告图">
-                    <el-upload :action=url list-type="picture-card" :data="othParams"
+                    <el-upload :action=url list-type="picture-card" :data="othParams" ref="upload"
                                :on-preview="handleAdsPictureCardPreview" :on-remove="handleAdsRemove"
                                :file-list="imgAdsList" :on-success="moreAdsShow">
                         <i class="el-icon-plus"></i>
@@ -194,6 +194,7 @@ import {
                });
            },
            adsAdd(){
+               if(this.$refs.upload!==undefined) this.$refs.upload.clearFiles();
                this.addEditTitle='新增';
                this.isEdit=false;
                this.morePicList.length=0;

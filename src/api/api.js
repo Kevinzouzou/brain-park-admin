@@ -2,7 +2,14 @@
 
 let base = '';
 const parkId='969878f1f1149e6a7afae38636c0abc';
+// let userId='71f3df48263f4c74be2efbb83250e66b';
+// let upUrl='http://218.17.39.178:2040';//微品云（开发）
+// let upUrl='https://shbeta.vpclub.cn/api10005';//新阿里云
+// let upUrl='http://39.107.252.186:10005';//阿里云地址（正式）
+
 localStorage.setItem("parkId",parkId);
+// localStorage.setItem("userId",userId);
+// localStorage.setItem("upUrl",upUrl);
 // const parkId = localStorage.getItem("parkId");
 
 // export const showCircle=`/socialCircle/socialCircleList?parkId=`+localStorage.getItem("parkId");  //圈子列表

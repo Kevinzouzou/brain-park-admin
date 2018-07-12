@@ -53,23 +53,20 @@ Vue.use(VueQuillEditor)
 
 const router = new VueRouter({
   routes,
-  mode: 'history',
+  // mode: 'history',
 })
 
-// router.beforeEach((to, from, next) => {
-//   //NProgress.start();
-//   if (to.path == '/login') {
-//     // sessionStorage.removeItem('user');
-//       console.log('to login')
-//   }
-//   // let user = JSON.parse(sessionStorage.getItem('user'));
-//   // if (!user && to.path != '/login') {
-//   if (to.path != '/login') {
-//     next({ path: '/login' })
-//   } else {
-//     next()
-//   }
-// })
+router.beforeEach((to, from, next) => {
+    if(!localStorage.getItem('parkId')){
+        next({
+            path: '/login',                     //登录
+            // name: 'login',
+            // component: resolve => require(['view/login/login.vue'], resolve),
+        })
+    }else{
+      next()
+    }
+})
 
 // router.afterEach(transition => {
 // NProgress.done();

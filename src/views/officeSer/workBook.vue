@@ -69,6 +69,7 @@
                             class="upload-demo"
                             ref="upload"
                             :action=url
+                            :data="othParams"
                             :on-preview="handlePreview"
                             :on-remove="handleRemove"
                             :on-success="handleSuc"
@@ -95,6 +96,10 @@
         components: {UE},
         data(){
             return {
+                othParams:{
+                    bucketName:'shared-resource',
+                    folderName:''
+                },
                 checkFile:true,
                 page:1,
                 pagesize:7,
@@ -139,7 +144,7 @@
                 console.log(file);
             },
             handleSuc(res, file, fileList){
-                this.moreFileList.push(res.responseList);
+                this.moreFileList.push(res.responseList.url);
                 this.checkFile=false;
             },
             getQueryWorkBook(){ // 工作手册模糊查询
@@ -162,7 +167,7 @@
                 this.isEdit=false;
                 this.moreFileList.length=0;
                 this.workBookAEVisible=true;
-                this.$refs.upload.clearFiles();
+                if(this.$refs.upload!==undefined) this.$refs.upload.clearFiles();
                 this.checkFile=true;
                 this.workBookAEForm={
                     title:''
@@ -249,6 +254,10 @@
         mounted(){
             this.getWorkBook();   //物业公告
             this.url=localStorage.getItem("upUrl")+uploadPic;
+            this. othParams={
+                bucketName:'shared-resource',
+                folderName:localStorage.getItem("parkId")
+            };
         }
     }
 </script>
