@@ -73,7 +73,7 @@
         <el-dialog title="新增员工" :visible.sync="addParkUserFormVisible">
             <el-form :label-position="right" label-width="150px">
                 <el-form-item label="员工照片：">
-                    <el-upload class="avatar-uploader" :action=imageUploadUrl :show-file-list="false" :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload">
+                    <el-upload class="avatar-uploader" :action=imageUploadUrl :data="imgData" :show-file-list="false" :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload">
                         <img v-if="addParkUserForm.addInfo.avatar" :src="addParkUserForm.addInfo.avatar" class="avatar">
                         <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                     </el-upload>
@@ -214,7 +214,7 @@
             <el-form :model="editParkUserForm" :label-position="right" label-width="160px" :rules="editParkUserFormRules" ref="editParkUserForm"
                 v-show="editParkUserFormShow">
                 <el-form-item label="员工照片：">
-                    <el-upload class="avatar-uploader" :action="imageUploadUrl" :show-file-list="false" :on-success="handleEditParkUserAvatarSuccess"
+                    <el-upload class="avatar-uploader" :action="imageUploadUrl" :data="imgData" :show-file-list="false" :on-success="handleEditParkUserAvatarSuccess"
                         :before-upload="beforeAvatarUpload">
                         <img v-if="editParkUserForm.addInfo.avatar" :src="editParkUserForm.addInfo.avatar" class="avatar">
                         <i v-else class="el-icon-plus avatar-uploader-icon"></i>
@@ -282,7 +282,8 @@ import {
     updateParkUserInfo,
     deleteUser,
     parkInfoTreeList,
-    uploadPic
+    uploadPic,
+    sendMessage
 } from '../../api/api';
 export default {
     data() {
@@ -292,6 +293,11 @@ export default {
             page: 1,
             pagesize: 7,
             departmentName: '',
+            imgData: {
+                bucketName: 'shared-resource',
+                folderName: ''
+                // folderName: localStorage.getItem('parkId')
+            },
             parkUserList: '', // 员工列表
             parkUserListTotal: 0, // 员工总数
             parkUserListLoading: false, // 员工列表loading控件
@@ -570,14 +576,11 @@ export default {
         },
         // 图片上传
         handleAvatarSuccess(res, file) {
-            this.addParkUserForm.addInfo.avatar = URL.createObjectURL(file.raw);
-            this.addParkUserForm.addInfo.avatar = res.responseList;
+            this.addParkUserForm.addInfo.avatar = res.responseList.url;
         },
         handleEditParkUserAvatarSuccess(res, file) {
-            this.editParkUserForm.addInfo.avatar = URL.createObjectURL(
-                file.raw
-            );
-            this.editParkUserForm.addInfo.avatar = res.responseList;
+            console.log(file);
+            this.editParkUserForm.addInfo.avatar = res.responseList.url;
         },
         beforeAvatarUpload(file) {
             const isJPG = file.type === 'image/jpeg';
@@ -759,15 +762,14 @@ export default {
         sendTheMessage() {
             let password = this.appPassword;
             let data = {
-                shortmessageType: '代表一个短信模板',
-                phoneNumbers: 'string 电话号码 ',
+                phoneNumbers: '18813958331',
                 signName: '松湖智谷',
-                templateCode: 'string  短信模板',
-                templateParam:
-                    'json短信模板变量替换JSON串 示例：{"name":"Tom", "code":"123"}',
-                smsUpExtendCode:
-                    'string 上行短信扩展码,无特殊需要此字段的用户请忽略此字段',
-                outId: 'string 外部流水扩展字段'
+                templateCode: 'SMS_137421065',
+                templateParam: {
+                    // name: this.editParkUserForm.addInfo.name,
+                    name: 'ooo',
+                    code: password
+                }
             };
             if (password === '') {
                 this.$message({
@@ -786,11 +788,19 @@ export default {
                     }
                 )
                     .then(() => {
+                        console.log(JSON.stringify(data));
                         this.$post(sendMessage, data).then(res => {
-                            this.$message({
-                                type: 'success',
-                                message: '发送成功!'
-                            });
+                            if (res.operationResult === 'failure') {
+                                this.$message({
+                                    type: 'error',
+                                    message: `${res.failureMsg}`
+                                });
+                            } else {
+                                this.$message({
+                                    type: 'success',
+                                    message: '发送成功!'
+                                });
+                            }
                         });
                     })
                     .catch(() => {
@@ -855,6 +865,10 @@ export default {
         this.getParkUserList(parkUserList);
         this.getParkInfoTreeList();
         this.imageUploadUrl = localStorage.getItem('upUrl') + uploadPic;
+        this.imgData = {
+            bucketName: 'shared-resource',
+            folderName: localStorage.getItem('parkId')
+        };
     }
 };
 </script>

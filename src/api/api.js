@@ -94,3 +94,7 @@ export const deleteParkInfoTree =`/parkInfoTree/deleteParkInfoTree/`;           
 export const parkInfoTreeAddZoneInfo = `/parkInfoTree/parkInfoTreeAddZoneInfo/${parkId}/`;              // 查找组织架构所在区域信息
 export const addOrUpdateParkInfoTree = `/parkInfoTree/addOrUpdateParkInfoTree`;                         // 添加或修改组织架构/区域
 export const sendMessage = `/shortMessage/sendMessage`                                                  // 发送短信
+
+export const housekeepingList = `/displayContent/housekeepingList?parkId=${parkId}`                     // 家政服务列表
+export const addOrUpdateDisplayContent = `/displayContent/addOrUpdateDisplayContent`                    // 添加或修改展示性信息
+export const crowdorderingApplication = `/propertyApplication/crowdorderingApplication`                 // 拼单记录列表
