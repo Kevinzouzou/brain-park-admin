@@ -58,19 +58,21 @@ const router = new VueRouter({
 // router.beforeEach((to, from, next) => {
 //   //NProgress.start();
 //   if (to.path == '/login') {
-//     sessionStorage.removeItem('user');
+//     // sessionStorage.removeItem('user');
+//       console.log('to login')
 //   }
-//   let user = JSON.parse(sessionStorage.getItem('user'));
-//   if (!user && to.path != '/login') {
+//   // let user = JSON.parse(sessionStorage.getItem('user'));
+//   // if (!user && to.path != '/login') {
+//   if (to.path != '/login') {
 //     next({ path: '/login' })
 //   } else {
 //     next()
 //   }
 // })
 
-//router.afterEach(transition => {
-//NProgress.done();
-//});
+// router.afterEach(transition => {
+// NProgress.done();
+// });
 
 new Vue({
   //el: '#app',

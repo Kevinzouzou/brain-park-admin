@@ -31,18 +31,19 @@ import operatorRoleManage from './views/userManage/operatorRoleManage.vue'
 
 Vue.use(Router)
 let routes = [
-    // {
-    //     path: '/login',
-    //     component: Login,
-    //     name: '',
-    //     hidden: true
-    // },
     {
-        path: '*',
-        hidden: true,
-        // redirect: { path: '/circle' }
-        redirect: { path: '/404' }
+        path: '/login',
+        component: Login,
+        name: '',
+        hidden: true
     },
+    // {
+    //     path: '*',
+    //     hidden: true,
+    //     // redirect: { path: '/circle' }
+    //     redirect: { path: '/404' }
+    // },
+
     {
         path: '/',
         component: Home,
@@ -73,12 +74,12 @@ let routes = [
     {
         path: '/',
         component: Home,
-        redirect:'/circle',
+        // redirect:'/circle',
         name: '运营服务',
         iconCls: 'el-icon-document',
         children: [
             // { path: '/operaSitua', component: operaSitua, name: '运营概况' },
-            { path: 'circle', component: circle, name: '圈子' },
+            { path: '/circle', component: circle, name: '圈子' },
             { path: '/topic', component: topic, name: '话题' },
             { path: '/adConfig', component: adConfig, name: '广告配置' },
             // { path: '/pushConfig', component: pushConfig, name: '推送配置' },

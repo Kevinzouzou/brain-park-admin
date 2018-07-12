@@ -4,22 +4,19 @@
 			<el-col :span="10" class="logo" :class="collapsed?'logo-collapse-width':'logo-width'">
 				<img class="logoImg" v-if="!collapsed" src="../assets/logo.png">
 			</el-col>
-			<el-col :span="10">
-				<div class="tools" @click.prevent="collapse">
-					<!--<i class="fa fa-align-justify"></i>-->
-					<i class="el-icon-tickets"></i>
-				</div>
-			</el-col>
-			<!--<el-col :span="4" class="userinfo">-->
-				<!--<el-dropdown trigger="hover">-->
-					<!--<span class="el-dropdown-link userinfo-inner"><img :src="this.sysUserAvatar" /> {{sysUserName}}</span>-->
-					<!--<el-dropdown-menu slot="dropdown">-->
-						<!--<el-dropdown-item>我的消息</el-dropdown-item>-->
-						<!--<el-dropdown-item>设置</el-dropdown-item>-->
-						<!--<el-dropdown-item divided @click.native="logout">退出登录</el-dropdown-item>-->
-					<!--</el-dropdown-menu>-->
-				<!--</el-dropdown>-->
+			<!--<el-col :span="10">-->
+				<!--<div class="tools" @click.prevent="collapse">-->
+					<!--&lt;!&ndash;<i class="fa fa-align-justify"></i>&ndash;&gt;-->
+					<!--<i class="el-icon-tickets"></i>-->
+				<!--</div>-->
 			<!--</el-col>-->
+			<el-col :span="4" :offset="10" class="userinfo">
+				<!--<div class="usermenu" v-if="user.id">-->
+				<span class="usermenu">
+					欢迎您：{{user.username || ''}}
+				</span>
+				<a href="javascript:;" class="out" @click="logout">退出</a>
+			</el-col>
 		</el-col>
 		<el-col :span="24" class="main">
 			<aside :class="collapsed?'menu-collapsed':'menu-expanded'">
@@ -34,22 +31,22 @@
 						<el-menu-item v-if="item.leaf&&item.children.length>0" :index="item.children[0].path"><i :class="item.iconCls"></i>{{item.children[0].name}}</el-menu-item>
 					</template>
 				</el-menu>
-				<!--导航菜单-折叠后-->
-				<ul class="el-menu el-menu-vertical-demo collapsed" v-show="collapsed" ref="menuCollapsed">
-					<li v-for="(item,index) in $router.options.routes" v-if="!item.hidden" class="el-submenu item">
-						<template v-if="!item.leaf">
-							<div class="el-submenu__title" style="padding-left: 20px;" @mouseover="showMenu(index,true)" @mouseout="showMenu(index,false)"><i :class="item.iconCls"></i></div>
-							<ul class="el-menu submenu" :class="'submenu-hook-'+index" @mouseover="showMenu(index,true)" @mouseout="showMenu(index,false)"> 
-								<li v-for="child in item.children" v-if="!child.hidden" :key="child.path" class="el-menu-item" style="padding-left: 40px;" :class="$route.path==child.path?'is-active':''" @click="$router.push(child.path)">{{child.name}}</li>
-							</ul>
-						</template>
-						<template v-else>
-							<li class="el-submenu">
-								<div class="el-submenu__title el-menu-item" style="padding-left: 20px;height: 56px;line-height: 56px;padding: 0 20px;" :class="$route.path==item.children[0].path?'is-active':''" @click="$router.push(item.children[0].path)"><i :class="item.iconCls"></i></div>
-							</li>
-						</template>
-					</li>
-				</ul>
+				<!--&lt;!&ndash;导航菜单-折叠后&ndash;&gt;-->
+				<!--<ul class="el-menu el-menu-vertical-demo collapsed" v-show="collapsed" ref="menuCollapsed">-->
+					<!--<li v-for="(item,index) in $router.options.routes" v-if="!item.hidden" class="el-submenu item">-->
+						<!--<template v-if="!item.leaf">-->
+							<!--<div class="el-submenu__title" style="padding-left: 20px;" @mouseover="showMenu(index,true)" @mouseout="showMenu(index,false)"><i :class="item.iconCls"></i></div>-->
+							<!--<ul class="el-menu submenu" :class="'submenu-hook-'+index" @mouseover="showMenu(index,true)" @mouseout="showMenu(index,false)"> -->
+								<!--<li v-for="child in item.children" v-if="!child.hidden" :key="child.path" class="el-menu-item" style="padding-left: 40px;" :class="$route.path==child.path?'is-active':''" @click="$router.push(child.path)">{{child.name}}</li>-->
+							<!--</ul>-->
+						<!--</template>-->
+						<!--<template v-else>-->
+							<!--<ul class="el-submenu">-->
+								<!--<li class="el-submenu__title el-menu-item" style="padding-left: 20px;height: 56px;line-height: 56px;padding: 0 20px;" :class="$route.path==item.children[0].path?'is-active':''" @click="$router.push(item.children[0].path)"><i :class="item.iconCls"></i></li>-->
+							<!--</ul>-->
+						<!--</template>-->
+					<!--</li>-->
+				<!--</ul>-->
 			</aside>
 			<section class="content-container">
 				<div class="grid-content bg-purple-light">
@@ -76,6 +73,7 @@
 	export default {
 		data() {
 			return {
+			    user:{},
 				collapsed:false,
 				sysUserName: '',
 				sysUserAvatar: '',
@@ -109,7 +107,7 @@
 				this.$confirm('确认退出吗?', '提示', {
 					//type: 'warning'
 				}).then(() => {
-					sessionStorage.removeItem('user');
+					// sessionStorage.removeItem('user');
 					_this.$router.push('/login');
 				}).catch(() => {
 
@@ -126,12 +124,12 @@
 			}
 		},
 		mounted() {
-			var user = sessionStorage.getItem('user');
-			if (user) {
-				user = JSON.parse(user);
-				this.sysUserName = user.name || '';
-				this.sysUserAvatar = user.avatar || '';
-			}
+			this.user =JSON.parse(sessionStorage.getItem('user'));
+			// if (user) {
+			// 	user = JSON.parse(user);
+			// 	this.sysUserName = user.name || '';
+			// 	this.sysUserAvatar = user.avatar || '';
+			// }
 
 		}
 	}
@@ -154,6 +152,7 @@
 			.userinfo {
 				text-align: right;
 				padding-right: 35px;
+				font-size: 17px;
 				float: right;
 				.userinfo-inner {
 					cursor: pointer;
@@ -165,6 +164,11 @@
 						margin: 10px 0px 10px 10px;
 						float: right;
 					}
+				}
+				.out{
+					color: #fff;
+					text-decoration: none;
+					margin-left: 15px;
 				}
 			}
 			.logo {
@@ -226,10 +230,6 @@
     						width: 24px;
     						text-align: center;
     						font-size: 18px;
-							margin-right: 5px;
-							width: 24px;
-							text-align: center;
-							font-size: 18px;
 						}
 					}
 				}

@@ -550,7 +550,7 @@
             //获取圈子列表
             getCircle(){
                 this.listLoading=true;
-                this.$get(showCircle)
+                this.$get(showCircle+localStorage.getItem("parkId"))
                     .then((res) => {
                         this.circleList=res;
                         this.circleTotal=this.circleList.length>0?this.circleList.length:1;
@@ -576,7 +576,7 @@
 
             },
             getActivity(){ //获取圈子活动列表
-                this.getActivityList(showActList);
+                this.getActivityList(showActList+localStorage.getItem("parkId"));
             },
             getActivityList(url){//圈子活动 列表数据
                 this.actListLoading=true;
