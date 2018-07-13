@@ -1,27 +1,21 @@
-import axios from 'axios';
+// import axios from 'axios';
 
 let base = '';
-// let test='http://39.107.252.186:10005';
-// let test='http://218.17.39.178:2040';
-localStorage.setItem("parkId",'969878f1f1149e6a7afae38636c0abc');
-localStorage.setItem("userId",'71f3df48263f4c74be2efbb83250e66b');
-localStorage.setItem("upUrl",'http://218.17.39.178:2040');  //微品云（开发） 
-// localStorage.setItem("upUrl",'https://shbeta.vpclub.cn/api10005');//新阿里云
-// localStorage.setItem("upUrl",'http://39.107.252.186:10005');//阿里云地址（正式）
-// localStorage.setItem("upUrl",'http://192.168.7.109:2040');//another
-// localStorage.setItem("upUrl",'http://172.16.0.7:2040');//本地
-const parkId = localStorage.getItem("parkId");
+const parkId='969878f1f1149e6a7afae38636c0abc';
+// let userId='71f3df48263f4c74be2efbb83250e66b';
+// let upUrl='http://218.17.39.178:2040';//微品云（开发）
+// let upUrl='https://shbeta.vpclub.cn/api10005';//新阿里云
+// let upUrl='http://39.107.252.186:10005';//阿里云地址（正式）
 
-export const requestLogin = params => { return axios.post(`${base}/login`, params).then(res => res.data); };
-export const getUserList = params => { return axios.get(`${base}/user/list`, { params: params }); };
-export const getUserListPage = params => { return axios.get(`${base}/user/listpage`, { params: params }); };
-export const removeUser = params => { return axios.get(`${base}/user/remove`, { params: params }); };
-export const batchRemoveUser = params => { return axios.get(`${base}/user/batchremove`, { params: params }); };
-export const editUser = params => { return axios.get(`${base}/user/edit`, { params: params }); };
-export const addUser = params => { return axios.get(`${base}/user/add`, { params: params }); };
- 
-export const showCircle=`/socialCircle/socialCircleList?parkId=`+localStorage.getItem("parkId");  //圈子列表
-export const showActList=`/socialCircle/socialCircleActiveList?parkId=`+localStorage.getItem("parkId");  //圈子活动列表
+localStorage.setItem("parkId",parkId);
+// localStorage.setItem("userId",userId);
+// localStorage.setItem("upUrl",upUrl);
+// const parkId = localStorage.getItem("parkId");
+
+// export const showCircle=`/socialCircle/socialCircleList?parkId=`+localStorage.getItem("parkId");  //圈子列表
+export const showCircle=`/socialCircle/socialCircleList?parkId=`;  //圈子列表
+export const showActList=`/socialCircle/socialCircleActiveList?parkId=`;  //圈子活动列表
+// export const showActList=`/socialCircle/socialCircleActiveList?parkId=`+localStorage.getItem("parkId");  //圈子活动列表
 export const delCir=`/socialCircle/deleteSocialCircle/`+localStorage.getItem("parkId")+'/';  //圈子 删除
 export const addCir=`/socialCircle/addOrUpdateSocialCircle`;  //圈子增加
 export const addAct=`/socialCircle/addOrUpdateActive`;  //活动增加

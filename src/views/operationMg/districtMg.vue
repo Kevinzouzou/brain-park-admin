@@ -205,8 +205,8 @@
             },
             handleAdd(s,d,n){//增加节点
                 console.log(s,d,n)
-                if(n.level >=4){
-                    this.$message.error("最多只支持四级！")
+                if(n.level >=5){
+                    this.$message.error("最多只支持五级！")
                     return false;
                 }
                 //添加数据

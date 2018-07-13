@@ -90,7 +90,7 @@
                                 </el-select>
                             </el-form-item>
                             <el-form-item label="缩略图">
-                                <el-upload :action=url list-type="picture-card"
+                                <el-upload :action=url list-type="picture-card" :data="othParams" ref="upload"
                                            :on-preview="handleHAPictureCardPreview" :on-remove="handleHARemove"
                                            :file-list="imgHAList" :on-success="moreHAShow">
                                     <i class="el-icon-plus"></i>
@@ -225,7 +225,7 @@
                                             <el-input v-model="comSerAEForm.title" auto-complete="off"></el-input>
                                         </el-form-item>
                                         <el-form-item label="缩略图">
-                                            <el-upload :action=url list-type="picture-card"
+                                            <el-upload :action=url list-type="picture-card" :data="othParams" ref="upload2"
                                                        :on-preview="handleComSerCardPreview" :on-remove="handleComSerRemove"
                                                        :file-list="imgComSerList" :on-success="moreComSerShow">
                                                 <i class="el-icon-plus"></i>
@@ -419,7 +419,7 @@
                                 <el-input v-model="infoConAEForm.title" auto-complete="off"></el-input>
                             </el-form-item>
                             <el-form-item label="缩略图">
-                                <el-upload :action=url list-type="picture-card"
+                                <el-upload :action=url list-type="picture-card" :data="othParams" ref="upload3"
                                            :on-preview="handleInfoConCardPreview" :on-remove="handleInfoConRemove"
                                            :file-list="imgInfoConList" :on-success="moreInfoConShow">
                                     <i class="el-icon-plus"></i>
@@ -519,6 +519,10 @@
         components: {UE},
         data(){
             return {
+                othParams:{
+                    bucketName:'shared-resource',
+                    folderName:''
+                },
                 url:'',
                 cateDic:{},
                 pagesize:7,
@@ -831,7 +835,7 @@
                 this.comSerContent=html;
             },
             moreInfoConShow(res,file,fileList){
-                this.moreHAPicList.push(res.responseList)
+                this.moreHAPicList.push(res.responseList.url)
             },
             handleInfoConRemove(file, fileLists) {
                 console.log(file, fileLists);
@@ -841,7 +845,7 @@
                 this.dialogInfoConVisible = true;
             },
             moreComSerShow(res,file,fileList){
-                this.moreHAPicList.push(res.responseList)
+                this.moreHAPicList.push(res.responseList.url)
             },
             handleComSerRemove(file, fileLists) {
                 console.log(file, fileLists);
@@ -1093,6 +1097,7 @@
             // 商务批量删除
             comSerBatchRemove(){},
             infoConAdd(){  //信息化建设显示新增界面
+                if(this.$refs.upload3!==undefined) this.$refs.upload3.clearFiles();
                 this.addEditTitle='新增';
                 this.isEdit=false;
                 this.moreHAPicList.length=0;
@@ -1105,6 +1110,7 @@
                 };
             },
             comSerAdd(){  //显示新增界面
+                if(this.$refs.upload2!==undefined) this.$refs.upload2.clearFiles();
                 this.addEditTitle='新增';
                 this.isEdit=false;
                 this.moreHAPicList.length=0;
@@ -1130,7 +1136,7 @@
                 this.highActContent=html;
             },
             moreHAShow(res,file,fileList){
-                this.moreHAPicList.push(res.responseList)
+                this.moreHAPicList.push(res.responseList.url)
             },
             handleHARemove(file, fileLists) {
                 console.log(file, fileLists);
@@ -1182,6 +1188,7 @@
                 this.highActLabel=obj.name;
             },
             highActAdd(){
+                if(this.$refs.upload!==undefined) this.$refs.upload.clearFiles();
                 this.addEditTitle='新增';
                 this.isEdit=false;
                 this.moreHAPicList.length=0;
@@ -1337,6 +1344,10 @@
             this.getCateDic();   //类别管理id
             this.getCategory();  //类别管理
             this.url=localStorage.getItem("upUrl")+uploadPic;
+            this. othParams={
+                bucketName:'shared-resource',
+                folderName:localStorage.getItem("parkId")
+            };
         }
 
     }

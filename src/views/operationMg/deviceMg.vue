@@ -166,7 +166,7 @@
                     </el-select>
                 </el-form-item>
                 <el-form-item label="设备图片" class="allLength">
-                    <el-upload :action=picUrl list-type="picture-card"
+                    <el-upload :action=picUrl list-type="picture-card" :data="othParams" ref="upload"
                                :on-preview="handlePicPreview" :on-remove="handleRemove"
                                :file-list="imgAnList" :on-success="moreShow">
                         <i class="el-icon-plus"></i>
@@ -225,6 +225,10 @@
         components:{VueQr},
         data(){
             return {
+                othParams:{
+                    bucketName:'shared-resource',
+                    folderName:''
+                },
                 page:1,
                 pagesize:7,
                 addEditTitle:'新增',
@@ -382,7 +386,7 @@
                 console.log(file, fileLists);
             },
             moreShow(res,file,fileList){
-                this.morePicList.push(res.responseList);
+                this.morePicList.push(res.responseList.url);
             },
             normalStop(index,row){//正常或停用
                 this.$confirm('确认删除该记录吗?', '提示', {
@@ -502,6 +506,7 @@
                 this.configvalue=row.id;
             },
             deviceAdd(){ //显示新增
+                if(this.$refs.upload!==undefined) this.$refs.upload.clearFiles();
                 this.morePicList.length=0;
                 this.addEditTitle='新增';
                 this.isEdit=false;
@@ -599,6 +604,10 @@
         mounted(){
             this.getDevice();
             this.picUrl=localStorage.getItem("upUrl")+uploadPic;
+            this. othParams={
+                bucketName:'shared-resource',
+                folderName:localStorage.getItem("parkId")
+            };
         }
     }
 </script>

@@ -20,7 +20,7 @@
 </template>
 
 <script>
-  import { requestLogin } from '../api/api';
+  // import { requestLogin } from '../api/api';
   //import NProgress from 'nprogress'
   export default {
     data() {
@@ -48,36 +48,81 @@
         this.$refs.ruleForm2.resetFields();
       },
       handleSubmit2(ev) {
-          // this.logining = true;
-          // this.$router.push({ path: '/circle' });
-          // this.logining = false;
+          this.logining = true;
+          this.$router.push({ path: '/circle' });
+          this.logining = false;
 
-        var _this = this;
+        let _this = this;
         this.$refs.ruleForm2.validate((valid) => {
           if (valid) {
             //_this.$router.replace('/table');
             this.logining = true;
             //NProgress.start();
-            var loginParams = { username: this.ruleForm2.account, password: this.ruleForm2.checkPass };
-            requestLogin(loginParams).then(data => {
-              this.logining = false;
-              //NProgress.done();
-              let { msg, code, user } = data;
-              if (code !== 200) {
-                this.$message({
-                  message: msg,
-                  type: 'error'
-                });
-              } else {
-                sessionStorage.setItem('user', JSON.stringify(user));
-                this.$router.push({ path: '/circle' });
-              }
-            });
+            let loginParams = { username: this.ruleForm2.account, password: this.ruleForm2.checkPass };
+            if(loginParams.username==='admin' && loginParams.password==='123456'){
+                this.logining = false;
+                // sessionStorage.setItem('user', JSON.stringify(user));
+                let parkId='969878f1f1149e6a7afae38636c0abc';
+                let userId='71f3df48263f4c74be2efbb83250e66b';
+                let upUrl='http://218.17.39.178:2040';//微品云（开发）
+                // let upUrl='https://shbeta.vpclub.cn/api10005';//新阿里云
+                // let upUrl='http://39.107.252.186:10005';//阿里云地址（正式）
+
+                sessionStorage.setItem('user', JSON.stringify(loginParams));
+                localStorage.setItem("parkId",parkId);
+
+                localStorage.setItem("userId",userId);
+                localStorage.setItem("upUrl",upUrl);
+                this.$router.push({ path: '/userProfile' });
+                console.log(localStorage.getItem("parkId")+'  --login parkid')
+                console.log(localStorage.getItem("upUrl")+'  --login upUrl')
+            }
+
+            // requestLogin(loginParams).then(data => {
+            //   this.logining = false;
+            //   //NProgress.done();
+            //   let { msg, code, user } = data;
+            //   if (code !== 200) {
+            //     this.$message({
+            //       message: msg,
+            //       type: 'error'
+            //     });
+            //   } else {
+            //     sessionStorage.setItem('user', JSON.stringify(user));
+            //     this.$router.push({ path: '/circle' });
+            //   }
+            // });
+
           } else {
             console.log('error submit!!');
             return false;
           }
         });
+        // this.$refs.ruleForm2.validate((valid) => {
+        //   if (valid) {
+        //     //_this.$router.replace('/table');
+        //     this.logining = true;
+        //     //NProgress.start();
+        //     var loginParams = { username: this.ruleForm2.account, password: this.ruleForm2.checkPass };
+        //     requestLogin(loginParams).then(data => {
+        //       this.logining = false;
+        //       //NProgress.done();
+        //       let { msg, code, user } = data;
+        //       if (code !== 200) {
+        //         this.$message({
+        //           message: msg,
+        //           type: 'error'
+        //         });
+        //       } else {
+        //         sessionStorage.setItem('user', JSON.stringify(user));
+        //         this.$router.push({ path: '/circle' });
+        //       }
+        //     });
+        //   } else {
+        //     console.log('error submit!!');
+        //     return false;
+        //   }
+        // });
       }
     }
   }
@@ -86,7 +131,6 @@
 
 <style lang="scss" scoped>
   .login-container {
-    /*box-shadow: 0 0px 8px 0 rgba(0, 0, 0, 0.06), 0 1px 0px 0 rgba(0, 0, 0, 0.02);*/
     -webkit-border-radius: 5px;
     border-radius: 5px;
     -moz-border-radius: 5px;

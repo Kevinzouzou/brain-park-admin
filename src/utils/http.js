@@ -12,7 +12,6 @@ axios.defaults.baseURL ='https://shbeta.vpclub.cn/api10005';  //新阿里云
 // axios.defaults.baseURL ='http://192.168.7.109:2040';  //another
 // axios.defaults.baseURL ='http://172.16.0.7:2040';  //本地
 
-
 //http request 拦截器
 axios.interceptors.request.use(
     config => {

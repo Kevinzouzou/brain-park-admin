@@ -32,24 +32,26 @@ import operatorRoleManage from './views/userManage/operatorRoleManage.vue'
 
 Vue.use(Router)
 let routes = [
-    // {
-    //     path: '/login',
-    //     component: Login,
-    //     name: '',
-    //     hidden: true
-    // },
     {
-        path: '*',
-        hidden: true,
-        // redirect: { path: '/circle' }
-        redirect: { path: '/404' }
+        path: '/',
+        component: Login,
+        name: '',
+        hidden: true
     },
+    // {
+    //     path: '*',
+    //     hidden: true,
+    //     // redirect: { path: '/circle' }
+    //     redirect: { path: '/404' }
+    // },
+
     {
         path: '/',
         component: Home,
         name: '用户管理',
+        // redirect:'/userProfile',
         iconCls: 'fa fa-user-o',
-        children: [ 
+        children: [
             { path: '/userProfile', component: userProfile, name: '用户概况' },
             { path: '/userOperation', component: userOperation, name: '用户操作' },
             { path: '/employeeManage', component: employeeManage, name: '员工管理' },
@@ -74,12 +76,12 @@ let routes = [
     {
         path: '/',
         component: Home,
-        redirect:'/circle',
+        // redirect:'/circle',
         name: '运营服务',
         iconCls: 'el-icon-document',
         children: [
             // { path: '/operaSitua', component: operaSitua, name: '运营概况' },
-            { path: 'circle', component: circle, name: '圈子' },
+            { path: '/circle', component: circle, name: '圈子' },
             { path: '/topic', component: topic, name: '话题' },
             { path: '/adConfig', component: adConfig, name: '广告配置' },
             // { path: '/pushConfig', component: pushConfig, name: '推送配置' },
