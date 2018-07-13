@@ -296,7 +296,6 @@ export default {
             imgData: {
                 bucketName: 'shared-resource',
                 folderName: ''
-                // folderName: localStorage.getItem('parkId')
             },
             parkUserList: '', // 员工列表
             parkUserListTotal: 0, // 员工总数

@@ -6,7 +6,7 @@
                     <el-col :span="24">
                         <el-form :inline="true" :model="serviceFilter">
                             <el-form-item label="服务分类：">
-                                <el-select placeholder="请选择服务分类" v-model="serviceFilter.subType" @change="housekeepingListSeach()">
+                                <el-select placeholder="请选择服务分类" v-model="serviceFilter.subtype" @change="housekeepingListSeach()">
                                     <el-option label="全部" value="全部"></el-option>
                                     <el-option label="装修服务" value="装修服务"></el-option>
                                     <el-option label="搬迁服务" value="搬迁服务"></el-option>
@@ -153,7 +153,12 @@
                         </el-row>
                         <el-row>
                             <el-form-item label="图片：" required>
-                                <img v-if="houseKeepingInfo.thumbUrl" :src="houseKeepingInfo.thumbUrl" style="width: 178px;border-radius: 6px;" />
+                                <!-- <img v-if="houseKeepingInfo.thumbUrl" :src="houseKeepingInfo.thumbUrl" style="width: 178px;border-radius: 6px;" /> -->
+                                <el-upload class="avatar-uploader" :action=imageUploadUrl :data="imgData" :show-file-list="false" :on-success="handleAvatarSuccess"
+                                    :before-upload="beforeAvatarUpload">
+                                    <img v-if="houseKeepingInfo.thumbUrl" :src="houseKeepingInfo.thumbUrl" class="avatar">
+                                    <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                                </el-upload>
                             </el-form-item>
                         </el-row>
                         <el-row>
@@ -235,7 +240,7 @@
                                 <el-input prefix-icon="el-icon-search" v-model="crowdorderingFilter.selection" placeholder=" 搜索拼单联系人/拼单联系电话/拼单公司/公司楼栋"></el-input>
                             </el-form-item>
                             <el-form-item>
-                                <el-button type="primary" @click="housekeepingListSeach()">查询</el-button>
+                                <el-button type="primary" @click="crowdorderingListSeach()">查询</el-button>
                             </el-form-item>
                         </el-form>
                     </el-col>
@@ -250,26 +255,91 @@
                         </el-table-column>
                         <el-table-column prop="addInfo.itemType" label="类型">
                         </el-table-column>
-                        <el-table-column label="拼单联系人">
+                        <el-table-column prop="addInfo.contact" label="拼单联系人">
                         </el-table-column>
-                        <el-table-column prop="addInfo.price" label="联系电话">
+                        <el-table-column prop="addInfo.phone" label="联系电话">
                         </el-table-column>
                         <el-table-column prop="addInfo.companyName" label="拼单公司">
                         </el-table-column>
-                        <el-table-column prop="addInfo.contactPhone" label="公司楼栋">
+                        <el-table-column prop="addInfo.location" label="公司楼栋">
                         </el-table-column>
-                        <el-table-column prop="addInfo.shared" label="公司面积">
+                        <el-table-column prop="addInfo.area" label="公司面积">
                         </el-table-column>
-                        <el-table-column prop="addInfo.shared" label="状态">
+                        <el-table-column prop="stage" label="状态">
                         </el-table-column>
-                        <el-table-column label="操作" width="150">
+                        <el-table-column label="操作" width="220">
                             <template slot-scope="scope">
-                                <el-button type="primary" size="small" @click="houseKeepingInfoCheck(scope.$index, scope.row)">查看</el-button>
-                                <el-button type="success" size="small" @click="houseKeepingInfoEdit(scope.$index, scope.row)">编辑</el-button>
+                                <el-button type="primary" size="small" @click="crowdorderingInfoCheck(scope.$index, scope.row)">查看</el-button>
+                                <el-button type="success" size="small" @click="crowdorderingInfoEdit(scope.$index, scope.row)">拼单</el-button>
+                                <el-button type="danger" size="small" @click="crowdorderingInfoEdit(scope.$index, scope.row)">退款</el-button>
                             </template>
                         </el-table-column>
                     </el-table>
                 </el-row>
+                <!--工具条-->
+                <el-row :gutter="24">
+                    <el-col :span="24" class="toolbar">
+                        <el-pagination background @size-change="crowdorderingListPageSizeChange" @current-change="crowdorderingListPageCurrentChange"
+                            :page-sizes="[7,8,10,20]" :page-size="crowdorderingListPagesize" layout="total,sizes, prev, pager, next, jumper"
+                            :current-page="crowdorderingListPage" :total="crowdorderingListTotal" style="float:right;">
+                        </el-pagination>
+                    </el-col>
+                </el-row>
+
+                <el-dialog title="拼单详情" :visible.sync="crowdorderingInfoFormVisible">
+                    <el-form :model="crowdorderingInfoForm" label-width="150px">
+                        <el-row>
+                            <el-form-item label="服务分类：">
+                                <span v-if="crowdorderingInfoForm.addInfo">{{crowdorderingInfoForm.addInfo.subtype}}</span>
+                            </el-form-item>
+                        </el-row>
+                        <el-row>
+                            <el-form-item label="类型：">
+                                <span v-if="crowdorderingInfoForm.addInfo">{{crowdorderingInfoForm.addInfo.itemType}}</span>
+                            </el-form-item>
+                        </el-row>
+                        <el-row>
+                            <el-form-item label="状态：">
+                                <span v-if="crowdorderingInfoForm.addInfo">{{crowdorderingInfoForm.stage}}</span>
+                            </el-form-item>
+                        </el-row>
+                        <el-row>
+                            <el-form-item label="拼单联系人：">
+                                <span v-if="crowdorderingInfoForm.addInfo">{{crowdorderingInfoForm.addInfo.contact}}</span>
+                            </el-form-item>
+                        </el-row>
+                        <el-row>
+                            <el-form-item label="联系电话：">
+                                <span v-if="crowdorderingInfoForm.addInfo">{{crowdorderingInfoForm.addInfo.phone}}</span>
+                            </el-form-item>
+                        </el-row>
+                        <el-row>
+                            <el-form-item label="拼单公司：">
+                                <span v-if="crowdorderingInfoForm.addInfo">{{crowdorderingInfoForm.addInfo.companyName}}</span>
+                            </el-form-item>
+                        </el-row>
+                        <el-row>
+                            <el-form-item label="公司楼栋：">
+                                <span v-if="crowdorderingInfoForm.addInfo">{{crowdorderingInfoForm.addInfo.location}}</span>
+                            </el-form-item>
+                        </el-row>
+                        <el-row>
+                            <el-form-item label="公司面积：">
+                                <span v-if="crowdorderingInfoForm.addInfo">{{crowdorderingInfoForm.addInfo.area}}</span>
+                            </el-form-item>
+                        </el-row>
+                        <el-row>
+                            <el-form-item label="用户备注：">
+                                <span v-if="crowdorderingInfoForm.addInfo">{{crowdorderingInfoForm.addInfo.remark}}</span>
+                            </el-form-item>
+                        </el-row>
+                    </el-form>
+                    <div slot="footer" class="dialog-footer">
+                        <el-button @click="crowdorderingInfoFormVisible = false">取消拼单</el-button>
+                        <el-button type="success" @click="crowdorderingInfoFormVisible = false">拼单</el-button>
+                        <el-button type="danger" @click="crowdorderingInfoFormVisible = false">退款</el-button>
+                    </div>
+                </el-dialog>
 
             </el-tab-pane>
         </el-tabs>
@@ -281,12 +351,18 @@
     import {
         housekeepingList,
         addOrUpdateDisplayContent,
-        crowdorderingApplication
+        crowdorderingApplication,
+        uploadPic
     } from '../../api/api';
     import publicFunction from '../../api/publicFunction';
     export default {
         data() {
             return {
+                imageUploadUrl: '',
+                imgData: {
+                    bucketName: 'shared-resource',
+                    folderName: ''
+                },
                 HousekeepingListPage: 1,
                 HousekeepingListPagesize: 7,
                 activeName: 'CrowdorderingNotes',
@@ -294,7 +370,6 @@
                     subType: '全部',
                     thirdPartOrPhone: ''
                 },
-
                 HousekeepingListLoading: false,
                 HousekeepingList: [],
                 HousekeepingListTotal: 0,
@@ -355,7 +430,28 @@
                     selection: ''
                 },
                 crowdorderingList: [],
-                crowdorderingListLoading: false
+                crowdorderingListTotal: 0,
+                crowdorderingListLoading: false,
+                crowdorderingInfoFormVisible: false,
+                crowdorderingInfoForm: {
+                    addInfo: {
+                        area: "公司面积",
+                        companyName: "公司名称",
+                        contact: "联系人",
+                        itemType: "服务类型",
+                        location: "服务地址",
+                        phone: "手机号",
+                        remark: "用户备注",
+                        subtype: "服务分类",
+                    },
+                    deleted: 1,
+                    id: "11111",
+                    isEnabled: 1,
+                    settlement: "",
+                    stage: "未完结",
+                    type: "家政拼单",
+                    userId: "111",
+                }
             };
         },
         methods: {
@@ -374,11 +470,11 @@
             },
             // 搜索家政服务列表
             housekeepingListSeach() {
-                let subType = this.serviceFilter.subType;
+                let subtype = this.serviceFilter.subtype;
                 let thirdPartOrPhone = this.serviceFilter.thirdPartOrPhone;
                 let url = housekeepingList;
-                if (subType !== '全部') {
-                    url += `&subType=${subType}`;
+                if (subtype !== '全部') {
+                    url += `&subtype=${subtype}`;
                 }
                 if (thirdPartOrPhone !== '') {
                     url += `&thirdPartOrPhone=${thirdPartOrPhone}`;
@@ -396,11 +492,13 @@
                 this.houseKeepingInfo = publicFunction.deepCopy(dataObj, row);
 
             },
+            // 更新
             updateHouseKeepingInfo(formName) {
                 this.$refs[formName].validate(valid => {
                     if (valid) {
                         let data = this.houseKeepingInfo;
                         data.parkId = localStorage.getItem('parkId');
+                        console.log(JSON.stringify(data));
                         this.$post(addOrUpdateDisplayContent, data).then(res => {
                             if (res.operationResult === 'failure') {
                                 this.$message({
@@ -423,25 +521,97 @@
                     }
                 });
             },
+            handleAvatarSuccess(res, file) {
+                this.houseKeepingInfo.thumbUrl = res.responseList.url;
+            },
+            beforeAvatarUpload(file) {
+                const isJPG = file.type === 'image/jpeg';
+                const isLt2M = file.size / 1024 / 1024 < 2;
+                if (!isJPG) {
+                    this.$message.error('上传头像图片只能是 JPG 格式!');
+                }
+                if (!isLt2M) {
+                    this.$message.error('上传头像图片大小不能超过 2MB!');
+                }
+                return isJPG && isLt2M;
+            },
             HousekeepingListPageSizeChange(val) {
                 this.HousekeepingListPagesize = val;
             },
             HousekeepingListPageCurrentChange(val) {
                 this.HousekeepingListPage = val;
-                this.getHousekeepingList();
+                this.housekeepingListSeach();
             },
             handleClick(tab, event) {
                 console.log(tab, event);
             },
             resetForm(formName) {
                 this.$refs[formName].resetFields();
+            },
+            // 获取家政申请拼单列表
+            getCrowdorderingList(url) {
+                this.crowdorderingListLoading = true;
+                url += '&type=家政拼单'
+                this.$get(url).then(res => {
+                    this.crowdorderingList = res;
+                    this.crowdorderingListTotal =
+                        this.crowdorderingList.length > 0 ?
+                        this.crowdorderingList.length :
+                        0;
+                    this.crowdorderingListLoading = false;
+                });
+            },
+            // 搜索家政申请拼单列表
+            crowdorderingListSeach() {
+                let subtype = this.crowdorderingFilter.subtype;
+                let itemType = this.crowdorderingFilter.itemType;
+                let stage = this.crowdorderingFilter.stage;
+                let selection = this.crowdorderingFilter.selection;
+                let url = crowdorderingApplication;
+                if (subtype !== '全部') {
+                    url += `&subtype=${subtype}`;
+                }
+                if (itemType !== '全部') {
+                    url += `&itemType=${itemType}`;
+                }
+                if (stage !== '全部') {
+                    url += `&stage=${stage}`;
+                }
+                if (selection !== '') {
+                    url += `&selection=${selection}`;
+                }
+                this.getCrowdorderingList(url);
+            },
+            crowdorderingListPageSizeChange(val) {
+                this.crowdorderingListPagesize = val;
+            },
+            crowdorderingListPageCurrentChange(val) {
+                this.crowdorderingListPage = val;
+                this.getCrowdorderingList(crowdorderingApplication);
+            },
+            crowdorderingInfoCheck(index, row) {
+                this.crowdorderingInfoFormVisible = true;
+                let dataObj = this.crowdorderingInfoForm
+                this.crowdorderingInfoForm = publicFunction.deepCopy(dataObj, row);
             }
         },
         mounted() {
+            this.imgData = {
+                bucketName: 'shared-resource',
+                folderName: localStorage.getItem('parkId')
+            };
+            this.imageUploadUrl = localStorage.getItem('upUrl') + uploadPic;
             this.getHousekeepingList(housekeepingList);
+            this.getCrowdorderingList(crowdorderingApplication);
         }
     };
 </script>
 
 <style lang="scss">
+    .avatar {
+        width: 178px;
+        height: auto;
+        display: block;
+        border-radius: 6px;
+    }
 </style>

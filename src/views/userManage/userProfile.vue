@@ -294,6 +294,7 @@
 
 <script>
     import echarts from 'echarts/lib/echarts';
+    import axios from 'axios';
     export default {
         name: 'Bank',
         data() {

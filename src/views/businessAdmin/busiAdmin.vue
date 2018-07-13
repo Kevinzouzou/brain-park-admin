@@ -423,10 +423,11 @@
                 let type='&type=区域';
                 this.$get(treeUrl+type)
                     .then((res) => {
-                        this.treeList=res;
+                        this.treeList=res[0].children;
                         // let obj={};
+                        // this.treeList.forEach((item)=>{
                         this.treeList.forEach((item)=>{
-                            if(item.level===1){
+                            if(item.level===2){
                                 let obj={
                                     level:item.level,
                                     name:item.name,
@@ -436,7 +437,7 @@
                             }
                             if(item.children.length>0){
                                 item.children.forEach((item2)=>{
-                                    if(item2.level===2) {
+                                    if(item2.level===3) {
                                         let obj = {
                                             level: item2.level,
                                             name: item2.name,
@@ -446,7 +447,7 @@
                                     }
                                     if(item2.children.length>0){
                                         item2.children.forEach((item3)=>{
-                                            if(item3.level===3) {
+                                            if(item3.level===4) {
                                                 let obj = {
                                                     level: item3.level,
                                                     name: item3.name,
@@ -456,7 +457,7 @@
                                             }
                                             if(item3.children.length>0){
                                                 item3.children.forEach((item4)=>{
-                                                    if(item4.level===4) {
+                                                    if(item4.level===5) {
                                                         let obj = {
                                                             level: item4.level,
                                                             name: item4.name,
@@ -511,8 +512,8 @@
                 this.isEdit=true;
                 this.adminAEVisible = true;
                 this.adminAEForm = Object.assign({}, row);
-                this.roomLabel=row.zoneInfo[3].name;
-                this.zoneId=row.zoneInfo[3].id;
+                this.roomLabel=row.zoneInfo[row.zoneInfo.length - 1].name;
+                this.zoneId=row.zoneInfo[row.zoneInfo.length - 1].id;
             },
             sizeChange(val) {
                 this.pagesize=val;
