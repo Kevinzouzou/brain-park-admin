@@ -17,6 +17,17 @@ let publicFunction = {
         }
         return o
     },
+     // 删除对象里孩子为空的属性
+     killChildren(data) {
+        for (let i = 0; i < data.length; i++) {
+            if (data[i].children.length === 0) {
+                delete data[i].children;
+            } else {
+                publicFunction.killChildren(data[i].children);
+            }
+        }
+        return data;
+    },
     deepCopy: function (object, beCopied) {
         for (let i in object) {
             if (

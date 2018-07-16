@@ -114,7 +114,7 @@
                     <el-row :gutter="20">
                         <el-col :span="10">
                             <el-form-item label="入职时间：" required prop="addInfo.hiredate">
-                                <el-date-picker v-model="addParkUserForm.addInfo.hiredate" type="date" placeholder="选择入职日期" align="right" :picker-options="pickerOptions">
+                                <el-date-picker v-model="addParkUserForm.addInfo.hiredate" type="date" value-format="yyyy-MM-dd HH:mm:ss" placeholder="选择入职日期" align="right" :picker-options="pickerOptions">
                                 </el-date-picker>
                             </el-form-item>
                         </el-col>
@@ -260,7 +260,7 @@
                 <el-row :gutter="24">
                     <el-col :span="10">
                         <el-form-item label="入职时间：" required  >
-                            <el-date-picker v-model="editParkUserForm.addInfo.hiredate" type="date" placeholder="选择入职日期" align="right" :picker-options="pickerOptions">
+                            <el-date-picker v-model="editParkUserForm.addInfo.hiredate" type="date" value-format="yyyy-MM-dd HH:mm:ss" placeholder="选择入职日期" align="right" :picker-options="pickerOptions">
                             </el-date-picker>
                         </el-form-item>
                     </el-col>
