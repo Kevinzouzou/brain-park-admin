@@ -105,12 +105,7 @@
                         <!--<el-option v-for="item in level4" :key="item.id" :label="item.name" :value="item.id">-->
                         <!--</el-option>-->
                     <!--</el-select>-->
-                    <el-cascader
-                            expand-trigger="hover"
-                            :options="treeList"
-                            v-model="selOptions"
-                            :props="dataProps"
-                            @change="handleChange">
+                    <el-cascader expand-trigger="hover" :options="treeList" v-model="selOptions" :props="dataProps" @change="handleChange">
                     </el-cascader>
                 </el-form-item>
                 <el-form-item label="企业描述" class="allLength">

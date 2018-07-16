@@ -1,46 +1,58 @@
 <template>
     <section>
+        <div v-show=""></div>
         <el-tabs v-model="activeName" type="card" @tab-click="handleClick">
-            <el-tab-pane label="巡检记录" name="first">
+            <el-tab-pane label="巡检任务" name="first">
                 <el-col :span="24" justify="center">
                     <el-form :inline="true" :model="inspectFilters">
                         <el-form-item>
-                            <div class="block">
-                                <el-date-picker v-model="inspectFilters.timeValue" type="daterange" start-placeholder="开始日期"
-                                                end-placeholder="结束日期" value-format="yyyy-MM-dd HH:mm:ss"
-                                                :default-time="['00:00:00', '23:59:59']">
-                                </el-date-picker>
-                            </div>
-                        </el-form-item>
-                        <el-form-item>
-                            <el-input v-model="inspectFilters.searchTitle" placeholder="设备名称或设备编号搜索"></el-input>
+                            <el-input v-model="inspectFilters.searchTitle" placeholder="请输入巡检路线名称"></el-input>
                         </el-form-item>
                         <el-form-item>
                             <el-button type="primary" v-on:click="getQueryInspection">查询</el-button>
+                        </el-form-item>
+                        <el-form-item>
+                            状态筛选：
+                            <el-select v-model="inspectFilters.state" placeholder="请选择" @change="secQueryState">
+                                <el-option v-for="item in stateList" :key="item.id" :label="item.name" :value="item.id">
+                                </el-option>
+                            </el-select>
+                        </el-form-item>
+                        <el-form-item>
+                            完成状态筛选：
+                            <el-select v-model="inspectFilters.doneState" placeholder="请选择" @change="secQueryDoneState">
+                                <el-option v-for="item in doneList" :key="item.id" :label="item.name" :value="item.id">
+                                </el-option>
+                            </el-select>
                         </el-form-item>
                     </el-form>
                 </el-col>
                 <!--工具条-->
                 <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
-                    巡检记录
+
                 </el-col>
                 <!--列表-->
                 <el-table :data="inspectList.slice((page-1)*pagesize,page*pagesize)" highlight-current-row v-loading="inspectLoading" style="width: 100%;">
                     <el-table-column type="index" width="60">
                     </el-table-column>
-                    <el-table-column prop="addInfo.equipmentInfo.name" label="设备名称" sortable>
+                    <el-table-column prop="addInfo.name" label="名称" sortable show-overflow-tooltip>
                     </el-table-column>
-                    <el-table-column prop="addInfo.equipmentInfo.location" label="设备地点" sortable show-overflow-tooltip="">
-                    </el-table-column>
-                    <el-table-column prop="userName" label="巡检人" sortable>
+                    <el-table-column prop="inspectTime" label="巡检时间" sortable>
                     </el-table-column>
                     <el-table-column prop="state" label="状态" sortable>
                     </el-table-column>
-                    <el-table-column prop="createTime" label="巡检时间" sortable>
+                    <el-table-column prop="userName" label="巡检员" sortable>
+                    </el-table-column>
+                    <el-table-column prop="addInfo.lastInspectTime" label="最近巡检时间" sortable>
+                    </el-table-column>
+                    <el-table-column prop="addInfo.doneState" label="完成状况" sortable>
                     </el-table-column>
                     <el-table-column label="操作">
                         <template slot-scope="scope">
-                            <el-button type="success" size="small" @click="inspectView(scope.$index, scope.row)">查看</el-button>
+                            <el-button type="success" size="small" @click="inspectView(scope.$index, scope.row)">
+                                {{scope.row.state==='停用'?'详情':'详情 / 编辑'}}
+                            </el-button>
+                            <el-button type="info" size="small" @click="inspectView(scope.$index, scope.row)">历史记录</el-button>
                         </template>
                     </el-table-column>
                 </el-table>
@@ -82,7 +94,7 @@
                     </el-form>
                 </el-dialog>
             </el-tab-pane>
-            <el-tab-pane label="设备管理" name="second">
+            <el-tab-pane label="巡检路线管理" name="second">
                 <el-col :span="24" justify="center">
                     <el-form :inline="true" :model="deviceFilters">
                         <el-form-item>
@@ -192,7 +204,7 @@
                             <el-input v-model="deviceAEForm.serial" auto-complete="off"></el-input>
                         </el-form-item>
                         <!--<el-form-item label="">-->
-                            <!--<el-button type="success" @click="printQrCode">生成并打印设备二维码</el-button>-->
+                        <!--<el-button type="success" @click="printQrCode">生成并打印设备二维码</el-button>-->
                         <!--</el-form-item>-->
                     </el-form>
                     <div slot="footer" class="dialog-footer">
@@ -212,6 +224,37 @@
     export default {
         data(){
             return {
+                stateList:[
+                    {
+                        id:'001',
+                        name:'全部状态'
+                    },
+                    {
+                        id:'002',
+                        name:'启用'
+                    },
+                    {
+                        id:'003',
+                        name:'停用'
+                    },
+                ],
+                doneList:[
+                    {
+                        id:'001',
+                        name:'全部状态'
+                    },
+                    {
+                        id:'002',
+                        name:'完成'
+                    },
+                    {
+                        id:'003',
+                        name:'未完成'
+                    },
+                ],
+                selectLabel:'',
+
+
                 addEditTitle:'新增',
                 isEdit:false,
                 isEditId:'',
@@ -222,7 +265,9 @@
                 activeName:'first',
                 inspectFilters: {
                     searchTitle: '',
-                    timeValue:[]
+                    state:'',
+                    doneState:''
+
                 },
                 deviceFilters: {
                     searchTitle: '',
@@ -232,12 +277,25 @@
                 timeDeviceValue:[],
                 inspectList:[
                     {
-                        time:'',
+                        inspectTime:'每日',
+                        state:'启用',
+                        userName:'张三',
                         addInfo:{
-                            companyName:'',
-                            industry:''
+                            name:'A区1栋消防设备巡检',
+                            doneState:'完成',
+                            lastInspectTime:'2017-07-12'
                         }
-                    }
+                    },
+                    {
+                        inspectTime:'工作日',
+                        state:'停用',
+                        userName:'李四',
+                        addInfo:{
+                            name:'A区1栋空调巡检',
+                            doneState:'未完成',
+                            lastInspectTime:'2017-07-12'
+                        }
+                    },
                 ],
                 deviceList:[
                     {
@@ -312,17 +370,32 @@
             },
             getQueryInspection(){ //巡检记录 条件查询
                 let url=inspectUrl;
-                let startTime=this.inspectFilters.timeValue[0];
-                let endTime=this.inspectFilters.timeValue[1];
                 let nameOrSerial=this.inspectFilters.searchTitle;
-                url=startTime===undefined?url+'':url+'&startTime='+startTime.replace(/-/g,'/');
-                url=endTime===undefined?url+'':url+'&endTime='+endTime.replace(/-/g,'/');
                 url=nameOrSerial===''?url+'':url+'&nameOrSerial='+nameOrSerial;
                 this.getInspect(url);
                 this.inspectFilters={
-                    timeValue:[],
                     searchTitle:''
                 }
+            },
+            secQueryState(value){
+                let obj = {};
+                obj = this.stateList.find((item)=>{//遍历的数据源
+                    return item.id === value;//筛选出匹配数据
+                });
+                this.selectLabel=obj.name;
+                let url=equipUrl;
+                url=this.selectLabel==='全部状态'?url+'':url+'&type='+this.selectLabel;
+                this.getInspect(url);
+            },
+            secQueryDoneState(value){
+                let obj = {};
+                obj = this.doneList.find((item)=>{//遍历的数据源
+                    return item.id === value;//筛选出匹配数据
+                });
+                this.selectLabel=obj.name;
+                let url=equipUrl;
+                url=this.selectLabel==='全部状态'?url+'':url+'&state='+this.selectLabel;
+                this.getInspect(url);
             },
             getInspection(){ //巡检记录数据
                 this.getInspect(inspectUrl);

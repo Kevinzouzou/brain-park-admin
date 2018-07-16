@@ -57,7 +57,7 @@
                             <el-input v-model="corporateForm.title" auto-complete="off"></el-input>
                         </el-form-item>
                         <el-form-item label="缩略图">
-                            <el-upload :action=url list-type="picture-card"
+                            <el-upload :action=url list-type="picture-card" :data="othParams" ref="upload"
                                        :on-preview="corpPictureCardPreview" :on-remove="handleCorporateRemove"
                                        :file-list="imgCorpList" :on-success="moreCorporateShow">
                                 <i class="el-icon-plus"></i>
@@ -90,6 +90,10 @@
         components: {UE},
         data(){
             return {
+                othParams:{
+                    bucketName:'shared-resource',
+                    folderName:''
+                },
                 url:'',
                 activeName:'first',
                 page:1,
@@ -131,6 +135,7 @@
                 });
             },
             corporateAdd(){  //公司。。新增
+                if(this.$refs.upload!==undefined) this.$refs.upload.clearFiles();
                 this.addEditTitle='新增';
                 this.isEdit=false;
                 this.morePicList.length=0;
@@ -189,7 +194,7 @@
                 this.getCorporate();
             },
             moreCorporateShow(res,file,fileList){
-                this.morePicList.push(res.responseList)
+                this.morePicList.push(res.responseList.url)
             },
             handleCorporateRemove(file, fileLists) {
                 console.log(file, fileLists);
@@ -236,6 +241,10 @@
         mounted(){
             this.getCorporate();  //公司金融服务列表
             this.url=localStorage.getItem("upUrl")+uploadPic;
+            this. othParams={
+                bucketName:'shared-resource',
+                folderName:localStorage.getItem("parkId")
+            };
         }
     }
 </script>
