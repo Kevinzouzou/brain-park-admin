@@ -33,13 +33,13 @@
             </el-table-column>
             <el-table-column prop="name" label="企业名称" sortable>
             </el-table-column>
-            <el-table-column prop="zoneInfo[0].name" label="区域" sortable>
+            <el-table-column prop="zoneInfo[1].name" label="区域" sortable>
             </el-table-column>
-            <el-table-column prop="zoneInfo[1].name" label="楼栋" sortable>
+            <el-table-column prop="zoneInfo[2].name" label="楼栋" sortable>
             </el-table-column>
-            <el-table-column prop="zoneInfo[2].name" label="楼层" sortable>
+            <el-table-column prop="zoneInfo[3].name" label="楼层" sortable>
             </el-table-column>
-            <el-table-column prop="zoneInfo[3].name" label="房号" sortable>
+            <el-table-column prop="zoneInfo[4].name" label="房号" sortable>
             </el-table-column>
             <el-table-column prop="addInfo.industry" label="所属行业" sortable>
             </el-table-column>
@@ -89,22 +89,29 @@
                 </el-form-item>
                 <el-form-item label="地址" class="secAddress allLength">
                     <span>松湖智谷园区</span>
-                    <el-select v-if="adminAEForm.zoneInfo[0]" v-model="adminAEForm.zoneInfo[0].name" placeholder="选择区域">
-                        <el-option v-for="item in level1" :key="item.id" :label="item.name" :value="item.name">
-                        </el-option>
-                    </el-select>
-                    <el-select v-if="adminAEForm.zoneInfo[1]" v-model="adminAEForm.zoneInfo[1].name" placeholder="选择楼栋">
-                        <el-option v-for="item in level2" :key="item.id" :label="item.name" :value="item.name">
-                        </el-option>
-                    </el-select>
-                    <el-select v-if="adminAEForm.zoneInfo[2]" v-model="adminAEForm.zoneInfo[2].name" placeholder="选择楼层">
-                        <el-option v-for="item in level3" :key="item.id" :label="item.name" :value="item.name">
-                        </el-option>
-                    </el-select>
-                    <el-select v-if="adminAEForm.zoneInfo[3]" v-model="adminAEForm.zoneInfo[3].name" placeholder="选择房号" @change="roomChange">
-                        <el-option v-for="item in level4" :key="item.id" :label="item.name" :value="item.id">
-                        </el-option>
-                    </el-select>
+                    <!--<el-select v-if="adminAEForm.zoneInfo[0]" v-model="adminAEForm.zoneInfo[0].name" placeholder="选择区域">-->
+                        <!--<el-option v-for="item in level1" :key="item.id" :label="item.name" :value="item.name">-->
+                        <!--</el-option>-->
+                    <!--</el-select>-->
+                    <!--<el-select v-if="adminAEForm.zoneInfo[1]" v-model="adminAEForm.zoneInfo[1].name" placeholder="选择楼栋">-->
+                        <!--<el-option v-for="item in level2" :key="item.id" :label="item.name" :value="item.name">-->
+                        <!--</el-option>-->
+                    <!--</el-select>-->
+                    <!--<el-select v-if="adminAEForm.zoneInfo[2]" v-model="adminAEForm.zoneInfo[2].name" placeholder="选择楼层">-->
+                        <!--<el-option v-for="item in level3" :key="item.id" :label="item.name" :value="item.name">-->
+                        <!--</el-option>-->
+                    <!--</el-select>-->
+                    <!--<el-select v-if="adminAEForm.zoneInfo[3]" v-model="adminAEForm.zoneInfo[3].name" placeholder="选择房号" @change="roomChange">-->
+                        <!--<el-option v-for="item in level4" :key="item.id" :label="item.name" :value="item.id">-->
+                        <!--</el-option>-->
+                    <!--</el-select>-->
+                    <el-cascader
+                            expand-trigger="hover"
+                            :options="treeList"
+                            v-model="selOptions"
+                            :props="dataProps"
+                            @change="handleChange">
+                    </el-cascader>
                 </el-form-item>
                 <el-form-item label="企业描述" class="allLength">
                     <el-input type="textarea" :rows="3" placeholder="请填写企业描述（200字内）"
@@ -149,6 +156,14 @@
         components: {UE},
         data(){
             return {
+                newArea:[],
+                departmentTreeData: '', // 地址数据
+                dataProps: {
+                    value: 'id',
+                    children: 'children',
+                    label: 'name'
+                },
+                selOptions:[],
                 treeList:[],
                 level1:[],
                 level2:[],
@@ -391,6 +406,7 @@
 
             },
             newEnterprise(){  //显示新增界面
+                this.newArea.length=0;
                 this.addEditTitle='新增';
                 this.isEdit=false;
                 this.adminAEVisible=true;
@@ -417,6 +433,33 @@
                 this.getAnData(url);
                 this.adminFilters={
                     enterName:''
+                }
+            },
+            handleChange(val){
+                this.newArea.length=0;
+                let data=this.selOptions;
+                let list=this.treeList;
+                this.seachAreaName(data, list, 0);
+                this.zoneId=this.newArea[3].id;
+            },
+            seachAreaName(data, beSeachData, index) {
+                for (let j = 0; j < beSeachData.length; j++) {
+                    if (beSeachData[j].id === data[index]) {
+                        let areaData = {};
+                        areaData.name = beSeachData[j].name;
+                        areaData.id = beSeachData[j].id;
+                        this.newArea.push(areaData);
+                        index = index + 1;
+                        if (index < data.length) {
+                            this.seachAreaName(
+                                data,
+                                beSeachData[j].children,
+                                index
+                            );
+                        } else {
+                            return;
+                        }
+                    }
                 }
             },
             getTree(){
@@ -458,6 +501,7 @@
                                             if(item3.children.length>0){
                                                 item3.children.forEach((item4)=>{
                                                     if(item4.level===5) {
+                                                        delete item4.children;
                                                         let obj = {
                                                             level: item4.level,
                                                             name: item4.name,
@@ -507,6 +551,7 @@
                 });
             },
             adminEdit(index, row) {//显示编辑界面
+                this.selOptions.length=0;
                 this.addEditTitle='编辑';
                 this.isEditId=row.id;
                 this.isEdit=true;
@@ -514,6 +559,10 @@
                 this.adminAEForm = Object.assign({}, row);
                 this.roomLabel=row.zoneInfo[row.zoneInfo.length - 1].name;
                 this.zoneId=row.zoneInfo[row.zoneInfo.length - 1].id;
+                if(row.zoneInfo[1]) this.selOptions.push(row.zoneInfo[1].id);
+                if(row.zoneInfo[2]) this.selOptions.push(row.zoneInfo[2].id);
+                if(row.zoneInfo[3]) this.selOptions.push(row.zoneInfo[3].id);
+                if(row.zoneInfo[4]) this.selOptions.push(row.zoneInfo[4].id);
             },
             sizeChange(val) {
                 this.pagesize=val;
@@ -527,9 +576,12 @@
                     if (valid) {
                         this.$confirm('确认提交吗？', '提示', {}).then(() => {
                             this.admAELoading = true;
-                           let address='松湖智谷园区'+this.adminAEForm.zoneInfo[0].name+this.adminAEForm.zoneInfo[1].name+
-                                this.adminAEForm.zoneInfo[2].name+this.roomLabel;
-                            let data={
+                           // let address='松湖智谷园区'+this.adminAEForm.zoneInfo[0].name+this.adminAEForm.zoneInfo[1].name+
+                           //      this.adminAEForm.zoneInfo[2].name+this.roomLabel;
+                           let address='松湖智谷园区'+this.newArea[0].name+this.newArea[1].name+
+                               this.newArea[2].name+this.newArea[3].name;
+
+                           let data={
                                 parkId:localStorage.getItem("parkId"),
                                 address:address,
                                 name:this.adminAEForm.name,

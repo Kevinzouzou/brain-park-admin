@@ -43,13 +43,13 @@
                     </el-table-column>
                     <el-table-column prop="addInfo.remark" label="问题描述" sortable show-overflow-tooltip="">
                     </el-table-column>
-                    <el-table-column prop="addInfo.nickname" label="投诉人" sortable>
+                    <el-table-column prop="addInfo.contact" label="投诉人" sortable>
                     </el-table-column>
                     <el-table-column prop="stage" label="状态" sortable>
                     </el-table-column>
-                    <el-table-column prop="addInfo.allocationName" label="管理人" sortable>
+                    <el-table-column prop="addInfo.flows[0].name" label="管理人" sortable>
                     </el-table-column>
-                    <el-table-column prop="addInfo.propertyName" label="负责人" sortable>
+                    <el-table-column prop="addInfo.flows[1].name" label="负责人" sortable>
                     </el-table-column>
                     <el-table-column label="操作">
                         <template slot-scope="scope">
@@ -93,19 +93,19 @@
                             </div>
                         </el-form-item>
                     </el-form>
-                    <span class="title">管理人员</span>
-                    <el-form label-width="90px">
+                    <span class="title" v-if="detailList.addInfo.flows">管理人员</span>
+                    <el-form label-width="90px" v-if="detailList.addInfo.flows">
                         <el-form-item label="管理人：">
-                            {{detailList.addInfo.allocationName || '无数据'}}
+                            {{detailList.addInfo.flows[0].name || '无数据'}}
                         </el-form-item>
                         <el-form-item label="处理时间：">
-                            {{detailList.addInfo.allocationTime || '无数据'}}
+                            {{detailList.addInfo.flows[0].handleTime || '无数据'}}
                         </el-form-item>
-                        <el-form-item v-if="detailList.addInfo.propertyName" label="负责人：">
-                            {{detailList.addInfo.propertyName || '无数据'}}
+                        <el-form-item v-if="detailList.addInfo.flows[1]" label="负责人：">
+                            {{detailList.addInfo.flows[1].name || '无数据'}}
                         </el-form-item>
-                        <el-form-item v-if="detailList.addInfo.propertyName" label="处理时间：">
-                            {{detailList.addInfo.settlementTime || '无数据'}}
+                        <el-form-item v-if="detailList.addInfo.flows[1]" label="处理时间：">
+                            {{detailList.addInfo.flows[1].handleTime || '无数据'}}
                         </el-form-item>
                         <el-form-item label="处理意见：">
                             {{detailList.settlement || '无数据'}}
@@ -163,9 +163,9 @@
                     </el-table-column>
                     <el-table-column prop="stage" label="状态" sortable>
                     </el-table-column>
-                    <el-table-column prop="addInfo.allocationName" label="管理人" sortable>
+                    <el-table-column prop="addInfo.flows[0].name" label="管理人" sortable>
                     </el-table-column>
-                    <el-table-column prop="addInfo.propertyName" label="维修人" sortable>
+                    <el-table-column prop="addInfo.flows[1].name" label="维修人" sortable>
                     </el-table-column>
                     <el-table-column label="操作">
                         <template slot-scope="scope">
@@ -194,7 +194,7 @@
                             {{detailList.time || '无数据'}}
                         </el-form-item>
                         <el-form-item label="报修人：">
-                            {{detailList.addInfo.nickname || '无数据'}}
+                            {{detailList.addInfo.contact || '无数据'}}
                         </el-form-item>
                         <el-form-item label="报修位置：">
                             {{detailList.addInfo.location || '无数据'}}
@@ -209,22 +209,22 @@
                             </div>
                         </el-form-item>
                     </el-form>
-                    <span class="title">管理人员</span>
-                    <el-form label-width="90px">
+                    <span class="title" v-if="detailList.addInfo.flows">管理人员</span>
+                    <el-form label-width="90px" v-if="detailList.addInfo.flows">
                         <el-form-item label="管理人：">
-                            {{detailList.addInfo.allocationName || '无数据'}}
+                            {{detailList.addInfo.flows[0].name || '无数据'}}
                         </el-form-item>
                         <el-form-item label="处理时间：">
-                            {{detailList.addInfo.designateTime || '无数据'}}
+                            {{detailList.addInfo.flows[0].handleTime || '无数据'}}
                         </el-form-item>
-                        <el-form-item label="负责人：">
-                            {{detailList.addInfo.propertyName || '无数据'}}
+                        <el-form-item label="负责人：" v-if="detailList.addInfo.flows[1].name">
+                            {{detailList.addInfo.flows[1].name || '无数据'}}
                         </el-form-item>
-                        <el-form-item label="处理时间：">
-                            {{detailList.addInfo.settlementTime || '无数据'}}
+                        <el-form-item label="处理时间：" v-if="detailList.addInfo.flows[1].name">
+                            {{detailList.addInfo.flows[1].handleTime || '无数据'}}
                         </el-form-item>
                         <el-form-item label="维修反馈：" class="allWid">
-                            {{detailList.addInfo.feedback || '无数据'}}
+                            {{detailList.settlement || '无数据'}}
                             <div v-if="detailList.addInfo.images && detailList.addInfo.images.length>0">
                                 <img v-for="item in detailList.addInfo.images.slice(0,6)" :src="item" @click="handlePictureCardPreview(item)">
                                 <el-dialog :visible.sync="dialogVisible" style="z-index: 2020;" :append-to-body="true">
@@ -309,6 +309,7 @@
                         allocationTime:'',
                         propertyName:'',
                         settlementTime:'',
+                        flows:[],
 
                         companyName:'',
                         phone:'',
