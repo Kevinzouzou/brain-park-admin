@@ -547,7 +547,7 @@ export default {
                         });
                     }
                 } else {
-                    console.log('error submit!!');
+                    console.log('表单未完全填写');
                     return false;
                 }
             });
@@ -654,7 +654,7 @@ export default {
                         });
                     }
                 } else {
-                    console.log('error submit!!');
+                    console.log('表单未完全填写');
                     return false;
                 }
             });

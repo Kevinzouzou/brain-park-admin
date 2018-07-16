@@ -10,15 +10,15 @@
                             </div>
                             <div class="user-data">
                                 <div class="data-item">
-                                    <div class="data-num">10000</div>
+                                    <div class="data-num">{{UserSituation.userTotal}}</div>
                                     <div class="data-title">用户总数</div>
                                 </div>
                                 <div class="data-item">
-                                    <div class="data-num">99</div>
+                                    <div class="data-num">{{UserSituation.todayAddUser}}</div>
                                     <div class="data-title">今日新增</div>
                                 </div>
                                 <div class="data-item">
-                                    <div class="data-num">2000</div>
+                                    <div class="data-num">{{UserSituation.todayActiveUser}}</div>
                                     <div class="data-title">今日活跃</div>
                                 </div>
                             </div>
@@ -30,8 +30,8 @@
                         <div class="grid-content  userDistribution">
                             <div class="grid-title">用户分布</div>
                             <div>
-                                <div id="charts" style="width:90%;height:400px;">
-                                    <div id="main" style="width:100%;height:400px"></div>
+                                <div id="charts" style="width:90%;height:400px; margin: 0 auto;">
+                                    <div id="main" style="width:100%;height:100%;"></div>
                                 </div>
                             </div>
                             <div class="percentageComponent">
@@ -65,29 +65,29 @@
                                 <div class="businessPercentage">
                                     <div class="percentageComponent">
                                         <div class="title">
-                                            <span>所有者 956</span>
-                                            <span>13%</span>
+                                            <span>所有者 {{EnterpriseDistribution.owner}}</span>
+                                            <span>{{EnterpriseDistribution.owner / EnterpriseDistribution.userTotal * 100}}%</span>
                                         </div>
                                         <div class="data">
-                                            <span style="width:13%"></span>
+                                            <span v-bind:style="{ width: EnterpriseDistribution.owner / EnterpriseDistribution.userTotal * 100+'%' }"></span>
                                         </div>
                                     </div>
                                     <div class="percentageComponent">
                                         <div class="title">
-                                            <span>管理者 5666</span>
-                                            <span>50%</span>
+                                            <span>管理者 {{EnterpriseDistribution.manager}}</span>
+                                            <span>{{EnterpriseDistribution.manager / EnterpriseDistribution.userTotal * 100}}%</span>
                                         </div>
                                         <div class="data">
-                                            <span style="width:50%"></span>
+                                            <span v-bind:style="{ width: EnterpriseDistribution.manager / EnterpriseDistribution.userTotal * 100+'%' }"></span>
                                         </div>
                                     </div>
                                     <div class="percentageComponent">
                                         <div class="title">
-                                            <span>员工 90066</span>
-                                            <span>50%</span>
+                                            <span>员工 {{EnterpriseDistribution.staff}}</span>
+                                            <span>{{EnterpriseDistribution.staff / EnterpriseDistribution.userTotal * 100}}%</span>
                                         </div>
                                         <div class="data">
-                                            <span style="width:50%"></span>
+                                            <span v-bind:style="{ width: EnterpriseDistribution.staff / EnterpriseDistribution.userTotal * 100+'%' }"></span>
                                         </div>
                                     </div>
                                 </div>
@@ -108,13 +108,15 @@
                                             <img class="gender-img" src="../../../static/images/female.png">
                                             <div class="item-data">
                                                 <span>女性</span>
-                                                <span>35%</span>
+                                                <span>{{(UserClassify.userGenderToWoman / (UserClassify.userGenderToWoman+UserClassify.userGenderToMan)
+                                                    *100).toFixed(2)}}%</span>
                                             </div>
                                         </div>
                                         <div class="gender-top-item">
                                             <div class="item-data">
                                                 <span>男性</span>
-                                                <span>65%</span>
+                                                <span>{{(UserClassify.userGenderToMan / (UserClassify.userGenderToWoman+UserClassify.userGenderToMan)
+                                                    *100).toFixed(2)}}%</span>
                                             </div>
                                             <img src="../../../static/images/male.png">
                                         </div>
@@ -295,54 +297,234 @@
 <script>
     import echarts from 'echarts/lib/echarts';
     import axios from 'axios';
+    import publicFunction from '../../api/publicFunction';
     export default {
         name: 'Bank',
         data() {
-            return {};
+            return {
+                url: 'http://120.77.226.68:10006/userStat/',
+                UserSituation: {
+                    userTotal: '',
+                    todayAddUser: '',
+                    todayActiveUser: ''
+                },
+                EnterpriseDistribution: {
+                    owner: '',
+                    manager: '',
+                    userTotal: '',
+                    enterpriseUser: '',
+                    staff: '',
+                    regUser: ''
+                },
+                UserClassify: {
+                    userGenderToWoman: '',
+                    middleUserPercent: '',
+                    youthUserPercent: '',
+                    userGenderToMan: '',
+                    oldUserPercent: '',
+                    otherUserPercent: '',
+                },
+                userGrowthRateList: [],
+                enterpriseUserRankList: [],
+                businessChartsMainOption: {
+                    color: ['#17eace', '#fd304e'],
+                    tooltip: {
+                        trigger: 'item',
+                        formatter: "{b} : {c} ({d}%)"
+                    },
+                    legend: {
+                        bottom: 10,
+                        left: 'center',
+                        data: ['企业用户', '注册用户']
+                    },
+                    series: [{
+                        type: 'pie',
+                        radius: ['8%', '62%'],
+                        center: ['50%', '50%'],
+                        selectedMode: 'single',
+                        label: {
+                            normal: {
+                                position: 'inner',
+                                formatter: '{d}%'
+                            }
+                        },
+                        data: [{
+                                value: 0,
+                                name: '企业用户'
+                            },
+                            {
+                                value: 0,
+                                name: '注册用户'
+                            }
+                        ],
+                        itemStyle: {
+                            emphasis: {
+                                shadowBlur: 10,
+                                shadowOffsetX: 0,
+                                shadowColor: 'rgba(0, 0, 0, 0.5)'
+                            }
+                        }
+                    }]
+                },
+                userGrowthRateChartsOption: {
+                    color: ['#93d242', '#f9b84c'],
+                    tooltip: {
+                        trigger: 'axis',
+                        axisPointer: {
+                            type: 'shadow'
+                        }
+                    },
+                    legend: {
+                        data: ['企业用户数', '用户数', ]
+                    },
+                    calculable: true,
+                    xAxis: [{
+                        type: 'category',
+                        axisTick: {
+                            show: false
+                        },
+                        data: ['一月', '二月', '三月', '四月', '五月', '一月', '二月', '三月', '四月', '五月', '四月', '五月']
+                    }],
+                    yAxis: [{
+                        type: 'value'
+                    }],
+                    series: [{
+                            name: '企业用户数',
+                            type: 'bar',
+                            barGap: 0,
+                            data: [3200, 3320, 3010, 3340, 3900, 3200, 3302, 3001, 3304, 3090, 3034, 3900]
+                        },
+                        {
+                            name: '用户数',
+                            type: 'bar',
+                            data: [2200, 1820, 1910, 2340, 2900, 2200, 1820, 1091, 2304, 2900, 2900, 3090]
+                        },
+
+                    ]
+                },
+                enterpriseUserRankingChartsOption: {
+                    color: ['#3398DB'],
+                    tooltip: {
+                        trigger: 'axis',
+                        axisPointer: { // 坐标轴指示器，坐标轴触发有效
+                            type: 'shadow' // 默认为直线，可选为：'line' | 'shadow'
+                        }
+                    },
+                    grid: {
+                        left: '3%',
+                        right: '4%',
+                        bottom: '3%',
+                        containLabel: true
+                    },
+                    xAxis: [{
+                        type: 'category',
+                        data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun', 'Fri', 'Sat', 'Sun'],
+                        axisTick: {
+                            alignWithLabel: true
+                        }
+                    }],
+                    yAxis: [{
+                        type: 'value'
+                    }],
+                    series: [{
+                        name: '直接访问',
+                        type: 'bar',
+                        barWidth: '60%',
+                        data: [10, 52, 200, 334, 390, 330, 220, 390, 330, 500]
+                    }]
+                }
+            };
         },
         components: {},
         computed: {},
-        methods: {},
+        methods: {
+            // 获取用户概况
+            queryUserSituation() {
+                this.$get(this.url + 'queryUserSituation').then(res => {
+                    this.UserSituation = publicFunction.deepCopy(this.UserSituation, res);
+
+                })
+            },
+            // 获取企业用户分布
+            queryEnterpriseDistribution() {
+                this.$get(this.url + 'queryEnterpriseDistribution').then(res => {
+                    this.EnterpriseDistribution = publicFunction.deepCopy(this.EnterpriseDistribution, res);
+                    let businessChartsMain = echarts.init(document.getElementById('businessChartsMain'));
+                    this.businessChartsMainOption.series = [{
+                        type: 'pie',
+                        radius: ['8%', '62%'],
+                        center: ['50%', '50%'],
+                        selectedMode: 'single',
+                        label: {
+                            normal: {
+                                position: 'inner',
+                                formatter: '{d}%'
+                            }
+                        },
+                        data: [{
+                                value: this.EnterpriseDistribution.enterpriseUser,
+                                name: '企业用户'
+                            },
+                            {
+                                value: this.EnterpriseDistribution.regUser,
+                                name: '注册用户'
+                            }
+                        ],
+                        itemStyle: {
+                            emphasis: {
+                                shadowBlur: 10,
+                                shadowOffsetX: 0,
+                                shadowColor: 'rgba(0, 0, 0, 0.5)'
+                            }
+                        }
+                    }];
+                    businessChartsMain.setOption(this.businessChartsMainOption);
+                })
+            },
+            // 获取用户性别及年龄层分布
+            queryUserClassify() {
+                this.$get(this.url + 'queryUserClassify').then(res => {
+                    this.UserClassify = publicFunction.deepCopy(this.UserClassify, res);
+                })
+            },
+            // 获取用户增长率（前六个月）
+            queryUserGrowthRate() {
+                this.$get(this.url + 'queryUserGrowthRate').then(res => {
+                    this.userGrowthRateList = res.userGrowthRateList;
+                })
+            },
+            // 获取企业用户TOP10
+            queryEnterpriseUserRank() {
+                this.$get(this.url + 'queryEnterpriseUserRank').then(res => {
+                    this.enterpriseUserRankList = res.enterpriseUserRankList;
+                })
+            },
+        },
         mounted() {
+            let myChart = echarts.init(document.getElementById('main'));
+            let userGrowthRateCharts = echarts.init(document.getElementById('userGrowthRateCharts'));
+            let enterpriseUserRankingCharts = echarts.init(document.getElementById('enterpriseUserRankingCharts'));
+
+            this.queryUserSituation();
+            this.queryEnterpriseDistribution();
+            this.queryUserClassify();
+            this.queryUserGrowthRate();
+            this.queryEnterpriseUserRank();
             /*ECharts图表*/
-            var myChart = echarts.init(document.getElementById('main'));
-            var businessChartsMain = echarts.init(document.getElementById('businessChartsMain'));
-            var userGrowthRateCharts = echarts.init(document.getElementById('userGrowthRateCharts'));
-            var enterpriseUserRankingCharts = echarts.init(document.getElementById('enterpriseUserRankingCharts'));
+
+
+            userGrowthRateCharts.setOption(this.userGrowthRateChartsOption);
+            enterpriseUserRankingCharts.setOption(this.enterpriseUserRankingChartsOption);
+            // 用户分布图表配置
             myChart.setOption({
                 tooltip: {
                     trigger: 'item',
-                    formatter: "<br/>{b} : {c} ({d}%)",
+                    formatter: "{b}: {c} ({d}%)",
                 }, //设置饼图的颜色
                 color: ['#1C95FF', '#F76B1C', '#E900FF', '#05FFA9'],
-                // itemStyle: {
-                //     normal: { //正常状态下的饼块设置
-                //         label: {
-                //             show: true
-                //         },
-                //         color: { //渐变效果
-                //             type: 'linear',
-                //             x: 0,
-                //             y: 0,
-                //             x2: 0,
-                //             y2: 1,
-                //             colorStops: [{
-                //                 offset: 0,
-                //                 color: '#1C95FF' // 0% 处的颜色
-                //             }, {
-                //                 offset: 1,
-                //                 color: '#79D7FF' // 100% 处的颜色
-                //             }],
-                //             globalCoord: true // 缺省为 false
-                //         },
-                //         labelLine: {
-                //             show: true
-                //         }
-                //     },
-                // },
                 series: [{
                     type: 'pie',
-                    radius: ['40%', '60%'],
+                    radius: ['30%', '50%'],
                     center: ['50%', '50%'],
                     data: [{
                             value: 5485,
@@ -370,7 +552,7 @@
                     },
                     label: {
                         normal: {
-                            formatter: '{b|{b}}\n{c|{c}}  {per|{d}%}',
+                            formatter: '{b|{b}}\n{c|{c}} {per|{d}%}',
                             rich: {
                                 b: {
                                     color: '#9B9B9B',
@@ -380,193 +562,25 @@
                                 },
                                 c: {
                                     color: '#9B9B9B',
-                                    fontSize: 16,
-                                    lineHeight: 24
+                                    fontSize: 14,
+                                    lineHeight: 24,
+                                    align: 'left'
                                 },
                                 per: {
                                     color: '#9B9B9B',
-                                    fontSize: 16,
+                                    fontSize: 14,
                                     padding: [2, 4],
+                                    align: 'left'
                                 }
                             }
                         }
                     },
                 }]
             });
-            businessChartsMain.setOption({
-                color: ['#17eace', '#fd304e'],
-                tooltip: {
-                    trigger: 'item',
-                    formatter: "{b} : {c} ({d}%)"
-                },
-                legend: {
-                    bottom: 10,
-                    left: 'center',
-                    data: ['企业用户', '注册用户']
-                },
-                series: [{
-                    type: 'pie',
-                    radius: ['8%', '62%'],
-                    center: ['50%', '50%'],
-                    selectedMode: 'single',
-                    label: {
-                        normal: {
-                            position: 'inner',
-                            formatter: '{d}%'
-                        }
-                    },
-                    data: [{
-                            value: 535,
-                            name: '企业用户'
-                        },
-                        {
-                            value: 510,
-                            name: '注册用户'
-                        }
-                    ],
-                    itemStyle: {
-                        emphasis: {
-                            shadowBlur: 10,
-                            shadowOffsetX: 0,
-                            shadowColor: 'rgba(0, 0, 0, 0.5)'
-                        }
-                    }
-                }]
-            });
-
-            var posList = [
-                'left', 'right', 'top', 'bottom',
-                'inside',
-                'insideTop', 'insideLeft', 'insideRight', 'insideBottom',
-                'insideTopLeft', 'insideTopRight', 'insideBottomLeft', 'insideBottomRight'
-            ];
-            app.configParameters = {
-                rotate: {
-                    min: -90,
-                    max: 90
-                },
-                align: {
-                    options: {
-                        left: 'left',
-                        center: 'center',
-                        right: 'right'
-                    }
-                },
-                verticalAlign: {
-                    options: {
-                        top: 'top',
-                        middle: 'middle',
-                        bottom: 'bottom'
-                    }
-                },
-                position: {
-                    options: echarts.util.reduce(posList, function (map, pos) {
-                        map[pos] = pos;
-                        return map;
-                    }, {})
-                },
-                distance: {
-                    min: 0,
-                    max: 100
-                }
-            };
-
-            app.config = {
-                rotate: 90,
-                align: 'left',
-                verticalAlign: 'middle',
-                position: 'insideBottom',
-                distance: 15,
-                onChange: function () {
-                    var labelOption = {
-                        normal: {
-                            rotate: app.config.rotate,
-                            align: app.config.align,
-                            verticalAlign: app.config.verticalAlign,
-                            position: app.config.position,
-                            distance: app.config.distance
-                        }
-                    };
-                    myChart.setOption({
-                        series: [{
-                            label: labelOption
-                        }, {
-                            label: labelOption
-                        }]
-                    });
-                }
-            };
-
-
-            var option = {
-                color: ['#93d242', '#f9b84c'],
-                tooltip: {
-                    trigger: 'axis',
-                    axisPointer: {
-                        type: 'shadow'
-                    }
-                },
-                legend: {
-                    data: ['企业用户数', '用户数', ]
-                },
-                calculable: true,
-                xAxis: [{
-                    type: 'category',
-                    axisTick: {
-                        show: false
-                    },
-                    data: ['一月', '二月', '三月', '四月', '五月', '一月', '二月', '三月', '四月', '五月', '四月', '五月']
-                }],
-                yAxis: [{
-                    type: 'value'
-                }],
-                series: [{
-                        name: '企业用户数',
-                        type: 'bar',
-                        barGap: 0,
-                        data: [3200, 3320, 3010, 3340, 3900, 3200, 3302, 3001, 3304, 3090, 3034, 3900]
-                    },
-                    {
-                        name: '用户数',
-                        type: 'bar',
-                        data: [2200, 1820, 1910, 2340, 2900, 2200, 1820, 1091, 2304, 2900, 2900, 3090]
-                    },
-
-                ]
-            };
-            var option2 = {
-                color: ['#3398DB'],
-                tooltip: {
-                    trigger: 'axis',
-                    axisPointer: { // 坐标轴指示器，坐标轴触发有效
-                        type: 'shadow' // 默认为直线，可选为：'line' | 'shadow'
-                    }
-                },
-                grid: {
-                    left: '3%',
-                    right: '4%',
-                    bottom: '3%',
-                    containLabel: true
-                },
-                xAxis: [{
-                    type: 'category',
-                    data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun', 'Fri', 'Sat', 'Sun'],
-                    axisTick: {
-                        alignWithLabel: true
-                    }
-                }],
-                yAxis: [{
-                    type: 'value'
-                }],
-                series: [{
-                    name: '直接访问',
-                    type: 'bar',
-                    barWidth: '60%',
-                    data: [10, 52, 200, 334, 390, 330, 220, 390, 330, 500]
-                }]
-            };;
-            userGrowthRateCharts.setOption(option);
-            enterpriseUserRankingCharts.setOption(option2);
+            window.addEventListener("resize", myChart.resize);
+            window.addEventListener("resize", businessChartsMain.resize);
+            window.addEventListener("resize", userGrowthRateCharts.resize);
+            window.addEventListener("resize", enterpriseUserRankingCharts.resize);
         }
     };
 </script>

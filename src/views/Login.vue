@@ -1,8 +1,7 @@
 <template>
   <el-form :model="ruleForm2" :rules="rules2" ref="ruleForm2" label-position="left" label-width="0px" class="demo-ruleForm login-container">
     <h3 class="title">
-      <img class="logo" src="../assets/icon_logo_sh.png">
-      运营管理平台
+      <img class="logo" src="../assets/icon_logo_sh.png"> 运营管理平台
     </h3>
     <el-form-item prop="account">
       <el-input type="text" v-model="ruleForm2.account" auto-complete="off" placeholder="账号"></el-input>
@@ -31,12 +30,18 @@
           checkPass: '123456'
         },
         rules2: {
-          account: [
-            { required: true, message: '请输入账号', trigger: 'blur' },
+          account: [{
+              required: true,
+              message: '请输入账号',
+              trigger: 'blur'
+            },
             //{ validator: validaePass }
           ],
-          checkPass: [
-            { required: true, message: '请输入密码', trigger: 'blur' },
+          checkPass: [{
+              required: true,
+              message: '请输入密码',
+              trigger: 'blur'
+            },
             //{ validator: validaePass2 }
           ]
         },
@@ -48,9 +53,11 @@
         this.$refs.ruleForm2.resetFields();
       },
       handleSubmit2(ev) {
-          this.logining = true;
-          this.$router.push({ path: '/circle' });
-          this.logining = false;
+        this.logining = true;
+        this.$router.push({
+          path: '/circle'
+        });
+        this.logining = false;
 
         let _this = this;
         this.$refs.ruleForm2.validate((valid) => {
@@ -58,24 +65,31 @@
             //_this.$router.replace('/table');
             this.logining = true;
             //NProgress.start();
-            let loginParams = { username: this.ruleForm2.account, password: this.ruleForm2.checkPass };
-            if(loginParams.username==='admin' && loginParams.password==='123456'){
-                this.logining = false;
-                // sessionStorage.setItem('user', JSON.stringify(user));
-                let parkId='969878f1f1149e6a7afae38636c0abc';
-                let userId='71f3df48263f4c74be2efbb83250e66b';
-                let upUrl='http://218.17.39.178:2040';//微品云（开发）
-                // let upUrl='https://shbeta.vpclub.cn/api10005';//新阿里云
-                // let upUrl='http://39.107.252.186:10005';//阿里云地址（正式）
+            let loginParams = {
+              username: this.ruleForm2.account,
+              password: this.ruleForm2.checkPass
+            };
+            if (loginParams.username === 'admin' && loginParams.password === '123456') {
+              this.logining = false;
+              // sessionStorage.setItem('user', JSON.stringify(user));
+              let parkId = '969878f1f1149e6a7afae38636c0abc';
+              let userId = '71f3df48263f4c74be2efbb83250e66b';
+              // let upUrl = 'http://218.17.39.178:2040'; //微品云（开发）
+              let upUrl = 'https://yqdndev.vpclub.cn/api10005/'; //阿里云(开发)
+              // let upUrl = 'http://192.168.2.214:2040/'; // other
+              // let upUrl='https://shbeta.vpclub.cn/api10005';//新阿里云
+              // let upUrl='http://39.107.252.186:10005';//阿里云地址（正式）
 
-                sessionStorage.setItem('user', JSON.stringify(loginParams));
-                localStorage.setItem("parkId",parkId);
+              sessionStorage.setItem('user', JSON.stringify(loginParams));
+              localStorage.setItem("parkId", parkId);
 
-                localStorage.setItem("userId",userId);
-                localStorage.setItem("upUrl",upUrl);
-                this.$router.push({ path: '/userProfile' });
-                console.log(localStorage.getItem("parkId")+'  --login parkid')
-                console.log(localStorage.getItem("upUrl")+'  --login upUrl')
+              localStorage.setItem("userId", userId);
+              localStorage.setItem("upUrl", upUrl);
+              this.$router.push({
+                path: '/userProfile'
+              });
+              console.log(localStorage.getItem("parkId") + '  --login parkid')
+              console.log(localStorage.getItem("upUrl") + '  --login upUrl')
             }
 
             // requestLogin(loginParams).then(data => {
@@ -126,7 +140,6 @@
       }
     }
   }
-
 </script>
 
 <style lang="scss" scoped>
@@ -146,7 +159,7 @@
       margin: 0px auto 40px auto;
       text-align: center;
       color: #505458;
-      .logo{
+      .logo {
         width: 150px;
         margin-right: 10px;
         vertical-align: middle;

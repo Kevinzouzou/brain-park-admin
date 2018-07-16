@@ -4,6 +4,8 @@ let base = '';
 const parkId='969878f1f1149e6a7afae38636c0abc';
 // let userId='71f3df48263f4c74be2efbb83250e66b';
 // let upUrl='http://218.17.39.178:2040';//微品云（开发）
+let upUrl='https://yqdndev.vpclub.cn/api10005/';  //阿里云(开发)
+// let upUrl='http://192.168.2.214:2040/';  // other
 // let upUrl='https://shbeta.vpclub.cn/api10005';//新阿里云
 // let upUrl='http://39.107.252.186:10005';//阿里云地址（正式）
 
@@ -89,6 +91,14 @@ export const parkInfoTreeAddZoneInfo = `/parkInfoTree/parkInfoTreeAddZoneInfo/${
 export const addOrUpdateParkInfoTree = `/parkInfoTree/addOrUpdateParkInfoTree`;                             // 添加或修改组织架构/区域
 export const sendMessage = `/shortMessage/sendMessage`                                                      // 发送短信
 
-export const housekeepingList = `/displayContent/housekeepingList?parkId=${parkId}`                         // 家政服务列表
-export const addOrUpdateDisplayContent = `/displayContent/addOrUpdateDisplayContent`                        // 添加或修改展示性信息
-export const crowdorderingApplication = `/propertyApplication/crowdorderingApplication?parkId=${parkId}`    // 拼单记录列表
+export const housekeepingList = `/displayContent/housekeepingList?parkId=${parkId}`                             // 家政服务列表
+export const addOrUpdateDisplayContent = `/displayContent/addOrUpdateDisplayContent`                            // 添加或修改展示性信息
+export const crowdorderingApplication = `/propertyApplication/crowdorderingApplication?parkId=${parkId}`        // 拼单记录列表
+export const updatePropertyApplication = `/propertyApplication/updatePropertyApplication`                       // 修改物业拼单记录列表
+export const sharedResourceList = `/sharedResource/sharedResourceList?parkId=${parkId}`                         // 共享资源列表
+export const addOrUpdateSharedResource = `/sharedResource/addOrUpdateSharedResource`                            // 添加或修改共享资源对象
+export const deleteSharedResource = `/sharedResource/deleteSharedResource/`                                     // 删除共享资源对象
+export const sharedResourceReservationList = `/sharedResourceReservation/sharedResourceReservationList`         // 查询共享资源列表
+export const bookSharedResourceList = `/userTargetAssociation/bookSharedResourceList?parkId=${parkId}`          // 共享资源申请列表
+export const addSharedResourceReservation = `/sharedResourceReservation/addSharedResourceReservation`           // 添加共享资源预定
+export const deleteSharedResourceReservation = `/sharedResourceReservation/deleteSharedResourceReservation/`    // 删除共享资源预定信息

@@ -267,11 +267,11 @@
                         </el-table-column>
                         <el-table-column prop="stage" label="状态">
                         </el-table-column>
-                        <el-table-column label="操作" width="220">
+                        <el-table-column label="操作" width="150">
                             <template slot-scope="scope">
                                 <el-button type="primary" size="small" @click="crowdorderingInfoCheck(scope.$index, scope.row)">查看</el-button>
-                                <el-button type="success" size="small" @click="crowdorderingInfoEdit(scope.$index, scope.row)">拼单</el-button>
-                                <el-button type="danger" size="small" @click="crowdorderingInfoEdit(scope.$index, scope.row)">退款</el-button>
+                                <el-button v-show="scope.row.stage === '待拼单'" type="success" size="small" @click="updatePropertyApplication(scope.$index, scope.row,'已拼单')">拼单</el-button>
+                                <el-button v-show="scope.row.stage === '已拼单'" type="danger" size="small" @click="updatePropertyApplication(scope.$index, scope.row,'已退款')">退款</el-button>
                             </template>
                         </el-table-column>
                     </el-table>
@@ -335,12 +335,11 @@
                         </el-row>
                     </el-form>
                     <div slot="footer" class="dialog-footer">
-                        <el-button @click="crowdorderingInfoFormVisible = false">取消拼单</el-button>
-                        <el-button type="success" @click="crowdorderingInfoFormVisible = false">拼单</el-button>
-                        <el-button type="danger" @click="crowdorderingInfoFormVisible = false">退款</el-button>
+                        <el-button v-show="crowdorderingInfoForm.stage === '待拼单'" @click="updatePropertyApplication(null,null,'已取消')">取消拼单</el-button>
+                        <el-button v-show="crowdorderingInfoForm.stage === '待拼单'" type="success" @click="updatePropertyApplication(null,null,'已拼单')">拼单</el-button>
+                        <el-button v-show="crowdorderingInfoForm.stage === '已拼单'" type="danger" @click="updatePropertyApplication(null,null,'已退款')">退款</el-button>
                     </div>
                 </el-dialog>
-
             </el-tab-pane>
         </el-tabs>
     </section>
@@ -352,6 +351,7 @@
         housekeepingList,
         addOrUpdateDisplayContent,
         crowdorderingApplication,
+        updatePropertyApplication,
         uploadPic
     } from '../../api/api';
     import publicFunction from '../../api/publicFunction';
@@ -365,9 +365,9 @@
                 },
                 HousekeepingListPage: 1,
                 HousekeepingListPagesize: 7,
-                activeName: 'CrowdorderingNotes',
+                activeName: 'ServiceManagement',
                 serviceFilter: {
-                    subType: '全部',
+                    subtype: '全部',
                     thirdPartOrPhone: ''
                 },
                 HousekeepingListLoading: false,
@@ -435,22 +435,18 @@
                 crowdorderingInfoFormVisible: false,
                 crowdorderingInfoForm: {
                     addInfo: {
-                        area: "公司面积",
-                        companyName: "公司名称",
-                        contact: "联系人",
-                        itemType: "服务类型",
-                        location: "服务地址",
-                        phone: "手机号",
-                        remark: "用户备注",
-                        subtype: "服务分类",
+                        area: "",
+                        companyName: "",
+                        contact: "",
+                        itemType: "",
+                        location: "",
+                        phone: "",
+                        remark: "",
+                        subtype: "",
                     },
-                    deleted: 1,
-                    id: "11111",
-                    isEnabled: 1,
-                    settlement: "",
-                    stage: "未完结",
-                    type: "家政拼单",
-                    userId: "111",
+                    id: "",
+                    stage: "",
+                    type: "",
                 }
             };
         },
@@ -516,7 +512,7 @@
                             }
                         });
                     } else {
-                        console.log('error submit!!');
+                        console.log('表单未完全填写');
                         return false;
                     }
                 });
@@ -593,6 +589,31 @@
                 this.crowdorderingInfoFormVisible = true;
                 let dataObj = this.crowdorderingInfoForm
                 this.crowdorderingInfoForm = publicFunction.deepCopy(dataObj, row);
+            },
+            //  修改物业拼单状态
+            updatePropertyApplication(index, row, operating) {
+                if (index === null) {
+                    this.crowdorderingInfoForm.stage = operating;
+                } else {
+                    let dataObj = this.crowdorderingInfoForm
+                    this.crowdorderingInfoForm = publicFunction.deepCopy(dataObj, row);
+                    this.crowdorderingInfoForm.stage = operating;
+                }
+                this.$put(updatePropertyApplication, this.crowdorderingInfoForm).then(res => {
+                    if (res.operationResult === 'failure') {
+                        this.$message({
+                            message: 'failureMsg',
+                            type: 'success'
+                        });
+                    } else {
+                        this.crowdorderingInfoFormVisible = false;
+                        this.$message({
+                            message: '操作成功',
+                            type: 'success'
+                        });
+                        this.getCrowdorderingList(crowdorderingApplication);
+                    }
+                });
             }
         },
         mounted() {

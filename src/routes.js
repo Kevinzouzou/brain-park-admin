@@ -16,6 +16,7 @@ import merchants from './views/operaSer/merchants.vue'
 import information from './views/operaSer/information.vue'
 import userFeedback from './views/operaSer/userFeedback.vue'
 import houseKeeping from './views/operaSer/houseKeeping.vue'
+import shareResource from './views/operaSer/shareResource.vue'
 
 import serEffect from './views/employers/serEffect.vue'
 import corporationHome from './views/employers/corporationHome.vue'
@@ -90,6 +91,7 @@ let routes = [
             { path: '/userFeedback', component: userFeedback, name: '用户反馈处理' },
             { path: '/information', component: information, name: '信息公告' },
             { path: '/houseKeeping', component: houseKeeping, name: '家政服务' },
+            { path: '/shareResource', component: shareResource, name: '共享资源' },
         ]
     },
     {
