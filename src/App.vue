@@ -34,13 +34,9 @@
 	body {
 		margin: 0px;
 		padding: 0px;
-		/*background: url(assets/bg1.jpg) center !important;
-		background-size: cover;*/
-		// background: #1F2D3D;
-		font-family: Helvetica Neue, Helvetica, PingFang SC, Hiragino Sans GB, Microsoft YaHei, SimSun, sans-serif;
 		font-size: 14px;
 		-webkit-font-smoothing: antialiased;
-		font-family: -apple-system, PingFang SC, Hiragino Sans GB, Microsoft YaHei, Helvetica Neue, Arial, sans-serif;
+		font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
 		text-rendering: optimizeLegibility;
 	}
 
@@ -63,7 +59,7 @@
 
 	.toolbar {
 		background: #f2f2f2;
-		padding: 10px; //border:1px solid #dfe6ec;
+		padding: 10px;
 		margin: 10px 0px;
 		.el-form-item {
 			margin-bottom: 10px;

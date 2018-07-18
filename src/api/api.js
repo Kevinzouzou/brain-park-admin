@@ -102,3 +102,12 @@ export const sharedResourceReservationList = `/sharedResourceReservation/sharedR
 export const bookSharedResourceList = `/userTargetAssociation/bookSharedResourceList?parkId=${parkId}`          // 共享资源申请列表
 export const addSharedResourceReservation = `/sharedResourceReservation/addSharedResourceReservation`           // 添加共享资源预定
 export const deleteSharedResourceReservation = `/sharedResourceReservation/deleteSharedResourceReservation/`    // 删除共享资源预定信息
+export const apartmentResourcesList = `/displayContent/apartmentResourcesList?parkId=${parkId}`                 // 公寓租赁列表
+
+// 商务服务
+export const commerceCourseListByTime = `/commerceCourse/commerceCourseListByTime?parkId=${parkId}`                     // 预约管理列表
+export const addOrUpCommerceCourse = `/commerceCourse/addOrUpCommerceCourse?parkId=${parkId}`                           // 添加或修改上门预约课程
+export const deleteCommerceCourse = `/commerceCourse/deleteCommerceCourse/`                                             // 删除上门预约课程
+export const commerceCourseList = `/commerceCourseList/${parkId}`                                                       // 上门预约课程列表
+export const deleteUserTargetAssociation = `/userTargetAssociation/deleteUserTargetAssociation/`                        // 删除用户目标关联
+export const businessServerOrderHistoryList = `/userTargetAssociation/businessServerOrderHistoryList?parkId=${parkId}`  // 商务课程预约管理历史记录
