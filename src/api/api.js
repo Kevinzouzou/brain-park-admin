@@ -69,6 +69,10 @@ export const upSchUrl=`/parkUser/updateIfScheduling`;  //修改此用户是否�
 export const upParkTreeUrl=`/parkInfoTree/addOrUpdateParkInfoTree`;  //添加或修改组织架构/区域
 export const delParkTreeUrl=`/parkInfoTree/deleteParkInfoTree/`;  //删除组织结构/区域
 export const countsEnterUrl=`/settledEnterprise/findSettledEnterpriseCountByZoneId/`+localStorage.getItem("parkId")+'/';  //查询区域中企业的数量
+export const inspectTaskListUrl=`/inspectionTask/inspectionTaskList?parkId=`+localStorage.getItem("parkId");  //巡检任务列表
+
+export const delInsTaskUrl=`/inspectionTask/deleteInspectionTask/`;  //删除巡检任务
+export const addUpdateInsTaskUrl=`/inspectionTask/addOrUpdateInspectionTask`;  //添加或修改巡检任务
 
 // 用户管理
 export const parkStaffList = `/parkStaff/parkStaffList?parkId=${parkId}`;                                   // 获取用户列表

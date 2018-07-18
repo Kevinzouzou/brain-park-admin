@@ -29,7 +29,10 @@ import employeeManage from './views/userManage/employeeManage.vue'
 import departmentOrganization from './views/userManage/departmentOrganization.vue'
 import operatorAccountManage from './views/userManage/operatorAccountManage.vue'
 import operatorRoleManage from './views/userManage/operatorRoleManage.vue'
- 
+// 企业管理
+import busiAdmin from './views/businessAdmin/busiAdmin.vue'
+import companyProfile from './views/businessAdmin/companyProfile.vue'
+
 
 Vue.use(Router)
 let routes = [
@@ -67,11 +70,8 @@ let routes = [
         name: '企业管理',
         iconCls: 'el-icon-service',
         children: [
-            {
-                path: '/busiAdmin',
-                component: resolve => require(['./views/businessAdmin/busiAdmin.vue'], resolve),
-                name: '企业操作'
-            }
+            { path: '/companyProfile', component: companyProfile, name: '企业概况' },
+            { path: '/busiAdmin', component: busiAdmin, name: '企业操作' },
         ]
     },
     {

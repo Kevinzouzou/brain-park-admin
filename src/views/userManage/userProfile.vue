@@ -66,28 +66,28 @@
                                     <div class="percentageComponent">
                                         <div class="title">
                                             <span>所有者 {{EnterpriseDistribution.owner}}</span>
-                                            <span>{{EnterpriseDistribution.owner / EnterpriseDistribution.userTotal * 100}}%</span>
+                                            <span>{{(EnterpriseDistribution.owner / EnterpriseDistribution.userTotal * 100).toFixed(2)}}%</span>
                                         </div>
                                         <div class="data">
-                                            <span v-bind:style="{ width: EnterpriseDistribution.owner / EnterpriseDistribution.userTotal * 100+'%' }"></span>
+                                            <span v-bind:style="{ width: (EnterpriseDistribution.owner / EnterpriseDistribution.userTotal * 100).toFixed(0)+'%' }"></span>
                                         </div>
                                     </div>
                                     <div class="percentageComponent">
                                         <div class="title">
                                             <span>管理者 {{EnterpriseDistribution.manager}}</span>
-                                            <span>{{EnterpriseDistribution.manager / EnterpriseDistribution.userTotal * 100}}%</span>
+                                            <span>{{(EnterpriseDistribution.manager / EnterpriseDistribution.userTotal * 100).toFixed(2)}}%</span>
                                         </div>
                                         <div class="data">
-                                            <span v-bind:style="{ width: EnterpriseDistribution.manager / EnterpriseDistribution.userTotal * 100+'%' }"></span>
+                                            <span v-bind:style="{ width: (EnterpriseDistribution.manager / EnterpriseDistribution.userTotal * 100).toFixed(0)+'%' }"></span>
                                         </div>
                                     </div>
                                     <div class="percentageComponent">
                                         <div class="title">
                                             <span>员工 {{EnterpriseDistribution.staff}}</span>
-                                            <span>{{EnterpriseDistribution.staff / EnterpriseDistribution.userTotal * 100}}%</span>
+                                            <span>{{(EnterpriseDistribution.staff / EnterpriseDistribution.userTotal * 100).toFixed(2)}}%</span>
                                         </div>
                                         <div class="data">
-                                            <span v-bind:style="{ width: EnterpriseDistribution.staff / EnterpriseDistribution.userTotal * 100+'%' }"></span>
+                                            <span v-bind:style="{ width: (EnterpriseDistribution.staff / EnterpriseDistribution.userTotal * 100).toFixed(0)+'%' }"></span>
                                         </div>
                                     </div>
                                 </div>
@@ -109,154 +109,50 @@
                                             <div class="item-data">
                                                 <span>女性</span>
                                                 <span>{{(UserClassify.userGenderToWoman / (UserClassify.userGenderToWoman+UserClassify.userGenderToMan)
-                                                    *100).toFixed(2)}}%</span>
+                                                    *100).toFixed(0)}}%
+                                                </span>
                                             </div>
                                         </div>
                                         <div class="gender-top-item">
                                             <div class="item-data">
                                                 <span>男性</span>
                                                 <span>{{(UserClassify.userGenderToMan / (UserClassify.userGenderToWoman+UserClassify.userGenderToMan)
-                                                    *100).toFixed(2)}}%</span>
+                                                    *100).toFixed(0)}}%
+                                                </span>
                                             </div>
                                             <img src="../../../static/images/male.png">
                                         </div>
                                     </div>
                                     <div class="gender-bottom">
                                         <div class="content">
-                                            <span class="female"></span>
-                                            <span class="female"></span>
-                                            <span class="female"></span>
-                                            <span class="female"></span>
-                                            <span class="female"></span>
-                                            <span class="female"></span>
-                                            <span class="female"></span>
-                                            <span class="female"></span>
-                                            <span class="female"></span>
-                                            <span class="female"></span>
-                                            <span class="female"></span>
-                                            <span class="female"></span>
-                                            <span class="female"></span>
-                                            <span class="female"></span>
-                                            <span class="female"></span>
-                                            <span class="female"></span>
-                                            <span class="female"></span>
-                                            <span class="female"></span>
-                                            <span class="female"></span>
-                                            <span class="female"></span>
-                                            <span class="male"></span>
-                                            <span class="male"></span>
-                                            <span class="male"></span>
-                                            <span class="male"></span>
-                                            <span class="male"></span>
-                                            <span class="male"></span>
-                                            <span class="male"></span>
-                                            <span class="male"></span>
-                                            <span class="male"></span>
-                                            <span class="male"></span>
-                                            <span class="male"></span>
-                                            <span class="male"></span>
-                                            <span class="male"></span>
-                                            <span class="male"></span>
-                                            <span class="male"></span>
-                                            <span class="male"></span>
-                                            <span class="male"></span>
-                                            <span class="male"></span>
-                                            <span class="male"></span>
-                                            <span class="male"></span>
-                                            <span class="male"></span>
-                                            <span class="male"></span>
-                                            <span class="male"></span>
-                                            <span class="male"></span>
-                                            <span class="male"></span>
-                                            <span class="male"></span>
-                                            <span class="male"></span>
-                                            <span class="male"></span>
-                                            <span class="male"></span>
-                                            <span class="male"></span>
-                                            <span class="male"></span>
-                                            <span class="male"></span>
-                                            <span class="male"></span>
-                                            <span class="male"></span>
-                                            <span class="male"></span>
-                                            <span class="male"></span>
-                                            <span class="male"></span>
-                                            <span class="male"></span>
-                                            <span class="male"></span>
-                                            <span class="male"></span>
+                                            <span v-for="item in UserClassify.female" class="female"></span>
+                                            <span v-for="item in UserClassify.male" class="male"></span>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="item-age">
                                     <div class="age-item">
                                         <div>青年</div>
-                                        <div id="ageYouthCharts" class="chartsContent">
-                                            <div class="item">
-                                                <div class="cg-wrap">
-                                                    <div class="circle-left-wrap">
-                                                        <div class="circle-left"></div>
-                                                    </div>
-                                                    <div class="circle-right-wrap">
-                                                        <div class="circle-right"></div>
-                                                    </div>
-                                                    <div class="mask">
-                                                        <span>25</span>%
-                                                    </div>
-                                                </div>
-                                            </div>
+                                        <div class="chartsContent">
+                                            <canvas id='ageYouthCharts' width='100' height='100'></canvas>
                                         </div>
                                     </div>
                                     <div class="age-item">
                                         <div>中年</div>
-                                        <div id="ageMiddleCharts" class="chartsContent">
-                                            <div class="item">
-                                                <div class="cg-wrap">
-                                                    <div class="circle-left-wrap">
-                                                        <div class="circle-left"></div>
-                                                    </div>
-                                                    <div class="circle-right-wrap">
-                                                        <div class="circle-right"></div>
-                                                    </div>
-                                                    <div class="mask">
-                                                        <span>25</span>%
-                                                    </div>
-                                                </div>
-                                            </div>
+                                        <div class="chartsContent">
+                                            <canvas id='ageMiddleCharts' width='100' height='100'></canvas>
                                         </div>
                                     </div>
                                     <div class="age-item">
                                         <div>老年</div>
-                                        <div id="ageElderlyCharts" class="chartsContent">
-                                            <div class="item">
-                                                <div class="cg-wrap">
-                                                    <div class="circle-left-wrap">
-                                                        <div class="circle-left"></div>
-                                                    </div>
-                                                    <div class="circle-right-wrap">
-                                                        <div class="circle-right"></div>
-                                                    </div>
-                                                    <div class="mask">
-                                                        <span>25</span>%
-                                                    </div>
-                                                </div>
-                                            </div>
+                                        <div class="chartsContent">
+                                            <canvas id='ageElderlyCharts' width='100' height='100'></canvas>
                                         </div>
                                     </div>
                                     <div class="age-item">
                                         <div>其他</div>
-                                        <div id="ageOtherCharts" class="chartsContent">
-                                            <div class="item">
-                                                <div class="cg-wrap">
-                                                    <div class="circle-left-wrap">
-                                                        <div class="circle-left"></div>
-                                                    </div>
-                                                    <div class="circle-right-wrap">
-                                                        <div class="circle-right"></div>
-                                                    </div>
-                                                    <div class="mask">
-                                                        <span>25</span>%
-                                                    </div>
-                                                </div>
-                                            </div>
+                                        <div class="chartsContent">
+                                            <canvas id='ageOtherCharts' width='100' height='100'></canvas>
                                         </div>
                                     </div>
                                 </div>
@@ -290,7 +186,6 @@
                 </el-row>
             </el-col>
         </el-row>
-
     </section>
 </template>
 
@@ -299,7 +194,6 @@
     import axios from 'axios';
     import publicFunction from '../../api/publicFunction';
     export default {
-        name: 'Bank',
         data() {
             return {
                 url: 'http://120.77.226.68:10006/userStat/',
@@ -323,9 +217,9 @@
                     userGenderToMan: '',
                     oldUserPercent: '',
                     otherUserPercent: '',
+                    female: [],
+                    male: [],
                 },
-                userGrowthRateList: [],
-                enterpriseUserRankList: [],
                 businessChartsMainOption: {
                     color: ['#17eace', '#fd304e'],
                     tooltip: {
@@ -367,7 +261,7 @@
                     }]
                 },
                 userGrowthRateChartsOption: {
-                    color: ['#93d242', '#f9b84c'],
+                    color: ['#7BC039', '#F5A623'],
                     tooltip: {
                         trigger: 'axis',
                         axisPointer: {
@@ -403,7 +297,7 @@
                     ]
                 },
                 enterpriseUserRankingChartsOption: {
-                    color: ['#3398DB'],
+                    color: ['#7178FF'],
                     tooltip: {
                         trigger: 'axis',
                         axisPointer: { // 坐标轴指示器，坐标轴触发有效
@@ -435,21 +329,17 @@
                 }
             };
         },
-        components: {},
-        computed: {},
         methods: {
             // 获取用户概况
             queryUserSituation() {
                 this.$get(this.url + 'queryUserSituation').then(res => {
                     this.UserSituation = publicFunction.deepCopy(this.UserSituation, res);
-
                 })
             },
             // 获取企业用户分布
             queryEnterpriseDistribution() {
                 this.$get(this.url + 'queryEnterpriseDistribution').then(res => {
                     this.EnterpriseDistribution = publicFunction.deepCopy(this.EnterpriseDistribution, res);
-                    let businessChartsMain = echarts.init(document.getElementById('businessChartsMain'));
                     this.businessChartsMainOption.series = [{
                         type: 'pie',
                         radius: ['8%', '62%'],
@@ -478,50 +368,159 @@
                             }
                         }
                     }];
+                    let businessChartsMain = echarts.init(document.getElementById('businessChartsMain'));
                     businessChartsMain.setOption(this.businessChartsMainOption);
+                    window.addEventListener("resize", businessChartsMain.resize);
                 })
             },
             // 获取用户性别及年龄层分布
             queryUserClassify() {
                 this.$get(this.url + 'queryUserClassify').then(res => {
                     this.UserClassify = publicFunction.deepCopy(this.UserClassify, res);
+                    let female = [];
+                    let male = [];
+                    let woman = ((res.userGenderToWoman / (res.userGenderToMan + res.userGenderToWoman)) * 60).toFixed(
+                        0);
+                    let man = ((res.userGenderToMan / (res.userGenderToMan + res.userGenderToWoman)) * 60).toFixed(
+                        0);
+                    console.log(woman)
+                    console.log(man)
+                    for (let i = 0; i < parseInt(woman); i++) {
+                        female.push(i);
+                    }
+                    for (let i = 0; i < parseInt(man); i++) {
+                        male.push(i);
+                    }
+                    this.UserClassify.female = female;
+                    this.UserClassify.male = male;
+                    console.log(JSON.stringify(this.UserClassify));
+                    this.Progressbar({
+                        id: 'ageYouthCharts',
+                        percentage: this.UserClassify.youthUserPercent
+                    });
+                    this.Progressbar({
+                        id: 'ageMiddleCharts',
+                        percentage: this.UserClassify.middleUserPercent
+                    });
+                    this.Progressbar({
+                        id: 'ageElderlyCharts',
+                        percentage: this.UserClassify.oldUserPercent
+                    });
+                    this.Progressbar({
+                        id: 'ageOtherCharts',
+                        percentage: this.UserClassify.otherUserPercent
+                    });
                 })
             },
             // 获取用户增长率（前六个月）
             queryUserGrowthRate() {
                 this.$get(this.url + 'queryUserGrowthRate').then(res => {
-                    this.userGrowthRateList = res.userGrowthRateList;
+                    let userGrowthRateList = res.userGrowthRateList;
+                    let month = [];
+                    let userTotal = [];
+                    let enterpriseUserTotal = [];
+                    for (let i = 0; i < userGrowthRateList.length; i++) {
+                        month.push(userGrowthRateList[i].month);
+                        userTotal.push(userGrowthRateList[i].userTotal);
+                        enterpriseUserTotal.push(userGrowthRateList[i].enterpriseUserTotal);
+                    }
+                    this.userGrowthRateChartsOption.xAxis = [{
+                        type: 'category',
+                        axisTick: {
+                            show: false
+                        },
+                        data: month
+                    }];
+                    this.userGrowthRateChartsOption.series = [{
+                            name: '企业用户数',
+                            type: 'bar',
+                            barGap: 0,
+                            data: enterpriseUserTotal
+                        },
+                        {
+                            name: '用户数',
+                            type: 'bar',
+                            data: userTotal
+                        }
+                    ];
+                    let userGrowthRateCharts = echarts.init(document.getElementById('userGrowthRateCharts'));
+                    userGrowthRateCharts.setOption(this.userGrowthRateChartsOption);
+                    window.addEventListener("resize", userGrowthRateCharts.resize);
                 })
             },
             // 获取企业用户TOP10
             queryEnterpriseUserRank() {
                 this.$get(this.url + 'queryEnterpriseUserRank').then(res => {
-                    this.enterpriseUserRankList = res.enterpriseUserRankList;
+                    let enterpriseName = [];
+                    let userTotal = [];
+                    let enterpriseUserRankList = res.enterpriseUserRankList;
+                    for (let i = 0; i < enterpriseUserRankList.length; i++) {
+                        enterpriseName.push(enterpriseUserRankList[i].enterpriseName);
+                        userTotal.push(enterpriseUserRankList[i].userTotal);
+                    }
+                    this.enterpriseUserRankingChartsOption.xAxis = [{
+                        type: 'category',
+                        data: enterpriseName,
+                        axisTick: {
+                            alignWithLabel: true
+                        }
+                    }];
+                    this.enterpriseUserRankingChartsOption.series = [{
+                        name: '企业用户总数',
+                        type: 'bar',
+                        barWidth: '60%',
+                        data: userTotal
+                    }]
+                    let enterpriseUserRankingCharts = echarts.init(document.getElementById(
+                        'enterpriseUserRankingCharts'));
+                    enterpriseUserRankingCharts.setOption(this.enterpriseUserRankingChartsOption);
+                    window.addEventListener("resize", enterpriseUserRankingCharts.resize);
                 })
             },
+            // canvas 圆形进度条
+            Progressbar(options) {
+                let canvas = document.getElementById(options.id);
+                let ctx = canvas.getContext('2d');
+                ctx.beginPath();
+                ctx.arc(50, 50, 27, 0, 2 * Math.PI, false);
+                ctx.lineWidth = 4;
+                ctx.strokeStyle = '#d3d3d3';
+                ctx.stroke();
+                let startAngle = 3 / 2 * Math.PI; //开始位置弧度
+                let percentage = options.percentage.replace("%", ""); // 完成进度值 
+                let diffAngle = percentage / 100 * Math.PI * 2; // 完成进度弧度值
+                ctx.beginPath();
+                ctx.arc(50, 50, 27, startAngle, diffAngle + startAngle, false);
+                ctx.lineWidth = 8;
+                let grd = ctx.createLinearGradient(0, 0, 170, 0);
+                grd.addColorStop("0", "#E900FF");
+                grd.addColorStop("1", "#BD10E0");
+                ctx.strokeStyle = grd;
+                ctx.stroke();
+                //new added
+                ctx.fillStyle = '#000';
+                ctx.textAlign = 'center';
+                ctx.font = '14px Microsoft YaHei';
+                ctx.fillText(options.percentage, 50, 50 + 5);
+            }
         },
         mounted() {
-            let myChart = echarts.init(document.getElementById('main'));
-            let userGrowthRateCharts = echarts.init(document.getElementById('userGrowthRateCharts'));
-            let enterpriseUserRankingCharts = echarts.init(document.getElementById('enterpriseUserRankingCharts'));
-
             this.queryUserSituation();
             this.queryEnterpriseDistribution();
             this.queryUserClassify();
             this.queryUserGrowthRate();
             this.queryEnterpriseUserRank();
-            /*ECharts图表*/
 
 
-            userGrowthRateCharts.setOption(this.userGrowthRateChartsOption);
-            enterpriseUserRankingCharts.setOption(this.enterpriseUserRankingChartsOption);
+
+            let myChart = echarts.init(document.getElementById('main'));
             // 用户分布图表配置
             myChart.setOption({
                 tooltip: {
                     trigger: 'item',
                     formatter: "{b}: {c} ({d}%)",
                 }, //设置饼图的颜色
-                color: ['#1C95FF', '#F76B1C', '#E900FF', '#05FFA9'],
+                color: ['#4EB8FF', '#F5A623', '#BD10E0', '#7ED321'],
                 series: [{
                     type: 'pie',
                     radius: ['30%', '50%'],
@@ -578,9 +577,6 @@
                 }]
             });
             window.addEventListener("resize", myChart.resize);
-            window.addEventListener("resize", businessChartsMain.resize);
-            window.addEventListener("resize", userGrowthRateCharts.resize);
-            window.addEventListener("resize", enterpriseUserRankingCharts.resize);
         }
     };
 </script>
@@ -772,74 +768,6 @@
                         display: flex;
                         align-items: center;
                         justify-content: center;
-                        .item {
-                            width: 100%;
-                            height: 100%;
-                            position: relative;
-                            .cg-wrap {
-                                position: absolute;
-                                top: 50%;
-                                left: 50%;
-                                transform: translate(-50%, -50%);
-                                width: 50px;
-                                height: 50px;
-                                border-radius: 50%;
-                                background: #E900FF;
-                            }
-
-                            .circle-left-wrap,
-                            .circle-right-wrap {
-                                position: absolute;
-                                top: 0;
-                                left: 0;
-                                width: 25px;
-                                height: 50px;
-                                overflow: hidden;
-                            }
-                            .circle-right-wrap {
-                                left: 50px;
-                            }
-                            .circle-left,
-                            .circle-right {
-                                position: absolute;
-                                top: 0;
-                                left: 0;
-                                width: 50px;
-                                height: 50px;
-                                border-radius: 50%;
-                                background: #d3d3d3;
-                            }
-                            .circle-right {
-                                left: -50px;
-                            }
-
-                            .circle-left {
-                                clip: rect(0, 50px, auto, 0);
-                            }
-                            .circle-right {
-                                clip: rect(0, auto, auto, 50px);
-                            }
-                            .mask {
-                                position: absolute;
-                                top: 2.5px;
-                                left: 2.5px;
-                                width: 45px;
-                                height: 45px;
-                                border-radius: 50%;
-                                background: #f4f4f4;
-                                line-height: 45px;
-                                text-align: center;
-                                font-size: 14px;
-                                color: #333333;
-                            }
-                        } // .circle {
-                        //     position: absolute;
-                        //     width: 45px;
-                        //     height: 45%;
-                        //     border: 3px #d3d3d3 solid;
-                        //     -webkit-border-radius: 100px;
-                        //     clip: rect(0px, 50px, 50px, 50px);
-                        // }
                     }
                 }
             }
