@@ -51,8 +51,9 @@
                             <el-input v-model="corporateForm.title" auto-complete="off"></el-input>
                         </el-form-item>
                         <el-form-item label="缩略图">
-                            <el-upload :action=url list-type="picture-card" :data="imgData" :on-preview="corpPictureCardPreview" :on-remove="handleCorporateRemove"
-                                :file-list="imgCorpList" :on-success="moreCorporateShow">
+                            <el-upload :action=url list-type="picture-card" :data="othParams" ref="upload"
+                                       :on-preview="corpPictureCardPreview" :on-remove="handleCorporateRemove"
+                                       :file-list="imgCorpList" :on-success="moreCorporateShow">
                                 <i class="el-icon-plus"></i>
                             </el-upload>
                             <el-dialog :visible.sync="dialogCorpVisible">
@@ -90,22 +91,22 @@
         },
         data() {
             return {
-                imgData: {
-                    bucketName: 'shared-resource',
-                    folderName: ''
+                othParams:{
+                    bucketName:'shared-resource',
+                    folderName:''
                 },
-                url: '',
-                activeName: 'first',
-                page: 1,
-                pagesize: 7,
-                corSels: [], //公司。。列表选中列
-                corporateList: [],
-                corporateLoading: false,
-                addEditTitle: '新增',
-                addEditCorporateVisible: false,
-                addEditCorLoading: false,
-                corporateForm: {
-                    title: ''
+                url:'',
+                activeName:'first',
+                page:1,
+                pagesize:7,
+                corSels: [],//公司。。列表选中列
+                corporateList:[],
+                corporateLoading:false,
+                addEditTitle:'新增',
+                addEditCorporateVisible:false,
+                addEditCorLoading:false,
+                corporateForm:{
+                    title:''
                 },
                 ue: 'corId',
                 morePicList: [],
@@ -136,14 +137,15 @@
 
                 });
             },
-            corporateAdd() { //公司。。新增
-                this.addEditTitle = '新增';
-                this.isEdit = false;
-                this.morePicList.length = 0;
-                this.corporateContent = '';
-                this.addEditCorporateVisible = true;
-                this.corporateForm = {
-                    title: ''
+            corporateAdd(){  //公司。。新增
+                if(this.$refs.upload!==undefined) this.$refs.upload.clearFiles();
+                this.addEditTitle='新增';
+                this.isEdit=false;
+                this.morePicList.length=0;
+                this.corporateContent='';
+                this.addEditCorporateVisible=true;
+                this.corporateForm={
+                    title:''
                 };
             },
             selsCorporateChange(sels) {
@@ -196,8 +198,8 @@
                 this.page = val;
                 this.getCorporate();
             },
-            moreCorporateShow(res, file, fileList) {
-                this.morePicList.push(res.responseList)
+            moreCorporateShow(res,file,fileList){
+                this.morePicList.push(res.responseList.url)
             },
             handleCorporateRemove(file, fileLists) {
                 console.log(file, fileLists);
@@ -242,9 +244,13 @@
 
 
         },
-        mounted() {
-            this.getCorporate(); //公司金融服务列表
-            this.url = localStorage.getItem("upUrl") + uploadPic;
+        mounted(){
+            this.getCorporate();  //公司金融服务列表
+            this.url=localStorage.getItem("upUrl")+uploadPic;
+            this. othParams={
+                bucketName:'shared-resource',
+                folderName:localStorage.getItem("parkId")
+            };
         }
     }
 </script>

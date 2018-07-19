@@ -96,19 +96,19 @@
                 <el-col :span="18">
                     <el-form label-width="90px" class="detail">
                         <el-form-item label="设备名称：">
-                            {{detailList.name}}
+                            {{detailList.name || '无数据'}}
                         </el-form-item>
                         <el-form-item label="类别：">
-                            {{detailList.type}}
+                            {{detailList.type || '无数据'}}
                         </el-form-item>
                         <el-form-item label="设备位置：">
-                            {{detailList.location}}
+                            {{detailList.location || '无数据'}}
                         </el-form-item>
                         <el-form-item label="启用日期：">
-                            {{detailList.useTime}}
+                            {{detailList.useTime || '无数据'}}
                         </el-form-item>
                         <el-form-item label="设备描述：" class="allLength">
-                            {{detailList.addInfo.info}}
+                            {{detailList.addInfo.info || '无数据'}}
                         </el-form-item>
                     </el-form>
                     <div class="groupBtns">
@@ -117,22 +117,22 @@
                     </div>
                     <el-form label-width="110px" v-show="!inspectDetail" class="detail">
                         <el-form-item label="设备状态：">
-                            {{detailList.state}}
+                            {{detailList.state || '无数据'}}
                         </el-form-item>
                         <el-form-item label="最后巡检时间：">
-                            {{detailList.addInfo.lastInspectionTime}}
+                            {{detailList.addInfo.lastInspectionTime || '无数据'}}
                         </el-form-item>
                         <el-form-item label="巡检次数：">
-                            {{detailList.inspectionNum}}
+                            {{detailList.inspectionNum || '无数据'}}
                         </el-form-item>
                         <el-form-item label="正常次数：">
-                            {{detailList.normalSateNum}}
+                            {{detailList.normalSateNum || '无数据'}}
                         </el-form-item>
                         <el-form-item label="故障次数：">
-                            {{detailList.unusualSateNum}}
+                            {{detailList.unusualSateNum || '无数据'}}
                         </el-form-item>
                         <el-form-item label="故障率：">
-                            {{detailList.faultRate}}
+                            {{detailList.faultRate || '无数据'}}
                         </el-form-item>
                     </el-form>
                     <el-table v-show="inspectDetail" :data="checkList" style="width: 100%" max-height="400">
@@ -389,7 +389,7 @@
                 this.morePicList.push(res.responseList.url);
             },
             normalStop(index,row){//正常或停用
-                this.$confirm('确认删除该记录吗?', '提示', {
+                this.$confirm('确认改变该状态吗?', '提示', {
                     type: 'warning'
                 }).then(() => {
                     let state=row.state;

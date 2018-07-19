@@ -12,8 +12,8 @@
                     </el-form-item>
                     <el-form-item>
                         <el-autocomplete popper-class="my-autocomplete" v-model="ParkStaffListFilters.enterpriseName" :fetch-suggestions="querySearch"
-                            placeholder="输入企业名称搜索" @select="handleSelect">
-                            <i class="el-icon-edit el-input__icon" slot="suffix" @click="handleIconClick"></i>
+                            placeholder="输入企业名称搜索">
+                            <i class="el-icon-edit el-input__icon" slot="suffix"></i>
                             <template slot-scope="{ item }">
                                 <div class="name">{{ item.value }}</div>
                                 <span class="addr">{{ item.address }}</span>
@@ -199,6 +199,7 @@
         settledEnterpriseList,
         uploadPic
     } from '../../api/api';
+    import publicFunction from '../../api/publicFunction';
     export default {
         data() {
             return {
@@ -275,7 +276,7 @@
                 editUserInfoFormRules: {
                     name: [{
                         required: true,
-                        message: '请输入正确姓名',
+                        message: '请输入正确的中文姓名',
                         trigger: 'blur',
                         pattern: /^[\u4E00-\u9FA5\uf900-\ufa2d·s]{2,20}$/
                     }],
@@ -299,54 +300,12 @@
             };
         },
         methods: {
-            // 拷贝对象
-            deepCopy(object, beCopied) {
-                for (let i in object) {
-                    if (
-                        Object.prototype.toString.call(beCopied[i]) ===
-                        '[object String]'
-                    ) {
-                        object[i] = beCopied[i];
-                    } else if (
-                        Object.prototype.toString.call(beCopied[i]) ===
-                        '[object Number]'
-                    ) {
-                        object[i] = beCopied[i];
-                    } else if (
-                        Object.prototype.toString.call(beCopied[i]) ===
-                        '[object Object]'
-                    ) {
-                        this.deepCopy(object[i], beCopied[i]);
-                    } else if (
-                        Object.prototype.toString.call(beCopied[i]) ===
-                        '[object Undefined]'
-                    ) {
-                        object[i] = object[i];
-                    } else if (
-                        Object.prototype.toString.call(beCopied[i]) ===
-                        '[object Boolean]'
-                    ) {
-                        object[i] = beCopied[i];
-                    } else if (
-                        Object.prototype.toString.call(beCopied[i]) ===
-                        '[object Array]'
-                    ) {
-                        object[i] = beCopied[i];
-                    } else {
-                        object[i] = '';
-                    }
-                }
-                return object;
-            },
             // 获取用户列表
             getParkStaffList(url) {
                 this.ParkStaffListLoading = true;
                 this.$get(url).then(res => {
                     this.parkStaffList = typeof res === 'undefined' ? [] : res.staffList;
-                    this.parkStaffListTotal =
-                        this.parkStaffList.length > 0 ?
-                        this.parkStaffList.length :
-                        0;
+                    this.parkStaffListTotal = this.parkStaffList.length;
                     this.ParkStaffListLoading = false;
                     this.basicStatistics.ownerNum = res.ownerNum;
                     this.basicStatistics.managerNum = res.managerNum;
@@ -356,7 +315,7 @@
             },
             // 编辑用户窗口
             parkStaffEdit(index, row) {
-                this.editUserInfoForm = this.deepCopy(this.editUserInfoForm, row);
+                this.editUserInfoForm = publicFunction.deepCopy(this.editUserInfoForm, row);
                 this.editUserFormVisible = true;
             },
             // 修改用户
@@ -518,13 +477,6 @@
                         .indexOf(queryString.toLowerCase()) === 0
                     );
                 };
-            },
-
-            handleSelect(item) {
-                console.log(item);
-            },
-            handleIconClick(ev) {
-                console.log(ev);
             },
             resetForm(formName) {
                 this.$refs[formName].resetFields();

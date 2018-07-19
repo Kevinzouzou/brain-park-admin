@@ -18,7 +18,7 @@
             </el-table-column>
             <el-table-column prop="name" label="角色名称">
             </el-table-column>
-            <el-table-column prop="addInfo.permissionList" label="权限" width="1000">
+            <el-table-column prop="addInfo.permissionList" label="权限">
                 <template slot-scope="scope">
                     <span :key="item" v-for="item in scope.row.addInfo.permissionList">{{item}}、</span>
                 </template>
@@ -43,7 +43,7 @@
         <!--弹出框 新增用户-->
         <el-dialog title="新增角色" :visible.sync="addRoleFormVisible">
             <el-row :gutter="20">
-                <el-form :model="addRoleForm" :label-position="right" label-width="160px" :rules="addRoleFormRules" ref="addRoleForm">
+                <el-form :model="addRoleForm" :label-position="'right'" label-width="160px" :rules="addRoleFormRules" ref="addRoleForm">
                     <el-row :gutter="24">
                         <el-col :span="10">
                             <el-form-item label="角色名称：" required prop="name">
@@ -157,7 +157,7 @@
         <!--弹出框 编辑操作员角色-->
         <el-dialog title="角色详情" :visible.sync="editRoleFormVisible">
             <el-row :gutter="20" v-show="editRoleFormInfoVisible">
-                <el-form :model="editRoleForm" :label-position="right" label-width="160px">
+                <el-form :model="editRoleForm" :label-position="'right'" label-width="160px">
                     <el-row :gutter="24">
                         <el-col :span="10">
                             <el-form-item label="角色名称：">
@@ -214,7 +214,7 @@
                 </el-row>
             </el-dialog>
             <el-row :gutter="20" v-show="!editRoleFormInfoVisible">
-                <el-form :model="editRoleForm" :label-position="right" label-width="160px" :rules="editRoleFormRules" ref="editRoleForm">
+                <el-form :model="editRoleForm" :label-position="'right'" label-width="160px" :rules="editRoleFormRules" ref="editRoleForm">
                     <el-row :gutter="24">
                         <el-col :span="10">
                             <el-form-item label="角色名称：" required prop="name">
@@ -337,7 +337,6 @@
     export default {
         data() {
             return {
-                right: 'right',
                 page: 1,
                 pagesize: 7,
                 parkRoleListLoading: false,
@@ -369,8 +368,8 @@
                 editRoleFormInfoVisible: true,
                 editRoleFormVisible: false,
                 innerRoleFormVisible: false,
-                userByRoleList: '',
-                userByRoleListTotal: '',
+                userByRoleList: [],
+                userByRoleListTotal: 0,
                 editRoleForm: {
                     id: '',
                     parkId: '',
@@ -441,13 +440,13 @@
             },
             // 编辑角色
             parkRoleEdit: function (index, row) {
-                this.editRoleFormVisible = true;
-                this.editRoleFormInfoVisible = true;
                 this.editRoleForm.name = row.name;
                 this.editRoleForm.intro = row.intro;
                 this.editRoleForm.addInfo.permissionList = row.addInfo.permissionList;
                 this.editRoleForm.id = row.id;
                 this.findUserByRoleId();
+                this.editRoleFormVisible = true;
+                this.editRoleFormInfoVisible = true;
             },
             // 查找使用此角色的操作员
             findUserByRoleId() {

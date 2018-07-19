@@ -18,6 +18,7 @@ import userFeedback from './views/operaSer/userFeedback.vue'
 import houseKeeping from './views/operaSer/houseKeeping.vue'
 import shareResource from './views/operaSer/shareResource.vue'
 import apartmentRental from './views/operaSer/apartmentRental.vue'
+import operationalProfile from './views/operaSer/operationalProfile.vue'
 
 import serEffect from './views/employers/serEffect.vue'
 import corporationHome from './views/employers/corporationHome.vue'
@@ -82,7 +83,7 @@ let routes = [
         name: '运营服务',
         iconCls: 'el-icon-document',
         children: [
-            // { path: '/operaSitua', component: operaSitua, name: '运营概况' },
+            { path: '/operationalProfile', component: operationalProfile, name: '运营概况' },
             { path: '/circle', component: circle, name: '圈子' },
             { path: '/topic', component: topic, name: '话题' },
             { path: '/adConfig', component: adConfig, name: '广告配置' },
@@ -134,11 +135,11 @@ let routes = [
                 component: resolve => require(['./views/properSer/release.vue'], resolve),
                 name: '放行申请'
             },
-            // {
-            //     path: '/equipInspect',
-            //     component: resolve => require(['./views/properSer/equipInspect.vue'], resolve),
-            //     name: '设备巡检'
-            // }
+            {
+                path: '/equipInspection',
+                component: resolve => require(['./views/properSer/equipInspection.vue'], resolve),
+                name: '设备巡检'
+            }
          ]
     },
     {

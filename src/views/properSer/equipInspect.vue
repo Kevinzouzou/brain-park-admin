@@ -489,8 +489,8 @@
 
         },
         mounted(){
-            this.getInspection();
-            this.getDevice();
+            // this.getInspection();
+            // this.getDevice();
         }
     }
 </script>

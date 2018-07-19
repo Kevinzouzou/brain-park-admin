@@ -74,10 +74,10 @@
               // sessionStorage.setItem('user', JSON.stringify(user));
               let parkId = '969878f1f1149e6a7afae38636c0abc';
               let userId = '71f3df48263f4c74be2efbb83250e66b';
-              // let upUrl = 'http://218.17.39.178:2040'; //微品云（开发）
-              let upUrl = 'https://yqdndev.vpclub.cn/api10005/'; //阿里云(开发)
               // let upUrl = 'http://192.168.2.214:2040/'; // other
-              // let upUrl='https://shbeta.vpclub.cn/api10005';//新阿里云
+                // let upUrl = 'http://218.17.39.178:2040'; //微品云（开发）
+                let upUrl = 'https://yqdndev.vpclub.cn/api10005/'; //阿里云(开发)
+                // let upUrl='https://shbeta.vpclub.cn/api10005';//新阿里云
               // let upUrl='http://39.107.252.186:10005';//阿里云地址（正式）
 
               sessionStorage.setItem('user', JSON.stringify(loginParams));

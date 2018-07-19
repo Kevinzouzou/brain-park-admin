@@ -27,9 +27,9 @@
                 </el-table-column>
                 <el-table-column label="图片" width="230">
                     <template slot-scope="scope">
-                        <div v-for="item in scope.row.addInfo.images">
-                            <img :src="item" width="40" height="40" />
-                        </div>
+                        <span v-for="item in scope.row.addInfo.images" style="margin:0 5px">
+                            <img class="tableImg" :src="item" width="40" height="40" />
+                        </span>
                     </template>
                 </el-table-column>
                 <el-table-column prop="addInfo.location" label="小区地点">
@@ -80,8 +80,9 @@
                 <el-row>
                     <el-col :span="22">
                         <el-form-item label="图片：" required>
-                            <el-upload :action="imageUploadUrl" :data="imgData" list-type="picture-card" :on-preview="handlePictureCardPreview" :on-remove="handleRemove"
-                                :before-upload="beforeUpload" :on-success="moreShow" :on-error="imgUploadError" :limit="4">
+                            <el-upload :action="imageUploadUrl" :data="imgData" list-type="picture-card" :on-preview="handlePictureCardPreview" :on-remove="handleRemoveForAdd"
+                                :before-upload="beforeUpload" :on-success="moreShowForAdd" :on-error="imgUploadError" :limit="4"
+                                :before-remove="beforeRemove" :on-exceed="handleExceed">
                                 <i class="el-icon-plus"></i>
                             </el-upload>
                             <el-dialog :visible.sync="dialogVisible">
@@ -166,7 +167,7 @@
                 <el-row>
                     <el-col :span="22">
                         <el-form-item label="图片：">
-                            <img v-for="item in ApartmentRentalResourcesEditForm.addInfo.images" width="100%" :src="item">
+                            <img class="addInfoImg" v-for="item in ApartmentRentalResourcesEditForm.addInfo.images" :src="item">
                         </el-form-item>
                     </el-col>
                 </el-row>
@@ -240,8 +241,9 @@
                 <el-row>
                     <el-col :span="22">
                         <el-form-item label="图片：" required>
-                            <el-upload :action="imageUploadUrl" :data="imgData" list-type="picture-card" :on-preview="handlePictureCardPreview" :on-remove="handleRemove"
-                                :before-upload="beforeUpload" :on-success="moreShow" :on-error="imgUploadError" :limit="4" :file-list="ApartmentRentalResourcesEditForm.addInfo.images">
+                            <el-upload :action="imageUploadUrl" :data="imgData" list-type="picture-card" :on-preview="handlePictureCardPreview" :on-remove="handleRemoveForEdit"
+                                :before-upload="beforeUpload" :on-success="moreShowForEdit" :on-error="imgUploadError" :limit="4"
+                                :file-list="ApartmentRentalResourcesEditForm.addInfo.images" :before-remove="beforeRemove" :on-exceed="handleExceed">
                                 <i class="el-icon-plus"></i>
                             </el-upload>
                             <el-dialog :visible.sync="dialogVisible">
@@ -340,7 +342,6 @@
                 ApartmentRentalResourcesCheckVisible: false,
                 ApartmentRentalResourcesEditVisible: false,
                 ApartmentRentalResourcesAddForm: {
-
                     thumbUrl: "null",
                     addInfo: {
                         location: "",
@@ -444,15 +445,25 @@
                 this.ApartmentRentalResourcesListPage = val;
                 this.sharedResourceListSeach();
             },
-            handleRemove(file, fileList) {
-                // let index = this.ApartmentRentalResourcesEditForm.addInfo.images.indexOf(file.response.responseList.url);
-                console.log(this.ApartmentRentalResourcesEditForm.addInfo.images);
-                // this.ApartmentRentalResourcesEditForm.addInfo.images.splice(index, 1);
-                console.log(file, fileList);
+            // 上传图片组件
+            handleExceed(files, fileList) {
+                this.$message.warning(
+                    `当前限制选择 4 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`);
             },
-            moreShow(res, file, fileList) {
-                // this.ApartmentRentalResourcesEditForm.addInfo.images.push(file.response.responseList.url);
-                console.log(this.ApartmentRentalResourcesEditForm.addInfo.images);
+            beforeRemove(file, fileList) {
+                return this.$confirm(`确定移除 ${ file.name }？`);
+            },
+            handleRemoveForAdd(file, fileList) {
+                this.ApartmentRentalResourcesAddForm.addInfo.images = fileList;
+            },
+            moreShowForAdd(res, file, fileList) {
+                this.ApartmentRentalResourcesAddForm.addInfo.images = fileList;
+            },
+            handleRemoveForEdit(file, fileList) {
+                this.ApartmentRentalResourcesEditForm.addInfo.images = fileList;
+            },
+            moreShowForEdit(res, file, fileList) {
+                this.ApartmentRentalResourcesEditForm.addInfo.images = fileList;
             },
             handlePictureCardPreview(file) {
                 this.dialogVisible = true;
@@ -479,28 +490,43 @@
             addApartmentRentalResources(formName) {
                 this.$refs[formName].validate(valid => {
                     if (valid) {
+                        let arr = [];
+                        let images = this.ApartmentRentalResourcesAddForm.addInfo.images;
+                        for (let i in images) {
+                            if (typeof images[i].response === 'undefined') {
+                                arr.push(images[i].url);
+                            } else {
+                                arr.push(images[i].response.responseList.url)
+                            }
+                        }
                         let data = this.ApartmentRentalResourcesAddForm;
                         data.parkId = localStorage.getItem('parkId');
                         data.type = '公寓租赁';
-                        console.log(JSON.stringify(data));
-                        this.$post(addDisplay, data).then(
-                            res => {
-                                if (res.operationResult === 'failure') {
-                                    this.$message({
-                                        message: 'failureMsg',
-                                        type: 'error'
-                                    });
-                                } else {
-                                    this.resetForm(formName);
-                                    this.ApartmentRentalResourcesAddVisible = false;
-                                    this.$message({
-                                        message: '添加成功',
-                                        type: 'success'
-                                    });
-                                    this.getApartmentRentalResourcesList()
+                        data.addInfo.images = arr;
+                        if (arr.length < 1) {
+                            this.$alert('请至少添加一张图片', '提示', {
+                                confirmButtonText: '确定'
+                            });
+                        } else {
+                            this.$post(addDisplay, data).then(
+                                res => {
+                                    if (res.operationResult === 'failure') {
+                                        this.$message({
+                                            message: 'failureMsg',
+                                            type: 'error'
+                                        });
+                                    } else {
+                                        this.resetForm(formName);
+                                        this.ApartmentRentalResourcesAddVisible = false;
+                                        this.$message({
+                                            message: '添加成功',
+                                            type: 'success'
+                                        });
+                                        this.getApartmentRentalResourcesList()
+                                    }
                                 }
-                            }
-                        );
+                            );
+                        }
                     } else {
                         console.log('表单未完全填写');
                         return false;
@@ -533,28 +559,44 @@
             updateApartmentRentalResources(formName) {
                 this.$refs[formName].validate(valid => {
                     if (valid) {
+                        let arr = [];
+                        let images = this.ApartmentRentalResourcesEditForm.addInfo.images;
+                        for (let i in images) {
+                            if (typeof images[i].response === 'undefined') {
+                                arr.push(images[i].url);
+                            } else {
+                                arr.push(images[i].response.responseList.url)
+                            }
+                        }
                         let data = this.ApartmentRentalResourcesEditForm;
                         data.parkId = localStorage.getItem('parkId');
                         data.type = '公寓租赁';
+                        data.addInfo.images = arr;
                         console.log(JSON.stringify(data));
-                        this.$post(addDisplay, data).then(
-                            res => {
-                                if (res.operationResult === 'failure') {
-                                    this.$message({
-                                        message: 'failureMsg',
-                                        type: 'error'
-                                    });
-                                } else {
-                                    this.resetForm(formName);
-                                    this.ApartmentRentalResourcesEditVisible = false;
-                                    this.$message({
-                                        message: '修改成功',
-                                        type: 'success'
-                                    });
-                                    this.getApartmentRentalResourcesList()
+                        if (arr.length < 1) {
+                            this.$alert('请至少添加一张图片', '提示', {
+                                confirmButtonText: '确定'
+                            });
+                        } else {
+                            this.$post(addDisplay, data).then(
+                                res => {
+                                    if (res.operationResult === 'failure') {
+                                        this.$message({
+                                            message: 'failureMsg',
+                                            type: 'error'
+                                        });
+                                    } else {
+                                        this.resetForm(formName);
+                                        this.ApartmentRentalResourcesEditVisible = false;
+                                        this.$message({
+                                            message: '修改成功',
+                                            type: 'success'
+                                        });
+                                        this.getApartmentRentalResourcesList()
+                                    }
                                 }
-                            }
-                        );
+                            );
+                        }
                     } else {
 
                     }
@@ -592,4 +634,15 @@
     }
 </script>
 <style lang="scss" scoped>
+    .tableImg {
+        width: 40px;
+        height: 40px;
+        border-radius: 4px;
+    }
+
+    .addInfoImg {
+        width: 250px;
+        border-radius: 4px;
+        margin: 0 10px;
+    }
 </style>

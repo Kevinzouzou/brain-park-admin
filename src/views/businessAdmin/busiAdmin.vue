@@ -156,7 +156,8 @@
                 floorLabel: '',
                 roomLabel: '',
                 zoneId: '',
-                indusList: [{
+                indusList: [
+                    {
                         id: 1,
                         name: '计算机/互联网/通讯/电子'
                     },

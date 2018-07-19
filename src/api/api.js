@@ -69,6 +69,10 @@ export const upSchUrl=`/parkUser/updateIfScheduling`;  //修改此用户是否�
 export const upParkTreeUrl=`/parkInfoTree/addOrUpdateParkInfoTree`;  //添加或修改组织架构/区域
 export const delParkTreeUrl=`/parkInfoTree/deleteParkInfoTree/`;  //删除组织结构/区域
 export const countsEnterUrl=`/settledEnterprise/findSettledEnterpriseCountByZoneId/`+localStorage.getItem("parkId")+'/';  //查询区域中企业的数量
+export const inspectTaskListUrl=`/inspectionTask/inspectionTaskList?parkId=`+localStorage.getItem("parkId");  //巡检任务列表
+
+export const delInsTaskUrl=`/inspectionTask/deleteInspectionTask/`;  //删除巡检任务
+export const addUpdateInsTaskUrl=`/inspectionTask/addOrUpdateInspectionTask`;  //添加或修改巡检任务
 
 // 用户管理
 export const parkStaffList = `/parkStaff/parkStaffList?parkId=${parkId}`;                                   // 获取用户列表
@@ -99,7 +103,8 @@ export const sharedResourceList = `/sharedResource/sharedResourceList?parkId=${p
 export const addOrUpdateSharedResource = `/sharedResource/addOrUpdateSharedResource`                            // 添加或修改共享资源对象
 export const deleteSharedResource = `/sharedResource/deleteSharedResource/`                                     // 删除共享资源对象
 export const sharedResourceReservationList = `/sharedResourceReservation/sharedResourceReservationList`         // 查询共享资源列表
-export const bookSharedResourceList = `/userTargetAssociation/bookSharedResourceList?parkId=${parkId}`          // 共享资源申请列表
+export const bookSharedResourceList = `/userTargetAssociation/bookSharedResourceList?parkId=${parkId}&type=USER_ORDER_SHARED_RESOURCE`          // 共享资源申请列表
+export const updateUserTargetAssociation = `/userTargetAssociation/updateUserTargetAssociation`                 // 修改共享资源申请列表
 export const addSharedResourceReservation = `/sharedResourceReservation/addSharedResourceReservation`           // 添加共享资源预定
 export const deleteSharedResourceReservation = `/sharedResourceReservation/deleteSharedResourceReservation/`    // 删除共享资源预定信息
 export const apartmentResourcesList = `/displayContent/apartmentResourcesList?parkId=${parkId}`                 // 公寓租赁列表
