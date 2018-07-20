@@ -8,7 +8,7 @@ axios.defaults.timeout = 10000;
 
 // axios.defaults.baseURL = 'https://shbeta.vpclub.cn/api10005'; // 新阿里云
 // axios.defaults.baseURL = 'http://218.17.39.178:2040'; //微品云（开发）
-axios.defaults.baseURL = publicURL.target // 阿里云(开发)
+axios.defaults.baseURL = publicURL.URL; // 阿里云(开发)
 // axios.defaults.baseURL = 'http://192.168.2.214:2040/'; // other
 // axios.defaults.baseURL ='http://39.107.252.186:10005';  // 阿里云地址（正式）
 // axios.defaults.baseURL ='http://192.168.7.109:2040';  // another
