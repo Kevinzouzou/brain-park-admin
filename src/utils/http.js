@@ -2,8 +2,8 @@ import axios from 'axios';
 import {
     Message
 } from 'element-ui';
-import qs from 'qs'
-import publicURL from '../../config/urlConfig';
+import qs from 'qs';
+let publicURL = require('../../config/urlConfig');
 
 axios.defaults.timeout = 10000;
 axios.defaults.baseURL = publicURL.URL;
