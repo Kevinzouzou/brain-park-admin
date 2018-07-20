@@ -56,10 +56,10 @@
                         </el-table-column>
                         <el-table-column prop="applyNum" label="报名" sortable>
                         </el-table-column>
-                        <el-table-column label="操作">
+                        <el-table-column label="操作" width="250">
                             <template slot-scope="scope">
                                 <el-button type="success" size="small" @click="hASigns(scope.$index, scope.row)">报名</el-button>
-                                <el-button type="info" size="small" @click="hAedit(scope.$index, scope.row)">编辑</el-button>
+                                <el-button type="primary" size="small" @click="hAedit(scope.$index, scope.row)">编辑</el-button>
                                 <el-button type="danger" size="small" @click="hADel(scope.$index, scope.row)">删除</el-button>
                             </template>
                         </el-table-column>
@@ -184,7 +184,7 @@
                                     </el-table-column>
                                     <el-table-column label="操作">
                                         <template slot-scope="scope">
-                                            <el-button type="info" size="small" @click="comSerEdit(scope.$index, scope.row)">编辑</el-button>
+                                            <el-button type="primary" size="small" @click="comSerEdit(scope.$index, scope.row)">编辑</el-button>
                                             <el-button type="danger" size="small" @click="comSerDel(scope.$index, scope.row)">删除</el-button>
                                         </template>
                                     </el-table-column>
@@ -535,7 +535,7 @@
                         </el-table-column>
                         <el-table-column label="操作">
                             <template slot-scope="scope">
-                                <el-button type="info" size="small" @click="infoConEdit(scope.$index, scope.row)">编辑</el-button>
+                                <el-button type="primary" size="small" @click="infoConEdit(scope.$index, scope.row)">编辑</el-button>
                                 <el-button type="danger" size="small" @click="infoConDel(scope.$index, scope.row)">删除</el-button>
                             </template>
                         </el-table-column>
@@ -611,7 +611,7 @@
                 </el-table-column>
                 <el-table-column label="操作">
                     <template slot-scope="scope">
-                        <el-button type="info" size="small" @click="categoryEdit(scope.$index, scope.row)">编辑</el-button>
+                        <el-button type="primary" size="small" @click="categoryEdit(scope.$index, scope.row)">编辑</el-button>
                         <el-button type="danger" size="small" @click="categoryDel(scope.$index, scope.row)">删除</el-button>
                     </template>
                 </el-table-column>
