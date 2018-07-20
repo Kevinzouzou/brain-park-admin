@@ -3,7 +3,7 @@
 let base = '';
 const parkId='969878f1f1149e6a7afae38636c0abc';
 // let upUrl='https://shbeta.vpclub.cn/api10005';//新阿里云
-let upUrl='https://yqdndev.vpclub.cn/api10005/';  //阿里云(开发)
+// let upUrl='https://yqdndev.vpclub.cn/api10005/';  //阿里云(开发)
 // let upUrl='https://172.16.0.111:10005/';  //本地
 
 
