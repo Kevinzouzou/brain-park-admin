@@ -19,9 +19,12 @@
 </template>
 
 <script>
-  import { loginUrl } from '../api/api';
+  import {
+    loginUrl
+  } from '../api/api';
   import axios from 'axios'
-  import publicURL from '../../config/urlConfig';
+  // import publicURL from '../../config/urlConfig';
+  let publicURL = require('../../config/urlConfig');
   export default {
     data() {
       return {
@@ -57,47 +60,47 @@
         let _this = this;
         this.$refs.ruleForm2.validate((valid) => {
           if (valid) {
-              //_this.$router.replace('/table');
-              this.logining = true;
-              //NProgress.start();
-              let loginParams = {
-                username: this.ruleForm2.account,
-                password: this.ruleForm2.checkPass
-              };
-              let rememberStatus = this.checked; // 记住密码
-              let userInfo = loginParams.username + '&' + loginParams.password;
-              let url=loginUrl+'&phone='+this.ruleForm2.account+'&password='+this.ruleForm2.checkPass;
-              axios.get(url,{}).then((res)=>{
-                this.logining = false;
-                let data=res.data.responseList;
-                let token=data.token;
-                let parkId=data.userInfo.parkId;
-                let userId=data.userInfo.id;
-                  // let upUrl='https://shbeta.vpclub.cn/api10005';//新阿里云
-                 let upUrl = publicURL.URL ; //阿里云(开发)
-                // let upUrl = 'http://172.16.0.111:10005/'; //本地
+            //_this.$router.replace('/table');
+            this.logining = true;
+            //NProgress.start();
+            let loginParams = {
+              username: this.ruleForm2.account,
+              password: this.ruleForm2.checkPass
+            };
+            let rememberStatus = this.checked; // 记住密码
+            let userInfo = loginParams.username + '&' + loginParams.password;
+            let url = loginUrl + '&phone=' + this.ruleForm2.account + '&password=' + this.ruleForm2.checkPass;
+            axios.get(url, {}).then((res) => {
+              this.logining = false;
+              let data = res.data.responseList;
+              let token = data.token;
+              let parkId = data.userInfo.parkId;
+              let userId = data.userInfo.id;
+              // let upUrl='https://shbeta.vpclub.cn/api10005';//新阿里云
+              let upUrl = publicURL.URL; //阿里云(开发)
+              // let upUrl = 'http://172.16.0.111:10005/'; //本地
 
-                sessionStorage.setItem('user', JSON.stringify(loginParams));
-                sessionStorage.setItem('token', token);
-                localStorage.setItem("parkId", parkId);
+              sessionStorage.setItem('user', JSON.stringify(loginParams));
+              sessionStorage.setItem('token', token);
+              localStorage.setItem("parkId", parkId);
 
-                localStorage.setItem("userId", userId);
-                localStorage.setItem("upUrl", upUrl);
-                this.$router.push({
-                    path: '/userProfile'
-                });
+              localStorage.setItem("userId", userId);
+              localStorage.setItem("upUrl", upUrl);
+              this.$router.push({
+                path: '/userProfile'
+              });
 
-                sessionStorage.setItem('permission',JSON.stringify(data.permissionList));
-            })  .catch(err=>{
-                // reject(err)
-                  alert("登录账号或密码错误！");
+              sessionStorage.setItem('permission', JSON.stringify(data.permissionList));
+            }).catch(err => {
+              // reject(err)
+              alert("登录账号或密码错误！");
             });
 
             // 勾选记住密码，保存到Cookie中
             if (rememberStatus) {
-                this.setCookie('userInfo', userInfo, 1440 * 3);
+              this.setCookie('userInfo', userInfo, 1440 * 3);
             } else {
-                this.delCookie('userInfo');
+              this.delCookie('userInfo');
             }
           } else {
             console.log('error submit!!');
@@ -108,63 +111,63 @@
       /**
        * 设置cookie
        */
-       setCookie (name, value, expiremMinutes) {
-          let exDate = new Date();
-          exDate.setTime(exDate.getTime() + expiremMinutes * 60 * 1000);
-          document.cookie = name + '=' + escape(value) + ((expiremMinutes == null) ? '' : ';expires=' + exDate.toGMTString());
+      setCookie(name, value, expiremMinutes) {
+        let exDate = new Date();
+        exDate.setTime(exDate.getTime() + expiremMinutes * 60 * 1000);
+        document.cookie = name + '=' + escape(value) + ((expiremMinutes == null) ? '' : ';expires=' + exDate.toGMTString());
       },
       /**
        * 读取cookie
        */
-       getCookie (name) {
-          if (document.cookie.length > 0) {
-              let start = document.cookie.indexOf(name + '=');
-              if (start !== -1) {
-                  start = start + name.length + 1;
-                  let end = document.cookie.indexOf(';', start);
-                  if (end === -1) {
-                      end = document.cookie.length;
-                      return unescape(document.cookie.substring(start, end));
-                  }
-              }
+      getCookie(name) {
+        if (document.cookie.length > 0) {
+          let start = document.cookie.indexOf(name + '=');
+          if (start !== -1) {
+            start = start + name.length + 1;
+            let end = document.cookie.indexOf(';', start);
+            if (end === -1) {
+              end = document.cookie.length;
+              return unescape(document.cookie.substring(start, end));
+            }
           }
-          return '';
-       },
-        /**
-         * 删除cookie
-         */
-        delCookie (name) {
-            let exp = new Date();
-            exp.setTime(exp.getTime() - 1);
-            let cval = this.getCookie(name);
-            if (cval != null) {
-                document.cookie = name + '=' + cval + ';expires=' + exp.toGMTString();
-            }
-        },
-        // 回车登录事件
-        doLogin () {
-            this.handleSubmit2();
-        },
-        // 记住密码
-        rememberPassword () {
-            console.log(this.checked);
-        },
-        loadUserInfo () {
-            let userInfo =this.getCookie('userInfo');
-            if (!!userInfo === true) {
-                let userName = '';
-                let passWord = '';
-                let index = userInfo.indexOf('&');
-                userName = userInfo.substring(0, index);
-                passWord = userInfo.substring(index + 1);
-                this.ruleForm2.account = userName;
-                this.ruleForm2.checkPass = passWord;
-                this.checked = true;
-            }
-        },
+        }
+        return '';
+      },
+      /**
+       * 删除cookie
+       */
+      delCookie(name) {
+        let exp = new Date();
+        exp.setTime(exp.getTime() - 1);
+        let cval = this.getCookie(name);
+        if (cval != null) {
+          document.cookie = name + '=' + cval + ';expires=' + exp.toGMTString();
+        }
+      },
+      // 回车登录事件
+      doLogin() {
+        this.handleSubmit2();
+      },
+      // 记住密码
+      rememberPassword() {
+        console.log(this.checked);
+      },
+      loadUserInfo() {
+        let userInfo = this.getCookie('userInfo');
+        if (!!userInfo === true) {
+          let userName = '';
+          let passWord = '';
+          let index = userInfo.indexOf('&');
+          userName = userInfo.substring(0, index);
+          passWord = userInfo.substring(index + 1);
+          this.ruleForm2.account = userName;
+          this.ruleForm2.checkPass = passWord;
+          this.checked = true;
+        }
+      },
     },
-    mounted(){
-        this.loadUserInfo();
+    mounted() {
+      this.loadUserInfo();
     }
   }
 </script>

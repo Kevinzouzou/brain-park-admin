@@ -2,8 +2,9 @@ import axios from 'axios';
 import {
     Message
 } from 'element-ui';
-import qs from 'qs'
-import publicURL from '../../config/urlConfig';
+import qs from 'qs';
+let publicURL = require('../../config/urlConfig');
+// import publicURL from '../../config/urlConfig';
 axios.defaults.timeout = 10000;
 
 // axios.defaults.baseURL = 'https://shbeta.vpclub.cn/api10005'; // 新阿里云
