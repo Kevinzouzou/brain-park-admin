@@ -5,6 +5,7 @@ const parkId='969878f1f1149e6a7afae38636c0abc';
 // let userId='71f3df48263f4c74be2efbb83250e66b';
 // let upUrl='http://218.17.39.178:2040';//微品云（开发）
 let upUrl='https://yqdndev.vpclub.cn/api10005/';  //阿里云(开发)
+// let upUrl='https://172.16.0.111:10005/';  //阿里云(开发)
 // let upUrl='http://192.168.2.214:2040/';  // other
 // let upUrl='https://shbeta.vpclub.cn/api10005';//新阿里云
 // let upUrl='http://39.107.252.186:10005';//阿里云地址（正式）
@@ -73,6 +74,8 @@ export const inspectTaskListUrl=`/inspectionTask/inspectionTaskList?parkId=`+loc
 
 export const delInsTaskUrl=`/inspectionTask/deleteInspectionTask/`;  //删除巡检任务
 export const addUpdateInsTaskUrl=`/inspectionTask/addOrUpdateInspectionTask`;  //添加或修改巡检任务
+export const loginUrl=`/logIn?parkId=`+localStorage.getItem("parkId");  //登录
+export const loginoutUrl=`/logOut?token=`;  //登录
 
 // 用户管理
 export const parkStaffList = `/parkStaff/parkStaffList?parkId=${parkId}`;                                   // 获取用户列表

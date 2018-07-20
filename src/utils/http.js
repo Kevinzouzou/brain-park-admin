@@ -9,6 +9,7 @@ axios.defaults.timeout = 10000;
 // axios.defaults.baseURL ='https://shbeta.vpclub.cn/api10005';  //新阿里云
 // axios.defaults.baseURL = 'http://218.17.39.178:2040'; //微品云（开发）
 axios.defaults.baseURL = 'https://yqdndev.vpclub.cn/api10005/'; //阿里云(开发)
+// axios.defaults.baseURL = 'http://172.16.0.111:10005/'; //阿里云(开发)
 // axios.defaults.baseURL = 'http://192.168.2.214:2040/'; // other
 // axios.defaults.baseURL ='http://39.107.252.186:10005';  //阿里云地址（正式）
 // axios.defaults.baseURL ='http://192.168.7.109:2040';  //another
@@ -23,7 +24,8 @@ axios.interceptors.request.use(
             'Content-Type': 'application/json'
             // 'Content-Type':'application/x-www-form-urlencoded'
         }
-        // if(token){
+        // if(sessionStorage.getItem('token')){
+            config.headers.token = sessionStorage.getItem('token')
         //   config.params = {'token':token}
         // }
         return config;
@@ -32,6 +34,19 @@ axios.interceptors.request.use(
         return Promise.reject(err);
     }
 );
+// http response 拦截器
+axios.interceptors.response.use(function(response){
+    if(response.data.code=='1001'||response.data.code=='1002'){//具体的判断token失效的参数
+        sessionStorage.setItem("token",'')
+        // sessionStorage.setItem("LoginUser",'{}')
+        // alert(response.data.msg);
+        window.location.href='/#/login'//需求方要求一旦出错立即跳转登录，所以采取这种侵入式的手段。
+    }else{
+        return response
+    }
+}, function (error) {
+    return Promise.reject(error);
+});
 
 
 //http response 拦截器

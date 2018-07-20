@@ -10,7 +10,7 @@
 					<!--<i class="el-icon-tickets"></i>-->
 				<!--</div>-->
 			<!--</el-col>-->
-			<el-col :span="4" :offset="10" class="userinfo">
+			<el-col :span="8" :offset="6" class="userinfo">
 				<!--<div class="usermenu" v-if="user.id">-->
 				<span class="usermenu">
 					欢迎您：{{user.username || ''}}
@@ -23,14 +23,26 @@
 				<!--导航菜单-->
 				<el-menu :default-active="$route.path" class="el-menu-vertical-demo" @open="handleopen" @close="handleclose" @select="handleselect"
 					 unique-opened router v-show="!collapsed">
-					<template v-for="(item,index) in $router.options.routes" v-if="!item.hidden">
+					<template v-for="(item,index) in routersList" v-if="!item.hidden">
 						<el-submenu :index="index+''" v-if="!item.leaf">
 							<template slot="title"><i :class="item.iconCls"></i>{{item.name}}</template>
-							<el-menu-item v-for="child in item.children" :index="child.path" :key="child.path" v-if="!child.hidden">{{child.name}}</el-menu-item>
+							<el-menu-item v-for="child in item.children" :index="child.path" :key="child.path" :disabled="child.ishide" v-if="!child.hidden">{{child.name}}</el-menu-item>
 						</el-submenu>
 						<el-menu-item v-if="item.leaf&&item.children.length>0" :index="item.children[0].path"><i :class="item.iconCls"></i>{{item.children[0].name}}</el-menu-item>
 					</template>
 				</el-menu>
+				<!--<el-menu :default-active="$route.path" class="el-menu-vertical-demo" @open="handleopen" @close="handleclose" @select="handleselect"-->
+					 <!--unique-opened router v-show="!collapsed">-->
+					<!--<template v-for="(item,index) in $router.options.routes" v-if="!item.hidden">-->
+						<!--<el-submenu :index="index+''" v-if="!item.leaf">-->
+							<!--<template slot="title"><i :class="item.iconCls"></i>{{item.name}}</template>-->
+							<!--<el-menu-item v-for="child in item.children" :index="child.path" :key="child.path" v-if="!child.hidden">{{child.name}}</el-menu-item>-->
+						<!--</el-submenu>-->
+						<!--<el-menu-item v-if="item.leaf&&item.children.length>0" :index="item.children[0].path"><i :class="item.iconCls"></i>{{item.children[0].name}}</el-menu-item>-->
+					<!--</template>-->
+				<!--</el-menu>-->
+
+
 				<!--&lt;!&ndash;导航菜单-折叠后&ndash;&gt;-->
 				<!--<ul class="el-menu el-menu-vertical-demo collapsed" v-show="collapsed" ref="menuCollapsed">-->
 					<!--<li v-for="(item,index) in $router.options.routes" v-if="!item.hidden" class="el-submenu item">-->
@@ -86,7 +98,9 @@
 					type: [],
 					resource: '',
 					desc: ''
-				}
+				},
+				routersList:[],
+
 			}
 		},
 		methods: {
@@ -107,13 +121,12 @@
 				this.$confirm('确认退出吗?', '提示', {
 					//type: 'warning'
 				}).then(() => {
+				    sessionStorage.setItem('token','');
 					// sessionStorage.removeItem('user');
 					_this.$router.push('/');
 				}).catch(() => {
 
 				});
-
-
 			},
 			//折叠导航栏
 			collapse:function(){
@@ -121,10 +134,28 @@
 			},
 			showMenu(i,status){
 				this.$refs.menuCollapsed.getElementsByClassName('submenu-hook-'+i)[0].style.display=status?'block':'none';
-			}
+			},
+            getrouters(){
+                let perList=JSON.parse(sessionStorage.getItem('permission'));
+                this.routersList=require('../routes.js').default;
+                this.routersList.forEach((item,index)=>{
+                   if(item.children && item.children.length>0){
+                       item.children.forEach((childitem)=>{
+                           if(perList.indexOf(childitem.name)!==-1){
+                               childitem.ishide=true;
+                               // console.log(childitem.name+' -=-=-=-')
+						   }else{
+                               childitem.ishide=false;
+                           }
+					   })
+				   }
+				});
+
+            },
 		},
 		mounted() {
 			this.user =JSON.parse(sessionStorage.getItem('user'));
+            this.getrouters();
 			// if (user) {
 			// 	user = JSON.parse(user);
 			// 	this.sysUserName = user.name || '';

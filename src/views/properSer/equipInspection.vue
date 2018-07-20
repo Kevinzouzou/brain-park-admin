@@ -383,6 +383,7 @@
                 </el-form-item>
                 <el-form-item label="路线节点：" prop="location">
                     <el-button type="success" @click.native="addNodeDevice">添加节点设备</el-button>
+                    <el-checkbox v-model="routeChecked">启用</el-checkbox>
                 </el-form-item>
             </el-form>
             <el-table :data="insNodeList" v-loading="inspectNodeLoading" style="width: 98%;margin: 0 auto;" max-height="400">
@@ -510,6 +511,7 @@
     export default {
         data(){
             return {
+                routeChecked:'',
                 sels: [],//列表选中列
                 changeMember:false,
                 secInspecValue:'',
@@ -1144,7 +1146,7 @@
                 this.page=1;
                 this.changeMember=row.addInfo.state==='停用'?false:true;
                 this.detailList=Object.assign({}, row);
-                this.detailList.addInfo.department='物业部';
+                this.detailList.addInfo.department="物业部";
                 this.detailList.addInfo.group='工程组';
             },
             historyRecord(index, row){// 显示历史记录
@@ -1248,7 +1250,7 @@
                     if(this.isEdit){
                         data.id=this.isEditId;
                     }
-
+                    console.log(this.routeChecked)
                     this.$post(addUpdateInsTaskUrl,data)
                         .then((res)=>{
                             this.routeAddEditPage = false;
@@ -1281,7 +1283,15 @@
                 this.isEditId=row.id;
                 this.isEdit=true;
                 // this.deviceAEVisible = true;
-                // this.deviceAEForm = Object.assign({}, row);
+                // this.routeForm = Object.assign({}, row);
+                this.routeForm.name =row.name;
+                this.routeForm.type=[];
+                if(row.cycle && row.cycle.split(',').length>0){
+                    let type=row.cycle.split(',');
+                    type.forEach((item)=>{
+                        this.routeForm.type.push(this.week[item]);
+                    })
+                }
             },
             enableOrdisable(index,row){//启用或停用
                 this.$confirm('确认改变该状态吗?', '提示', {
