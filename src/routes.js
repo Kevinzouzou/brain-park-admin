@@ -17,6 +17,8 @@ import information from './views/operaSer/information.vue'
 import userFeedback from './views/operaSer/userFeedback.vue'
 import houseKeeping from './views/operaSer/houseKeeping.vue'
 import shareResource from './views/operaSer/shareResource.vue'
+import apartmentRental from './views/operaSer/apartmentRental.vue'
+import operationalProfile from './views/operaSer/operationalProfile.vue'
 
 import serEffect from './views/employers/serEffect.vue'
 import corporationHome from './views/employers/corporationHome.vue'
@@ -81,7 +83,7 @@ let routes = [
         name: '运营服务',
         iconCls: 'el-icon-document',
         children: [
-            // { path: '/operaSitua', component: operaSitua, name: '运营概况' },
+            { path: '/operationalProfile', component: operationalProfile, name: '运营概况' },
             { path: '/circle', component: circle, name: '圈子' },
             { path: '/topic', component: topic, name: '话题' },
             { path: '/adConfig', component: adConfig, name: '广告配置' },
@@ -90,8 +92,9 @@ let routes = [
             // { path: '/merchants', component: merchants, name: '商家联盟' },
             { path: '/userFeedback', component: userFeedback, name: '用户反馈处理' },
             { path: '/information', component: information, name: '信息公告' },
-            { path: '/houseKeeping', component: houseKeeping, name: '家政服务' },
             { path: '/shareResource', component: shareResource, name: '共享资源' },
+            { path: '/apartmentRental', component: apartmentRental, name: '公寓租赁资源' },
+            { path: '/houseKeeping', component: houseKeeping, name: '家政服务' },
         ]
     },
     {

@@ -14,7 +14,8 @@
                     </el-form>
                 </el-col>
                 <!--列表-->
-                <el-table :data="corporateList.slice((page-1)*pagesize,page*pagesize)" highlight-current-row v-loading="corporateLoading" @selection-change="selsCorporateChange" style="width: 100%;">
+                <el-table :data="corporateList.slice((page-1)*pagesize,page*pagesize)" highlight-current-row v-loading="corporateLoading"
+                    @selection-change="selsCorporateChange" style="width: 100%;">
                     <el-table-column type="selection" width="55">
                     </el-table-column>
                     <el-table-column type="index" width="60">
@@ -32,22 +33,15 @@
                     </el-table-column>
                     <el-table-column label="操作">
                         <template slot-scope="scope">
-                            <el-button type="info" size="small" @click="corporateEdit(scope.$index, scope.row)">编辑</el-button>
+                            <el-button type="primary" size="small" @click="corporateEdit(scope.$index, scope.row)">编辑</el-button>
                             <el-button type="danger" size="small" @click="corporateDel(scope.$index, scope.row)">删除</el-button>
                         </template>
                     </el-table-column>
                 </el-table>
                 <!--分页-->
                 <el-col :span="24" class="toolbar">
-                    <el-pagination background
-                                   @size-change="highSizeChange"
-                                   @current-change="corporateCurChange"
-                                   :page-sizes="[7,8,10,20]"
-                                   :page-size="pagesize"
-                                   layout="total, sizes, prev, pager, next, jumper"
-                                   :total="corporateTotal"
-                                   :current-page="page"
-                                   style="float:right;">
+                    <el-pagination background @size-change="highSizeChange" @current-change="corporateCurChange" :page-sizes="[7,8,10,20]" :page-size="pagesize"
+                        layout="total, sizes, prev, pager, next, jumper" :total="corporateTotal" :current-page="page" style="float:right;">
                     </el-pagination>
                 </el-col>
                 <!--新增/编辑界面-->
@@ -63,7 +57,7 @@
                                 <i class="el-icon-plus"></i>
                             </el-upload>
                             <el-dialog :visible.sync="dialogCorpVisible">
-                                <img width="100%" :src="dialogCorpImageUrl" >
+                                <img width="100%" :src="dialogCorpImageUrl">
                             </el-dialog>
                         </el-form-item>
                         <el-form-item label="详细内容">
@@ -84,11 +78,18 @@
 
 <script>
     import UE from '../../components/ue'
-    import {showDisplay, addDisplay, deleteDisplay,uploadPic,} from '../../api/api'
+    import {
+        showDisplay,
+        addDisplay,
+        deleteDisplay,
+        uploadPic,
+    } from '../../api/api'
 
     export default {
-        components: {UE},
-        data(){
+        components: {
+            UE
+        },
+        data() {
             return {
                 othParams:{
                     bucketName:'shared-resource',
@@ -107,28 +108,30 @@
                 corporateForm:{
                     title:''
                 },
-                ue:'corId',
-                morePicList:[],
-                corporateContent:'',
-                corporateTotal:2,
-                imgCorpList:[],
+                ue: 'corId',
+                morePicList: [],
+                corporateContent: '',
+                corporateTotal: 2,
+                imgCorpList: [],
                 dialogCorpImageUrl: '',
                 dialogCorpVisible: false,
-                isEditId:'',
-                isEdit:false,
+                isEditId: '',
+                isEdit: false,
             }
         },
-        methods:{
+        methods: {
             handleClick(tab, event) {
-                this.page=1;
+                this.page = 1;
             },
-            corporateBatchRemove () { //公司金融服务批量删除
+            corporateBatchRemove() { //公司金融服务批量删除
                 var ids = this.corSels.map(item => item.id).toString();
                 this.$confirm('确认删除选中记录吗？', '提示', {
                     type: 'warning'
                 }).then(() => {
                     this.corporateLoading = true;
-                    let para = { ids: ids };
+                    let para = {
+                        ids: ids
+                    };
 
                 }).catch(() => {
 
@@ -149,22 +152,24 @@
                 this.corSels = sels;
             },
             corporateEdit(index, row) { //公司。。 显示编辑界面
-                this.addEditTitle='编辑';
-                this.isEditId=row.id;
-                this.isEdit=true;
-                this.morePicList.length=0;
+                this.addEditTitle = '编辑';
+                this.isEditId = row.id;
+                this.isEdit = true;
+                this.morePicList.length = 0;
                 this.addEditCorporateVisible = true;
                 this.corporateForm = Object.assign({}, row);
             },
-            corporateDel(index, row) {  //惠通知 删除
+            corporateDel(index, row) { //惠通知 删除
                 this.$confirm('确认删除该记录吗?', '提示', {
                     type: 'warning'
                 }).then(() => {
                     this.corporateLoading = true;
-                    let para = { id: row.id };
-                    let self=this;
-                    this.$del(deleteDisplay+para.id)
-                        .then(function(response) {
+                    let para = {
+                        id: row.id
+                    };
+                    let self = this;
+                    this.$del(deleteDisplay + para.id)
+                        .then(function (response) {
                             self.corporateLoading = false;
                             self.$message({
                                 message: '删除成功',
@@ -176,18 +181,18 @@
 
                 });
             },
-            getCorporate(){  //公司金融服务列表
-                let type='金融服务';
-                this.corporateLoading=true;
-                this.$get(showDisplay+type)
+            getCorporate() { //公司金融服务列表
+                let type = '金融服务';
+                this.corporateLoading = true;
+                this.$get(showDisplay + type)
                     .then((res) => {
-                        this.corporateList=res;
-                        this.corporateTotal=this.corporateList.length>0?this.corporateList.length:1;
-                        this.corporateLoading=false;
+                        this.corporateList = res;
+                        this.corporateTotal = this.corporateList.length > 0 ? this.corporateList.length : 1;
+                        this.corporateLoading = false;
                     })
             },
             highSizeChange(val) {
-                this.pagesize=val;
+                this.pagesize = val;
             },
             corporateCurChange(val) {
                 this.page = val;
@@ -203,30 +208,31 @@
                 this.dialogCorpImageUrl = file.url;
                 this.dialogCorpVisible = true;
             },
-            corporateAddChange(html){
-                this.corporateContent=html;
+            corporateAddChange(html) {
+                this.corporateContent = html;
             },
-            addCorporateSubmit() {  //公司金融服务 新增
+            addCorporateSubmit() { //公司金融服务 新增
                 this.$refs.corporateForm.validate((valid) => {
                     if (valid) {
                         this.$confirm('确认提交吗？', '提示', {}).then(() => {
                             this.addEditCorLoading = true;
                             let para = Object.assign({}, this.corporateForm);
-                            let data={
-                                parkId:localStorage.getItem("parkId"),
-                                thumbUrl:this.morePicList[0],
-                                title:this.corporateForm.title,
-                                type:'金融服务',
-                                detailUrl:'null',
-                                addInfo:{
-                                    themeContent:this.corporateContent
+                            let data = {
+                                parkId: localStorage.getItem("parkId"),
+                                thumbUrl: this.morePicList[0],
+                                title: this.corporateForm.title,
+                                type: '金融服务',
+                                detailUrl: "null",
+                                thumbUrl: 'null',
+                                addInfo: {
+                                    themeContent: this.corporateContent
                                 }
                             };
-                            if(this.isEdit){
-                                data.id=this.isEditId;
+                            if (this.isEdit) {
+                                data.id = this.isEditId;
                             }
-                            this.$post(addDisplay,data)
-                                .then((res)=>{
+                            this.$post(addDisplay, data)
+                                .then((res) => {
                                     this.addEditCorLoading = false;
                                     this.addEditCorporateVisible = false;
                                     this.getCorporate();
@@ -250,5 +256,4 @@
 </script>
 
 <style scoped>
-
 </style>

@@ -31,7 +31,7 @@
                             <div class="grid-title">用户分布</div>
                             <div>
                                 <div id="charts" style="width:90%;height:400px; margin: 0 auto;">
-                                    <div id="main" style="width:100%;height:100%;"></div>
+                                    <div id="UserDistribution" style="width:100%;height:100%;"></div>
                                 </div>
                             </div>
                             <div class="percentageComponent">
@@ -220,6 +220,67 @@
                     female: [],
                     male: [],
                 },
+                UserDistributionOption: {
+                    tooltip: {
+                        trigger: 'item',
+                        formatter: "{b}: {c} ({d}%)",
+                    }, //设置饼图的颜色
+                    color: ['#4EB8FF', '#F5A623', '#BD10E0', '#7ED321'],
+                    series: [{
+                        type: 'pie',
+                        radius: ['30%', '50%'],
+                        center: ['50%', '50%'],
+                        data: [{
+                                value: 5485,
+                                name: '安卓APP'
+                            },
+                            {
+                                value: 4778,
+                                name: '苹果用户'
+                            },
+                            {
+                                value: 1334,
+                                name: '公众号'
+                            },
+                            {
+                                value: 16656,
+                                name: '小程序'
+                            }
+                        ],
+                        itemStyle: {
+                            emphasis: {
+                                shadowBlur: 10,
+                                shadowOffsetX: 0,
+                                shadowColor: 'rgba(0, 0, 0, 0.5)'
+                            }
+                        },
+                        label: {
+                            normal: {
+                                formatter: '{b|{b}}\n{c|{c}} {per|{d}%}',
+                                rich: {
+                                    b: {
+                                        color: '#9B9B9B',
+                                        fontSize: 16,
+                                        lineHeight: 24,
+                                        align: 'left'
+                                    },
+                                    c: {
+                                        color: '#9B9B9B',
+                                        fontSize: 14,
+                                        lineHeight: 24,
+                                        align: 'left'
+                                    },
+                                    per: {
+                                        color: '#9B9B9B',
+                                        fontSize: 14,
+                                        padding: [2, 4],
+                                        align: 'left'
+                                    }
+                                }
+                            }
+                        },
+                    }]
+                },
                 businessChartsMainOption: {
                     color: ['#17eace', '#fd304e'],
                     tooltip: {
@@ -336,6 +397,31 @@
                     this.UserSituation = publicFunction.deepCopy(this.UserSituation, res);
                 })
             },
+            // 获取用户分布
+            queryUserDistribution() {
+                this.$get(this.url + 'queryUserDistribution').then(res => {
+                    let UserDistribution = echarts.init(document.getElementById('UserDistribution'));
+                    this.UserDistributionOption.series[0].data = [{
+                            value: res.androidUser,
+                            name: '安卓APP'
+                        },
+                        {
+                            value: res.iosUser,
+                            name: '苹果用户'
+                        },
+                        {
+                            value: res.vipcnUser,
+                            name: '公众号'
+                        },
+                        {
+                            value: res.miniAppsUser,
+                            name: '小程序'
+                        }
+                    ]
+                    window.addEventListener("resize", UserDistribution.resize);
+                    UserDistribution.setOption(this.UserDistributionOption);
+                })
+            },
             // 获取企业用户分布
             queryEnterpriseDistribution() {
                 this.$get(this.url + 'queryEnterpriseDistribution').then(res => {
@@ -383,8 +469,6 @@
                         0);
                     let man = ((res.userGenderToMan / (res.userGenderToMan + res.userGenderToWoman)) * 60).toFixed(
                         0);
-                    console.log(woman)
-                    console.log(man)
                     for (let i = 0; i < parseInt(woman); i++) {
                         female.push(i);
                     }
@@ -393,7 +477,6 @@
                     }
                     this.UserClassify.female = female;
                     this.UserClassify.male = male;
-                    console.log(JSON.stringify(this.UserClassify));
                     this.Progressbar({
                         id: 'ageYouthCharts',
                         percentage: this.UserClassify.youthUserPercent
@@ -500,83 +583,17 @@
                 //new added
                 ctx.fillStyle = '#000';
                 ctx.textAlign = 'center';
-                ctx.font = '14px Microsoft YaHei';
+                ctx.font = '13px Microsoft YaHei';
                 ctx.fillText(options.percentage, 50, 50 + 5);
             }
         },
         mounted() {
             this.queryUserSituation();
+            this.queryUserDistribution();
             this.queryEnterpriseDistribution();
             this.queryUserClassify();
             this.queryUserGrowthRate();
             this.queryEnterpriseUserRank();
-
-
-
-            let myChart = echarts.init(document.getElementById('main'));
-            // 用户分布图表配置
-            myChart.setOption({
-                tooltip: {
-                    trigger: 'item',
-                    formatter: "{b}: {c} ({d}%)",
-                }, //设置饼图的颜色
-                color: ['#4EB8FF', '#F5A623', '#BD10E0', '#7ED321'],
-                series: [{
-                    type: 'pie',
-                    radius: ['30%', '50%'],
-                    center: ['50%', '50%'],
-                    data: [{
-                            value: 5485,
-                            name: '安卓APP'
-                        },
-                        {
-                            value: 4778,
-                            name: '苹果用户'
-                        },
-                        {
-                            value: 1334,
-                            name: '公众号'
-                        },
-                        {
-                            value: 16656,
-                            name: '小程序'
-                        }
-                    ],
-                    itemStyle: {
-                        emphasis: {
-                            shadowBlur: 10,
-                            shadowOffsetX: 0,
-                            shadowColor: 'rgba(0, 0, 0, 0.5)'
-                        }
-                    },
-                    label: {
-                        normal: {
-                            formatter: '{b|{b}}\n{c|{c}} {per|{d}%}',
-                            rich: {
-                                b: {
-                                    color: '#9B9B9B',
-                                    fontSize: 16,
-                                    lineHeight: 24,
-                                    align: 'left'
-                                },
-                                c: {
-                                    color: '#9B9B9B',
-                                    fontSize: 14,
-                                    lineHeight: 24,
-                                    align: 'left'
-                                },
-                                per: {
-                                    color: '#9B9B9B',
-                                    fontSize: 14,
-                                    padding: [2, 4],
-                                    align: 'left'
-                                }
-                            }
-                        }
-                    },
-                }]
-            });
-            window.addEventListener("resize", myChart.resize);
         }
     };
 </script>

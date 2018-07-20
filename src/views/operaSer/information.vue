@@ -56,7 +56,7 @@
                       </el-table-column>
                       <el-table-column label="操作">
                           <template slot-scope="scope">
-                              <el-button type="info" size="small" @click="AnEdit(scope.$index, scope.row)">编辑</el-button>
+                              <el-button type="primary" size="small" @click="AnEdit(scope.$index, scope.row)">编辑</el-button>
                               <el-button type="danger" size="small" @click="AnDel(scope.$index, scope.row)">删除</el-button>
                           </template>
                       </el-table-column>
@@ -139,7 +139,7 @@
                        </el-table-column>
                        <el-table-column label="操作">
                            <template slot-scope="scope">
-                               <el-button type="info" size="small" @click="anCateEdit(scope.$index, scope.row)">编辑</el-button>
+                               <el-button type="primary" size="small" @click="anCateEdit(scope.$index, scope.row)">编辑</el-button>
                                <el-button type="danger" size="small" @click="anCateDel(scope.$index, scope.row)">删除</el-button>
                            </template>
                        </el-table-column>
@@ -226,7 +226,7 @@
                        </el-table-column>
                        <el-table-column label="操作">
                            <template slot-scope="scope">
-                               <el-button type="info" size="small" @click="informEdit(scope.$index, scope.row)">编辑</el-button>
+                               <el-button type="primary" size="small" @click="informEdit(scope.$index, scope.row)">编辑</el-button>
                                <el-button type="danger" size="small" @click="informDel(scope.$index, scope.row)">删除</el-button>
                            </template>
                        </el-table-column>
@@ -318,7 +318,7 @@
                        </el-table-column>
                        <el-table-column label="操作">
                            <template slot-scope="scope">
-                               <el-button type="info" size="small" @click="informCateEdit(scope.$index, scope.row)">编辑</el-button>
+                               <el-button type="primary" size="small" @click="informCateEdit(scope.$index, scope.row)">编辑</el-button>
                                <el-button type="danger" size="small" @click="informCateDel(scope.$index, scope.row)">删除</el-button>
                            </template>
                        </el-table-column>

@@ -10,7 +10,8 @@
                 <el-card shadow="never" style="height:750px;overflow-y: scroll;" v-loading="parkInfoTreeListLoading">
                     <el-tree class="filter-tree" :data="parkInfoTreeList" :props="parkInfoTreeListProps" @node-click="handleNodeClick" :filter-node-method="filterNode"
                         node-key="id" highlight-current default-expand-all :render-content="renderContent" :expand-on-click-node="false"
-                        :default-expanded-keys="defaultExpandKeys" ref="tree"></el-tree>
+                        ref="tree" @node-drag-start="handleDragStart" @node-drag-enter="handleDragEnter" @node-drag-leave="handleDragLeave"
+                        @node-drag-over="handleDragOver" @node-drag-end="handleDragEnd" @node-drop="handleDrop" draggable></el-tree>
                 </el-card>
             </el-col>
             <el-col :span="19">
@@ -18,7 +19,7 @@
                 <div style="line-height: 40px;padding-left: 50px;color: #606266;margin-bottom: 22px;">
                     松湖智谷管理公司
                     <span>{{currentDepartmentalOrganizational.name}}</span>
-                    <el-button type="primary" @click="addfirstLevelDepartment()" style="margin-right: 67px;float: right;">新增一级部门</el-button>
+                    <!-- <el-button type="primary" @click="addfirstLevelDepartment()" style="margin-right: 67px;float: right;">新增一级部门</el-button> -->
                 </div>
                 <el-card shadow="never">
                     <el-row type="flex" justify="space-between">
@@ -45,22 +46,22 @@
                             <el-table :data="parkInfoTreeAddZoneInfoData" style="width: 100%" height="250" v-loading="parkInfoTreeAddZoneInfoLoading">
                                 <el-table-column label="区域">
                                     <template slot-scope="scope">
-                                        <span v-if="scope.row[0].name">{{scope.row[0].name}}</span>
+                                        <span v-if="scope.row[0]">{{scope.row[0].name}}</span>
                                     </template>
                                 </el-table-column>
                                 <el-table-column label="楼栋">
                                     <template slot-scope="scope">
-                                        <span v-if="scope.row[1].name">{{scope.row[1].name}}</span>
+                                        <span v-if="scope.row[1]">{{scope.row[1].name}}</span>
                                     </template>
                                 </el-table-column>
                                 <el-table-column label="层">
                                     <template slot-scope="scope">
-                                        <span v-if="scope.row[2].name">{{scope.row[2].name}}</span>
+                                        <span v-if="scope.row[2]">{{scope.row[2].name}}</span>
                                     </template>
                                 </el-table-column>
                                 <el-table-column label="房号">
                                     <template slot-scope="scope">
-                                        <span v-if="scope.row[3].name">{{scope.row[3].name}}</span>
+                                        <span v-if="scope.row[3]">{{scope.row[3].name}}</span>
                                     </template>
                                 </el-table-column>
                                 <el-table-column label="操作">
@@ -72,7 +73,7 @@
                         </el-card>
                         <el-form :inline="true" class="demo-form-inline" style="margin-top:20px;">
                             <el-cascader placeholder="请选择办公区域关联" filterable clearable style="width: 450px;" :separator="'-'" :options="departmentAreaList"
-                                v-model="selectedOptions" :props="departmentAreaListProps">
+                                v-model="selectedOptions" :props="departmentAreaListProps" change-on-select>
                             </el-cascader>
                             <el-button type="primary" @click="addOfficeArea()">新增</el-button>
                         </el-form>
@@ -137,7 +138,7 @@
                     children: 'children',
                     label: 'name'
                 },
-                departmentAreaList: '',
+                departmentAreaList:[],
                 departmentAreaListProps: {
                     value: 'id',
                     children: 'children',
@@ -145,11 +146,9 @@
                 },
                 parkInfoTreeAddZoneInfoLoading: false,
                 selectedOptions: '',
-                options: '',
                 checkList: '',
                 parkInfoTreeAddZoneInfoData: [],
                 newArea: [],
-                value: '',
                 currentlySelectedNode: '',
                 currentDepartmentalOrganizational: {
                     id: '',
@@ -214,7 +213,7 @@
             // 获取部门区域列表
             getDepartmentAreaList() {
                 this.$get(parkInfoTreeList + '区域').then(res => {
-                    this.departmentAreaList = this.killChildren(res);
+                    this.departmentAreaList = this.killChildren(res[0].children);
                 });
             },
             // 获取当前部门的办公区域
@@ -226,7 +225,6 @@
                         this.parkInfoTreeAddZoneInfoData.push(res[i]);
                     }
                     this.parkInfoTreeAddZoneInfoLoading = false;
-                    console.log(this.parkInfoTreeAddZoneInfoData);
                 });
             },
             //删除当前部门的办公区域
@@ -246,7 +244,6 @@
                     );
                 }
                 let data = this.currentDepartmentalOrganizational;
-                console.log(JSON.stringify(data));
                 this.$post(addOrUpdateParkInfoTree, data).then(res => {
                     this.$message({
                         message: '修改成功',
@@ -264,23 +261,41 @@
                 this.parkInfoTreeAddZoneInfoData.push(this.newArea);
             },
             // 新增一级节点
-            addfirstLevelDepartment() {
-                this.$prompt('请输入一级节点名称', '提示', {
-                    confirmButtonText: '确定',
-                    cancelButtonText: '取消',
-                }).then(({
-                    value
-                }) => {
-                    this.$message({
-                        type: 'success',
-                        message: '添加成功，功能未确定，没有此功能' + value
-                    });
-                }).catch(() => {
-                    this.$message({
-                        type: 'info',
-                        message: '已取消，功能未确定，没有此功能'
-                    });
-                });
+            // addfirstLevelDepartment() {
+            //     this.$prompt('请输入一级节点名称', '提示', {
+            //         confirmButtonText: '确定',
+            //         cancelButtonText: '取消',
+            //     }).then(({
+            //         value
+            //     }) => {
+            //         this.$message({
+            //             type: 'success',
+            //             message: '添加成功，功能未确定，没有此功能' + value
+            //         });
+            //     }).catch(() => {
+            //         this.$message({
+            //             type: 'info',
+            //             message: '已取消，功能未确定，没有此功能'
+            //         });
+            //     });
+            // },
+            handleDragStart(node, ev) {
+                console.log('drag start', node);
+            },
+            handleDragEnter(draggingNode, dropNode, ev) {
+                console.log('tree drag enter: ', dropNode.label);
+            },
+            handleDragLeave(draggingNode, dropNode, ev) {
+                console.log('tree drag leave: ', dropNode.label);
+            },
+            handleDragOver(draggingNode, dropNode, ev) {
+                console.log('tree drag over: ', dropNode.label);
+            },
+            handleDragEnd(draggingNode, dropNode, dropType, ev) {
+                console.log('tree drag end: ', dropNode && dropNode.label, dropType);
+            },
+            handleDrop(draggingNode, dropNode, dropType, ev) {
+                console.log('tree drop: ', dropNode.label, dropType);
             },
             // 新增节点
             renderContent(h, {

@@ -35,14 +35,16 @@
                         </el-table-column>
                         <el-table-column prop="name" label="名称">
                         </el-table-column>
-                        <el-table-column label="图片">
+                        <el-table-column label="图片" width="230">
                             <template slot-scope="scope">
-                                <img :src="scope.row.addInfo.images[0]" width="40" height="40" />
+                                <span v-for="item in scope.row.addInfo.images" style="margin:0 5px">
+                                    <img class="tableImg" :src="item" width="40" height="40" />
+                                </span>
                             </template>
                         </el-table-column>
                         <el-table-column label="租金">
                             <template slot-scope="scope">
-                                <span>{{scope.row.addInfo.price}} 元/半天</span>
+                                <span>{{scope.row.addInfo.rent}} 元/半天</span>
                             </template>
                         </el-table-column>
                         <el-table-column prop="addInfo.location" label="地点">
@@ -131,9 +133,10 @@
                         </el-row>
                         <el-row>
                             <el-col :span="22">
-                                <el-form-item label="资源图片：" required>
-                                    <el-upload action="imageUploadUrl" :data="imgData" list-type="picture-card" :on-preview="handlePictureCardPreview" :on-remove="handleRemove"
-                                        :before-upload="beforeAvatarUpload" :on-success="moreShow">
+                                <el-form-item label="图片：" required>
+                                    <el-upload :action="imageUploadUrl" :data="imgData" list-type="picture-card" :on-preview="handlePictureCardPreview" :on-remove="handleRemoveForAdd"
+                                        :before-upload="beforeUpload" :on-success="moreShowForAdd" :on-error="imgUploadError"
+                                        :limit="4" :before-remove="beforeRemove" :on-exceed="handleExceed">
                                         <i class="el-icon-plus"></i>
                                     </el-upload>
                                     <el-dialog :visible.sync="dialogVisible">
@@ -307,7 +310,7 @@
                     </div>
                 </el-dialog>
                 <!-- 编辑共享资源 -->
-                <el-dialog title="新增共享资源" :visible.sync="SharedResourceInfoEditVisible">
+                <el-dialog title="编辑共享资源" :visible.sync="SharedResourceInfoEditVisible">
                     <el-form :model="SharedResourceInfo" label-width="150px" :rules="SharedResourceInfoAddFormRules" ref="SharedResourceInfo">
                         <el-row>
                             <el-col :span="22">
@@ -368,9 +371,11 @@
                         </el-row>
                         <el-row>
                             <el-col :span="22">
-                                <el-form-item label="资源图片：" required>
-                                    <el-upload action="imageUploadUrl" :data="imgData" list-type="picture-card" :on-preview="handlePictureCardPreview" :on-remove="handleRemove"
-                                        :before-upload="beforeAvatarUpload" :on-success="moreShow">
+                                <el-form-item label="图片：" required>
+                                    <el-upload :action="imageUploadUrl" :data="imgData" list-type="picture-card" :on-preview="handlePictureCardPreview" :on-remove="handleRemoveForEdit"
+                                        :before-upload="beforeUpload" :on-success="moreShowForEdit" :on-error="imgUploadError"
+                                        :limit="4" :file-list="SharedResourceInfo.addInfo.images" :before-remove="beforeRemove"
+                                        :on-exceed="handleExceed">
                                         <i class="el-icon-plus"></i>
                                     </el-upload>
                                     <el-dialog :visible.sync="dialogVisible">
@@ -405,26 +410,25 @@
                     <el-col :span="24">
                         <el-form :inline="true" :model="applicationRecordFilter">
                             <el-form-item label="共享类型：">
-                                <el-select placeholder="请选择服务分类" v-model="applicationRecordFilter.resourceType" @change="sharedResourceListSeach()">
-                                    <el-option label="全部" value="全部"></el-option>
+                                <el-select placeholder="请选择服务分类" v-model="applicationRecordFilter.resourceType" @change="applicationRecordListSeach()">
+                                    <el-option label="全部" value=""></el-option>
                                     <el-option label="会议室" value="会议室"></el-option>
                                     <el-option label="电子屏" value="电子屏"></el-option>
                                     <el-option label="展厅" value="展厅"></el-option>
                                 </el-select>
                             </el-form-item>
                             <el-form-item label="状态：">
-                                <el-select placeholder="请选择服务分类" v-model="applicationRecordFilter.state" @change="sharedResourceListSeach()">
-                                    <el-option label="全部" value="全部"></el-option>
-                                    <el-option label="会议室" value="会议室"></el-option>
-                                    <el-option label="电子屏" value="电子屏"></el-option>
-                                    <el-option label="展厅" value="展厅"></el-option>
+                                <el-select placeholder="请选择服务分类" v-model="applicationRecordFilter.state" @change="applicationRecordListSeach()">
+                                    <el-option label="全部" value=""></el-option>
+                                    <el-option label="已预约" value="已预约"></el-option>
+                                    <el-option label="已退款" value="已退款"></el-option>
                                 </el-select>
                             </el-form-item>
                             <el-form-item>
                                 <el-input prefix-icon="el-icon-search" v-model="applicationRecordFilter.selection" placeholder=" 搜索名称/申请人/联系电话"></el-input>
                             </el-form-item>
                             <el-form-item>
-                                <el-button type="primary" @click="sharedResourceListSeach()">查询</el-button>
+                                <el-button type="primary" @click="applicationRecordListSeach()">查询</el-button>
                             </el-form-item>
                         </el-form>
                     </el-col>
@@ -435,41 +439,128 @@
                         highlight-current-row v-loading="ApplicationRecordListLoading" style="width: 100%;">
                         <el-table-column prop="id" label="ID">
                         </el-table-column>
-                        <el-table-column prop="type" label="共享类型">
+                        <el-table-column prop="addInfo.resourceType" label="共享类型">
                         </el-table-column>
-                        <el-table-column prop="name" label="名称">
+                        <el-table-column prop="addInfo.resourceName" label="名称">
                         </el-table-column>
-                        <el-table-column label="申请人">
+                        <el-table-column prop="addInfo.contactName" label="申请人">
+                        </el-table-column>
+                        <el-table-column prop="addInfo.contactPhone" label="联系电话">
+                        </el-table-column>
+                        <el-table-column label="租金/半天">
                             <template slot-scope="scope">
-                                <img :src="scope.row.addInfo.images" width="40" height="40" />
+                                <span>{{scope.row.pay}} 元/半天</span>
                             </template>
                         </el-table-column>
-                        <el-table-column label="联系电话">
-                            <template slot-scope="scope">
-                                <img :src="scope.row.addInfo.images" width="40" height="40" />
-                            </template>
+                        <el-table-column prop="addInfo.dateAndPeriod" label="租期">
                         </el-table-column>
-                        <el-table-column label="租金">
-                            <template slot-scope="scope">
-                                <span>{{scope.row.addInfo.price}} 元/半天</span>
-                            </template>
+                        <el-table-column prop="rentTime" label="租时(天)">
                         </el-table-column>
-                        <el-table-column prop="addInfo.location" label="租期">
+                        <el-table-column prop="addInfo.resourceRent" label="付费(元)">
                         </el-table-column>
-                        <el-table-column prop="addInfo.capacity" label="租时(天)">
-                        </el-table-column>
-                        <el-table-column prop="addInfo.area" label="付费(元)">
-                        </el-table-column>
-                        <el-table-column prop="addInfo.area" label="状态">
+                        <el-table-column prop="addInfo.state" label="状态">
                         </el-table-column>
                         <el-table-column label="操作" width="230">
                             <template slot-scope="scope">
-                                <el-button type="primary" size="small" @click="sharedResourceInfoCheck(scope.$index, scope.row)">查看</el-button>
-                                <el-button type="success" size="small" @click="sharedResourceInfoEdit(scope.$index, scope.row)">退款</el-button>
+                                <el-button type="primary" size="small" @click="ApplicationRecordCheck(scope.$index, scope.row)">查看</el-button>
+                                <el-button v-show="scope.row.addInfo.state === '已预约'" type="danger" size="small" @click="ApplicationRecordRefund(scope.$index, scope.row)">退款</el-button>
                             </template>
                         </el-table-column>
                     </el-table>
                 </el-row>
+                <!--工具条-->
+                <el-row :gutter="24">
+                    <el-col :span="24" class="toolbar">
+                        <el-pagination background @size-change="ApplicationRecordListPagesizeChange" @current-change="ApplicationRecordListPageCurrentChange"
+                            :page-sizes="[7,8,10,20]" :page-size="ApplicationRecordListPagesize" layout="total,sizes, prev, pager, next, jumper"
+                            :current-page="ApplicationRecordListPage" :total="ApplicationRecordListTotal" style="float:right;">
+                        </el-pagination>
+                    </el-col>
+                </el-row>
+                <!-- 查看申请纪录 -->
+                <el-dialog title="查看申请纪录" :visible.sync="ApplicationRecordCheckVisible">
+                    <el-form :model="SharedResourceInfo" label-width="150px">
+                        <el-row>
+                            <el-col :span="22">
+                                <el-form-item label="资源类型：">
+                                    <span>{{ApplicationRecordInfo.addInfo.resourceType}}</span>
+                                </el-form-item>
+                            </el-col>
+                        </el-row>
+                        <el-row>
+                            <el-col :span="22">
+                                <el-form-item label="资源名称：">
+                                    <span>{{ApplicationRecordInfo.addInfo.resourceName}}</span>
+                                </el-form-item>
+                            </el-col>
+                        </el-row>
+                        <el-row>
+                            <el-col :span="22">
+                                <el-form-item label="地点：">
+                                    <span>{{ApplicationRecordInfo.addInfo.state}}</span>
+                                </el-form-item>
+                            </el-col>
+                        </el-row>
+                        <el-row>
+                            <el-col :span="6">
+                                <el-form-item label="租金：">
+                                    <span>{{ApplicationRecordInfo.addInfo.resourceRent}}</span>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="6">
+                                <el-form-item label="面积：">
+                                    <span>{{ApplicationRecordInfo.addInfo.area}}</span>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="6">
+                                <el-form-item label="容纳人数：">
+                                    <span>{{ApplicationRecordInfo.addInfo.capacity}}</span>
+                                </el-form-item>
+                            </el-col>
+                        </el-row>
+                        <el-row>
+                            <el-col :span="11">
+                                <el-form-item label="申请人：">
+                                    <span>{{ApplicationRecordInfo.addInfo.contactName}}</span>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="11">
+                                <el-form-item label="联系电话：">
+                                    <span>{{ApplicationRecordInfo.addInfo.contactPhone}}</span>
+                                </el-form-item>
+                            </el-col>
+                        </el-row>
+                        <el-row>
+                            <el-col :span="11">
+                                <el-form-item label="所属企业：">
+                                    <span>{{ApplicationRecordInfo.addInfo.enterprise}}</span>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="11">
+                                <el-form-item label="企业楼栋：">
+                                    <span>{{ApplicationRecordInfo.addInfo.state}}</span>
+                                </el-form-item>
+                            </el-col>
+                        </el-row>
+                        <el-row>
+                            <el-col :span="22">
+                                <el-form-item label="申请时间：">
+                                    <span>{{ApplicationRecordInfo.createTime}}</span>
+                                </el-form-item>
+                            </el-col>
+                        </el-row>
+                        <el-row>
+                            <el-col :span="22">
+                                <el-form-item label="备注信息：">
+                                    <span>{{ApplicationRecordInfo.addInfo.remark}}</span>
+                                </el-form-item>
+                            </el-col>
+                        </el-row>
+                    </el-form>
+                    <div slot="footer" class="dialog-footer">
+                        <el-button @click="ApplicationRecordCheckVisible = false">关闭</el-button>
+                    </div>
+                </el-dialog>
             </el-tab-pane>
         </el-tabs>
     </section>
@@ -485,6 +576,7 @@
         bookSharedResourceList,
         addSharedResourceReservation,
         deleteSharedResourceReservation,
+        updateUserTargetAssociation,
         uploadPic
     } from '../../api/api';
     import publicFunction from '../../api/publicFunction';
@@ -528,7 +620,7 @@
                     }
                 },
                 SharedResourceInfo: {
-                    id:'',
+                    id: '',
                     name: '',
                     type: '',
                     addInfo: {
@@ -589,31 +681,55 @@
                     }
                 },
                 applicationRecordFilter: {
-                    resourceType: '全部',
-                    state: '全部',
+                    resourceType: '',
+                    state: '',
                     selection: ''
                 },
                 ApplicationRecordListLoading: false,
                 ApplicationRecordList: [],
                 ApplicationRecordListTotal: 0,
                 ApplicationRecordListPage: 1,
-                ApplicationRecordListPagesize: 7
+                ApplicationRecordListPagesize: 7,
+                ApplicationRecordCheckVisible: false,
+                ApplicationRecordInfo: {
+                    createTime: "",
+                    deleted: 1,
+                    id: "",
+                    isEnabled: 1,
+                    parkId: "",
+                    pay: 0,
+                    rentTime: 0.5,
+                    targetId: "",
+                    type: "USER_ORDER_SHARED_RESOURCE",
+                    userId: "",
+                    addInfo: {
+                        amount: 0,
+                        contactName: "",
+                        contactPhone: "",
+                        dateAndPeriod: [],
+                        enterprise: "",
+                        remark: "",
+                        resourceId: "",
+                        resourceName: "",
+                        resourceRent: "",
+                        resourceType: "",
+                        tradeNo: "",
+                        state: ''
+                    }
+                }
             };
         },
         methods: {
-            // 获取家政服务列表
+            // 获取共享资源列表
             getSharedResourceList(url) {
                 this.SharedResourceListLoading = true;
                 this.$get(url).then(res => {
                     this.SharedResourceList = res;
-                    this.SharedResourceListTotal =
-                        this.SharedResourceList.length > 0 ?
-                        this.SharedResourceList.length :
-                        0;
+                    this.SharedResourceListTotal = res.length;
                     this.SharedResourceListLoading = false;
                 });
             },
-            // 搜索家政服务列表
+            // 搜索共享资源列表
             sharedResourceListSeach() {
                 let type = this.resourceFilter.type;
                 let nameOrLocation = this.resourceFilter.nameOrLocation;
@@ -631,46 +747,56 @@
                 this.$refs[formName].validate(valid => {
                     if (valid) {
                         let data = this.SharedResourceInfoAddForm;
-                        data.parkId = localStorage.getItem('parkId');
-                        delete data.id;
-                        console.log(JSON.stringify(data));
-                        data.addInfo.capacity =
-                            data.type === '电子屏' ? '' : data.addInfo.capacity;
-                        if (
-                            data.type !== '电子屏' &&
-                            data.addInfo.capacity === ''
-                        ) {
-                            this.$message({
-                                message: '请输入容纳人数',
-                                type: 'error'
+                        let arr = [];
+                        let images = this.SharedResourceInfoAddForm.addInfo.images;
+                        for (let i in images) {
+                            if (typeof images[i].response === 'undefined') {
+                                arr.push(images[i].url);
+                            } else {
+                                arr.push(images[i].response.responseList.url)
+                            }
+                        }
+                        if (arr.length < 1) {
+                            this.$alert('请至少添加一张图片', '提示', {
+                                confirmButtonText: '确定'
                             });
                         } else {
-                            // if (data.addInfo.images.length === 0) {
-                            //     this.$message({
-                            //         message: '请至少添加一张图片',
-                            //         type: 'error'
-                            //     });
-                            // } else {
-                            this.$post(addOrUpdateSharedResource, data).then(
-                                res => {
-                                    if (res.operationResult === 'failure') {
-                                        this.$message({
-                                            message: 'failureMsg',
-                                            type: 'error'
-                                        });
-                                    } else {
-                                        this.resetForm(formName);
-                                        this.SharedResourceInfoAddVisible = false;
-                                        this.$message({
-                                            message: '添加成功',
-                                            type: 'success'
-                                        });
-                                        this.getSharedResourceList(
-                                            sharedResourceList
-                                        );
+                            data.addInfo.images = arr;
+                            data.parkId = localStorage.getItem('parkId');
+                            delete data.id;
+                            console.log(JSON.stringify(data));
+                            data.addInfo.capacity =
+                                data.type === '电子屏' ? '' : data.addInfo.capacity;
+                            if (
+                                data.type !== '电子屏' &&
+                                data.addInfo.capacity === ''
+                            ) {
+                                this.$message({
+                                    message: '请输入容纳人数',
+                                    type: 'error'
+                                });
+                            } else {
+                                this.$post(addOrUpdateSharedResource, data).then(
+                                    res => {
+                                        if (res.operationResult === 'failure') {
+                                            this.$message({
+                                                message: 'failureMsg',
+                                                type: 'error'
+                                            });
+                                        } else {
+                                            this.resetForm(formName);
+                                            this.SharedResourceInfoAddVisible = false;
+                                            this.$message({
+                                                message: '添加成功',
+                                                type: 'success'
+                                            });
+                                            this.getSharedResourceList(
+                                                sharedResourceList
+                                            );
+                                        }
                                     }
-                                }
-                            );
+                                );
+                            }
                         }
                     } else {
                         console.log('表单未完全填写');
@@ -680,11 +806,21 @@
             },
             // 编辑共享资源
             sharedResourceInfoEdit(index, row) {
-                this.SharedResourceInfoEditVisible = true;
                 this.SharedResourceInfo = publicFunction.deepCopy(
                     this.SharedResourceInfo,
                     row
                 );
+                let images = this.SharedResourceInfo.addInfo.images;
+                let arr = [];
+                for (let i in images) {
+                    let data = {
+                        name: i,
+                        url: images[i]
+                    }
+                    arr.push(data)
+                }
+                this.SharedResourceInfo.addInfo.images = arr;
+                this.SharedResourceInfoEditVisible = true;
             },
             // 添加共享资源
             updateSharedResourceInfo(formName) {
@@ -693,43 +829,54 @@
                         let data = this.SharedResourceInfo;
                         data.parkId = localStorage.getItem('parkId');
                         console.log(JSON.stringify(data));
-                        console.log(JSON.stringify( this.SharedResourceInfo));
+                        console.log(JSON.stringify(this.SharedResourceInfo));
                         data.addInfo.capacity = data.type === '电子屏' ? '' : data.addInfo.capacity;
-                        if (
-                            data.type !== '电子屏' &&
-                            data.addInfo.capacity === ''
-                        ) {
-                            this.$message({
-                                message: '请输入容纳人数',
-                                type: 'error'
+                        let arr = [];
+                        let images = this.SharedResourceInfo.addInfo.images;
+                        console.log(images)
+                        for (let i in images) {
+                            if (typeof images[i].response === 'undefined') {
+                                arr.push(images[i].url);
+                            } else {
+                                arr.push(images[i].response.responseList.url)
+                            }
+                        }
+                        if (arr.length < 1) {
+                            this.$alert('请至少添加一张图片', '提示', {
+                                confirmButtonText: '确定'
                             });
                         } else {
-                            // if (data.addInfo.images.length === 0) {
-                            //     this.$message({
-                            //         message: '请至少添加一张图片',
-                            //         type: 'error'
-                            //     });
-                            // } else {
-                            this.$post(addOrUpdateSharedResource, data).then(
-                                res => {
-                                    if (res.operationResult === 'failure') {
-                                        this.$message({
-                                            message: 'failureMsg',
-                                            type: 'error'
-                                        });
-                                    } else {
-                                        this.resetForm(formName);
-                                        this.SharedResourceInfoEditVisible = false;
-                                        this.$message({
-                                            message: '更新成功',
-                                            type: 'success'
-                                        });
-                                        this.getSharedResourceList(
-                                            sharedResourceList
-                                        );
+                            data.addInfo.images = arr;
+                            if (
+                                data.type !== '电子屏' &&
+                                data.addInfo.capacity === ''
+                            ) {
+                                this.$message({
+                                    message: '请输入容纳人数',
+                                    type: 'error'
+                                });
+                            } else {
+                                this.$post(addOrUpdateSharedResource, data).then(
+                                    res => {
+                                        if (res.operationResult === 'failure') {
+                                            this.$message({
+                                                message: 'failureMsg',
+                                                type: 'error'
+                                            });
+                                        } else {
+                                            this.resetForm(formName);
+                                            this.SharedResourceInfoEditVisible = false;
+                                            this.$message({
+                                                message: '更新成功',
+                                                type: 'success'
+                                            });
+                                            this.getSharedResourceList(
+                                                sharedResourceList
+                                            );
+                                        }
                                     }
-                                }
-                            );
+                                );
+                            }
                         }
                     } else {
                         console.log('表单未完全填写');
@@ -890,27 +1037,44 @@
                 }
 
             },
-            handleRemove(file, fileList) {
-                console.log(file, fileList);
+            // 图片上传组件
+            handleExceed(files, fileList) {
+                this.$message.warning(
+                    `当前限制选择 4 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`);
+            },
+            beforeRemove(file, fileList) {
+                return this.$confirm(`确定移除 ${ file.name }？`);
+            },
+            handleRemoveForAdd(file, fileList) {
+                this.SharedResourceInfoAddForm.addInfo.images = fileList;
+            },
+            moreShowForAdd(res, file, fileList) {
+                this.SharedResourceInfoAddForm.addInfo.images = fileList;
+            },
+            handleRemoveForEdit(file, fileList) {
+                this.SharedResourceInfo.addInfo.images = fileList;
+            },
+            moreShowForEdit(res, file, fileList) {
+                this.SharedResourceInfo.addInfo.images = fileList;
             },
             handlePictureCardPreview(file) {
                 this.dialogImageUrl = file.url;
                 this.dialogVisible = true;
             },
-            handleAvatarSuccess(res, file) {
-                this.houseKeepingInfo.thumbUrl = res.responseList.url;
+            imgUploadError(res, file) {
+                this.$message({
+                    message: '图片上传失败，请检查',
+                    type: 'error'
+                });
             },
-            moreShow(res, file, fileList) {
-                this.morePicList.push(res.responseList);
-            },
-            beforeAvatarUpload(file) {
+            beforeUpload(file) {
                 const isJPG = file.type === 'image/jpeg';
                 const isLt2M = file.size / 1024 / 1024 < 2;
                 if (!isJPG) {
-                    this.$message.error('上传头像图片只能是 JPG 格式!');
+                    this.$message.error('上传图片只能是 JPG 格式!');
                 }
                 if (!isLt2M) {
-                    this.$message.error('上传头像图片大小不能超过 2MB!');
+                    this.$message.error('上传图片大小不能超过 2MB!');
                 }
                 return isJPG && isLt2M;
             },
@@ -920,6 +1084,14 @@
             SharedResourceListPageCurrentChange(val) {
                 this.SharedResourceListPage = val;
                 this.sharedResourceListSeach();
+            },
+            ApplicationRecordListPagesizeChange(val) {
+                this.ApplicationRecordListPagesize = val;
+            },
+            ApplicationRecordListPageCurrentChange(val) {
+                this.ApplicationRecordListPage = val;
+                // this.getBookSharedResourceList(bookSharedResourceList);
+                this.applicationRecordListSeach();
             },
             handleClick(tab, event) {
                 console.log(tab, event);
@@ -1006,7 +1178,7 @@
             // 获取共享资源申请列表
             getBookSharedResourceList(url) {
                 this.ApplicationRecordListLoading = true;
-                this.$get(url + `&type=USER_ORDER_SHARED_RESOURCE`).then(res => {
+                this.$get(url).then(res => {
                     this.ApplicationRecordList = res;
                     this.ApplicationRecordListTotal =
                         this.ApplicationRecordList.length > 0 ?
@@ -1014,7 +1186,46 @@
                         0;
                     this.ApplicationRecordListLoading = false;
                 });
-            }
+            },
+            // 共享资源申请列表查询
+            applicationRecordListSeach() {
+                let resourceType = this.applicationRecordFilter.resourceType === '' ? '' :
+                    `&resourceType=${this.applicationRecordFilter.resourceType}`;
+                let state = this.applicationRecordFilter.state === '' ? '' :
+                    `&state=${this.applicationRecordFilter.state}`;
+                let selection = this.applicationRecordFilter.selection === '' ? '' :
+                    `&selection=${this.applicationRecordFilter.selection}`;
+                let url = bookSharedResourceList + resourceType + state + selection;
+                this.getBookSharedResourceList(url);
+            },
+            // 查看共享资源详情
+            ApplicationRecordCheck(index, row) {
+                this.ApplicationRecordCheckVisible = true;
+                this.ApplicationRecordInfo = publicFunction.deepCopy(this.ApplicationRecordInfo, row);
+            },
+            // 共享资源申请退款
+            ApplicationRecordRefund(index, row) {
+                this.$confirm('确认将对该申请人进行退款操作?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    let data = row;
+                    data.addInfo.state = '已退款';
+                    this.$put(updateUserTargetAssociation, data).then(res => {
+                        this.$message({
+                            type: 'success',
+                            message: '退款成功!'
+                        });
+                        this.applicationRecordListSeach();
+                    });
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消退款'
+                    });
+                });
+            },
         },
         mounted() {
             this.imgData = {
@@ -1073,5 +1284,11 @@
         &:focus {
             outline: none;
         }
+    }
+
+    .tableImg {
+        width: 40px;
+        height: 40px;
+        border-radius: 4px;
     }
 </style>

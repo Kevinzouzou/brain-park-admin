@@ -2,16 +2,12 @@
 
 let base = '';
 const parkId='969878f1f1149e6a7afae38636c0abc';
-// let userId='71f3df48263f4c74be2efbb83250e66b';
-// let upUrl='http://218.17.39.178:2040';//微品云（开发）
-let upUrl='https://yqdndev.vpclub.cn/api10005/';  //阿里云(开发)
-// let upUrl='https://172.16.0.111:10005/';  //阿里云(开发)
-// let upUrl='http://192.168.2.214:2040/';  // other
 // let upUrl='https://shbeta.vpclub.cn/api10005';//新阿里云
-// let upUrl='http://39.107.252.186:10005';//阿里云地址（正式）
+let upUrl='https://yqdndev.vpclub.cn/api10005/';  //阿里云(开发)
+// let upUrl='https://172.16.0.111:10005/';  //本地
+
 
 localStorage.setItem("parkId",parkId);
-// localStorage.setItem("userId",userId);
 // localStorage.setItem("upUrl",upUrl);
 // const parkId = localStorage.getItem("parkId");
 
@@ -75,7 +71,6 @@ export const inspectTaskListUrl=`/inspectionTask/inspectionTaskList?parkId=`+loc
 export const delInsTaskUrl=`/inspectionTask/deleteInspectionTask/`;  //删除巡检任务
 export const addUpdateInsTaskUrl=`/inspectionTask/addOrUpdateInspectionTask`;  //添加或修改巡检任务
 export const loginUrl=`/logIn?parkId=`+localStorage.getItem("parkId");  //登录
-export const loginoutUrl=`/logOut?token=`;  //登录
 
 // 用户管理
 export const parkStaffList = `/parkStaff/parkStaffList?parkId=${parkId}`;                                   // 获取用户列表
@@ -106,6 +101,16 @@ export const sharedResourceList = `/sharedResource/sharedResourceList?parkId=${p
 export const addOrUpdateSharedResource = `/sharedResource/addOrUpdateSharedResource`                            // 添加或修改共享资源对象
 export const deleteSharedResource = `/sharedResource/deleteSharedResource/`                                     // 删除共享资源对象
 export const sharedResourceReservationList = `/sharedResourceReservation/sharedResourceReservationList`         // 查询共享资源列表
-export const bookSharedResourceList = `/userTargetAssociation/bookSharedResourceList?parkId=${parkId}`          // 共享资源申请列表
+export const bookSharedResourceList = `/userTargetAssociation/bookSharedResourceList?parkId=${parkId}&type=USER_ORDER_SHARED_RESOURCE`          // 共享资源申请列表
+export const updateUserTargetAssociation = `/userTargetAssociation/updateUserTargetAssociation`                 // 修改共享资源申请列表
 export const addSharedResourceReservation = `/sharedResourceReservation/addSharedResourceReservation`           // 添加共享资源预定
 export const deleteSharedResourceReservation = `/sharedResourceReservation/deleteSharedResourceReservation/`    // 删除共享资源预定信息
+export const apartmentResourcesList = `/displayContent/apartmentResourcesList?parkId=${parkId}`                 // 公寓租赁列表
+
+// 商务服务
+export const commerceCourseListByTime = `/commerceCourse/commerceCourseListByTime?parkId=${parkId}`                     // 预约管理列表
+export const addOrUpCommerceCourse = `/commerceCourse/addOrUpCommerceCourse?parkId=${parkId}`                           // 添加或修改上门预约课程
+export const deleteCommerceCourse = `/commerceCourse/deleteCommerceCourse/`                                             // 删除上门预约课程
+export const commerceCourseList = `/commerceCourseList/${parkId}`                                                       // 上门预约课程列表
+export const deleteUserTargetAssociation = `/userTargetAssociation/deleteUserTargetAssociation/`                        // 删除用户目标关联
+export const businessServerOrderHistoryList = `/userTargetAssociation/businessServerOrderHistoryList?parkId=${parkId}`  // 商务课程预约管理历史记录

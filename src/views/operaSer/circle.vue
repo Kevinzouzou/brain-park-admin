@@ -30,7 +30,7 @@
                     </el-table-column>
                     <el-table-column label="操作" width="150">
                         <template slot-scope="scope">
-                            <el-button type="info" size="small" @click="circleEdit(scope.$index, scope.row)">编辑</el-button>
+                            <el-button type="primary" size="small" @click="circleEdit(scope.$index, scope.row)">编辑</el-button>
                             <el-button type="danger" size="small" @click="circleDel(scope.$index, scope.row)">删除</el-button>
                         </template>
                     </el-table-column>
@@ -182,7 +182,7 @@
                     <el-table-column label="操作">
                         <template slot-scope="scope">
                             <el-button type="success" size="small" @click="actApplicant(scope.$index, scope.row)">报名</el-button>
-                            <el-button type="info" size="small" @click="activityEdit(scope.$index, scope.row)">编辑</el-button>
+                            <el-button type="primary" size="small" @click="activityEdit(scope.$index, scope.row)">编辑</el-button>
                             <el-button type="danger" size="small" @click="activityDel(scope.$index, scope.row)">删除</el-button>
                         </template>
                     </el-table-column>

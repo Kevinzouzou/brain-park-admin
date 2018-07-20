@@ -32,7 +32,7 @@
             <el-table-column label="操作">
                 <template slot-scope="scope">
                     <el-button type="success" size="small" @click="feBackView(scope.$index, scope.row)">查看</el-button>
-                    <el-button type="info" size="small" @click="feBackEdit(scope.$index, scope.row)" v-if="scope.row.stage!=='已处理'">回复</el-button>
+                    <el-button type="primary" size="small" @click="feBackEdit(scope.$index, scope.row)" v-if="scope.row.stage!=='已处理'">回复</el-button>
                 </template>
             </el-table-column>
         </el-table>

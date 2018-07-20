@@ -49,7 +49,7 @@
             </el-table-column>
             <el-table-column label="操作" width="150">
                 <template slot-scope="scope">
-                    <el-button type="info" size="small" @click="parkOperatorEdit(scope.$index, scope.row)">查看</el-button>
+                    <el-button type="primary" size="small" @click="parkOperatorEdit(scope.$index, scope.row)">查看</el-button>
                     <el-button type="danger" size="small" @click="deleteParkOperator(scope.$index, scope.row)">删除</el-button>
                 </template>
             </el-table-column>
@@ -73,14 +73,14 @@
                             <el-input placeholder="请填写用户名" v-model="addParkOperatorForm.phone"></el-input>
                         </el-form-item>
                         <el-form-item label="登录密码：" required>
-                            <el-input placeholder="重置密码将随机生成8位数密码" v-model="addParkOperatorForm.password" disabled=""></el-input>
+                            <el-input placeholder="重置密码将随机生成8位数新密码" v-model="addParkOperatorForm.password" disabled=""></el-input>
                         </el-form-item>
                     </el-col>
                     <el-col :span="10">
                         <el-form-item label="状态：" required>
                             <el-select v-model="addParkOperatorForm.addInfo.state">
-                                <el-option label="正常" value="1"></el-option>
-                                <el-option label="停用" value="2"></el-option>
+                                <el-option label="正常" :value="1"></el-option>
+                                <el-option label="停用" :value="2"></el-option>
                             </el-select>
                         </el-form-item>
                         <el-button @click="createPassword()">重置密码</el-button>
@@ -100,7 +100,10 @@
                             </el-table-column>
                             <el-table-column prop="name" label="角色名称" width="150">
                             </el-table-column>
-                            <el-table-column prop="addInfo.permissionList" label="权限">
+                            <el-table-column label="权限">
+                                <template slot-scope="scope">
+                                    <span :key="item" v-for="item in scope.row.addInfo.permissionList">{{item}}、</span>
+                                </template>
                             </el-table-column>
                             <el-table-column prop="intro" label="角色描述">
                             </el-table-column>
@@ -244,8 +247,8 @@
                     <el-col :span="10">
                         <el-form-item label="状态：" required>
                             <el-select v-model="editParkOperatorForm.addInfo.state">
-                                <el-option label="正常" value="1"></el-option>
-                                <el-option label="停用" value="2"></el-option>
+                                <el-option label="正常" :value="1"></el-option>
+                                <el-option label="停用" :value="2"></el-option>
                             </el-select>
                         </el-form-item>
                         <el-button @click="resetPassword()">重置密码</el-button>
@@ -266,7 +269,10 @@
                             </el-table-column>
                             <el-table-column prop="name" label="角色名称" width="150">
                             </el-table-column>
-                            <el-table-column prop="addInfo.permissionList" label="权限">
+                            <el-table-column label="权限">
+                                <template slot-scope="scope">
+                                    <span :key="item" v-for="item in scope.row.addInfo.permissionList">{{item}}、</span>
+                                </template>
                             </el-table-column>
                             <el-table-column prop="intro" label="角色描述">
                             </el-table-column>
@@ -342,472 +348,426 @@
     </section>
 </template>
 <script>
-import axios from 'axios';
-import {
-    parkUserList,
-    parkOperatorList,
-    addParkUser,
-    deleteStaff,
-    parkRoleList,
-    updateParkUserInfo
-} from '../../api/api';
-export default {
-    data() {
-        return {
-            page: 1,
-            pagesize: 7,
-            parkOperatorListLoading: false,
-            parkOperatorList: [],
-            parkOperatorListTotal: 0,
-            parkRoleList: [],
-            editParkRoleList: [],
-            parkUserList: [],
-            multipleSelection: [],
-            assignedRoleText: '',
-            restaurants: [],
-            parkOperatorListFilters: {
-                phone: ''
-            },
-            parkUserListLoading: false,
-            parkUserListFilters: {
-                nameOrPhone: ''
-            },
-            addParkOperatorFormVisible: false,
-            innerParkUserVisible: false,
-            addParkOperatorForm: {
-                addInfo: {
-                    state: '1',
-                    roleList: [],
-                    ownerId: ''
+    import axios from 'axios';
+    import {
+        parkUserList,
+        parkOperatorList,
+        addParkUser,
+        deleteUser,
+        parkRoleList,
+        updateParkUserInfo
+    } from '../../api/api';
+    import publicFunction from '../../api/publicFunction';
+    export default {
+        data() {
+            return {
+                page: 1,
+                pagesize: 7,
+                parkOperatorListLoading: false,
+                parkOperatorList: [],
+                parkOperatorListTotal: 0,
+                parkRoleList: [],
+                editParkRoleList: [],
+                parkUserList: [],
+                multipleSelection: [],
+                assignedRoleText: '',
+                restaurants: [],
+                parkOperatorListFilters: {
+                    phone: ''
                 },
-                phone: '',
-                password: '',
-                type: 3,
-                ownerInfo: {
-                    name: '',
-                    empNo: '',
-                    position: '',
-                    departmentName: ''
-                }
-            },
-            addParkOperatorFormRules: {
-                phone: [
-                    {
-                        required: true,
-                        message: '请输入5到16位英文字母或数字作为用户名',
-                        trigger: 'blur',
-                        pattern: /^[a-zA-Z0-9_-]{5,16}$/
-                    }
-                ]
-            },
-            formLabelWidth: '120px',
-            editOperatorAssignedRoleText: '',
-            editParkOperatorFormIsShow: false,
-            editParkOperatorFormVisible: false,
-            editInnerParkUserVisible: false,
-            editParkOperatorTableData: [],
-            editParkOperatorForm: {
-                id: '',
-                phone: '',
-                password: '',
-                type: 3,
-                addInfo: {
-                    state: '1',
-                    ownerId: '',
-                    roleList: []
+                parkUserListLoading: false,
+                parkUserListFilters: {
+                    nameOrPhone: ''
                 },
-                ownerInfo: {
+                addParkOperatorFormVisible: false,
+                innerParkUserVisible: false,
+                addParkOperatorForm: {
                     addInfo: {
+                        state: 1,
+                        roleList: [],
+                        ownerId: ''
+                    },
+                    phone: '',
+                    password: '',
+                    type: 3,
+                    ownerInfo: {
                         name: '',
                         empNo: '',
-                        position: ''
-                    },
-                    departmentInfo: {
-                        name: ''
+                        position: '',
+                        departmentName: ''
                     }
-                }
-            },
-            editParkOperatorFormRules: {
-                phone: [
-                    {
+                },
+                addParkOperatorFormRules: {
+                    phone: [{
                         required: true,
                         message: '请输入5到16位英文字母或数字作为用户名',
                         trigger: 'blur',
                         pattern: /^[a-zA-Z0-9_-]{5,16}$/
+                    }]
+                },
+                formLabelWidth: '120px',
+                editOperatorAssignedRoleText: '',
+                editParkOperatorFormIsShow: false,
+                editParkOperatorFormVisible: false,
+                editInnerParkUserVisible: false,
+                editParkOperatorTableData: [],
+                editParkOperatorForm: {
+                    id: '',
+                    phone: '',
+                    password: '',
+                    type: 3,
+                    addInfo: {
+                        state: 1,
+                        ownerId: '',
+                        roleList: []
+                    },
+                    ownerInfo: {
+                        addInfo: {
+                            name: '',
+                            empNo: '',
+                            position: ''
+                        },
+                        departmentInfo: {
+                            name: ''
+                        }
                     }
-                ]
-            }
-        };
-    },
-    methods: {
-        // 查询操作员角色列表
-        getParkRoleList(url) {
-            this.$get(url).then(res => {
-                this.parkRoleList = res;
-                this.editParkRoleList = res;
-            });
-        },
-        // 获取操作员列表
-        getParkOperatorList(url) {
-            this.parkOperatorListLoading = true;
-            this.$get(url).then(res => {
-                this.parkOperatorList = res;
-                this.parkOperatorListTotal =
-                    this.parkOperatorListTotal.length > 0
-                        ? this.parkOperatorListTotal.length
-                        : 1;
-                this.parkOperatorListLoading = false;
-            });
-        },
-        //获取员工列表
-        getParkUserList(url) {
-            this.parkUserListLoading = true;
-            this.$get(url).then(res => {
-                this.parkUserList = res;
-                this.parkUserListLoading = false;
-            });
-        },
-        // 选择该员工
-        selectParkUser: function(index, row) {
-            this.addParkOperatorForm.addInfo.ownerId = row.id;
-            this.addParkOperatorForm.ownerInfo.name = row.addInfo.name;
-            this.addParkOperatorForm.ownerInfo.empNo = row.addInfo.empNo;
-            this.addParkOperatorForm.ownerInfo.position = row.addInfo.position;
-            this.addParkOperatorForm.ownerInfo.departmentName =
-                row.departmentInfo.name;
-            this.innerParkUserVisible = false;
-        },
-        // 选择该员工
-        selectEditParkUser: function(index, row) {
-            this.editParkOperatorForm.addInfo.ownerId = row.id;
-            this.editParkOperatorForm.ownerInfo.addInfo.name = row.addInfo.name;
-            this.editParkOperatorForm.ownerInfo.addInfo.empNo =
-                row.addInfo.empNo;
-            this.editParkOperatorForm.ownerInfo.addInfo.position =
-                row.addInfo.position;
-            this.editParkOperatorForm.ownerInfo.departmentInfo.name =
-                row.departmentInfo.name;
-            this.editInnerParkUserVisible = false;
-        },
-        // 添加操作员
-        addParkOperator(formName) {
-            this.$refs[formName].validate(valid => {
-                if (valid) {
-                    let data = this.addParkOperatorForm;
-                    if (data.addInfo.roleList.length === 0) {
-                        this.$message.error('请给操作员分配角色');
-                    } else if (data.addInfo.ownerId === '') {
-                        this.$message.error('请选择账号所有者');
-                    } else if (data.password === '') {
-                        this.$message.error('请重置密码');
-                    } else {
-                        delete data.ownerInfo;
-                        data.parkId = localStorage.getItem('parkId');
-                        data.addInfo.state = data.addInfo.state === '1' ? 1 : 2;
-                        this.$post(addParkUser, data).then(res => {
-                            if (res.operationResult === 'failure') {
-                                let title = res.failureMsg;
-                                let name = res.responseList.name;
-                                let phone = res.responseList.phone;
-                                let post = res.responseList.post;
-                                let id = res.responseList.id;
-                                this.$alert(
-                                    `<span>姓名：${name}</span></br><span>电话：${phone}</span></br><span>职位：${post}</span></br><span>ID：${id}</span></br>`,
-                                    title,
-                                    {
-                                        dangerouslyUseHTMLString: true
-                                    }
-                                );
-                            } else {
-                                this.getParkOperatorList(parkOperatorList);
-                                this.addParkOperatorForm = {
-                                    addInfo: {
-                                        state: '1',
-                                        roleList: [],
-                                        ownerId: ''
-                                    },
-                                    phone: '',
-                                    password: '',
-                                    type: 3,
-                                    ownerInfo: {
-                                        name: '',
-                                        empNo: '',
-                                        position: '',
-                                        departmentName: ''
-                                    }
-                                };
-                                this.resetForm('addParkOperatorForm');
-                                this.$message({
-                                    message: '添加成功',
-                                    type: 'success'
-                                });
-                                this.clearSelection();
-                                this.addParkOperatorFormVisible = false;
-                            }
-                        });
-                    }
-                } else {
-                    console.log('表单未完全填写');
-                    return false;
+                },
+                editParkOperatorFormRules: {
+                    phone: [{
+                        required: true,
+                        message: '请输入5到16位英文字母或数字作为用户名',
+                        trigger: 'blur',
+                        pattern: /^[a-zA-Z0-9_-]{5,16}$/
+                    }]
                 }
-            });
+            };
         },
-        // 打开编辑操作员窗口
-        parkOperatorEdit: function(index, row) {
-            this.editOperatorAssignedRoleText = '';
-            this.editParkOperatorTableData = [];
-            this.editParkOperatorFormVisible = true;
-            this.editParkOperatorFormIsShow = false;
-            this.editParkOperatorForm = this.deepCopy(
-                this.editParkOperatorForm,
-                row
-            );
-            let editParkRoleList = this.editParkRoleList;
-            let roleList = this.editParkOperatorForm.addInfo.roleList;
-            if (this.editParkOperatorForm.addInfo.roleList.length > 0) {
-                for (let i = 0; i < editParkRoleList.length; i++) {
-                    for (let j = 0; j < roleList.length; j++) {
-                        if (roleList[j] == editParkRoleList[i].id) {
-                            this.editOperatorAssignedRoleText +=
-                                editParkRoleList[i].name + '、';
-                            this.editParkOperatorTableData.push(
-                                editParkRoleList[i]
-                            );
+        methods: {
+            // 查询操作员角色列表
+            getParkRoleList(url) {
+                this.$get(url).then(res => {
+                    this.parkRoleList = res;
+                    this.editParkRoleList = res;
+                });
+            },
+            // 获取操作员列表
+            getParkOperatorList(url) {
+                this.parkOperatorListLoading = true;
+                this.$get(url).then(res => {
+                    this.parkOperatorList = res;
+                    this.parkOperatorListTotal =
+                        this.parkOperatorListTotal.length > 0 ?
+                        this.parkOperatorListTotal.length :
+                        1;
+                    this.parkOperatorListLoading = false;
+                });
+            },
+            //获取员工列表
+            getParkUserList(url) {
+                this.parkUserListLoading = true;
+                this.$get(url).then(res => {
+                    this.parkUserList = res;
+                    this.parkUserListLoading = false;
+                });
+            },
+            // 选择该员工
+            selectParkUser: function (index, row) {
+                this.addParkOperatorForm.addInfo.ownerId = row.id;
+                this.addParkOperatorForm.ownerInfo.name = row.addInfo.name;
+                this.addParkOperatorForm.ownerInfo.empNo = row.addInfo.empNo;
+                this.addParkOperatorForm.ownerInfo.position = row.addInfo.position;
+                this.addParkOperatorForm.ownerInfo.departmentName =
+                    row.departmentInfo.name;
+                this.innerParkUserVisible = false;
+            },
+            // 选择该员工
+            selectEditParkUser: function (index, row) {
+                this.editParkOperatorForm.addInfo.ownerId = row.id;
+                this.editParkOperatorForm.ownerInfo.addInfo.name = row.addInfo.name;
+                this.editParkOperatorForm.ownerInfo.addInfo.empNo =
+                    row.addInfo.empNo;
+                this.editParkOperatorForm.ownerInfo.addInfo.position =
+                    row.addInfo.position;
+                this.editParkOperatorForm.ownerInfo.departmentInfo.name =
+                    row.departmentInfo.name;
+                this.editInnerParkUserVisible = false;
+            },
+            // 添加操作员
+            addParkOperator(formName) {
+                this.$refs[formName].validate(valid => {
+                    if (valid) {
+                        let data = this.addParkOperatorForm;
+                        if (data.addInfo.roleList.length === 0) {
+                            this.$message.error('请给操作员分配角色');
+                        } else if (data.addInfo.ownerId === '') {
+                            this.$message.error('请选择账号所有者');
+                        } else if (data.password === '') {
+                            this.$message.error('请重置密码');
+                        } else {
+                            delete data.ownerInfo;
+                            data.parkId = localStorage.getItem('parkId');
+                            data.addInfo.state = data.addInfo.state === 1 ? 1 : 2;
+                            this.$post(addParkUser, data).then(res => {
+                                if (res.operationResult === 'failure') {
+                                    let title = res.failureMsg;
+                                    let name = res.responseList.name;
+                                    let phone = res.responseList.phone;
+                                    let post = res.responseList.post;
+                                    let id = res.responseList.id;
+                                    this.$alert(
+                                        `<span>姓名：${name}</span></br><span>电话：${phone}</span></br><span>职位：${post}</span></br><span>ID：${id}</span></br>`,
+                                        title, {
+                                            dangerouslyUseHTMLString: true
+                                        }
+                                    );
+                                } else {
+                                    this.getParkOperatorList(parkOperatorList);
+                                    this.addParkOperatorForm = {
+                                        addInfo: {
+                                            state: 1,
+                                            roleList: [],
+                                            ownerId: ''
+                                        },
+                                        phone: '',
+                                        password: '',
+                                        type: 3,
+                                        ownerInfo: {
+                                            name: '',
+                                            empNo: '',
+                                            position: '',
+                                            departmentName: ''
+                                        }
+                                    };
+                                    this.resetForm('addParkOperatorForm');
+                                    this.$message({
+                                        message: '添加成功',
+                                        type: 'success'
+                                    });
+                                    this.clearSelection();
+                                    this.addParkOperatorFormVisible = false;
+                                }
+                            });
+                        }
+                    } else {
+                        console.log('表单未完全填写');
+                        return false;
+                    }
+                });
+            },
+            // 打开编辑操作员窗口
+            parkOperatorEdit: function (index, row) {
+                this.editOperatorAssignedRoleText = '';
+                this.editParkOperatorTableData = [];
+                this.editParkOperatorFormVisible = true;
+                this.editParkOperatorFormIsShow = false;
+                this.editParkOperatorForm = publicFunction.deepCopy(this.editParkOperatorForm,
+                    row)
+                let editParkRoleList = this.editParkRoleList;
+                let roleList = this.editParkOperatorForm.addInfo.roleList;
+                if (this.editParkOperatorForm.addInfo.roleList.length > 0) {
+                    for (let i = 0; i < editParkRoleList.length; i++) {
+                        for (let j = 0; j < roleList.length; j++) {
+                            if (roleList[j] == editParkRoleList[i].id) {
+                                this.editOperatorAssignedRoleText +=
+                                    editParkRoleList[i].name + '、';
+                                this.editParkOperatorTableData.push(
+                                    editParkRoleList[i]
+                                );
+                            }
                         }
                     }
                 }
-            }
-            this.$nextTick(function() {
-                this.assignedRoleText = '';
-                this.toggleSelection();
-                this.toggleSelection(this.editParkOperatorTableData);
-            });
-        },
-        toggleSelection(rows) {
-            if (rows) {
-                rows.forEach(row => {
-                    this.$refs.editParkRoleTable.toggleRowSelection(row, true);
+                this.$nextTick(function () {
+                    this.assignedRoleText = '';
+                    this.toggleSelection();
+                    this.toggleSelection(this.editParkOperatorTableData);
                 });
-            } else {
-                this.assignedRoleText = '';
-                this.$refs.editParkRoleTable.clearSelection();
-            }
-        },
-        // 修改操作员
-        updateParkOperator(formName) {
-            this.$refs[formName].validate(valid => {
-                if (valid) {
-                    let data = this.editParkOperatorForm;
-                    if (data.addInfo.roleList.length === 0) {
-                        this.$message.error('请给操作员分配角色');
-                    } else if (data.addInfo.ownerId === '') {
-                        this.$message.error('请选择账号所有者');
-                    } else {
-                        delete data.ownerInfo;
-                        data.parkId = localStorage.getItem('parkId');
-                        data.addInfo.state = data.addInfo.state === '1' ? 1 : 2;
-                        console.log(data);
-                        this.$put(updateParkUserInfo, data).then(res => {
-                            if (res.operationResult === 'failure') {
-                                let title = res.failureMsg;
-                                let name = res.responseList.name;
-                                let phone = res.responseList.phone;
-                                let post = res.responseList.post;
-                                let id = res.responseList.id;
-                                this.$alert(
-                                    `<span>姓名：${name}</span></br><span>电话：${phone}</span></br><span>职位：${post}</span></br><span>ID：${id}</span></br>`,
-                                    title,
-                                    {
-                                        dangerouslyUseHTMLString: true
-                                    }
-                                );
-                            } else {
-                                this.editParkOperatorFormVisible = false;
-                                this.editParkOperatorForm = {
-                                    id: '',
-                                    phone: '',
-                                    password: '',
-                                    type: 3,
-                                    addInfo: {
-                                        state: '1',
-                                        ownerId: '',
-                                        roleList: []
-                                    },
-                                    ownerInfo: {
-                                        addInfo: {
-                                            name: '',
-                                            empNo: '',
-                                            position: ''
-                                        },
-                                        departmentInfo: {
-                                            name: ''
-                                        }
-                                    }
-                                };
-                                this.getParkOperatorList(parkOperatorList);
-                                this.resetForm('editParkOperatorForm');
-                                this.$message({
-                                    message: '修改成功',
-                                    type: 'success'
-                                });
-                            }
-                        });
-                    }
-                } else {
-                    console.log('表单未完全填写');
-                    return false;
-                }
-            });
-        },
-        // 删除操作员
-        deleteParkOperator: function(index, row) {
-            this.$confirm(
-                '删除操作员将同时取消该操作员的平台登录权限,是否删除？',
-                '注意！',
-                {
-                    type: 'warning'
-                }
-            )
-                .then(() => {
-                    this.parkOperatorListLoading = true;
-                    //NProgress.start();
-                    let para = {
-                        id: row.id
-                    };
-                    let self = this;
-                    this.$del(deleteStaff + para.id).then(function(response) {
-                        self.parkOperatorListLoading = false;
-                        //NProgress.done();
-                        self.$message({
-                            message: '删除成功',
-                            type: 'success'
-                        });
-                        self.getParkOperatorList(parkOperatorList);
+            },
+            toggleSelection(rows) {
+                if (rows) {
+                    rows.forEach(row => {
+                        this.$refs.editParkRoleTable.toggleRowSelection(row, true);
                     });
-                })
-                .catch(() => {});
-        },
-        // 查询公司或用户信息模糊查询
-        getQueryParkOperatorListList() {
-            let url = parkOperatorList;
-            let phone = this.parkOperatorListFilters.phone;
-            url = phone === '' ? url + '' : url + '&phone=' + phone;
-            this.getParkOperatorList(url);
-        },
-        // 查询员工
-        getQueryParkUserList() {
-            let url = parkUserList;
-            let nameOrPhone = this.parkUserListFilters.nameOrPhone;
-            url =
-                nameOrPhone === ''
-                    ? url + ''
-                    : url + '&nameOrPhone=' + nameOrPhone;
-            this.getParkUserList(url);
-        },
-        pageSizeChange(val) {
-            this.pagesize = val;
-        },
-        pageCurrentChange(val) {
-            this.page = val;
-            this.getParkOperatorList(parkOperatorList);
-        },
-        createFilter(queryString) {
-            return restaurant => {
-                return (
-                    restaurant.value
+                } else {
+                    this.assignedRoleText = '';
+                    this.$refs.editParkRoleTable.clearSelection();
+                }
+            },
+            // 修改操作员
+            updateParkOperator(formName) {
+                this.$refs[formName].validate(valid => {
+                    if (valid) {
+                        let data = this.editParkOperatorForm;
+                        if (data.addInfo.roleList.length === 0) {
+                            this.$message.error('请给操作员分配角色');
+                        } else if (data.addInfo.ownerId === '') {
+                            this.$message.error('请选择账号所有者');
+                        } else {
+                            delete data.ownerInfo;
+                            data.parkId = localStorage.getItem('parkId');
+                            data.addInfo.state = data.addInfo.state === 1 ? 1 : 2;
+                            console.log(data);
+                            this.$put(updateParkUserInfo, data).then(res => {
+                                if (res.operationResult === 'failure') {
+                                    let title = res.failureMsg;
+                                    let name = res.responseList.name;
+                                    let phone = res.responseList.phone;
+                                    let post = res.responseList.post;
+                                    let id = res.responseList.id;
+                                    this.$alert(
+                                        `<span>姓名：${name}</span></br><span>电话：${phone}</span></br><span>职位：${post}</span></br><span>ID：${id}</span></br>`,
+                                        title, {
+                                            dangerouslyUseHTMLString: true
+                                        }
+                                    );
+                                } else {
+                                    this.editParkOperatorFormVisible = false;
+                                    this.editParkOperatorForm = {
+                                        id: '',
+                                        phone: '',
+                                        password: '',
+                                        type: 3,
+                                        addInfo: {
+                                            state: '1',
+                                            ownerId: '',
+                                            roleList: []
+                                        },
+                                        ownerInfo: {
+                                            addInfo: {
+                                                name: '',
+                                                empNo: '',
+                                                position: ''
+                                            },
+                                            departmentInfo: {
+                                                name: ''
+                                            }
+                                        }
+                                    };
+                                    this.getParkOperatorList(parkOperatorList);
+                                    this.resetForm('editParkOperatorForm');
+                                    this.$message({
+                                        message: '修改成功',
+                                        type: 'success'
+                                    });
+                                }
+                            });
+                        }
+                    } else {
+                        console.log('表单未完全填写');
+                        return false;
+                    }
+                });
+            },
+            // 删除操作员
+            deleteParkOperator: function (index, row) {
+                this.$confirm(
+                        '删除操作员将同时取消该操作员的平台登录权限,是否删除？',
+                        '注意！', {
+                            type: 'warning'
+                        }
+                    )
+                    .then(() => {
+                        this.$del(deleteUser + row.id).then(res => {
+                            this.parkOperatorListLoading = false;
+                            this.$message({
+                                message: '删除成功',
+                                type: 'success'
+                            });
+                            this.getParkOperatorList(parkOperatorList);
+                        });
+                    })
+                    .catch(() => {});
+            },
+            // 查询公司或用户信息模糊查询
+            getQueryParkOperatorListList() {
+                let url = parkOperatorList;
+                let phone = this.parkOperatorListFilters.phone;
+                url = phone === '' ? url + '' : url + '&phone=' + phone;
+                this.getParkOperatorList(url);
+            },
+            // 查询员工
+            getQueryParkUserList() {
+                let url = parkUserList;
+                let nameOrPhone = this.parkUserListFilters.nameOrPhone;
+                url =
+                    nameOrPhone === '' ?
+                    url + '' :
+                    url + '&nameOrPhone=' + nameOrPhone;
+                this.getParkUserList(url);
+            },
+            pageSizeChange(val) {
+                this.pagesize = val;
+            },
+            pageCurrentChange(val) {
+                this.page = val;
+                this.getParkOperatorList(parkOperatorList);
+            },
+            createFilter(queryString) {
+                return restaurant => {
+                    return (
+                        restaurant.value
                         .toLowerCase()
                         .indexOf(queryString.toLowerCase()) === 0
-                );
-            };
+                    );
+                };
+            },
+            handleSelect(item) {
+                console.log(item);
+            },
+            handleIconClick(ev) {
+                console.log(ev);
+            },
+            createPassword() {
+                this.addParkOperatorForm.password = Math.random()
+                    .toString()
+                    .slice(-8);
+                this.$message({
+                    message: '重置成功，请牢记您的新密码',
+                    type: 'success'
+                });
+            },
+            resetPassword() {
+                this.editParkOperatorForm.password = Math.random()
+                    .toString()
+                    .slice(-8);
+                this.$message({
+                    message: '重置成功，请牢记您的新密码',
+                    type: 'success'
+                });
+            },
+            // 分配操作员角色
+            handleSelectionChange(val) {
+                this.multipleSelection = val;
+                this.assignedRoleText = '';
+                this.addParkOperatorForm.addInfo.roleList = [];
+                val.forEach(i => {
+                    this.assignedRoleText += i.name + '、';
+                    this.addParkOperatorForm.addInfo.roleList.push(i.id);
+                });
+            },
+            handleEditSelectionChange(val) {
+                this.editOperatorAssignedRoleText = '';
+                this.editParkOperatorForm.addInfo.roleList = [];
+                val.forEach(i => {
+                    this.editOperatorAssignedRoleText += i.name + '、';
+                    this.editParkOperatorForm.addInfo.roleList.push(i.id);
+                });
+            },
+            resetForm(formName) {
+                this.$refs[formName].resetFields();
+            },
+            clearSelection() {
+                this.addParkOperatorFormVisible = false;
+                this.$refs.multipleTable.clearSelection();
+                this.assignedRoleText = '';
+            },
         },
-        handleSelect(item) {
-            console.log(item);
-        },
-        handleIconClick(ev) {
-            console.log(ev);
-        },
-        createPassword() {
-            this.addParkOperatorForm.password = Math.random()
-                .toString()
-                .slice(-8);
-        },
-        resetPassword() {
-            this.editParkOperatorForm.password = Math.random()
-                .toString()
-                .slice(-8);
-        },
-        // 分配操作员角色
-        handleSelectionChange(val) {
-            this.multipleSelection = val;
-            this.assignedRoleText = '';
-            this.addParkOperatorForm.addInfo.roleList = [];
-            val.forEach(i => {
-                this.assignedRoleText += i.name + '、';
-                this.addParkOperatorForm.addInfo.roleList.push(i.id);
-            });
-        },
-        handleEditSelectionChange(val) {
-            this.editOperatorAssignedRoleText = '';
-            this.editParkOperatorForm.addInfo.roleList = [];
-            val.forEach(i => {
-                this.editOperatorAssignedRoleText += i.name + '、';
-                this.editParkOperatorForm.addInfo.roleList.push(i.id);
-            });
-        },
-        resetForm(formName) {
-            this.$refs[formName].resetFields();
-        },
-        clearSelection() {
-            this.addParkOperatorFormVisible = false;
-            this.$refs.multipleTable.clearSelection();
-            this.assignedRoleText = '';
-        },
-        // 拷贝对象
-        deepCopy(object, beCopied) {
-            for (let i in object) {
-                if (
-                    Object.prototype.toString.call(beCopied[i]) ===
-                    '[object String]'
-                ) {
-                    object[i] = beCopied[i];
-                } else if (
-                    Object.prototype.toString.call(beCopied[i]) ===
-                    '[object Number]'
-                ) {
-                    object[i] = beCopied[i] + '';
-                } else if (
-                    Object.prototype.toString.call(beCopied[i]) ===
-                    '[object Object]'
-                ) {
-                    this.deepCopy(object[i], beCopied[i]);
-                } else if (
-                    Object.prototype.toString.call(beCopied[i]) ===
-                    '[object Undefined]'
-                ) {
-                    object[i] = object[i];
-                } else if (
-                    Object.prototype.toString.call(beCopied[i]) ===
-                    '[object Boolean]'
-                ) {
-                    object[i] = beCopied[i];
-                } else if (
-                    Object.prototype.toString.call(beCopied[i]) ===
-                    '[object Array]'
-                ) {
-                    object[i] = beCopied[i];
-                } else {
-                    object[i] = '';
-                }
-            }
-            return object;
+        mounted() {
+            this.getParkUserList(parkUserList);
+            this.getParkOperatorList(parkOperatorList);
+            this.getParkRoleList(parkRoleList);
         }
-    },
-    mounted() {
-        this.getParkUserList(parkUserList);
-        this.getParkOperatorList(parkOperatorList);
-        this.getParkRoleList(parkRoleList);
-    }
-};
+    };
 </script>
 <style lang="scss" scoped>
 </style>
