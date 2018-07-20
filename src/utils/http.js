@@ -22,16 +22,25 @@ axios.interceptors.request.use(
         config.headers = {
             'Content-Type': 'application/json'
             // 'Content-Type':'application/x-www-form-urlencoded'
-        }
-        // if(token){
-        //   config.params = {'token':token}
-        // }
+        };
+        config.headers.token = sessionStorage.getItem('token');
         return config;
     },
     error => {
         return Promise.reject(err);
     }
 );
+// http response 拦截器
+axios.interceptors.response.use(function(response){
+    if(response.data.code=='1001'||response.data.code=='1002'){//具体的判断token失效的参数
+        sessionStorage.setItem("token",'');
+        window.location.href='/#/login'//需求方要求一旦出错立即跳转登录，所以采取这种侵入式的手段。
+    }else{
+        return response
+    }
+}, function (error) {
+    return Promise.reject(error);
+});
 
 
 //http response 拦截器

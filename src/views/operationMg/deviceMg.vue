@@ -599,7 +599,6 @@
                     }
                 });
             },
-
         },
         mounted(){
             this.getDevice();
