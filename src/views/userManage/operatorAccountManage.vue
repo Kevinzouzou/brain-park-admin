@@ -79,8 +79,8 @@
                     <el-col :span="10">
                         <el-form-item label="状态：" required>
                             <el-select v-model="addParkOperatorForm.addInfo.state">
-                                <el-option label="正常" value="1"></el-option>
-                                <el-option label="停用" value="2"></el-option>
+                                <el-option label="正常" :value="1"></el-option>
+                                <el-option label="停用" :value="2"></el-option>
                             </el-select>
                         </el-form-item>
                         <el-button @click="createPassword()">重置密码</el-button>
@@ -247,8 +247,8 @@
                     <el-col :span="10">
                         <el-form-item label="状态：" required>
                             <el-select v-model="editParkOperatorForm.addInfo.state">
-                                <el-option label="正常" value="1"></el-option>
-                                <el-option label="停用" value="2"></el-option>
+                                <el-option label="正常" :value="1"></el-option>
+                                <el-option label="停用" :value="2"></el-option>
                             </el-select>
                         </el-form-item>
                         <el-button @click="resetPassword()">重置密码</el-button>
@@ -353,10 +353,11 @@
         parkUserList,
         parkOperatorList,
         addParkUser,
-        deleteStaff,
+        deleteUser,
         parkRoleList,
         updateParkUserInfo
     } from '../../api/api';
+    import publicFunction from '../../api/publicFunction';
     export default {
         data() {
             return {
@@ -505,7 +506,7 @@
                         } else {
                             delete data.ownerInfo;
                             data.parkId = localStorage.getItem('parkId');
-                            data.addInfo.state = data.addInfo.state === '1' ? 1 : 2;
+                            data.addInfo.state = data.addInfo.state === 1 ? 1 : 2;
                             this.$post(addParkUser, data).then(res => {
                                 if (res.operationResult === 'failure') {
                                     let title = res.failureMsg;
@@ -523,7 +524,7 @@
                                     this.getParkOperatorList(parkOperatorList);
                                     this.addParkOperatorForm = {
                                         addInfo: {
-                                            state: '1',
+                                            state: 1,
                                             roleList: [],
                                             ownerId: ''
                                         },
@@ -559,10 +560,8 @@
                 this.editParkOperatorTableData = [];
                 this.editParkOperatorFormVisible = true;
                 this.editParkOperatorFormIsShow = false;
-                this.editParkOperatorForm = this.deepCopy(
-                    this.editParkOperatorForm,
-                    row
-                );
+                this.editParkOperatorForm = publicFunction.deepCopy(this.editParkOperatorForm,
+                    row)
                 let editParkRoleList = this.editParkRoleList;
                 let roleList = this.editParkOperatorForm.addInfo.roleList;
                 if (this.editParkOperatorForm.addInfo.roleList.length > 0) {
@@ -606,7 +605,7 @@
                         } else {
                             delete data.ownerInfo;
                             data.parkId = localStorage.getItem('parkId');
-                            data.addInfo.state = data.addInfo.state === '1' ? 1 : 2;
+                            data.addInfo.state = data.addInfo.state === 1 ? 1 : 2;
                             console.log(data);
                             this.$put(updateParkUserInfo, data).then(res => {
                                 if (res.operationResult === 'failure') {
@@ -668,20 +667,13 @@
                         }
                     )
                     .then(() => {
-                        this.parkOperatorListLoading = true;
-                        //NProgress.start();
-                        let para = {
-                            id: row.id
-                        };
-                        let self = this;
-                        this.$del(deleteStaff + para.id).then(function (response) {
-                            self.parkOperatorListLoading = false;
-                            //NProgress.done();
-                            self.$message({
+                        this.$del(deleteUser + row.id).then(res => {
+                            this.parkOperatorListLoading = false;
+                            this.$message({
                                 message: '删除成功',
                                 type: 'success'
                             });
-                            self.getParkOperatorList(parkOperatorList);
+                            this.getParkOperatorList(parkOperatorList);
                         });
                     })
                     .catch(() => {});
@@ -761,45 +753,6 @@
                 this.$refs.multipleTable.clearSelection();
                 this.assignedRoleText = '';
             },
-            // 拷贝对象
-            deepCopy(object, beCopied) {
-                for (let i in object) {
-                    if (
-                        Object.prototype.toString.call(beCopied[i]) ===
-                        '[object String]'
-                    ) {
-                        object[i] = beCopied[i];
-                    } else if (
-                        Object.prototype.toString.call(beCopied[i]) ===
-                        '[object Number]'
-                    ) {
-                        object[i] = beCopied[i] + '';
-                    } else if (
-                        Object.prototype.toString.call(beCopied[i]) ===
-                        '[object Object]'
-                    ) {
-                        this.deepCopy(object[i], beCopied[i]);
-                    } else if (
-                        Object.prototype.toString.call(beCopied[i]) ===
-                        '[object Undefined]'
-                    ) {
-                        object[i] = object[i];
-                    } else if (
-                        Object.prototype.toString.call(beCopied[i]) ===
-                        '[object Boolean]'
-                    ) {
-                        object[i] = beCopied[i];
-                    } else if (
-                        Object.prototype.toString.call(beCopied[i]) ===
-                        '[object Array]'
-                    ) {
-                        object[i] = beCopied[i];
-                    } else {
-                        object[i] = '';
-                    }
-                }
-                return object;
-            }
         },
         mounted() {
             this.getParkUserList(parkUserList);

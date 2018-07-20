@@ -26,6 +26,17 @@
                             </div>
                         </div>
                     </el-col>
+
+                </el-row>
+                <el-row>
+                    <el-col :span="24">
+                        <div class="grid-content userProfile">
+                            <div class="grid-title">共享资源概况</div>
+                            <div class="content">
+
+                            </div>
+                        </div>
+                    </el-col>
                 </el-row>
             </el-col>
         </el-row>
