@@ -77,8 +77,9 @@
               let parkId = data.userInfo.parkId;
               let userId = data.userInfo.id;
               // let upUrl='https://shbeta.vpclub.cn/api10005';//新阿里云
-              let upUrl = publicURL.URL; //阿里云(开发)
+              // let upUrl = 'https://yqdndev.vpclub.cn/api10005/'; //阿里云(开发)
               // let upUrl = 'http://172.16.0.111:10005/'; //本地
+              let upUrl = publicURL.URL; //阿里云(开发)
 
               sessionStorage.setItem('user', JSON.stringify(loginParams));
               sessionStorage.setItem('token', token);

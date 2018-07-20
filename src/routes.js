@@ -193,18 +193,6 @@ let routes = [
             },
         ]
     },
-    // {
-    //     path: '/',
-    //     component: Home,
-    //     name: '树形组件',
-    //     children: [
-    //         {
-    //             path: '/tree',
-    //             component: resolve => require(['./components/tree.vue'], resolve),
-    //             name: 'tree'
-    //         }
-    //     ]
-    // },
     {
         path: '/404',
         component: NotFound,
@@ -212,28 +200,7 @@ let routes = [
         hidden: true
     },
     //{ path: '/main', component: Main },
-    // {
-    //     path: '/',
-    //     component: Home,
-    //     name: '导航一',
-    //     iconCls: 'el-icon-message',//图标样式class
-    //     children: [
-    //         { path: '/main', component: Main, name: '主页', hidden: true },
-    //         { path: '/table', component: Table, name: 'Table' },
-    //         { path: '/form', component: Form, name: 'Form' },
-    //         { path: '/user', component: user, name: '列表' },
-    //     ]
-    // },
-    // {
-    //     path: '/',
-    //     component: Home,
-    //     name: 'Charts',
-    //     iconCls: 'fa fa-bar-chart',
-    //     children: [
-    //         { path: '/echarts', component: echarts, name: 'echarts' }
-    //     ]
-    // }
-
+    
 ];
 
 export default routes;
