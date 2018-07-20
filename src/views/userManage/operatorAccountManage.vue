@@ -49,7 +49,7 @@
             </el-table-column>
             <el-table-column label="操作" width="150">
                 <template slot-scope="scope">
-                    <el-button type="info" size="small" @click="parkOperatorEdit(scope.$index, scope.row)">查看</el-button>
+                    <el-button type="primary" size="small" @click="parkOperatorEdit(scope.$index, scope.row)">查看</el-button>
                     <el-button type="danger" size="small" @click="deleteParkOperator(scope.$index, scope.row)">删除</el-button>
                 </template>
             </el-table-column>
@@ -73,7 +73,7 @@
                             <el-input placeholder="请填写用户名" v-model="addParkOperatorForm.phone"></el-input>
                         </el-form-item>
                         <el-form-item label="登录密码：" required>
-                            <el-input placeholder="重置密码将随机生成8位数密码" v-model="addParkOperatorForm.password" disabled=""></el-input>
+                            <el-input placeholder="重置密码将随机生成8位数新密码" v-model="addParkOperatorForm.password" disabled=""></el-input>
                         </el-form-item>
                     </el-col>
                     <el-col :span="10">
@@ -383,7 +383,7 @@
                 innerParkUserVisible: false,
                 addParkOperatorForm: {
                     addInfo: {
-                        state: '1',
+                        state: 1,
                         roleList: [],
                         ownerId: ''
                     },
@@ -417,7 +417,7 @@
                     password: '',
                     type: 3,
                     addInfo: {
-                        state: '1',
+                        state: 1,
                         ownerId: '',
                         roleList: []
                     },
@@ -721,11 +721,19 @@
                 this.addParkOperatorForm.password = Math.random()
                     .toString()
                     .slice(-8);
+                this.$message({
+                    message: '重置成功，请牢记您的新密码',
+                    type: 'success'
+                });
             },
             resetPassword() {
                 this.editParkOperatorForm.password = Math.random()
                     .toString()
                     .slice(-8);
+                this.$message({
+                    message: '重置成功，请牢记您的新密码',
+                    type: 'success'
+                });
             },
             // 分配操作员角色
             handleSelectionChange(val) {

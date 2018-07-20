@@ -58,7 +58,7 @@
                             <el-table-column label="操作">
                                 <template slot-scope="scope">
                                     <el-button type="success" size="small" @click="topicInteract(scope.$index, scope.row)">互动</el-button>
-                                    <el-button type="info" size="small" @click="topicView(scope.$index, scope.row)">查看</el-button>
+                                    <el-button type="primary" size="small" @click="topicView(scope.$index, scope.row)">查看</el-button>
                                     <el-button type="danger" size="small" @click="topicDel(scope.$index, scope.row)">屏蔽</el-button>
                                 </template>
                             </el-table-column>
@@ -128,7 +128,7 @@
                             </el-table-column>
                             <el-table-column label="操作">
                                 <template slot-scope="scope">
-                                    <el-button type="info" size="small" @click="anCateEdit(scope.$index, scope.row)">编辑</el-button>
+                                    <el-button type="primary" size="small" @click="anCateEdit(scope.$index, scope.row)">编辑</el-button>
                                     <el-button type="danger" size="small" @click="anCateDel(scope.$index, scope.row)">删除</el-button>
                                 </template>
                             </el-table-column>

@@ -25,7 +25,7 @@
             </el-table-column>
             <el-table-column label="操作" width="150">
                 <template slot-scope="scope">
-                    <el-button type="info" size="small" @click="parkRoleEdit(scope.$index, scope.row)">详情</el-button>
+                    <el-button type="primary" size="small" @click="parkRoleEdit(scope.$index, scope.row)">详情</el-button>
                     <el-button type="danger" size="small" @click="deleteParkRole(scope.$index, scope.row)">删除</el-button>
                 </template>
             </el-table-column>
