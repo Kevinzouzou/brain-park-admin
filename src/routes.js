@@ -200,7 +200,7 @@ let routes = [
         hidden: true
     },
     //{ path: '/main', component: Main },
-    
+
 ];
 
 export default routes;
