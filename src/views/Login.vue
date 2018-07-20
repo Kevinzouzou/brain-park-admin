@@ -21,6 +21,7 @@
 <script>
   // import { requestLogin } from '../api/api';
   //import NProgress from 'nprogress'
+  import publicURL from '../../config/urlConfig';
   export default {
     data() {
       return {
@@ -76,7 +77,7 @@
               let userId = '71f3df48263f4c74be2efbb83250e66b';
               // let upUrl = 'http://192.168.2.214:2040/'; // other
               // let upUrl = 'http://218.17.39.178:2040'; //微品云（开发）
-              let upUrl = 'https://yqdndev.vpclub.cn/api10005/'; //阿里云(开发)
+              let upUrl = publicURL.target //阿里云(开发)
               // let upUrl='https://shbeta.vpclub.cn/api10005';//新阿里云
               // let upUrl='http://39.107.252.186:10005';//阿里云地址（正式）
 
