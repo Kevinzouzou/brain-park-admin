@@ -53,8 +53,8 @@ export const schedListUrl=`/scheduling/schedulingList?parkId=`+localStorage.getI
 export const scheChange=`scheduling/operScheduling`;  //添加或修改某个人的排班信息
 
 export const enterpriseUrl=`/settledEnterprise/settledEnterpriseList?parkId=`+localStorage.getItem("parkId");  //查找企业信息
-export const addUpEnterUrl=`/settledEnterprise/addOrUpdatedEnterprise`;  //查找企业信息
-export const delEnterUrl=`/settledEnterprise/deleteEnterprise/`;  //删除企业信息
+export const addOrUpdatedEnterprise = `/settledEnterprise/addOrUpdatedEnterprise`;  // 添加或修改企业
+export const deleteEnterprise = `/settledEnterprise/deleteEnterprise/`;  //删除企业信息
 export const treeUrl=`/parkInfoTree/parkInfoTreeList?parkId=`+localStorage.getItem("parkId");  //组织架构/区域列表
 export const findUserUrl=`/parkUser/findUserByDepartmentId/`+localStorage.getItem("parkId")+'/';  //查找部门下员工信息
 export const upSchUrl=`/parkUser/updateIfScheduling`;  //修改此用户是否排班信息

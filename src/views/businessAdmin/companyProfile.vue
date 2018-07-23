@@ -82,13 +82,14 @@
     </section>
 </template>
 <script>
+    const publicURL = require('../../../config/urlConfig');
     import echarts from 'echarts/lib/echarts';
     import axios from 'axios';
     import publicFunction from '../../api/publicFunction';
     export default {
         data() {
             return {
-                url: 'http://120.77.226.68:10006/enterpriseStat/',
+                url: '',
                 EnterpriseSituation: {
                     thisMonthEnter: 0,
                     enterpriseTotal: 0,
@@ -412,6 +413,7 @@
             }
         },
         mounted() {
+            this.url = publicURL.chartsURL + 'enterpriseStat/';
             this.queryEnterpriseSituation();
             this.queryEnterpriseAge();
             this.queryEnterpriseFlowRate();

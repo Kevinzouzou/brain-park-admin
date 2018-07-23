@@ -190,13 +190,14 @@
 </template>
 
 <script>
+    const publicURL = require('../../../config/urlConfig');
     import echarts from 'echarts/lib/echarts';
     import axios from 'axios';
     import publicFunction from '../../api/publicFunction';
     export default {
         data() {
             return {
-                url: 'http://120.77.226.68:10006/userStat/',
+                url: '',
                 UserSituation: {
                     userTotal: '',
                     todayAddUser: '',
@@ -588,6 +589,7 @@
             }
         },
         mounted() {
+            this.url = publicURL.chartsURL +'userStat/';
             this.queryUserSituation();
             this.queryUserDistribution();
             this.queryEnterpriseDistribution();
