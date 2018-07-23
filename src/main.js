@@ -48,13 +48,14 @@ Vue.use(VueRouter)
 Vue.use(Vuex)
 
 Vue.use(VueQuillEditor)
-//NProgress.configure({ showSpinner: false });
+
 const router = new VueRouter({
     routes,
 });
 
 router.beforeEach((to, from, next) => {
-    if (!localStorage.getItem('parkId')) {
+    // if(!sessionStorage.getItem('token')){
+    if(!localStorage.getItem('parkId')){
         next({
             path: '/', //登录
             // name: 'login',

@@ -383,7 +383,7 @@
                 </el-form-item>
                 <el-form-item label="路线节点：" prop="location">
                     <el-button type="success" @click.native="addNodeDevice">添加节点设备</el-button>
-                    <el-checkbox v-model="routeChecked">启用</el-checkbox>
+                    <el-checkbox v-model="routeChecked">新增后启用</el-checkbox>
                 </el-form-item>
             </el-form>
             <el-table :data="insNodeList" v-loading="inspectNodeLoading" style="width: 98%;margin: 0 auto;" max-height="400">

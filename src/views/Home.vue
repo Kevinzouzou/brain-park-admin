@@ -18,17 +18,26 @@
 				<el-menu :default-active="$route.path" class="el-menu-vertical-demo" @open="handleopen" @close="handleclose" @select="handleselect"
 				    unique-opened router v-show="!collapsed">
 					<template v-for="(item,index) in routersList" v-if="!item.hidden">
-						<!-- <el-submenu :index="index+''" v-if="!item.leaf" v-show="item.ishide"> -->
-							<el-submenu :index="index+''" v-if="!item.leaf">
+						<el-submenu :index="index+''" v-if="!item.leaf" v-show="item.ishide">
 							<template slot="title">
 								<i :class="item.iconCls"></i>{{item.name}}</template>
-							<!-- <el-menu-item v-for="child in item.children" :index="child.path" :key="child.path" v-show="child.ishide" v-if="!child.hidden">{{child.name}}</el-menu-item> -->
-							<el-menu-item v-for="child in item.children" :index="child.path" :key="child.path" v-if="!child.hidden">{{child.name}}</el-menu-item>
+							<el-menu-item v-for="child in item.children" :index="child.path" :key="child.path" v-show="child.ishide" v-if="!child.hidden">{{child.name}}</el-menu-item>
 						</el-submenu>
 						<el-menu-item v-if="item.leaf&&item.children.length>0" :index="item.children[0].path">
 							<i :class="item.iconCls"></i>{{item.children[0].name}}</el-menu-item>
 					</template>
 				</el-menu>
+
+				<!--<el-menu :default-active="$route.path" class="el-menu-vertical-demo" @open="handleopen" @close="handleclose" @select="handleselect"-->
+				<!--unique-opened router v-show="!collapsed">-->
+				<!--<template v-for="(item,index) in $router.options.routes" v-if="!item.hidden">-->
+				<!--<el-submenu :index="index+''" v-if="!item.leaf">-->
+				<!--<template slot="title"><i :class="item.iconCls"></i>{{item.name}}</template>-->
+				<!--<el-menu-item v-for="child in item.children" :index="child.path" :key="child.path" v-if="!child.hidden">{{child.name}}</el-menu-item>-->
+				<!--</el-submenu>-->
+				<!--<el-menu-item v-if="item.leaf&&item.children.length>0" :index="item.children[0].path"><i :class="item.iconCls"></i>{{item.children[0].name}}</el-menu-item>-->
+				<!--</template>-->
+				<!--</el-menu>-->
 			</aside>
 			<section class="content-container">
 				<div class="grid-content bg-purple-light">
@@ -106,7 +115,10 @@
 			},
 			getrouters() {
 				let perList = JSON.parse(sessionStorage.getItem('permission'));
-				this.routersList = require('../routes.js').default;
+				// console.log(perList)
+				this.routersList = require('../routes.js');
+				this.routersList = this.routersList.default;
+				console.log(this.routersList)
 				this.routersList.forEach((item, index) => {
 					if (item.children && item.children.length > 0) {
 						item.children.forEach((childitem) => {
@@ -119,12 +131,27 @@
 								item.ishide = true;
 							} else {
 								item.ishide = false;
-
 							}
 						})
 					}
 				});
-			},
+				// console.log(this.routersList)
+				let rou = this.routersList;
+				rou.forEach((item, index) => {
+					if (item.hidden === false || item.ishide === false) {
+						rou.splice(index, 1);
+					}
+					if (item.children && item.children.length > 0) {
+						item.children.forEach((child, childindex) => {
+							if (child.ishide === false) {
+								item.children.splice(childindex, 1);
+							}
+						})
+					}
+				});
+				console.log(rou)
+
+			}
 		},
 		mounted() {
 			this.user = JSON.parse(sessionStorage.getItem('user'));

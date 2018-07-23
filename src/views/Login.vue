@@ -69,6 +69,7 @@
             let rememberStatus = this.checked; // 记住密码
             let userInfo = loginParams.username + '&' + loginParams.password;
             let url = loginUrl + '&phone=' + this.ruleForm2.account + '&password=' + this.ruleForm2.checkPass;
+            let that=this;
             axios.get(url, {}).then((res) => {
               this.logining = false;
               let data = res.data.responseList;
@@ -86,6 +87,43 @@
 
               localStorage.setItem("userId", userId);
               localStorage.setItem("upUrl", upUrl);
+
+              // let perList=data.permissionList;
+              // let routersList=require('../routes.js').default;
+              // console.log(routersList)
+              //   routersList.forEach((item,index)=>{
+              //       if(item.children && item.children.length>0){
+              //           item.children.forEach((childitem)=>{
+              //               if(perList.indexOf(childitem.name)!==-1){
+              //                   childitem.ishide=true;
+              //               }else{
+              //                   childitem.ishide=false;
+              //               }
+              //               if(childitem.ishide===true){
+              //                   item.ishide=true;
+              //               }else{
+              //                   item.ishide=false;
+              //               }
+              //           })
+              //       }
+              //   });
+              //   let rou=routersList;
+              //   rou.forEach((item,index)=>{
+              //       if(item.hidden===false || item.ishide===false){
+              //           rou.splice(index,1);
+              //       }
+              //       if(item.children && item.children.length>0){
+              //           item.children.forEach((child,childindex)=>{
+              //               if(child.ishide===false){
+              //                   item.children.splice(childindex,1);
+              //               }
+              //           })
+              //       }
+              //   });
+              //   console.log(rou)
+              //   //动态添加路由
+              //   that.$router.addRoutes(rou);
+
               this.$router.push({
                 path: '/userProfile'
               });
