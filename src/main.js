@@ -48,9 +48,8 @@ Vue.use(VueRouter)
 Vue.use(Vuex)
 
 Vue.use(VueQuillEditor)
-
 const router = new VueRouter({
-    routes,
+    routes
 });
 
 router.beforeEach((to, from, next) => {
