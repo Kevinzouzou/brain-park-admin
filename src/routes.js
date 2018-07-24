@@ -177,6 +177,11 @@ let routes = [
         iconCls: 'el-icon-sold-out',
         children: [
             {
+                path: '/operationAndMaintenanceOverview',
+                component: resolve => require(['./views/operationMg/operationAndMaintenanceOverview.vue'], resolve),
+                name: '运维概况'
+            },
+            {
                 path: '/districtMg',
                 component: resolve => require(['./views/operationMg/districtMg.vue'], resolve),
                 name: '区域管理'

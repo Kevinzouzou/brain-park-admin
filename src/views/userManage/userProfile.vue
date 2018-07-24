@@ -30,7 +30,7 @@
                         <div class="grid-content  userDistribution">
                             <div class="grid-title">用户分布</div>
                             <div>
-                                <div id="charts" style="width:90%;height:400px; margin: 0 auto;">
+                                <div style="width:90%;height:400px; margin: 0 auto;">
                                     <div id="UserDistribution" style="width:100%;height:100%;"></div>
                                 </div>
                             </div>
@@ -554,7 +554,7 @@
                         type: 'bar',
                         barWidth: '60%',
                         data: userTotal
-                    }]
+                    }];
                     let enterpriseUserRankingCharts = echarts.init(document.getElementById(
                         'enterpriseUserRankingCharts'));
                     enterpriseUserRankingCharts.setOption(this.enterpriseUserRankingChartsOption);
@@ -589,7 +589,7 @@
             }
         },
         mounted() {
-            this.url = publicURL.chartsURL +'userStat/';
+            this.url = publicURL.chartsURL + 'userStat/';
             this.queryUserSituation();
             this.queryUserDistribution();
             this.queryEnterpriseDistribution();

@@ -71,7 +71,7 @@
         </el-row>
         <!--弹出框 新增用户-->
         <el-dialog title="新增员工" :visible.sync="addParkUserFormVisible">
-            <el-form :label-position="right" label-width="150px">
+            <el-form label-position="right" label-width="150px">
                 <el-form-item label="员工照片：">
                     <el-upload class="avatar-uploader" :action=imageUploadUrl :data="imgData" :show-file-list="false" :on-success="handleAvatarSuccess"
                         :before-upload="beforeAvatarUpload">
@@ -81,7 +81,7 @@
                 </el-form-item>
             </el-form>
             <el-row :gutter="20">
-                <el-form :model="addParkUserForm" :label-position="right" label-width="160px" :rules="addParkUserFormRules" ref="addParkUserForm">
+                <el-form :model="addParkUserForm" label-position="right" label-width="160px" :rules="addParkUserFormRules" ref="addParkUserForm">
                     <el-row :gutter="24">
                         <el-col :span="10">
                             <el-form-item label="姓名：" required prop="addInfo.name">
@@ -116,8 +116,7 @@
                     <el-row :gutter="20">
                         <el-col :span="10">
                             <el-form-item label="入职时间：" required prop="addInfo.hiredate">
-                                <el-date-picker v-model="addParkUserForm.addInfo.hiredate" type="date" value-format="yyyy-MM-dd HH:mm:ss" placeholder="选择入职日期"
-                                    align="right" :picker-options="pickerOptions">
+                                <el-date-picker v-model="addParkUserForm.addInfo.hiredate" type="date" value-format="yyyy-MM-dd" placeholder="选择入职日期" :picker-options="pickerOptions">
                                 </el-date-picker>
                             </el-form-item>
                         </el-col>
@@ -138,7 +137,7 @@
         <!--弹出框 新增用户-->
         <!--弹出框 员工详情-->
         <el-dialog title="员工详情" :visible.sync="editParkUserFormVisible">
-            <el-form :model="editParkUserForm" :label-position="right" label-width="160px" v-show="!editParkUserFormShow">
+            <el-form :model="editParkUserForm" label-position="right" label-width="160px" v-show="!editParkUserFormShow">
                 <el-row :gutter="24">
                     <el-col :span="10">
                         <el-form-item label="员工照片：">
@@ -214,7 +213,7 @@
                 </el-row>
             </el-form>
 
-            <el-form :model="editParkUserForm" :label-position="right" label-width="160px" :rules="editParkUserFormRules" ref="editParkUserForm"
+            <el-form :model="editParkUserForm" label-position="right" label-width="160px" :rules="editParkUserFormRules" ref="editParkUserForm"
                 v-show="editParkUserFormShow">
                 <el-form-item label="员工照片：">
                     <el-upload class="avatar-uploader" :action="imageUploadUrl" :data="imgData" :show-file-list="false" :on-success="handleEditParkUserAvatarSuccess"
@@ -263,8 +262,8 @@
                 <el-row :gutter="24">
                     <el-col :span="10">
                         <el-form-item label="入职时间：" required>
-                            <el-date-picker v-model="editParkUserForm.addInfo.hiredate" type="date" value-format="yyyy-MM-dd HH:mm:ss" placeholder="选择入职日期"
-                                align="right" :picker-options="pickerOptions">
+                            <el-date-picker v-model="editParkUserForm.addInfo.hiredate" type="date" value-format="yyyy-MM-dd" placeholder="选择入职日期" align="right"
+                                :picker-options="pickerOptions">
                             </el-date-picker>
                         </el-form-item>
                     </el-col>
@@ -293,7 +292,6 @@
         data() {
             return {
                 imageUploadUrl: '', //图片上传路径
-                right: 'right',
                 page: 1,
                 pagesize: 7,
                 departmentName: '',
@@ -301,11 +299,10 @@
                     bucketName: 'shared-resource',
                     folderName: ''
                 },
-                parkUserList: '', // 员工列表
+                parkUserList: [], // 员工列表
                 parkUserListTotal: 0, // 员工总数
                 parkUserListLoading: false, // 员工列表loading控件
-                parkUserListFilters: {
-                    //员工列表筛选
+                parkUserListFilters: { //员工列表筛选
                     nameOrPhone: '',
                     male: false,
                     female: false,
@@ -320,14 +317,12 @@
                     label: 'name'
                 },
                 parkInfoTreeListLoading: false, // 组织结构loading控件
-                // 左侧树形组件规则
-                parkInfoTreeListProps: {
+                parkInfoTreeListProps: { // 左侧树形组件规则
                     children: 'children',
                     label: 'name'
                 },
                 addParkUserFormVisible: false, // 弹框
-                addParkUserForm: {
-                    //添加员工数据表单
+                addParkUserForm: { //添加员工数据表单
                     phone: '',
                     addInfo: {
                         name: '',
@@ -336,7 +331,7 @@
                         email: '',
                         isManager: false,
                         hiredate: '',
-                        departmentId: '',
+                        departmentId: [],
                         avatar: ''
                     },
                     isSendPwd: false
@@ -384,7 +379,6 @@
                             pattern: /^[a-z0-9]+([._\\-]*[a-z0-9])*@([a-z0-9]+[-a-z0-9]*[a-z0-9]+.){1,63}[a-z0-9]+$/
                         }],
                         hiredate: [{
-                            type: 'date',
                             required: true,
                             message: '请选择日期',
                             trigger: 'change'
@@ -500,8 +494,7 @@
                         data = res;
                     }
                     this.parkUserList = data;
-                    this.parkUserListTotal =
-                        this.parkUserList.length > 0 ? this.parkUserList.length : 1;
+                    this.parkUserListTotal = data.length;
                     this.parkUserListLoading = false;
                 });
             },
@@ -517,7 +510,6 @@
                             this.addParkUserForm.isSendPwd === true ? 1 : 0;
                         data.addInfo.isManager =
                             this.addParkUserForm.addInfo.isManager === true ? 1 : 0;
-                        console.log(JSON.stringify(data));
                         this.$post(addParkUser, data).then(res => {
                             if (res.operationResult === 'failure') {
                                 let title = res.failureMsg;
@@ -578,6 +570,7 @@
                 this.editParkUserForm.addInfo.departmentId = this.editParkUserForm.departmentInfo.sequence
                     .split('.')
                     .slice(1);
+                console.log(JSON.stringify(this.editParkUserForm))
             },
             updateParkUserInfo(formName) {
                 this.$refs[formName].validate(valid => {
@@ -585,12 +578,13 @@
                         let data = this.editParkUserForm;
                         data.parkId = localStorage.getItem('parkId');
                         data.addInfo.departmentId = this.editParkUserForm.addInfo.departmentId.pop();
+                        console.log(this.editParkUserForm.addInfo.departmentId)
                         data.addInfo.isManager =
                             this.editParkUserForm.addInfo.isManager === true ?
                             1 :
                             0;
                         delete data.departmentInfo;
-                        console.log(JSON.stringify(data));
+                        // console.log(JSON.stringify(this.editParkUserForm));
                         this.$put(updateParkUserInfo, data).then(res => {
                             if (res.operationResult === 'failure') {
                                 let title = res.failureMsg;
@@ -605,8 +599,13 @@
                                     }
                                 );
                             } else {
+                                this.resetForm('editParkUserForm');
                                 this.editParkUserFormVisible = false;
                                 this.getParkUserList(parkUserList);
+                                this.$message({
+                                    message: '修改成功',
+                                    type: 'success'
+                                });
                                 this.editParkUserForm = {
                                     id: '',
                                     type: 2,
@@ -627,11 +626,6 @@
                                         sequence: ''
                                     }
                                 };
-                                this.resetForm('editParkUserForm');
-                                this.$message({
-                                    message: '修改成功',
-                                    type: 'success'
-                                });
                             }
                         });
                     } else {
