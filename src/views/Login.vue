@@ -19,12 +19,11 @@
 </template>
 
 <script>
+  const publicURL = require('../../config/urlConfig');
   import {
     loginUrl
   } from '../api/api';
   import axios from 'axios'
-  // import publicURL from '../../config/urlConfig';
-  let publicURL = require('../../config/urlConfig');
   export default {
     data() {
       return {

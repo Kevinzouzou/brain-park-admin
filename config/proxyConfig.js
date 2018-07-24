@@ -1,6 +1,5 @@
 'use strict';
-// import publicURL from './urlConfig';
-let publicURL = require('./urlConfig');
+const publicURL = require('./urlConfig');
 module.exports = {
   proxy: {
     '/api': {

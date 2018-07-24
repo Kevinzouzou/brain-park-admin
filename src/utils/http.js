@@ -1,9 +1,9 @@
+const publicURL = require('../../config/urlConfig');
 import axios from 'axios';
 import {
     Message
 } from 'element-ui';
 import qs from 'qs';
-let publicURL = require('../../config/urlConfig');
 
 axios.defaults.timeout = 10000;
 axios.defaults.baseURL = publicURL.URL;
@@ -25,11 +25,11 @@ axios.interceptors.request.use(
     }
 );
 // http response 拦截器
-axios.interceptors.response.use(function(response){
-    if(response.data.code=='1001'||response.data.code=='1002'){//具体的判断token失效的参数
-        sessionStorage.setItem("token",'');
-        window.location.href='/#/login'//需求方要求一旦出错立即跳转登录，所以采取这种侵入式的手段。
-    }else{
+axios.interceptors.response.use(function (response) {
+    if (response.data.code == '1001' || response.data.code == '1002') { //具体的判断token失效的参数
+        sessionStorage.setItem("token", '');
+        window.location.href = '/#/login' //需求方要求一旦出错立即跳转登录，所以采取这种侵入式的手段。
+    } else {
         return response
     }
 }, function (error) {

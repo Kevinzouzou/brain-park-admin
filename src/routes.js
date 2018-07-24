@@ -105,11 +105,6 @@ let routes = [
         children: [
             // { path: '/serEffect', component: serEffect, name: '服务效能概况' },
             { path: '/corporationHome', component: corporationHome, name: '企业之家' },
-            {
-                path: '/new',
-                component: resolve => require(['./views/employers/new.vue'], resolve),
-                name: '企业'
-            },
             { path: '/businessProcess', component: businessProcess, name: '流程业务' },
             // { path: '/leaseContract', component: leaseContract, name: '租赁合同管理' }
         ]
@@ -181,6 +176,11 @@ let routes = [
         name: '运维管理',
         iconCls: 'el-icon-sold-out',
         children: [
+            {
+                path: '/operationAndMaintenanceOverview',
+                component: resolve => require(['./views/operationMg/operationAndMaintenanceOverview.vue'], resolve),
+                name: '运维概况'
+            },
             {
                 path: '/districtMg',
                 component: resolve => require(['./views/operationMg/districtMg.vue'], resolve),

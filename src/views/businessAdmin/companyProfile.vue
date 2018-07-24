@@ -27,10 +27,10 @@
                 </el-row>
                 <el-row>
                     <el-col :span="24">
-                        <div class="grid-content  ">
+                        <div class="grid-content">
                             <div class="grid-title">企业年限分布</div>
                             <div class="content">
-                                <div style="width:100%;height:400px; margin: 0 auto;">
+                                <div style="width:100%;height:520px; margin: 0 auto;">
                                     <div id="BusinessYearDistribution" style="width:100%;height:100%;"></div>
                                 </div>
                             </div>
@@ -82,18 +82,21 @@
     </section>
 </template>
 <script>
+    const publicURL = require('../../../config/urlConfig');
     import echarts from 'echarts/lib/echarts';
     import axios from 'axios';
     import publicFunction from '../../api/publicFunction';
     export default {
         data() {
             return {
-                url: 'http://120.77.226.68:10006/enterpriseStat/',
+                url: '',
+                // 企业概况
                 EnterpriseSituation: {
                     thisMonthEnter: 0,
                     enterpriseTotal: 0,
                     thisMonthEvacuation: 0
                 },
+                // 企业年限分布
                 EnterpriseAge: {
                     threeToFiveYears: 0,
                     fiveToTenYears: 0,
@@ -101,12 +104,19 @@
                     oneToThreeYears: 0,
                     tenYearsAbove: 0
                 },
+                // 企业年限分布
                 BusinessYearDistributionOption: {
                     tooltip: {
                         trigger: 'item',
                         formatter: "{b}: {c} ({d}%)",
-                    }, //设置饼图的颜色
+                    },  
                     color: ['#4EB8FF', '#F5A623', '#F53252', '#7ED321'],
+                    legend: {
+                        orient: '',
+                        right: '10',
+                        top: '10',
+                        data: ['1～3年', '3～5年', '5～10年', '10年以上']
+                    },
                     series: [{
                         type: 'pie',
                         radius: ['30%', '50%'],
@@ -156,6 +166,7 @@
                         },
                     }]
                 },
+                 // 企业流动率（最近12个月）
                 BusinessTurnoverOption: {
                     color: ['#3398DB'],
                     tooltip: {
@@ -178,7 +189,12 @@
                         }
                     }],
                     yAxis: [{
-                        type: 'value'
+                        type: 'value',
+                        axisLabel: {
+                            show: true,
+                            interval: 'auto',
+                            formatter: '{value} %'
+                        },
                     }],
                     series: [{
                         name: '企业流动率',
@@ -187,6 +203,7 @@
                         data: [10, 52, 200, 334, 390, 330, 220]
                     }]
                 },
+                // 企业性质分布
                 EnterpriseNatureOption: {
                     color: ['#F5A623', '#4EB8FF', '#BD10E0', '#F53252'],
                     tooltip: {
@@ -195,14 +212,14 @@
                     },
                     legend: {
                         orient: '',
-                        x: 'right',
+                        right: '10',
                         y: 'center',
                         data: ['国有企业', '民营企业', '外商独资', '合资企业']
                     },
                     series: [{
                         type: 'pie',
                         radius: ['45%', '60%'],
-                        center: ['50%', '50%'],
+                        center: ['45%', '50%'],
                         selectedMode: 'single',
                         label: {
                             normal: {
@@ -242,6 +259,7 @@
                         }
                     }]
                 },
+                // 企业入驻趋势（最近12个月）
                 EntryTrendOption: {
                     xAxis: {
                         type: 'category',
@@ -258,6 +276,7 @@
                         type: 'line'
                     }]
                 },
+                // 行业分布
                 IndustrialDistributionOption: {
                     color: ['#F53252'],
                     tooltip: {
@@ -412,6 +431,7 @@
             }
         },
         mounted() {
+            this.url = publicURL.chartsURL + 'enterpriseStat/';
             this.queryEnterpriseSituation();
             this.queryEnterpriseAge();
             this.queryEnterpriseFlowRate();

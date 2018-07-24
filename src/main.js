@@ -17,11 +17,11 @@ import axios from 'axios'
 // import {post,fetch,patch,put} from './utils/http'
 import echarts from "echarts"
 import {
-  post,
-  get,
-  patch,
-  put,
-  del
+    post,
+    get,
+    patch,
+    put,
+    del
 } from './utils/http'
 
 import '../static/ueditor/ueditor.config'
@@ -56,12 +56,12 @@ router.beforeEach((to, from, next) => {
     // if(!sessionStorage.getItem('token')){
     if(!localStorage.getItem('parkId')){
         next({
-            path: '/',                     //登录
+            path: '/', //登录
             // name: 'login',
             // component: resolve => require(['view/login/login.vue'], resolve),
         })
-    }else{
-      next()
+    } else {
+        next()
     }
 })
 
@@ -70,10 +70,10 @@ router.beforeEach((to, from, next) => {
 // });
 
 new Vue({
-  //el: '#app',
-  //template: '<App/>',
-  router,
-  store,
-  //components: { App }
-  render: h => h(App)
+    //el: '#app',
+    //template: '<App/>',
+    router,
+    store,
+    //components: { App }
+    render: h => h(App)
 }).$mount('#app')
