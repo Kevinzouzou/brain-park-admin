@@ -25,7 +25,7 @@
             </el-table-column>
             <el-table-column prop="addInfo.source" label="来源" sortable>
             </el-table-column>
-            <el-table-column prop="userName" label="反馈人" sortable>
+            <el-table-column prop="userInfo.addInfo.nickName" label="反馈人" sortable>
             </el-table-column>
             <el-table-column prop="stage" label="状态" sortable>
             </el-table-column>
@@ -58,8 +58,8 @@
                 </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
-                <el-button @click.native="feBackReportVisible = false">取消</el-button>
-                <el-button type="primary" @click.native="feBackReport" :loading="feBackReportLoading">提交</el-button>
+                <el-button @click="feBackReportVisible = false">取消</el-button>
+                <el-button type="primary" @click="feBackReport" :loading="feBackReportLoading">提交</el-button>
             </div>
         </el-dialog>
 
@@ -82,7 +82,7 @@
                     {{detailList.userName || ' - '}}
                 </el-form-item>
                 <el-form-item label="回复备注："  v-if="detailList.stage==='已处理'">
-                    {{detailList.addInfo.reply || ' - '}}
+                    {{detailList.settlement || ' - '}}
                 </el-form-item>
             </el-form>
         </el-dialog>

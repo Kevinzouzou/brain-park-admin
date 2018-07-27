@@ -283,10 +283,13 @@
                         <el-row class="row-bg" style="margin-top:10px;">园区入驻企业服务类</el-row>
                         <el-card shadow="never" style="margin-top:10px;">
                             <el-checkbox-group v-model="editRoleForm.addInfo.permissionList">
+                                <el-checkbox style="min-width: 150px;margin: 5px !important;" label="服务效能概况"></el-checkbox>
                                 <el-checkbox style="min-width: 150px;margin: 5px !important;" label="企业之家"></el-checkbox>
                                 <el-checkbox style="min-width: 150px;margin: 5px !important;" label="流程业务"></el-checkbox>
-                                <el-checkbox style="min-width: 150px;margin: 5px !important;" label="服务效能概况"></el-checkbox>
                                 <el-checkbox style="min-width: 150px;margin: 5px !important;" label="租赁合同管理"></el-checkbox>
+                                <el-checkbox style="min-width: 150px;margin: 5px !important;" label="政务服务"></el-checkbox>
+                                <el-checkbox style="min-width: 150px;margin: 5px !important;" label="IT服务"></el-checkbox>
+                                <el-checkbox style="min-width: 150px;margin: 5px !important;" label="人才服务"></el-checkbox>
                             </el-checkbox-group>
                         </el-card>
                         <el-row class="row-bg" style="margin-top:10px;">园区工作管理类</el-row>

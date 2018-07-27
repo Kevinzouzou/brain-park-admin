@@ -10,8 +10,7 @@
                 <el-card shadow="never" style="height:750px;overflow-y: scroll;" v-loading="parkInfoTreeListLoading">
                     <el-tree class="filter-tree" :data="parkInfoTreeList" :props="parkInfoTreeListProps" @node-click="handleNodeClick" :filter-node-method="filterNode"
                         node-key="id" highlight-current default-expand-all :render-content="renderContent" :expand-on-click-node="false"
-                        ref="tree" @node-drag-start="handleDragStart" @node-drag-enter="handleDragEnter" @node-drag-leave="handleDragLeave"
-                        @node-drag-over="handleDragOver" @node-drag-end="handleDragEnd" @node-drop="handleDrop" draggable></el-tree>
+                        ref="tree"  ></el-tree>
                 </el-card>
             </el-col>
             <el-col :span="19">
@@ -145,11 +144,9 @@
                     label: 'name'
                 },
                 parkInfoTreeAddZoneInfoLoading: false,
-                selectedOptions: '',
-                checkList: '',
+                selectedOptions: [],
                 parkInfoTreeAddZoneInfoData: [],
                 newArea: [],
-                currentlySelectedNode: '',
                 currentDepartmentalOrganizational: {
                     id: '',
                     level: '',
@@ -187,7 +184,6 @@
             },
             // 点击树形结构查询员工列表
             handleNodeClick(data) {
-                this.currentlySelectedNode = data.id;
                 this.currentDepartmentalOrganizational.addInfo.features =
                     typeof data.addInfo === 'undefined' ? [] :
                     data.addInfo.features;
@@ -199,7 +195,7 @@
                     this.currentDepartmentalOrganizational.parentId = data.parentId;
                     this.currentDepartmentalOrganizational.name = data.name;
                     this.currentDepartmentalOrganizational.level = data.level;
-                    this.getParkInfoTreeAddZoneInfo(this.currentlySelectedNode);
+                    this.getParkInfoTreeAddZoneInfo(data.id);
                 }
             },
             // 获取部门组织结构
@@ -279,24 +275,24 @@
             //         });
             //     });
             // },
-            handleDragStart(node, ev) {
-                console.log('drag start', node);
-            },
-            handleDragEnter(draggingNode, dropNode, ev) {
-                console.log('tree drag enter: ', dropNode.label);
-            },
-            handleDragLeave(draggingNode, dropNode, ev) {
-                console.log('tree drag leave: ', dropNode.label);
-            },
-            handleDragOver(draggingNode, dropNode, ev) {
-                console.log('tree drag over: ', dropNode.label);
-            },
-            handleDragEnd(draggingNode, dropNode, dropType, ev) {
-                console.log('tree drag end: ', dropNode && dropNode.label, dropType);
-            },
-            handleDrop(draggingNode, dropNode, dropType, ev) {
-                console.log('tree drop: ', dropNode.label, dropType);
-            },
+            // handleDragStart(node, ev) {
+            //     console.log('drag start', node);
+            // },
+            // handleDragEnter(draggingNode, dropNode, ev) {
+            //     console.log('tree drag enter: ', dropNode.label);
+            // },
+            // handleDragLeave(draggingNode, dropNode, ev) {
+            //     console.log('tree drag leave: ', dropNode.label);
+            // },
+            // handleDragOver(draggingNode, dropNode, ev) {
+            //     console.log('tree drag over: ', dropNode.label);
+            // },
+            // handleDragEnd(draggingNode, dropNode, dropType, ev) {
+            //     console.log('tree drag end: ', dropNode && dropNode.label, dropType);
+            // },
+            // handleDrop(draggingNode, dropNode, dropType, ev) {
+            //     console.log('tree drop: ', dropNode.label, dropType);
+            // },
             // 新增节点
             renderContent(h, {
                 node,

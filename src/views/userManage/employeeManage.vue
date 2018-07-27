@@ -310,7 +310,7 @@
                     departmentId: ''
                 },
                 parkInfoTreeList: [], // 组织结构数据
-                departmentTreeData: '', // 员工所属部门数据
+                departmentTreeData: [], // 员工所属部门数据
                 departmentTreeDataProps: {
                     value: 'id',
                     children: 'children',
@@ -451,11 +451,11 @@
                         //         trigger: 'change'
                         //     }
                         // ],
-                        departmentId: [{
-                            required: true,
-                            message: '请选择所属部门',
-                            trigger: 'change'
-                        }]
+                        // departmentId: [{
+                        //     required: true,
+                        //     message: '请选择所属部门',
+                        //     trigger: 'change'
+                        // }]
                     }
                 }
             };
@@ -577,14 +577,15 @@
                     if (valid) {
                         let data = this.editParkUserForm;
                         data.parkId = localStorage.getItem('parkId');
-                        data.addInfo.departmentId = this.editParkUserForm.addInfo.departmentId.pop();
                         console.log(this.editParkUserForm.addInfo.departmentId)
+                        let departmentId = this.editParkUserForm.addInfo.departmentId;
+                        data.addInfo.departmentId = departmentId[departmentId.length - 1];
                         data.addInfo.isManager =
                             this.editParkUserForm.addInfo.isManager === true ?
                             1 :
                             0;
                         delete data.departmentInfo;
-                        // console.log(JSON.stringify(this.editParkUserForm));
+                        console.log(JSON.stringify(this.editParkUserForm));
                         this.$put(updateParkUserInfo, data).then(res => {
                             if (res.operationResult === 'failure') {
                                 let title = res.failureMsg;
@@ -599,8 +600,8 @@
                                     }
                                 );
                             } else {
-                                this.resetForm('editParkUserForm');
                                 this.editParkUserFormVisible = false;
+                                this.resetForm('editParkUserForm');
                                 this.getParkUserList(parkUserList);
                                 this.$message({
                                     message: '修改成功',

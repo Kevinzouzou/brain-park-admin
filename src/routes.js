@@ -35,6 +35,11 @@ import operatorRoleManage from './views/userManage/operatorRoleManage.vue'
 import busiAdmin from './views/businessAdmin/busiAdmin.vue'
 import companyProfile from './views/businessAdmin/companyProfile.vue'
 
+import governmentService from './views/employers/governmentService.vue'
+import ITservice from './views/employers/ITservice.vue'
+import talentService from './views/employers/talentService.vue'
+
+
 
 Vue.use(Router)
 let routes = [
@@ -106,6 +111,9 @@ let routes = [
             // { path: '/serEffect', component: serEffect, name: '服务效能概况' },
             { path: '/corporationHome', component: corporationHome, name: '企业之家' },
             { path: '/businessProcess', component: businessProcess, name: '流程业务' },
+            { path: '/governmentService', component: governmentService, name: '政务服务' },
+            { path: '/ITservice', component: ITservice, name: 'IT服务' },
+            { path: '/talentService', component: talentService, name: '人才服务' },
             // { path: '/leaseContract', component: leaseContract, name: '租赁合同管理' }
         ]
     },

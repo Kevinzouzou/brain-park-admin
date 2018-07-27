@@ -51,7 +51,7 @@
         <!--分页-->
         <el-col :span="24" class="toolbar">
             <el-pagination background @size-change="sizeChange" @current-change="currentChange" :page-sizes="[7,8,10,20]" :page-size="pagesize"
-                layout="total,sizes, prev, pager, next, jumper" :total="adminTotal" :current-page="page" style="float:right;">
+                layout="total,sizes, prev, pager, next, jumper" :total="adminList.length" :current-page="page" style="float:right;">
             </el-pagination>
         </el-col>
         <!--新增/编辑界面-->
@@ -84,18 +84,15 @@
                 <el-row>
                     <el-col :span="11">
                         <el-form-item label="企业图片：">
-                            <el-upload :action='imageUploadUrl' list-type="picture-card" :show-file-list="false" :data="imgData" :on-preview="handlePictureCardPreview"
-                                :on-remove="handleRemove" :on-success="moreShow">
-                                <i class="el-icon-plus"></i>
+                            <el-upload :action='imageUploadUrl' list-type="picture-card" :show-file-list="false" :data="imgData" :on-success="successUploadImg">
+                                <img v-if="adminAEForm.addInfo.logo" :src="adminAEForm.addInfo.logo" class="logoImg">
+                                <i v-else class="el-icon-plus"></i>
                             </el-upload>
-                            <el-dialog :visible.sync="dialogAnVisible">
-                                <img width="100%" :src="dialogAnImageUrl">
-                            </el-dialog>
                         </el-form-item>
                     </el-col>
                     <el-col :span="11">
                         <el-form-item label="企业性质：" label-width="170px">
-                            <el-select placeholder="请选择">
+                            <el-select v-model="adminAEForm.addInfo.businessModel" placeholder="请选择">
                                 <el-option label="私有" value="私有"></el-option>
                                 <el-option label="国有" value="国有"></el-option>
                                 <el-option label="外商独资" value="外商独资"></el-option>
@@ -105,10 +102,16 @@
                     </el-col>
                 </el-row>
                 <el-row>
-                    <el-col :span="24">
+                    <el-col :span="11">
+                        <el-form-item label="入驻时间：" prop="addInfo.enterTime">
+                            <el-date-picker style="margin-right: 10px;" value-format="yyyy-MM-dd HH:mm:ss" v-model="adminAEForm.addInfo.enterTime" type="date"
+                                placeholder="选择日期" :picker-options="pickerOptions">
+                            </el-date-picker>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="11">
                         <el-form-item label="地址：" class="secAddress">
-                            <span style="margin-right: 10px;">松湖智谷园区</span>
-                            <el-cascader expand-trigger="hover" :options="treeList" v-model="selOptions" :props="dataProps" @change="handleChange">
+                            <el-cascader :options="treeList" v-model="selOptions" :props="dataProps" @change="handleChange">
                             </el-cascader>
                         </el-form-item>
                     </el-col>
@@ -122,13 +125,7 @@
                     </el-col>
                 </el-row>
                 <el-row>
-                    <el-col :span="24">
-                        <el-form-item label="入驻时间：" prop="addInfo.enterTime">
-                            <el-date-picker  style="margin-right: 10px;" value-format="yyyy-MM-dd HH:mm:ss" v-model="adminAEForm.addInfo.enterTime" type="date" placeholder="选择日期">
-                            </el-date-picker>
-                            <el-button type="success" @click="secDayTime">今日</el-button>
-                        </el-form-item>
-                    </el-col>
+
                 </el-row>
             </el-form>
             <!--<el-form label-width="100px" v-if="isEdit">-->
@@ -147,7 +144,7 @@
             <!--</el-form>-->
             <div slot="footer" class="dialog-footer">
                 <el-button @click.native="adminAEVisible = false">取消</el-button>
-                <el-button type="primary" @click.native="addAdminSubmit">提交</el-button>
+                <el-button type="primary" @click="addAdminSubmit">提交</el-button>
             </div>
         </el-dialog>
 
@@ -166,13 +163,12 @@
     } from '../../api/api';
     import publicFunction from '../../api/publicFunction.js';
     export default {
-
         data() {
             return {
                 imageUploadUrl: '', //图片上传路径
                 imgData: {
                     bucketName: 'shared-resource',
-                    folderName: localStorage.getItem('parkId')
+                    folderName: ''
                 },
                 newArea: [],
                 departmentTreeData: '', // 地址数据
@@ -194,7 +190,6 @@
                 floorLabel: '',
                 roomLabel: '',
                 zoneId: '',
-                dialogAnImageUrl: '',
                 dialogAnVisible: false,
                 page: 1,
                 pagesize: 7,
@@ -211,7 +206,8 @@
                         industry: '',
                         logo: '',
                         intro: '',
-                        enterTime: ''
+                        enterTime: '',
+                        businessModel: '',
                     },
                     zoneInfo: [{
                             name: ''
@@ -227,9 +223,17 @@
                         }
                     ]
                 },
+                // 时间组件
+                pickerOptions: {
+                    shortcuts: [{
+                        text: '今天',
+                        onClick(picker) {
+                            picker.$emit('pick', new Date());
+                        }
+                    }]
+                },
                 adminList: [],
                 adminLoading: false,
-                adminTotal: 0,
                 rules: {
                     name: [{
                         required: true,
@@ -260,26 +264,8 @@
             };
         },
         methods: {
-            secDayTime() {
-                //   时间为当前时间
-                let now = new Date();
-                let year = now.getFullYear();
-                year += year < 2000 ? 1900 : 0;
-                let month = now.getMonth() + 1;
-                month = month < 10 ? '0' + month : '' + month;
-                let day =
-                    now.getDate() < 10 ? '0' + now.getDate() : '' + now.getDate();
-                this.adminAEForm.addInfo.enterTime = year + '-' + month + '-' + day;
-            },
-            handlePictureCardPreview(file) {
-                this.dialogAnImageUrl = file.url;
-                this.dialogAnVisible = true;
-            },
-            handleRemove(file, fileLists) {
-                console.log(file, fileLists);
-            },
-            moreShow(res, file, fileList) {
-                this.morePicList.push(res.responseList);
+            successUploadImg(res, file, fileList) {
+                this.adminAEForm.addInfo.logo = res.responseList.url;
             },
             exportData() {
                 //导出到表格
@@ -290,6 +276,7 @@
             //显示新增界面
             newEnterprise() {
                 this.newArea = [];
+                this.selOptions = [];
                 this.addEditTitle = '新增';
                 this.isEdit = false;
                 this.adminAEVisible = true;
@@ -299,7 +286,8 @@
                         industry: '',
                         enterTime: '',
                         logo: '',
-                        intro: ''
+                        intro: '',
+                        businessModel: '',
                     },
                     zoneInfo: [{
                             name: ''
@@ -316,8 +304,8 @@
                     ]
                 };
             },
+            // 企业管理模糊查询
             getQueryAdmin() {
-                // 企业管理模糊查询
                 let url = settledEnterpriseList;
                 let name = this.adminFilters.enterName;
                 url += name === '' ? '' : '&name=' + name;
@@ -359,20 +347,19 @@
                     this.treeList = publicFunction.killChildren(res[0].children);
                 });
             },
+            //企业管理列表
             getAdminList() {
-                //企业管理列表
                 this.getAnData(settledEnterpriseList);
             },
             getAnData(url) {
                 this.adminLoading = true;
                 this.$get(url).then(res => {
                     this.adminList = res;
-                    this.adminTotal = this.adminList.length;
                     this.adminLoading = false;
                 });
             },
+            //删除
             deleteEnterprise(index, row) {
-                //删除
                 this.$confirm(
                         '删除企业将同时取消该企业下属用户的关联企业属性，是否删除?',
                         '提示', {
@@ -392,43 +379,39 @@
                     })
                     .catch(() => {});
             },
-            //显示编辑界面
+            // 显示编辑界面
             editEnterprise(index, row) {
                 this.selOptions = [];
                 this.addEditTitle = '编辑';
                 this.isEditId = row.id;
                 this.isEdit = true;
                 this.adminAEVisible = true;
-                this.adminAEForm = Object.assign({}, row);
+                this.adminAEForm = publicFunction.deepCopy(this.adminAEForm, row);
                 this.roomLabel = row.zoneInfo[row.zoneInfo.length - 1].name;
                 this.zoneId = row.zoneInfo[row.zoneInfo.length - 1].id;
                 if (row.zoneInfo[1]) this.selOptions.push(row.zoneInfo[1].id);
                 if (row.zoneInfo[2]) this.selOptions.push(row.zoneInfo[2].id);
                 if (row.zoneInfo[3]) this.selOptions.push(row.zoneInfo[3].id);
                 if (row.zoneInfo[4]) this.selOptions.push(row.zoneInfo[4].id);
+                this.newArea = this.selOptions;
             },
+            //分页
             sizeChange(val) {
                 this.pagesize = val;
             },
             currentChange(val) {
-                //分页
                 this.page = val;
                 this.getAdminList();
             },
+            //新增
             addAdminSubmit() {
-                //新增
                 this.$refs.adminAEForm.validate(valid => {
                     if (valid) {
                         this.$confirm('确认提交吗？', '提示', {}).then(() => {
-                            // let address='松湖智谷园区'+this.adminAEForm.zoneInfo[0].name+this.adminAEForm.zoneInfo[1].name+
-                            //      this.adminAEForm.zoneInfo[2].name+this.roomLabel;
-                            let address =
-                                '松湖智谷园区' +
-                                this.newArea[0].name +
+                            let address = '松湖智谷园区' + this.newArea[0].name +
                                 this.newArea[1].name +
                                 this.newArea[2].name +
                                 this.newArea[3].name;
-
                             let data = {
                                 parkId: localStorage.getItem('parkId'),
                                 address: address,
@@ -436,15 +419,24 @@
                                 addInfo: {
                                     zoneId: this.zoneId,
                                     industry: this.adminAEForm.addInfo.industry,
-                                    logo: this.morePicList[0],
+                                    logo: this.adminAEForm.addInfo.logo,
                                     enterTime: this.adminAEForm.addInfo.enterTime,
-                                    intro: this.adminAEForm.addInfo.intro
+                                    intro: this.adminAEForm.addInfo.intro,
+                                    businessModel: this.adminAEForm.addInfo.businessModel,
                                 }
                             };
+                            let message = '添加成功';
                             if (this.isEdit) {
                                 data.id = this.isEditId;
+                                message = '修改成功';
+                                data.address = this.adminAEForm.address;
                             }
                             this.$post(addOrUpdatedEnterprise, data).then(res => {
+                                this.$message({
+                                    message: message,
+                                    type: 'success'
+                                });
+                                this.$refs.adminAEForm.resetFields();
                                 this.adminAEVisible = false;
                                 this.getAdminList();
                             });
@@ -454,8 +446,12 @@
             }
         },
         mounted() {
-            this.getAdminList(); //企业管理
+            this.imgData = {
+                bucketName: 'shared-resource',
+                folderName: localStorage.getItem('parkId')
+            };
             this.imageUploadUrl = localStorage.getItem('upUrl') + uploadPic;
+            this.getAdminList(); //企业管理
             this.getTree(); //获取区域信息
         }
     };
@@ -468,5 +464,11 @@
             width: 145px;
             margin-right: 10px;
         }
+    }
+
+    .logoImg {
+        width: 100%;
+        height: 100%;
+        border-radius: 6px;
     }
 </style>
