@@ -516,13 +516,6 @@
                 listLoading: false,
                 multipleSelection: [], //列表选中列
                 editCircleVisible: false, //编辑界面是否显示
-                editFormRules: {
-                    name: [{
-                        required: true,
-                        message: '请输入姓名',
-                        trigger: 'blur'
-                    }]
-                },
                 //编辑圈子数据
                 editForm: {
                     content: "",
@@ -949,8 +942,7 @@
         }
     }
 </script>
-
-<style>
+<style lang="scss">
     .avatar-uploader .el-upload {
         border: 1px dashed #d9d9d9;
         border-radius: 6px;
