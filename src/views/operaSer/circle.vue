@@ -56,7 +56,7 @@
                         <el-row>
                             <el-col :span="22">
                                 <el-form-item label="圈子logo" required>
-                                    <el-upload class="avatar-uploader" :action="url" :data="imgData" :show-file-list="false" :on-success="logoImgUploadSuccess"
+                                    <el-upload class="avatar-uploader" :action="imgUploadUrl" :data="imgData" :show-file-list="false" :on-success="logoImgUploadSuccess"
                                         :before-upload="beforeAvatarUpload">
                                         <img v-if="addForm.thumbUrl" :src="addForm.thumbUrl" class="avatar">
                                         <i v-else class="el-icon-plus avatar-uploader-icon"></i>
@@ -67,7 +67,7 @@
                         <el-row>
                             <el-col :span="22">
                                 <el-form-item label="背景图片" required>
-                                    <el-upload class="avatar-uploader" :action="url" :data="imgData" :show-file-list="false" :on-success="backgroundImgUploadSuccess">
+                                    <el-upload class="avatar-uploader" :action="imgUploadUrl" :data="imgData" :show-file-list="false" :on-success="backgroundImgUploadSuccess">
                                         <img v-if="addForm.addInfo.bgUrl" :src="addForm.addInfo.bgUrl" class="avatar">
                                         <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                                     </el-upload>
@@ -107,7 +107,7 @@
                         <el-row>
                             <el-col :span="22">
                                 <el-form-item label="圈子logo" required>
-                                    <el-upload class="avatar-uploader" :action="url" :data="imgData" :show-file-list="false" :on-success="logoImgUploadSuccess"
+                                    <el-upload class="avatar-uploader" :action="imgUploadUrl" :data="imgData" :show-file-list="false" :on-success="logoImgUploadSuccess"
                                         :before-upload="beforeAvatarUpload">
                                         <img v-if="editForm.thumbUrl" :src="editForm.thumbUrl" class="avatar">
                                         <i v-else class="el-icon-plus avatar-uploader-icon"></i>
@@ -118,7 +118,7 @@
                         <el-row>
                             <el-col :span="22">
                                 <el-form-item label="背景图片" required>
-                                    <el-upload class="avatar-uploader" :action="url" :data="imgData" :show-file-list="false" :on-success="backgroundImgUploadSuccess">
+                                    <el-upload class="avatar-uploader" :action="imgUploadUrl" :data="imgData" :show-file-list="false" :on-success="backgroundImgUploadSuccess">
                                         <img v-if="editForm.addInfo.bgUrl" :src="editForm.addInfo.bgUrl" class="avatar">
                                         <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                                     </el-upload>
@@ -420,7 +420,7 @@
                     folderName: ''
                 },
                 comSerContent: '',
-                url: '', //图片上传路径
+                imgUploadUrl: '', //图片上传路径
                 circleAddContent: '',
                 cirEditContent: '',
                 actEditContent: '',
@@ -937,7 +937,7 @@
         mounted() {
             this.getCircle();
             this.getActQuery();
-            this.url = localStorage.getItem("upUrl") + uploadPic;
+            this.imgUploadUrl = localStorage.getItem("upUrl") + uploadPic;
             this.imgData.folderName = localStorage.getItem('parkId');
         }
     }

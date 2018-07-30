@@ -2,192 +2,254 @@
     <section>
         <el-tabs v-model="activeName" type="card" @tab-click="handleClick">
             <el-tab-pane label="公司金融服务" name="first">
-                <!--工具条-->
-                <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
-                    <el-form :inline="true">
-                        <el-form-item>
-                            <el-button type="danger" @click="corporateBatchRemove" :disabled="this.corSels.length===0">批量删除</el-button>
-                        </el-form-item>
-                        <el-form-item>
-                            <el-button type="primary" @click="corporateAdd">新增</el-button>
-                        </el-form-item>
-                    </el-form>
-                </el-col>
-                <!--列表-->
-                <el-table :data="corporateList.slice((page-1)*pagesize,page*pagesize)" highlight-current-row v-loading="corporateLoading"
-                    @selection-change="selsCorporateChange" style="width: 100%;">
-                    <el-table-column type="selection" width="55">
-                    </el-table-column>
-                    <el-table-column type="index" width="60">
-                    </el-table-column>
-                    <el-table-column prop="title" label="标题" sortable show-overflow-tooltip>
-                    </el-table-column>
-                    <el-table-column prop="type" label="类别" sortable>
-                    </el-table-column>
-                    <el-table-column prop="createTime" label="发布时间" sortable>
-                    </el-table-column>
-                    <el-table-column prop="addInfo.lookUpNum" label="浏览量" sortable>
-                        <template slot-scope="scope">
-                            <span>{{scope.row.addInfo.lookUpNum?scope.row.addInfo.lookUpNum:0}}</span>
-                        </template>
-                    </el-table-column>
-                    <el-table-column label="操作">
-                        <template slot-scope="scope">
-                            <el-button type="primary" size="small" @click="corporateEdit(scope.$index, scope.row)">编辑</el-button>
-                            <el-button type="danger" size="small" @click="corporateDel(scope.$index, scope.row)">删除</el-button>
-                        </template>
-                    </el-table-column>
-                </el-table>
-                <!--分页-->
-                <el-col :span="24" class="toolbar">
-                    <el-pagination background @size-change="highSizeChange" @current-change="corporateCurChange" :page-sizes="[7,8,10,20]" :page-size="pagesize"
-                        layout="total, sizes, prev, pager, next, jumper" :total="corporateTotal" :current-page="page" style="float:right;">
-                    </el-pagination>
-                </el-col>
-                <!--新增/编辑界面-->
-                <el-dialog :title=addEditTitle :visible.sync="addEditCorporateVisible">
-                    <el-form :model="corporateForm" label-width="80px" ref="corporateForm">
-                        <el-form-item label="标题" prop="title">
-                            <el-input v-model="corporateForm.title" auto-complete="off"></el-input>
-                        </el-form-item>
-                        <el-form-item label="缩略图">
-                            <el-upload :action=url list-type="picture-card" :data="othParams" ref="upload"
-                                       :on-preview="corpPictureCardPreview" :on-remove="handleCorporateRemove"
-                                       :file-list="imgCorpList" :on-success="moreCorporateShow">
-                                <i class="el-icon-plus"></i>
-                            </el-upload>
-                            <el-dialog :visible.sync="dialogCorpVisible">
-                                <img width="100%" :src="dialogCorpImageUrl">
-                            </el-dialog>
-                        </el-form-item>
-                        <el-form-item label="详细内容">
-                            <UE :id=ue @editorChange="corporateAddChange"></UE>
-                        </el-form-item>
-                    </el-form>
-                    <div slot="footer" class="dialog-footer">
-                        <el-button @click.native="addEditCorporateVisible = false">取消</el-button>
-                        <el-button type="primary" @click.native="addCorporateSubmit" :loading="addEditCorLoading">提交</el-button>
-                    </div>
-                </el-dialog>
+                <div v-show="!CorporateFinanceOrder">
+                    <!--工具条-->
+                    <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
+                        <el-form :inline="true">
+                            <el-form-item>
+                                <el-button type="danger" @click="corporateBatchRemove">批量删除</el-button>
+                            </el-form-item>
+                            <el-form-item>
+                                <el-button type="primary" @click="corporateAdd">新增</el-button>
+                            </el-form-item>
+                        </el-form>
+                    </el-col>
+                    <!--列表-->
+                    <el-table :data="corporateList.slice((page-1)*pagesize,page*pagesize)" highlight-current-row v-loading="corporateLoading"
+                        @selection-change="selsCorporateChange" style="width: 100%;">
+                        <el-table-column type="selection" width="55">
+                        </el-table-column>
+                        <el-table-column type="index" width="60" label="序号">
+                        </el-table-column>
+                        <el-table-column prop="title" label="标题" show-overflow-tooltip>
+                        </el-table-column>
+                        <el-table-column prop="type" label="类别">
+                        </el-table-column>
+                        <el-table-column prop="createTime" label="发布时间">
+                        </el-table-column>
+                        <el-table-column prop="addInfo.lookUpNum" label="浏览量">
+                            <template slot-scope="scope">
+                                <span>{{scope.row.addInfo.lookUpNum?scope.row.addInfo.lookUpNum:0}}</span>
+                            </template>
+                        </el-table-column>
+                        <el-table-column label="操作" width="250">
+                            <template slot-scope="scope">
+                                <el-button type="success" size="small" @click="corporateCheck(scope.$index, scope.row)">订单</el-button>
+                                <el-button type="primary" size="small" @click="corporateEdit(scope.$index, scope.row)">编辑</el-button>
+                                <el-button type="danger" size="small" @click="corporateDel(scope.$index, scope.row)">删除</el-button>
+                            </template>
+                        </el-table-column>
+                    </el-table>
+                    <!--分页-->
+                    <el-col :span="24" class="toolbar">
+                        <el-pagination background @size-change="highSizeChange" @current-change="corporateCurChange" :page-sizes="[7,8,10,20]" :page-size="pagesize"
+                            layout="total, sizes, prev, pager, next, jumper" :total="corporateList.length" :current-page="page"
+                            style="float:right;">
+                        </el-pagination>
+                    </el-col>
+                    <!--新增/编辑界面-->
+                    <el-dialog :title="addEditTitle" :visible.sync="addEditCorporateVisible">
+                        <el-form :model="corporateForm" label-width="100px" ref="corporateForm">
+                            <el-row>
+                                <el-col :span="22">
+                                    <el-form-item label="标题" required>
+                                        <el-input v-model="corporateForm.title" auto-complete="off"></el-input>
+                                    </el-form-item>
+                                </el-col>
+                            </el-row>
+                            <el-row>
+                                <el-col :span="22">
+                                    <el-form-item label="图片" required>
+                                        <el-upload class="avatar-uploader" :action="imgUploadUrl" :data="imgData" :show-file-list="false" :on-success="uploadCorporateImg">
+                                            <img v-if="corporateForm.thumbUrl" :src="corporateForm.thumbUrl" class="avatar">
+                                            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                                        </el-upload>
+                                    </el-form-item>
+                                </el-col>
+                            </el-row>
+                            <el-row>
+                                <el-col :span="22">
+                                    <el-form-item label="详细内容" required>
+                                        <quill-editor v-model="corporateForm.addInfo.themeContent"></quill-editor>
+                                    </el-form-item>
+                                </el-col>
+                            </el-row>
+                        </el-form>
+                        <div slot="footer" class="dialog-footer">
+                            <el-button @click="addEditCorporateVisible = false">取消</el-button>
+                            <el-button type="primary" @click="addCorporateSubmit">提交</el-button>
+                        </div>
+                    </el-dialog>
+                </div>
+                <div v-show="CorporateFinanceOrder">
+                    <!--工具条-->
+                    <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
+                        <el-form :inline="true">
+                            <el-form-item label="金融产品：">
+                                <span style="font-size: 14px;color: #606266;line-height: 40px;">
+                                    {{CorporateFinanceOrderTitle}}
+                                </span>
+                            </el-form-item>
+                            <el-form-item class="pull-right">
+                                <el-button type="primary" @click="CorporateFinanceOrder = !CorporateFinanceOrder">返回公司金融服务列表</el-button>
+                            </el-form-item>
+                        </el-form>
+                    </el-col>
+                    <!--列表-->
+                    <el-table :data="CorporateFinanceOrderList.slice((page-1)*pagesize,page*pagesize)" highlight-current-row v-loading="corporateLoading"
+                        style="width: 100%;">
+                        <el-table-column prop="id" label="ID" type="index" width="60">
+                        </el-table-column>
+                        <el-table-column prop="createTime" label="申请时间" show-overflow-tooltip>
+                        </el-table-column>
+                        <el-table-column prop="type" label="企业名称">
+                        </el-table-column>
+                        <el-table-column prop="createTime" label="联系人">
+                        </el-table-column>
+                        <el-table-column prop="addInfo.lookUpNum" label="联系电话">
+                        </el-table-column>
+                        <el-table-column label="操作" width="备注">
+                            <template slot-scope="scope">
+                                <el-button type="success" size="small" @click="corporateCheck(scope.$index, scope.row)">订单</el-button>
+                                <el-button type="primary" size="small" @click="corporateEdit(scope.$index, scope.row)">编辑</el-button>
+                                <el-button type="danger" size="small" @click="corporateDel(scope.$index, scope.row)">删除</el-button>
+                            </template>
+                        </el-table-column>
+                    </el-table>
+                    <!--分页-->
+                    <el-col :span="24" class="toolbar">
+                        <el-pagination background @size-change="highSizeChange" @current-change="corporateCurChange" :page-sizes="[7,8,10,20]" :page-size="pagesize"
+                            layout="total, sizes, prev, pager, next, jumper" :total="CorporateFinanceOrderList.length" :current-page="page"
+                            style="float:right;">
+                        </el-pagination>
+                    </el-col>
+                </div>
             </el-tab-pane>
-            <!--<el-tab-pane label="个人金融服务" name="second">个人金融服务 。。。</el-tab-pane>-->
         </el-tabs>
 
     </section>
 </template>
 
 <script>
-    import UE from '../../components/ue'
     import {
         showDisplay,
         addDisplay,
         deleteDisplay,
+        userTarget,
         uploadPic,
     } from '../../api/api'
-
+    import publicFunction from '../../api/publicFunction';
     export default {
-        components: {
-            UE
-        },
         data() {
             return {
-                othParams:{
-                    bucketName:'shared-resource',
-                    folderName:''
+                page: 1,
+                pagesize: 7,
+                imgData: {
+                    bucketName: 'shared-resource',
+                    folderName: ''
                 },
-                url:'',
-                activeName:'first',
-                page:1,
-                pagesize:7,
-                corSels: [],//公司。。列表选中列
-                corporateList:[],
-                corporateLoading:false,
-                addEditTitle:'新增',
-                addEditCorporateVisible:false,
-                addEditCorLoading:false,
-                corporateForm:{
-                    title:''
+                imgUploadUrl: '',
+                activeName: 'first',
+                corSels: [],
+                corporateList: [],
+                CorporateFinanceOrderTitle: '',
+                CorporateFinanceOrderList: [],
+                corporateLoading: false,
+                addEditTitle: '新增',
+                addEditCorporateVisible: false,
+                CorporateFinanceOrder: false,
+                corporateForm: {
+                    detailUrl: 'null',
+                    title: '',
+                    thumbUrl: '',
+                    addInfo: {
+                        themeContent: ''
+                    }
                 },
-                ue: 'corId',
-                morePicList: [],
-                corporateContent: '',
-                corporateTotal: 2,
-                imgCorpList: [],
-                dialogCorpImageUrl: '',
-                dialogCorpVisible: false,
-                isEditId: '',
-                isEdit: false,
             }
         },
         methods: {
             handleClick(tab, event) {
                 this.page = 1;
             },
-            corporateBatchRemove() { //公司金融服务批量删除
-                var ids = this.corSels.map(item => item.id).toString();
-                this.$confirm('确认删除选中记录吗？', '提示', {
-                    type: 'warning'
-                }).then(() => {
-                    this.corporateLoading = true;
-                    let para = {
-                        ids: ids
-                    };
-
-                }).catch(() => {
-
-                });
+            //公司金融服务批量删除
+            corporateBatchRemove() {
+                if (this.corSels.length === 0) {
+                    this.$message({
+                        message: '请先选择金融服务',
+                        type: 'info'
+                    });
+                } else {
+                    this.$confirm('确认删除选中的金融服务？', '提示', {
+                        type: 'warning'
+                    }).then(() => {
+                        for (let i of this.corSels) {
+                            this.$del(deleteDisplay + i.id).then(res => {
+                                this.$notify({
+                                    title: '成功',
+                                    message: `已删除"${i.title}"金融服务`,
+                                    type: 'success'
+                                });
+                                this.getCorporate();
+                            });
+                        }
+                    }).catch(() => {});
+                }
             },
-            corporateAdd(){  //公司。。新增
-                if(this.$refs.upload!==undefined) this.$refs.upload.clearFiles();
-                this.addEditTitle='新增';
-                this.isEdit=false;
-                this.morePicList.length=0;
-                this.corporateContent='';
-                this.addEditCorporateVisible=true;
-                this.corporateForm={
-                    title:''
+            // 新增 
+            corporateAdd() {
+                this.addEditTitle = '新增';
+                this.corporateForm = {
+                    title: '',
+                    thumbUrl: '',
+                    addInfo: {
+                        themeContent: ''
+                    }
                 };
-            },
-            selsCorporateChange(sels) {
-                this.corSels = sels;
-            },
-            corporateEdit(index, row) { //公司。。 显示编辑界面
-                this.addEditTitle = '编辑';
-                this.isEditId = row.id;
-                this.isEdit = true;
-                this.morePicList.length = 0;
                 this.addEditCorporateVisible = true;
-                this.corporateForm = Object.assign({}, row);
             },
-            corporateDel(index, row) { //惠通知 删除
+            selsCorporateChange(val) {
+                this.corSels = val;
+            },
+            // 显示编辑界面
+            corporateEdit(index, row) {
+                this.addEditTitle = '编辑';
+                this.corporateForm = publicFunction.deepCopy(this.corporateForm, row);
+                this.corporateForm.id = row.id;
+                this.addEditCorporateVisible = true;
+            },
+            // 显示金融产品订单
+            corporateCheck(index, row) {
+                this.CorporateFinanceOrder = true;
+                this.CorporateFinanceOrderTitle = row.title;
+                this.corporateLoading = true;
+                this.$get(userTarget + row.id)
+                    .then((res) => {
+                        this.CorporateFinanceOrderList = res;
+                        this.corporateLoading = false;
+                    });
+            },
+            // 删除
+            corporateDel(index, row) {
                 this.$confirm('确认删除该记录吗?', '提示', {
                     type: 'warning'
                 }).then(() => {
-                    this.corporateLoading = true;
-                    let para = {
-                        id: row.id
-                    };
-                    let self = this;
-                    this.$del(deleteDisplay + para.id)
-                        .then(function (response) {
-                            self.corporateLoading = false;
-                            self.$message({
+                    this.$del(deleteDisplay + row.id)
+                        .then(res => {
+                            this.$message({
                                 message: '删除成功',
                                 type: 'success'
                             });
-                            self.getCorporate();
+                            this.getCorporate();
                         });
-                }).catch(() => {
-
-                });
+                }).catch(() => {});
             },
-            getCorporate() { //公司金融服务列表
-                let type = '金融服务';
+            // 公司金融服务列表
+            getCorporate() {
                 this.corporateLoading = true;
-                this.$get(showDisplay + type)
+                this.$get(showDisplay + '金融服务')
                     .then((res) => {
                         this.corporateList = res;
-                        this.corporateTotal = this.corporateList.length > 0 ? this.corporateList.length : 1;
                         this.corporateLoading = false;
                     })
             },
@@ -198,59 +260,47 @@
                 this.page = val;
                 this.getCorporate();
             },
-            moreCorporateShow(res,file,fileList){
-                this.morePicList.push(res.responseList.url)
+            uploadCorporateImg(res, file, fileList) {
+                this.corporateForm.thumbUrl = res.responseList.url
             },
-            handleCorporateRemove(file, fileLists) {
-                console.log(file, fileLists);
-            },
-            corpPictureCardPreview(file) {
-                this.dialogCorpImageUrl = file.url;
-                this.dialogCorpVisible = true;
-            },
-            corporateAddChange(html) {
-                this.corporateContent = html;
-            },
-            addCorporateSubmit() { //公司金融服务 新增
+            // 公司金融服务 新增
+            addCorporateSubmit() {
                 this.$refs.corporateForm.validate((valid) => {
                     if (valid) {
-                        this.$confirm('确认提交吗？', '提示', {}).then(() => {
-                            this.addEditCorLoading = true;
-                            let para = Object.assign({}, this.corporateForm);
-                            let data = {
-                                parkId: localStorage.getItem("parkId"),
-                                thumbUrl: this.morePicList[0],
-                                title: this.corporateForm.title,
-                                type: '金融服务',
-                                detailUrl: "null",
-                                thumbUrl: 'null',
-                                addInfo: {
-                                    themeContent: this.corporateContent
-                                }
-                            };
-                            if (this.isEdit) {
-                                data.id = this.isEditId;
-                            }
+                        if (this.corporateForm.title === '') {
+                            this.$message({
+                                message: '请填写标题',
+                                type: 'error'
+                            });
+                        } else if (this.corporateForm.thumbUrl === '') {
+                            this.$message({
+                                message: '请上传图片',
+                                type: 'error'
+                            });
+                        } else if (this.corporateForm.addInfo.themeContent === '') {
+                            this.$message({
+                                message: '请填写详细内容',
+                                type: 'error'
+                            });
+                        } else {
+                            let data = this.corporateForm;
+                            data.parkId = localStorage.getItem("parkId");
+                            data.type = '金融服务';
+                            data.detailUrl = "null";
                             this.$post(addDisplay, data)
                                 .then((res) => {
-                                    this.addEditCorLoading = false;
                                     this.addEditCorporateVisible = false;
                                     this.getCorporate();
-                                })
-                        });
+                                });
+                        }
                     }
                 });
             },
-
-
         },
-        mounted(){
-            this.getCorporate();  //公司金融服务列表
-            this.url=localStorage.getItem("upUrl")+uploadPic;
-            this. othParams={
-                bucketName:'shared-resource',
-                folderName:localStorage.getItem("parkId")
-            };
+        mounted() {
+            this.getCorporate(); //公司金融服务列表
+            this.imgUploadUrl = localStorage.getItem("upUrl") + uploadPic;
+            this.imgData.folderName = localStorage.getItem("parkId");
         }
     }
 </script>
