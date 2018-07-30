@@ -92,4 +92,12 @@
 	.mr20 {
 		margin-right: 20px;
 	}
+
+	.pull-left {
+		float: left;
+	}
+
+	.pull-right {
+		float: right;
+	}
 </style>

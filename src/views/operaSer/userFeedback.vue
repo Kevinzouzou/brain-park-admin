@@ -9,52 +9,45 @@
                         </el-option>
                     </el-select>
                     <!--<div class="pullRight">-->
-                        <!--用户端APP：{{userAppNum}}-->
-                        <!--物业端APP：{{proAppNum}}-->
+                    <!--用户端APP：{{userAppNum}}-->
+                    <!--物业端APP：{{proAppNum}}-->
                     <!--</div>-->
                 </el-form-item>
             </el-form>
         </el-col>
         <!--列表-->
         <el-table :data="feedBackList.slice((page-1)*pagesize,page*pagesize)" highlight-current-row v-loading="feBackLoading" style="width: 100%;">
-            <el-table-column type="index" width="60">
+            <el-table-column type="序号" width="60">
             </el-table-column>
-            <el-table-column prop="time" label="时间" sortable>
+            <el-table-column prop="time" label="时间">
             </el-table-column>
-            <el-table-column prop="addInfo.remark" label="反馈内容" sortable show-overflow-tooltip>
+            <el-table-column prop="addInfo.remark" label="反馈内容" show-overflow-tooltip>
             </el-table-column>
-            <el-table-column prop="addInfo.source" label="来源" sortable>
+            <el-table-column prop="addInfo.source" label="来源">
             </el-table-column>
-            <el-table-column prop="userInfo.addInfo.nickName" label="反馈人" sortable>
+            <el-table-column prop="userInfo.phone" label="反馈人">
             </el-table-column>
-            <el-table-column prop="stage" label="状态" sortable>
+            <el-table-column prop="stage" label="状态">
             </el-table-column>
             <el-table-column label="操作">
                 <template slot-scope="scope">
                     <el-button type="success" size="small" @click="feBackView(scope.$index, scope.row)">查看</el-button>
-                    <el-button type="primary" size="small" @click="feBackEdit(scope.$index, scope.row)" v-if="scope.row.stage!=='已处理'">回复</el-button>
+                    <el-button type="primary" size="small" @click="feBackEdit(scope.$index, scope.row)" v-if=" scope.row.stage !== '已处理'">回复</el-button>
                 </template>
             </el-table-column>
         </el-table>
         <!--分页-->
         <el-col :span="24" class="toolbar">
-            <el-pagination background
-                           @size-change="highSizeChange"
-                           @current-change="feBackCurChange"
-                           :page-sizes="[7,8,10,20]"
-                           :page-size="pagesize"
-                           layout="total, sizes, prev, pager, next, jumper"
-                           :total="feBackTotal"
-                           :current-page="page"
-                           style="float:right;">
+            <el-pagination background @size-change="highSizeChange" @current-change="feBackCurChange" :page-sizes="[7,8,10,20]" :page-size="pagesize"
+                layout="total, sizes, prev, pager, next, jumper" :total="feedBackList.length" :current-page="page" style="float:right;">
             </el-pagination>
         </el-col>
         <!--回复界面-->
-        <el-dialog :title=addEditTitle :visible.sync="feBackReportVisible" width="40%">
+        <el-dialog :title="addEditTitle" :visible.sync="feBackReportVisible" width="40%">
             <el-form :model="feBackForm" ref="feBackForm">
-               <el-form-item prop="disc">
-                   <el-input type="textarea" :rows="4" placeholder="请输入内容" v-model="feBackForm.disc">
-                   </el-input>
+                <el-form-item prop="disc">
+                    <el-input type="textarea" :rows="4" placeholder="请输入内容" v-model="feBackForm.disc">
+                    </el-input>
                 </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
@@ -67,7 +60,10 @@
         <el-dialog title="反馈详情" :visible.sync="feBackViewVisible">
             <el-form label-width="90px">
                 <el-form-item label="反馈时间：">
-                   {{detailList.time || ' - '}}
+                    {{detailList.time || ' - '}}
+                </el-form-item>
+                <el-form-item label="反馈人：">
+                    {{detailList.userInfo.phone || ' - '}}
                 </el-form-item>
                 <el-form-item label="反馈内容：">
                     <div class="content">{{detailList.addInfo.remark || ' - '}}</div>
@@ -78,10 +74,7 @@
                         </el-dialog>
                     </div>
                 </el-form-item>
-                <el-form-item label="反馈人：">
-                    {{detailList.userName || ' - '}}
-                </el-form-item>
-                <el-form-item label="回复备注："  v-if="detailList.stage==='已处理'">
+                <el-form-item label="回复备注：" v-if="detailList.stage === '已处理'">
                     {{detailList.settlement || ' - '}}
                 </el-form-item>
             </el-form>
@@ -92,86 +85,97 @@
 </template>
 
 <script>
-    import {findSuggest,showDisplay,replyUrl, addDisplay,proList, deleteDisplay, findDic, showDict, addDict, deleteDict} from '../../api/api'
+    import {
+        findSuggest,
+        showDisplay,
+        replyUrl,
+        addDisplay,
+        proList,
+        deleteDisplay,
+        findDic,
+        showDict,
+        addDict,
+        deleteDict
+    } from '../../api/api'
 
     export default {
-        data(){
+        data() {
             return {
                 dialogImageUrl: '',
                 dialogVisible: false,
-                userAppNum:0, //用户端APP数
-                proAppNum:0,  //物业端APP数
-                secFebackValue:'',
-                feBackList:[
-                    {
-                        id:'001',
-                        name:'全部来源'
+                userAppNum: 0, //用户端APP数
+                proAppNum: 0, //物业端APP数
+                secFebackValue: '',
+                feBackList: [{
+                        id: '001',
+                        name: '全部来源'
                     },
                     {
-                        id:'002',
-                        name:'物业端APP'
+                        id: '002',
+                        name: '物业端APP'
                     },
                     {
-                        id:'003',
-                        name:'用户端APP'
+                        id: '003',
+                        name: '用户端APP'
                     }
                 ],
-                page:1,
-                pagesize:7,
-                feedBackList:[],
-                feBackTotal:1,
-                feBackLoading:false,
-                adsSels:[],//选中项
-                addEditTitle:'回复',
-                morePicList:[],
-                feBackReportVisible:false,
-                feBackReportLoading:false,
-                feBackForm:{
-                    disc:''
+                page: 1,
+                pagesize: 7,
+                feedBackList: [],
+                feBackTotal: 1,
+                feBackLoading: false,
+                adsSels: [], //选中项
+                addEditTitle: '回复',
+                morePicList: [],
+                feBackReportVisible: false,
+                feBackReportLoading: false,
+                feBackForm: {
+                    disc: ''
                 },
-                imgAdsList:[],
+                imgAdsList: [],
                 dialogAdsImageUrl: '',
                 dialogAdsVisible: false,
-                selectLabel:'',
-                detailList:{
-                    addInfo:{
-                        remark:'',
-                        images:[],
-                        commentText:''
+                selectLabel: '',
+                detailList: {
+                    addInfo: {
+                        remark: '',
+                        images: [],
+                        commentText: ''
                     }
                 },
-                feBackViewVisible:false,
-                replyId:'',
+                feBackViewVisible: false,
+                replyId: '',
 
             }
         },
-        methods:{
+        methods: {
             handlePictureCardPreview(item) {
                 this.dialogImageUrl = item;
                 this.dialogVisible = true;
             },
-            getFeedBack(){   //获取意见反馈列表
-                let type='&type=意见反馈';
-                this.getFeedBackList(findSuggest+type);
+            // 获取意见反馈列表
+            getFeedBack() {
+                let type = '&type=意见反馈';
+                this.getFeedBackList(findSuggest + type);
             },
-            getFeedBackList(url){
-                this.feBackLoading=true;
+            getFeedBackList(url) {
+                this.feBackLoading = true;
                 this.$get(url)
                     .then((res) => {
-                        if(res.length>0){
-                            this.feedBackList=res;
-                            this.feBackTotal=this.feedBackList.length>0?this.feedBackList.length:1;
-                            this.feBackLoading=false;
-                        }
+                        this.feedBackList = res;
+                        this.feBackLoading = false;
                     })
             },
-            adsBatchRemove () { //批量删除
+            // 批量删除
+            adsBatchRemove() {
                 var ids = this.adsSels.map(item => item.id).toString();
                 this.$confirm('确认删除选中记录吗？', '提示', {
                     type: 'warning'
                 }).then(() => {
                     this.feBackLoading = true;
-                    let para = { ids: ids };
+                    let para = {
+                        ids: ids
+                    };
                     // batchRemoveUser(para).then((res) => {
                     //     this.highActLoading = false;
                     //     //NProgress.done();
@@ -181,28 +185,26 @@
                     //     });
                     //     this.getHighActivity();
                     // });
-                }).catch(() => {
-
-                });
+                }).catch(() => {});
             },
             feBackEdit(index, row) { // 显示回复界面
-                this.addEditTitle='回复';
+                this.addEditTitle = '回复';
                 this.feBackReportVisible = true;
                 this.feBackForm = Object.assign({}, row);
-                this.replyId=row.id;
+                this.replyId = row.id;
             },
-            feBackView(index, row) {  //查看
-                this.feBackViewVisible=true;
-                this.detailList=row;
+            feBackView(index, row) { //查看
+                this.feBackViewVisible = true;
+                this.detailList = row;
             },
             highSizeChange(val) {
-                this.pagesize=val;
+                this.pagesize = val;
             },
             feBackCurChange(val) {
                 this.page = val;
                 this.getFeedBack();
             },
-            moreAdsShow(res,file,fileList){
+            moreAdsShow(res, file, fileList) {
                 this.morePicList.push(res.responseList)
             },
             handleAdsRemove(file, fileLists) {
@@ -212,37 +214,37 @@
                 this.dialogAdsImageUrl = file.url;
                 this.dialogAdsVisible = true;
             },
-            secQueryFeBackValue(value){
+            secQueryFeBackValue(value) {
                 let obj = {};
-                obj = this.feBackList.find((item)=>{//遍历的数据源
-                    return item.id === value;//筛选出匹配数据
+                obj = this.feBackList.find((item) => { //遍历的数据源
+                    return item.id === value; //筛选出匹配数据
                 });
-                this.selectLabel=obj.name;
-                let type='&type=意见反馈';
-                let url=findSuggest+type;
-                url=this.selectLabel==='全部来源'?url+'':url+'&source='+this.selectLabel;
+                this.selectLabel = obj.name;
+                let type = '&type=意见反馈';
+                let url = findSuggest + type;
+                url = this.selectLabel === '全部来源' ? url + '' : url + '&source=' + this.selectLabel;
                 this.getFeedBackList(url);
             },
-            secAdsValue(value){
+            secAdsValue(value) {
                 let obj = {};
-                obj = this.feBackList.find((item)=>{//遍历的数据源
-                    return item.id === value;//筛选出匹配数据
+                obj = this.feBackList.find((item) => { //遍历的数据源
+                    return item.id === value; //筛选出匹配数据
                 });
-                this.selectLabel=obj.name;
+                this.selectLabel = obj.name;
             },
-            feBackReport() {  //新增
+            feBackReport() { //新增
                 this.$refs.feBackForm.validate((valid) => {
                     if (valid) {
                         this.$confirm('确认提交吗？', '提示', {}).then(() => {
                             this.feBackReportLoading = true;
                             let para = Object.assign({}, this.feBackForm);
-                            let data={
-                                id:this.replyId,
-                                reply:this.feBackForm.disc
+                            let data = {
+                                id: this.replyId,
+                                reply: this.feBackForm.disc
                             };
-                            let url=replyUrl+'&id='+this.replyId+'&reply='+this.feBackForm.disc;
+                            let url = replyUrl + '&id=' + this.replyId + '&reply=' + this.feBackForm.disc;
                             this.$get(url)
-                                .then((res)=>{
+                                .then((res) => {
                                     this.feBackReportLoading = false;
                                     this.feBackReportVisible = false;
                                     this.getFeedBack();
@@ -251,21 +253,21 @@
                     }
                 });
             },
-
         },
-        mounted(){
+        mounted() {
             this.getFeedBack();
         }
     }
 </script>
 
 <style lang="scss" scoped>
-    .pullRight{
+    .pullRight {
         float: right;
     }
-    .imgs{
+
+    .imgs {
         margin: 10px auto;
-        img{
+        img {
             height: 120px;
             margin: 10px 15px;
         }

@@ -14,12 +14,12 @@
                 <el-form-item>
                     <el-button type="primary" v-on:click="getQueryAdmin">搜索</el-button>
                 </el-form-item>
-                <el-form-item>
+                <!-- <el-form-item>
                     <el-button type="success" @click="exportData">导出到表格</el-button>
                 </el-form-item>
                 <el-form-item>
                     <el-button type="success" @click="importIn">导入名单</el-button>
-                </el-form-item>
+                </el-form-item> -->
             </el-form>
         </el-col>
 

@@ -36,20 +36,20 @@
                             </div>
                             <div class="percentageComponent">
                                 <div class="title">
-                                    <span>充值用户 4773</span>
-                                    <span>13%</span>
+                                    <span>充值用户 {{rechargeUser}}</span>
+                                    <span>{{(rechargeUser / (rechargeUser+activeUser) * 100).toFixed(2)}}%</span>
                                 </div>
                                 <div class="data">
-                                    <span style="width:13%"></span>
+                                    <span v-bind:style="{ width: (rechargeUser / (rechargeUser+activeUser) * 100).toFixed(0)+'%' }"></span>
                                 </div>
                             </div>
                             <div class="percentageComponent">
                                 <div class="title">
-                                    <span>活跃用户 4773</span>
-                                    <span>50%</span>
+                                    <span>活跃用户 {{activeUser}}</span>
+                                    <span>{{(activeUser / (rechargeUser+activeUser) * 100).toFixed(2)}}%</span>
                                 </div>
                                 <div class="data">
-                                    <span style="width:50%"></span>
+                                    <span v-bind:style="{ width: (activeUser / (rechargeUser+activeUser) * 100).toFixed(0)+'%' }"></span>
                                 </div>
                             </div>
                         </div>
@@ -203,6 +203,8 @@
                     todayAddUser: '',
                     todayActiveUser: ''
                 },
+                rechargeUser: 0,
+                activeUser: 0,
                 EnterpriseDistribution: {
                     owner: '',
                     manager: '',
@@ -401,6 +403,8 @@
             // 获取用户分布
             queryUserDistribution() {
                 this.$get(this.url + 'queryUserDistribution').then(res => {
+                    this.rechargeUser = res.rechargeUser;
+                    this.activeUser = res.activeUser;
                     let UserDistribution = echarts.init(document.getElementById('UserDistribution'));
                     this.UserDistributionOption.series[0].data = [{
                             value: res.androidUser,

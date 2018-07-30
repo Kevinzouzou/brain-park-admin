@@ -449,7 +449,7 @@
                         </el-table-column>
                         <el-table-column label="租金/半天">
                             <template slot-scope="scope">
-                                <span>{{scope.row.pay}} 元/半天</span>
+                                <span>{{scope.row.pay/100}} 元/半天</span>
                             </template>
                         </el-table-column>
                         <el-table-column prop="addInfo.dateAndPeriod" label="租期">
@@ -457,6 +457,9 @@
                         <el-table-column prop="rentTime" label="租时(天)">
                         </el-table-column>
                         <el-table-column prop="addInfo.resourceRent" label="付费(元)">
+                            <template slot-scope="scope">
+                                <span>{{scope.row.addInfo.resourceRent/100}} 元</span>
+                            </template>
                         </el-table-column>
                         <el-table-column prop="addInfo.state" label="状态">
                         </el-table-column>

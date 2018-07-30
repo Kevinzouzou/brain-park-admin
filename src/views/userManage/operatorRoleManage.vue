@@ -107,7 +107,7 @@
                                 <el-checkbox style="min-width: 150px;margin: 5px !important;" label="家政服务"></el-checkbox>
                             </el-checkbox-group>
                         </el-card>
-                        <el-row class="row-bg" style="margin-top:10px;">园区入驻企业服务类</el-row>
+                        <el-row class="row-bg mt10">园区入驻企业服务类</el-row>
                         <el-card shadow="never" style="margin-top:10px;">
                             <el-checkbox-group v-model="addRoleForm.addInfo.permissionList">
                                 <el-checkbox style="min-width: 150px;margin: 5px !important;" label="企业之家"></el-checkbox>
@@ -116,7 +116,7 @@
                                 <el-checkbox style="min-width: 150px;margin: 5px !important;" label="租赁合同管理"></el-checkbox>
                             </el-checkbox-group>
                         </el-card>
-                        <el-row class="row-bg" style="margin-top:10px;">园区工作管理类</el-row>
+                        <el-row class="row-bg mt10" >园区工作管理类</el-row>
                         <el-card shadow="never" style="margin-top:10px;">
                             <el-checkbox-group v-model="addRoleForm.addInfo.permissionList">
                                 <el-checkbox style="min-width: 150px;margin: 5px !important;" label="考勤"></el-checkbox>
@@ -124,6 +124,20 @@
                                 <el-checkbox style="min-width: 150px;margin: 5px !important;" label="排班"></el-checkbox>
                                 <el-checkbox style="min-width: 150px;margin: 5px !important;" label="工作手册"></el-checkbox>
                                 <el-checkbox style="min-width: 150px;margin: 5px !important;" label="通讯录"></el-checkbox>
+                            </el-checkbox-group>
+                        </el-card>
+                        <el-row class="row-bg mt10" >园区物业服务管理类</el-row>
+                        <el-card shadow="never" style="margin-top:10px;">
+                            <el-checkbox-group v-model="addRoleForm.addInfo.permissionList">
+                                <el-checkbox style="min-width: 150px;margin: 5px !important;" label="服务效能概况"></el-checkbox>
+                                <el-checkbox style="min-width: 150px;margin: 5px !important;" label="投诉建议&报修处理"></el-checkbox>
+                                <el-checkbox style="min-width: 150px;margin: 5px !important;" label="物业公告"></el-checkbox>
+                                <el-checkbox style="min-width: 150px;margin: 5px !important;" label="放行申请"></el-checkbox>
+                                <el-checkbox style="min-width: 150px;margin: 5px !important;" label="设备巡检"></el-checkbox>
+                                <el-checkbox style="min-width: 150px;margin: 5px !important;" label="巡更管理"></el-checkbox>
+                                <el-checkbox style="min-width: 150px;margin: 5px !important;" label="抄表管理"></el-checkbox>
+                                <el-checkbox style="min-width: 150px;margin: 5px !important;" label="监控管理"></el-checkbox>
+                                <el-checkbox style="min-width: 150px;margin: 5px !important;" label="收费管理"></el-checkbox>
                             </el-checkbox-group>
                         </el-card>
                         <el-row class="row-bg" style="margin-top:10px;">园区基础建设运维类</el-row>
@@ -250,7 +264,7 @@
                         <el-row class="row-bg" style="margin-top:10px;">园区用户与物业工作人员管理类</el-row>
                         <el-card shadow="never" style="margin-top:10px;">
                             <el-checkbox-group v-model="editRoleForm.addInfo.permissionList">
-                               <el-checkbox style="min-width: 150px;margin: 5px !important;" label="用户概况"></el-checkbox>
+                                <el-checkbox style="min-width: 150px;margin: 5px !important;" label="用户概况"></el-checkbox>
                                 <el-checkbox style="min-width: 150px;margin: 5px !important;" label="用户操作"></el-checkbox>
                                 <el-checkbox style="min-width: 150px;margin: 5px !important;" label="员工管理"></el-checkbox>
                                 <el-checkbox style="min-width: 150px;margin: 5px !important;" label="部门组织架构"></el-checkbox>
@@ -300,6 +314,20 @@
                                 <el-checkbox style="min-width: 150px;margin: 5px !important;" label="排班"></el-checkbox>
                                 <el-checkbox style="min-width: 150px;margin: 5px !important;" label="工作手册"></el-checkbox>
                                 <el-checkbox style="min-width: 150px;margin: 5px !important;" label="通讯录"></el-checkbox>
+                            </el-checkbox-group>
+                        </el-card>
+                        <el-row class="row-bg mt10" >园区物业服务管理类</el-row>
+                        <el-card shadow="never" style="margin-top:10px;">
+                            <el-checkbox-group v-model="editRoleForm.addInfo.permissionList">
+                                <el-checkbox style="min-width: 150px;margin: 5px !important;" label="服务效能概况"></el-checkbox>
+                                <el-checkbox style="min-width: 150px;margin: 5px !important;" label="投诉建议&报修处理"></el-checkbox>
+                                <el-checkbox style="min-width: 150px;margin: 5px !important;" label="物业公告"></el-checkbox>
+                                <el-checkbox style="min-width: 150px;margin: 5px !important;" label="放行申请"></el-checkbox>
+                                <el-checkbox style="min-width: 150px;margin: 5px !important;" label="设备巡检"></el-checkbox>
+                                <el-checkbox style="min-width: 150px;margin: 5px !important;" label="巡更管理"></el-checkbox>
+                                <el-checkbox style="min-width: 150px;margin: 5px !important;" label="抄表管理"></el-checkbox>
+                                <el-checkbox style="min-width: 150px;margin: 5px !important;" label="监控管理"></el-checkbox>
+                                <el-checkbox style="min-width: 150px;margin: 5px !important;" label="收费管理"></el-checkbox>
                             </el-checkbox-group>
                         </el-card>
                         <el-row class="row-bg" style="margin-top:10px;">园区基础建设运维类</el-row>
