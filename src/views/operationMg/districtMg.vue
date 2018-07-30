@@ -32,6 +32,7 @@
                             :props="defaultProps"
                             highlight-current
                             default-expand-all
+                            accordion
                             :render-content="renderContent"
                             :expand-on-click-node="false"
                             :default-expanded-keys="defaultExpandKeys"
@@ -466,6 +467,9 @@
             }
         }
     }
-
+    .el-tree{
+        height: 40rem;
+        overflow: auto;
+    }
 
 </style>
