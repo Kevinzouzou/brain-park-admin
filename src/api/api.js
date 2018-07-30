@@ -109,3 +109,9 @@ export const deleteCommerceCourse = `/commerceCourse/deleteCommerceCourse/`     
 export const commerceCourseList = `/commerceCourseList/${parkId}`                                                       // 上门预约课程列表
 export const deleteUserTargetAssociation = `/userTargetAssociation/deleteUserTargetAssociation/`                        // 删除用户目标关联
 export const businessServerOrderHistoryList = `/userTargetAssociation/businessServerOrderHistoryList?parkId=${parkId}`  // 商务课程预约管理历史记录
+
+export const policyList = `/displayContent/policyList?parkId=${parkId}&type=政策解读`                                    // 查询政策解读
+export const PolicyServiceApplication = `/propertyApplication/serviceApplication?parkId=${parkId}&type=政务服务`         // 查询政策解读申请记录
+export const ITServiceApplication = `/propertyApplication/serviceApplication?parkId=${parkId}&type=IT服务`               // 查询IT服务申请记录
+export const TalentServiceApplication = `/propertyApplication/serviceApplication?parkId=${parkId}&type=人才服务`               // 查询IT服务申请记录
+

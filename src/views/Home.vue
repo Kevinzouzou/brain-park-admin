@@ -157,7 +157,6 @@
             this.getrouters();
         }
     }
-
 </script>
 
 <style scoped lang="scss">

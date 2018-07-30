@@ -8,24 +8,25 @@
                             <el-form :inline="true" :model="topicFilters">
                                 <el-form-item>
                                     <el-button type="primary" @click="cateMg">类别管理</el-button>
+                                </el-form-item>
+                                <el-form-item>
                                     <el-select v-model="topicFilters.secCateValue" placeholder="请选择">
+                                        <el-option label="全部" value="">
+                                        </el-option>
                                         <el-option v-for="item in cateList" :key="item.id" :label="item.name" :value="item.name">
                                         </el-option>
                                     </el-select>
                                 </el-form-item>
                                 <el-form-item>
-                                    <div class="block">
-                                        <!--<p>组件值：{{ timerValue }}</p>-->
-                                        <el-date-picker v-model="topicFilters.timeTopicValue" type="daterange" start-placeholder="开始日期" end-placeholder="结束日期" value-format="yyyy-MM-dd HH:mm:ss"
-                                            :default-time="['00:00:00', '23:59:59']">
-                                        </el-date-picker>
-                                    </div>
+                                    <el-date-picker v-model="topicFilters.timeTopicValue" type="daterange" start-placeholder="开始日期" end-placeholder="结束日期" value-format="yyyy-MM-dd HH:mm:ss"
+                                        :default-time="['00:00:00', '23:59:59']">
+                                    </el-date-picker>
                                 </el-form-item>
                                 <el-form-item>
-                                    <el-input v-model="topicFilters.searchTitle" placeholder="搜索标题"></el-input>
+                                    <el-input v-model="topicFilters.searchTitle" placeholder="搜索标题" clearable></el-input>
                                 </el-form-item>
                                 <el-form-item>
-                                    <el-button type="primary" v-on:click="getQueryTopic">查询</el-button>
+                                    <el-button type="primary" @click="getQueryTopic">查询</el-button>
                                 </el-form-item>
                             </el-form>
                         </el-col>
@@ -33,7 +34,7 @@
                         <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
                             <el-form :inline="true">
                                 <el-form-item>
-                                    <el-button type="danger" @click="topicBatchRemove" :disabled="this.sels.length===0">批量屏蔽</el-button>
+                                    <el-button type="danger" @click="topicBatchRemove">批量屏蔽</el-button>
                                 </el-form-item>
                             </el-form>
                         </el-col>
@@ -42,22 +43,25 @@
                             style="width: 100%;">
                             <el-table-column type="selection" width="55">
                             </el-table-column>
-                            <el-table-column type="index" width="60">
-                            </el-table-column>
-                            <el-table-column prop="addInfo.name" label="昵称" sortable>
+                            <el-table-column prop="addInfo.name" label="昵称">
                                 <template slot-scope="scope">
-                                    <span>{{scope.row.addInfo.isRealName===true?scope.row.addInfo.name:'匿名'}}</span>
+                                    <span>{{scope.row.addInfo.isRealName === true ? scope.row.addInfo.name : '匿名'}}</span>
                                 </template>
                             </el-table-column>
-                            <el-table-column prop="type" label="类别" sortable>
+                            <el-table-column prop="type" label="类别">
                             </el-table-column>
-                            <el-table-column prop="content" label="内容" sortable show-overflow-tooltip>
+                            <el-table-column prop="content" label="内容" show-overflow-tooltip>
                             </el-table-column>
                             <el-table-column prop="updateTime" label="时间" sortable>
                             </el-table-column>
-                            <el-table-column label="操作" width="250">
+                            <el-table-column prop="likeNum" label="点赞" width="60">
+                            </el-table-column>
+                            <el-table-column prop="collectNum" label="收藏" width="60">
+                            </el-table-column>
+                            <el-table-column prop="tipOfNum" label="举报" width="60">
+                            </el-table-column>
+                            <el-table-column label="操作" width="150">
                                 <template slot-scope="scope">
-                                    <el-button type="success" size="small" @click="topicInteract(scope.$index, scope.row)">互动</el-button>
                                     <el-button type="primary" size="small" @click="topicView(scope.$index, scope.row)">查看</el-button>
                                     <el-button type="danger" size="small" @click="topicDel(scope.$index, scope.row)">屏蔽</el-button>
                                 </template>
@@ -66,41 +70,25 @@
                         <!--分页-->
                         <el-col :span="24" class="toolbar">
                             <el-pagination background @size-change="handleSizeChange" @current-change="handleCurrentChange" :page-sizes="[7,8,10,20]"
-                                :page-size="pagesize" layout="total,sizes, prev, pager, next, jumper" :current-page="page" :total="topicTotal"
+                                :page-size="pagesize" layout="total,sizes, prev, pager, next, jumper" :current-page="page" :total="topicList.length"
                                 style="float:right;">
                             </el-pagination>
                         </el-col>
-                        <!--互动-->
-                        <el-dialog title="互动数据" :visible.sync="topicInteractVisible">
-                            <ul class="interact">
-                                <li>
-                                    <label>点赞</label>
-                                    <span>{{topicData.likeNum}}</span>
-                                </li>
-                                <li>
-                                    <label>收藏</label>
-                                    <span>{{topicData.collectNum}}</span>
-                                </li>
-                                <li>
-                                    <label>举报</label>
-                                    <span>{{topicData.tipOfNum}}</span>
-                                </li>
-                            </ul>
-                        </el-dialog>
-
                     </div>
                     <div v-show="secondVisible" title="类别管理">
-                        <el-button class="backUp" type="danger" @click="backToFirstAn">返回</el-button>
                         <el-col :span="24" justify="center">
-                            <el-form :inline="true" :model="cateFilters">
+                            <el-form :inline="true">
                                 <el-form-item>
                                     <span>快速添加分类：</span>
                                 </el-form-item>
                                 <el-form-item>
-                                    <el-input v-model="cateFilters.addType" placeholder="添加类别"></el-input>
+                                    <el-input v-model="category" placeholder="添加类别"></el-input>
                                 </el-form-item>
                                 <el-form-item>
-                                    <el-button type="primary" v-on:click="cateAdd">添加</el-button>
+                                    <el-button type="primary" @click="cateAdd">添加</el-button>
+                                </el-form-item>
+                                <el-form-item style="float:right">
+                                    <el-button type="danger" @click="backToFirstAn">返回</el-button>
                                 </el-form-item>
                             </el-form>
                         </el-col>
@@ -108,7 +96,7 @@
                         <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
                             <el-form :inline="true">
                                 <el-form-item>
-                                    <el-button type="danger" @click="cateBatchRemove" :disabled="this.anCateSels.length===0">批量删除</el-button>
+                                    <el-button type="danger" @click="cateBatchRemove">批量删除</el-button>
                                 </el-form-item>
                             </el-form>
                         </el-col>
@@ -116,8 +104,6 @@
                         <el-table :data="cateList.slice((page-1)*pagesize,page*pagesize)" highlight-current-row v-loading="cateLoading" @selection-change="selsCateChange"
                             style="width: 100%;">
                             <el-table-column type="selection" width="55">
-                            </el-table-column>
-                            <el-table-column type="index" width="60">
                             </el-table-column>
                             <el-table-column prop="name" label="类别" sortable>
                             </el-table-column>
@@ -131,38 +117,44 @@
                         <!--分页-->
                         <el-col :span="24" class="toolbar">
                             <el-pagination background @size-change="handleSizeChange" @current-change="cateCurrentChange" :page-sizes="[7,8,10,20]" :page-size="pagesize"
-                                layout="total,sizes, prev, pager, next, jumper" :total="cateTotal" :current-page="page" style="float:right;">
+                                layout="total,sizes, prev, pager, next, jumper" :total="cateList.length" :current-page="page"
+                                style="float:right;">
                             </el-pagination>
                         </el-col>
                         <!--编辑界面-->
                         <el-dialog title="编辑" :visible.sync="anCateVisible">
-                            <el-form :model="anCateForm" label-width="80px" ref="anCateForm">
-                                <el-form-item label="分类" prop="name">
-                                    <el-input v-model="anCateForm.name" auto-complete="off"></el-input>
-                                </el-form-item>
+                            <el-form :model="anCateForm" label-width="100px" ref="anCateForm">
+                                <el-row>
+                                    <el-col :span="22">
+                                        <el-form-item label="分类" prop="name">
+                                            <el-input v-model="anCateForm.name" auto-complete="off"></el-input>
+                                        </el-form-item>
+                                    </el-col>
+                                </el-row>
                             </el-form>
                             <div slot="footer" class="dialog-footer">
-                                <el-button @click.native="anCateVisible = false">取消</el-button>
-                                <el-button type="primary" @click.native="editAnCateSubmit" :loading="anCateLoading">提交</el-button>
+                                <el-button @click="anCateVisible = false">取消</el-button>
+                                <el-button type="primary" @click="editAnCateSubmit">提交</el-button>
                             </div>
                         </el-dialog>
                     </div>
                 </el-tab-pane>
                 <el-tab-pane label="留言管理" name="second">
                     <!--列表-->
-                    <el-table :data="msgList.slice((page-1)*pagesize,page*pagesize)" highlight-current-row v-loading="msgLoading" style="width: 100%;">
-                        <el-table-column type="index" width="60">
+                    <el-table :data="msgList.slice((msgListPage-1)*msgListPageSize,msgListPage*msgListPageSize)" highlight-current-row v-loading="msgLoading"
+                        style="width: 100%;">
+                        <el-table-column prop="id" label="ID">
                         </el-table-column>
-                        <el-table-column prop="createTime" label="时间" sortable>
+                        <el-table-column prop="createTime" label="时间">
                         </el-table-column>
-                        <el-table-column prop="addInfo.name" label="昵称" sortable>
+                        <el-table-column prop="addInfo.name" label="昵称">
                             <template slot-scope="scope">
-                                <span>{{scope.row.addInfo.isRealName===true?scope.row.addInfo.name:'匿名'}}</span>
+                                <span>{{scope.row.addInfo.isRealName === true ? scope.row.addInfo.name : '匿名' }}</span>
                             </template>
                         </el-table-column>
-                        <el-table-column prop="comment" label="内容" sortable show-overflow-tooltip>
+                        <el-table-column prop="comment" label="内容" show-overflow-tooltip>
                         </el-table-column>
-                        <el-table-column label="操作">
+                        <el-table-column label="操作" width="80">
                             <template slot-scope="scope">
                                 <el-button type="danger" size="small" @click="msgDel(scope.$index, scope.row)">删除</el-button>
                             </template>
@@ -170,86 +162,100 @@
                     </el-table>
                     <!--分页-->
                     <el-col :span="24" class="toolbar">
-                        <el-pagination background @size-change="handleSizeChange" @current-change="handleCurrentChange" :page-sizes="[7,8,10,20]"
-                            :page-size="pagesize" layout="total,sizes, prev, pager, next, jumper" :current-page="page" :total="msgTotal"
-                            style="float:right;">
+                        <el-pagination background @size-change="msgListSizeChange" @current-change="msgListCurrentChange" :page-sizes="[7,8,10,20]"
+                            :page-size="msgListPageSize" layout="total,sizes, prev, pager, next, jumper" :current-page="msgListPage"
+                            :total="msgList.length" style="float:right;">
                         </el-pagination>
                     </el-col>
                 </el-tab-pane>
             </el-tabs>
         </div>
         <div class="secondPage" v-show="secondPageVisible" title="详情">
-            <el-button class="backUp" type="danger" @click="backMainPage">返回</el-button>
-            <ul class="publish center">
-                <li>
-                    <img :src="detailList.addInfo.avatarUrl" class="pub">
-                    <!--<img v-if="pubImg" src="../../assets/user.png" class="pub">-->
-                </li>
-                <li>{{detailList.addInfo.isRealName===true?detailList.addInfo.name:'匿名'}}</li>
-            </ul>
-            <div class="mainContent">
-                <span class="left topicType">{{detailList.type || ' - '}}</span>
-                <div class="center pubTime">发布时间：{{detailList.createTime || ' - '}}</div>
-                <div class="content">{{detailList.content || ' - '}}</div>
-                <div v-if="bannerUrl.length>0">
-                    <img v-for="item in bannerUrl" :src="item" @click="handlePictureCardPreview(item)">
-                    <el-dialog :visible.sync="dialogVisible">
-                        <img width="100%" style="height: 100%;" :src="dialogImageUrl" alt="">
-                    </el-dialog>
-                </div>
-                <ul class="tips">
-                    <li></li>
-                    <li>{{detailList.likeNum}}</li>
-                    <li>{{detailList.commentNum}}</li>
-                </ul>
-                <el-button type="danger" size="small" @click="delTopicThis">屏蔽</el-button>
-                <div class="bottomTips">
-                    <el-tabs v-model="activeBT" type="card" @tab-click="handleClick">
-                        <!--<el-tab-pane label="留言" name="firstTips">-->
-                        <el-tab-pane :label=theComment name="firstTips">
-                            <ul class="comCont">
-                                <li v-for="item in commentLists">
-                                    <label>{{item.addInfo.isRealName===true?item.addInfo.name:'匿名'}} {{item.createTime}}</label>
-                                    <div class="commentR">
-                                        {{item.comment}}
-                                        <div v-if="item.replyList && item.replyList.length>0" class="comRBody" v-for="childitem in item.replyList">
-                                            回复 {{childitem.addInfo.isRealName===true?childitem.addInfo.name:'匿名'}} （{{childitem.createTime}}）：{{childitem.reply}}
+            <el-button style="float:right;" type="danger" @click="backMainPage">返回</el-button>
+            <el-row type="flex" justify="center">
+                <el-col :span="20">
+                    <el-row>
+                        <el-col :span="6">
+                            <img :src="detailList.addInfo.avatar" style="display:block;height: 70px;border-radius: 50%;width: 70px;">
+                            <p style="width:70px;text-align:center">
+                                {{detailList.addInfo.isRealName === true ? detailList.addInfo.name : '匿名'}}
+                            </p>
+                        </el-col>
+                    </el-row>
+                    <el-row>
+                        <el-col :span="6">
+                            <i class="fa fa-tags mr10"></i>{{detailList.type || ' - '}}
+                        </el-col>
+                        <el-col :span="6">发布时间：{{detailList.createTime || ' - '}}
+                        </el-col>
+                    </el-row>
+                    <el-row>
+                        <el-col>
+                            <p style="text-align: justify;text-indent: 28px;">{{detailList.content || ' - '}}</p>
+                        </el-col>
+                    </el-row>
+                    <el-row class="mb20" v-if="detailList.addInfo.urlList">
+                        <el-col>
+                            <img style="vertical-align: top;width:100px;margin-right:10px;border-radius: 6px;" v-for="item in detailList.addInfo.urlList"
+                                :src="item" @click="handlePictureCardPreview(item)">
+                            <el-dialog :visible.sync="dialogVisible">
+                                <img width="100%" style="height: 100%;" :src="dialogImageUrl" alt="">
+                            </el-dialog>
+                        </el-col>
+                    </el-row>
+                    <el-row class="mb20">
+                        <el-col :span="3">阅读
+                            <i class="fa fa-eye mr10"></i>{{detailList.likeNum}}
+                        </el-col>
+                        <el-col :span="3">点赞
+                            <i class="fa fa-thumbs-o-up mr10"></i>{{detailList.likeNum}}
+                        </el-col>
+                        <el-col :span="3">评论
+                            <i class="fa fa-commenting-o mr10"></i>{{detailList.commentNum}}
+                        </el-col>
+                        <el-col :span="3">
+                            <el-button style="line-height: 0px;" type="danger" size="small" @click="delTopicThis">屏蔽该话题</el-button>
+                        </el-col>
+                    </el-row>
+                    <div class="bottomTips">
+                        <el-tabs v-model="activeBT" type="card" @tab-click="handleClick">
+                            <el-tab-pane :label="'留言（'+ commentLists.length+')' " name="firstTips">
+                                <ul class="comCont">
+                                    <li v-for="item in commentLists.slice((commentListsPage-1)*commentListsPageSize,commentListsPage*commentListsPageSize) ">
+                                        <label>{{item.addInfo.isRealName === true ? item.addInfo.name : '匿名' }} ({{item.createTime}})
+                                        </label>
+                                        <div class="commentR">{{item.comment}}
+                                            <div class="comRBody" v-if="item.replyList && item.replyList.length > 0" v-for="childitem in item.replyList">
+                                                回复 {{childitem.addInfo.isRealName === true ? childitem.addInfo.name : '匿名'}} （{{childitem.createTime}}）：{{childitem.reply}}
+                                            </div>
                                         </div>
-                                    </div>
-                                </li>
-                            </ul>
-                            <!--分页-->
-                            <el-col :span="24" class="toolbar">
-                                <el-pagination background @size-change="handleSizeChange" @current-change="commentCurrentChange" :page-sizes="[7,8,10,20]"
-                                    :page-size="pagesize" layout="total,sizes, prev, pager, next, jumper" :total="commentTotal"
-                                    :current-page="page" style="float:right;">
-                                </el-pagination>
-                            </el-col>
-                        </el-tab-pane>
-                        <!--<el-tab-pane label="举报" name="secondTips">-->
-                        <el-tab-pane :label=theReport name="secondTips">
-                            <ul class="comCont">
-                                <li v-for="item in reportLists">
-                                    <label>{{item.addInfo.userInfo.addInfo.nickName}} {{item.createTime}}</label>
-                                    <div class="commentR">
-                                        {{item.tipOffCause}}
-                                    </div>
-                                    <span class="topicType">{{item.tipOffType}}</span>
-                                </li>
-                            </ul>
-                            <!--分页-->
-                            <el-col :span="24" class="toolbar">
-                                <el-pagination background @size-change="handleSizeChange" @current-change="reportCurrentChange" :page-sizes="[7,8,10,20]"
-                                    :page-size="pagesize" layout="total,sizes, prev, pager, next, jumper" :total="reportTotal"
-                                    :current-page="page" style="float:right;">
-                                </el-pagination>
-                            </el-col>
-                        </el-tab-pane>
-                    </el-tabs>
-                </div>
-            </div>
+                                    </li>
+                                </ul>
+                                <el-row>
+                                    <el-col :span="24" class="toolbar">
+                                        <el-pagination background @size-change="commentListsPageSizeChange" @current-change="commentListsPageCurrentChange" :page-sizes="[20,50,100]"
+                                            :page-size="commentListsPageSize" layout="total,sizes, prev, pager, next, jumper"
+                                            :total="commentLists.length" :current-page="commentListsPage" style="float:right;">
+                                        </el-pagination>
+                                    </el-col>
+                                </el-row>
+                            </el-tab-pane>
+                            <el-tab-pane :label="'举报（'+ reportLists.length+')'" name="secondTips">
+                                <ul class="comCont">
+                                    <li v-for="item in reportLists">
+                                        <label>{{item.addInfo.userInfo.addInfo.nickName}} {{item.createTime}}</label>
+                                        <div class="commentR">
+                                            {{item.tipOffCause}}
+                                        </div>
+                                        <span class="topicType">{{item.tipOffType}}</span>
+                                    </li>
+                                </ul>
+                            </el-tab-pane>
+                        </el-tabs>
+                    </div>
+                </el-col>
+            </el-row>
         </div>
-
     </section>
 </template>
 
@@ -265,13 +271,6 @@
         deleteDict,
         showDict,
         addDict,
-        delCir,
-        addCir,
-        addAct,
-        delAct,
-        uploadPic,
-        batchRemoveUser,
-        editUser,
     } from '../../api/api'
 
     export default {
@@ -281,192 +280,170 @@
                 secondVisible: false,
                 dialogImageUrl: '',
                 dialogVisible: false,
-                pagesize: 7,
                 page: 1,
+                msgListPage: 1,
+                commentListsPage: 1,
+                pagesize: 7,
+                msgListPageSize: 7,
+                commentListsPageSize: 20,
                 mainPageVisible: true,
                 secondPageVisible: false,
                 activeTopicName: 'first',
-                cateOptions: [{
-                        value: '选项1',
-                        label: '拼单'
-                    },
-                    {
-                        value: '选项2',
-                        label: '交友'
-                    },
-                    {
-                        value: '选项3',
-                        label: '旅游'
-                    },
-                    {
-                        value: '选项4',
-                        label: '吐槽'
-                    }
-                ],
-                secCateValue: '',
-                timeTopicValue: [],
                 topicFilters: {
                     searchTitle: '',
                     secCateValue: '',
                     timeTopicValue: []
-
                 },
                 topicList: [],
                 topicLoading: false,
-                sels: [], //列表选中列
-                topicTotal: 0,
-                topicData: {
-                    likeNum: 9,
-                    collectNum: 8,
-                    tipOfNum: 7
-                },
-                topicInteractVisible: false, //互动界面是否显示
-                pubImg: '../../assets/user.png',
-                publish: '张三丰',
-                type: '旅游',
-                publishTime: '2018-05-06 19:30',
-                pubContent: '美国商务部长威尔伯罗斯美国东部时间5月14日表示，愿意尽快改变对中国手机制造商中兴通讯的销售禁令，此前一天美国总统特朗普表示，要求美国商务部帮助中兴通讯恢复运营，“中国流失了很多工作岗位”。这一消息遭致很多美国媒体的质疑，一些评论批评标榜“美国优先”的特朗普在此事上把中国人的就业放到了优先考虑的地方。',
-                bannerUrl: [],
-                looks: 100,
-                praise: 50,
-                comments: 20,
-                informs: 5,
+                selectTopicArr: [], //列表选中列
                 activeBT: 'firstTips',
-                commentTotal: 2,
                 commentLists: [],
-                reportTotal: 1,
                 reportLists: [],
                 msgList: [],
                 msgLoading: false,
-                msgTotal: 2,
                 detailList: {
-                    lookUpNum: 0,
+                    id: "",
+                    parkId: "",
+                    userId: "",
+                    type: "",
+                    title: "",
+                    updateTime: "",
+                    createTime: "",
+                    content: "",
+                    addInfo: {
+                        name: "",
+                        urlList: [],
+                        avatar: "",
+                        isRealName: true
+                    },
+                    isEnabled: 1,
+                    deleted: 1,
                     likeNum: 0,
                     commentNum: 0,
-                    addInfo: {
-                        isRealName: '',
-                        name: '',
-                        avatarUrl: '',
-                        publisher: {
-                            addInfo: {
-                                nickName: '',
-                                avatarUrl: ''
-                            }
-                        }
-                    }
+                    tipsOfNum: 0,
+                    collectNum: 0
                 },
-                theComment: '',
-                theReport: '',
-                cateFilters: {
-                    addType: ''
-                },
+                category: '',
                 cateList: [],
                 cateLoading: false,
                 anCateSels: [], //类别管理列表选中项
-                cateTotal: 3,
                 anCateVisible: false,
-                anCateForm: {
-                    type: ''
-                },
-                anCateLoading: false,
+                anCateForm: {},
                 cateDic: {},
-
             }
         },
         methods: {
-            editAnCateSubmit: function () { //编辑  类别管理
+            //编辑类别管理
+            editAnCateSubmit() {
                 this.$refs.anCateForm.validate((valid) => {
                     if (valid) {
-                        this.$confirm('确认提交吗？', '提示', {}).then(() => {
-                            this.anCateLoading = true;
-                            let data = {
-                                parkId: localStorage.getItem("parkId"),
-                                name: this.anCateForm.name,
-                                code: this.cateDic.code + '.' + this.anCateForm.name,
-                                pid: this.cateDic.id,
-                                pname: this.cateDic.name,
-                                id: this.anCateForm.id,
-                                addInfo: {}
-                            };
-                            this.$post(addDict, data)
-                                .then((res) => {
-                                    this.anCateLoading = false;
-                                    this.anCateVisible = false;
-                                    this.getCategory();
-                                })
-                        });
+                        let data = {
+                            parkId: localStorage.getItem("parkId"),
+                            name: this.anCateForm.name,
+                            code: this.cateDic.code + '.' + this.anCateForm.name,
+                            pid: this.cateDic.id,
+                            pname: this.cateDic.name,
+                            id: this.anCateForm.id,
+                            addInfo: {}
+                        };
+                        this.$post(addDict, data)
+                            .then((res) => {
+                                this.anCateVisible = false;
+                                this.getCategory();
+                            })
                     }
                 });
             },
-            cateCurrentChange(val) { //类别管理分页
+            // 类别管理分页
+            cateCurrentChange(val) {
                 this.page = val;
                 this.getCategory();
             },
-            anCateEdit(index, row) { //类别管理显示编辑界面
+            // 类别管理显示编辑界面
+            anCateEdit(index, row) {
                 this.anCateVisible = true;
-                this.anCateForm = Object.assign({}, row);
+                this.anCateForm = row;
             },
-            selsCateChange(sels) {
-                this.anCateSels = sels;
+            selsCateChange(val) {
+                this.anCateSels = val;
             },
-            anCateDel(index, row) { // 类别管理列表删除
+            // 类别管理列表删除
+            anCateDel(index, row) {
                 this.$confirm('确认删除该记录吗?', '提示', {
                     type: 'warning'
                 }).then(() => {
-                    this.cateLoading = true;
-                    let para = {
-                        id: row.id
-                    };
-                    let self = this;
-                    this.$del(deleteDict + para.id)
-                        .then(function (response) {
-                            self.cateLoading = false;
-                            self.$message({
+                    this.$del(deleteDict + row.id)
+                        .then(res => {
+                            this.$message({
                                 message: '删除成功',
                                 type: 'success'
                             });
-                            self.getCategory();
+                            this.getCategory();
                         });
-                }).catch(() => {
-
-                });
+                }).catch(() => {});
             },
-            getCategory() { // 类别管理列表
-                let pname = '话题';
+            // 类别管理列表
+            getCategory() {
                 this.cateLoading = true;
-                this.$get(showDict + pname)
+                this.$get(showDict + '话题')
                     .then((res) => {
                         this.cateList = res;
-                        this.cateTotal = this.cateList.length > 0 ? this.cateList.length : 1;
                         this.cateLoading = false;
                     })
             },
-            getAnCateDic() { //类别管理获取Pid
+            // 类别管理获取Pid
+            getAnCateDic() {
                 this.$get(findDic + '话题').then((res) => {
                     this.cateDic = res[0];
                 })
             },
-            cateAdd() { //类别管理添加
-                this.cateLoading = true;
+            // 类别管理添加
+            cateAdd() {
                 let data = {
                     parkId: localStorage.getItem("parkId"),
-                    name: this.cateFilters.addType,
-                    code: this.cateDic.code + '.' + this.cateFilters.addType,
+                    name: this.category,
+                    code: this.cateDic.code + '.' + this.category,
                     pid: this.cateDic.id,
                     pname: this.cateDic.name,
                     addInfo: {}
                 };
                 this.$post(addDict, data)
                     .then((res) => {
-                        this.cateLoading = false;
+                        this.$message({
+                            message: '添加成功',
+                            type: 'success'
+                        });
                         this.getCategory();
                     });
-                this.cateFilters.addType = '';
+                this.category = '';
             },
-            cateBatchRemove() { //  类别管理批量删除
-
+            //  类别管理批量删除
+            cateBatchRemove() {
+                if (this.anCateSels.length === 0) {
+                    this.$message({
+                        message: '请先选择分类',
+                        type: 'info'
+                    });
+                } else {
+                    this.$confirm('确认删除选中的分类？', '提示', {
+                        type: 'warning'
+                    }).then(() => {
+                        for (let i of this.anCateSels) {
+                            this.$del(deleteDict + i.id).then(res => {
+                                this.$notify({
+                                    title: '成功',
+                                    message: `已删除 "${i.name}" 话题`,
+                                    type: 'success'
+                                });
+                                this.getCategory();
+                            });
+                        }
+                    }).catch(() => {});
+                }
             },
-            cateMg() { // 话题管理 类别管理
+            // 话题管理 类别管理
+            cateMg() {
                 this.firstVisible = false;
                 this.secondVisible = true;
                 this.page = 1;
@@ -483,15 +460,16 @@
             handleClick(tab, event) {
                 this.page = 1;
             },
-            getTopic() { // 获取话题列表
+            // 获取话题列表
+            getTopic() {
                 this.getTopicList(showTopic)
             },
-            getTopicList(url) { // 话题 列表数据
+            // 话题 列表数据
+            getTopicList(url) {
                 this.topicLoading = true;
                 this.$get(url)
                     .then((res) => {
                         this.topicList = res;
-                        this.topicTotal = this.topicList.length > 0 ? this.topicList.length : 1;
                         this.topicLoading = false;
                     })
             },
@@ -506,13 +484,7 @@
                 url = endTime === undefined ? url + '' : url + '&endTime=' + endTime.replace(/-/g, '/');
                 url = title === '' ? url + '' : url + '&title=' + title;
                 url = type === '' ? url + '' : url + '&type=' + type;
-                // console.log(url)
                 this.getTopicList(url);
-                this.topicFilters = {
-                    secCateValue: '',
-                    timeTopicValue: [],
-                    searchTitle: ''
-                }
             },
             // 获取留言列表
             getMsg() {
@@ -520,124 +492,109 @@
                 this.$get(subComs)
                     .then((res) => {
                         this.msgList = res;
-                        this.msgTotal = this.msgList.length > 0 ? this.msgList.length : 1;
                         this.msgLoading = false;
                     })
             },
             //话题批量屏蔽
-            topicBatchRemove: function () {
-                var ids = this.sels.map(item => item.id).toString();
-                this.$confirm('确认删除选中记录吗？', '提示', {
-                    type: 'warning'
-                }).then(() => {
-                    this.topicLoading = true;
-                    //NProgress.start();
-                    let para = {
-                        ids: ids
-                    };
-                    batchRemoveUser(para).then((res) => {
-                        this.topicLoading = false;
-                        //NProgress.done();
-                        this.$message({
-                            message: '删除成功',
-                            type: 'success'
-                        });
-                        this.getTopic();
-                    });
-                }).catch(() => {
-
-                });
+            selsTopicChange: function (val) {
+                this.selectTopicArr = val;
             },
-            selsTopicChange: function (sels) {
-                this.sels = sels;
+            topicBatchRemove: function () {
+                if (this.selectTopicArr.length === 0) {
+                    this.$message({
+                        message: '请先选择话题',
+                        type: 'info'
+                    });
+                } else {
+                    this.$confirm('确认屏蔽选中的话题？', '提示', {
+                        type: 'warning'
+                    }).then(() => {
+                        for (let i of this.selectTopicArr) {
+                            this.$del(delTopic + i.id).then(res => {
+                                this.$notify({
+                                    title: '成功',
+                                    message: `已屏蔽 "${i.title}" 话题`,
+                                    type: 'success'
+                                });
+                                this.getTopic();
+                            });
+                        }
+                    }).catch(() => {});
+                }
             },
             handleSizeChange(val) {
                 this.pagesize = val;
+            },
+            msgListSizeChange(val) {
+                this.msgListPageSize = val;
+            },
+            commentListsPageSizeChange(val) {
+                this.commentListsPageSize = val;
             },
             handleCurrentChange(val) {
                 this.page = val;
                 this.getTopic();
             },
-            topicInteract(index, row) {
-                this.topicInteractVisible = true;
-                this.topicData.likeNum = row.likeNum ? row.likeNum : 0;
-                this.topicData.collectNum = row.collectNum ? row.collectNum : 0;
-                this.topicData.tipOfNum = row.tipOfNum ? row.tipOfNum : 0;
+            msgListCurrentChange(val) {
+                this.msgListPage = val;
+                this.getMsg();
+            },
+            commentListsPageCurrentChange(val) {
+                this.commentListsPage = val;
+                this.getSubComment(this.detailList.id);
             },
             //屏蔽
-            topicDel: function (index, row) {
-                this.$confirm('确认删除该记录吗?', '提示', {
+            topicDel(index, row) {
+                this.$confirm('确认屏蔽该话题吗?', '提示', {
                     type: 'warning'
                 }).then(() => {
-                    this.topicLoading = true;
-                    //NProgress.start();
-                    let para = {
-                        id: row.id
-                    };
-                    // let url='/api/subject/deleteSubject/'+para.id;
-                    let self = this;
-                    this.$del(delTopic + para.id)
-                        .then(function (response) {
-                            self.topicLoading = false;
-                            //NProgress.done();
-                            self.$message({
+                    this.$del(delTopic + row.id)
+                        .then(res => {
+                            this.$message({
                                 message: '删除成功',
                                 type: 'success'
                             });
-                            self.getTopic();
+                            this.getTopic();
                         });
-                }).catch(() => {
-
-                });
+                }).catch(() => {});
             },
-            delTopicThis: function () { //屏蔽
-                this.$confirm('确认删除该记录吗?', '提示', {
+            //屏蔽
+            delTopicThis() {
+                this.$confirm('确认屏蔽该话题吗?', '提示', {
                     type: 'warning'
                 }).then(() => {
-                    this.secondPageVisible = true;
-                    //NProgress.start();
-                    let paraId = this.detailList.id;
-                    // let url='/api/subject/deleteSubject/'+para.id;
-                    let self = this;
-                    this.$del(delTopic + paraId)
-                        .then(function (response) {
-                            self.secondPageVisible = false;
-                            self.mainPageVisible = true;
-                            //NProgress.done();
-                            self.$message({
-                                message: '删除成功',
+                    this.$del(delTopic + this.detailList.id)
+                        .then(res => {
+                            this.secondPageVisible = false;
+                            this.mainPageVisible = true;
+                            this.$message({
+                                message: '屏蔽成功',
                                 type: 'success'
                             });
-                            self.getTopic();
+                            this.getTopic();
                         });
-                }).catch(() => {
-
-                });
+                }).catch(() => {});
             },
             topicView(index, row) {
+                console.log(JSON.stringify(row))
                 this.mainPageVisible = false;
                 this.secondPageVisible = true;
                 this.detailList = row;
-                this.bannerUrl = this.detailList.addInfo.urlList ? this.detailList.addInfo.urlList : [];
-                let id = this.detailList.id;
-                this.getSubComment(id);
-                this.getTipsOff(id);
+                this.getSubComment(this.detailList.id);
+                this.getTipsOff(this.detailList.id);
             },
-            getSubComment(id) { //获取留言
+            //获取留言
+            getSubComment(id) {
                 this.$get(subsUrl + id)
                     .then((res) => {
                         this.commentLists = res;
-                        this.theComment = '留言（' + this.commentLists.length + '）';
-                        this.commentTotal = this.commentLists.length > 0 ? this.commentLists.length : 1;
                     })
             },
-            getTipsOff(id) { //举报
+            //举报
+            getTipsOff(id) {
                 this.$get(tipsOffUrl + id)
                     .then((res) => {
                         this.reportLists = res;
-                        let length = this.reportLists && this.reportLists.length > 0 ? this.reportLists.length : 0;
-                        this.theReport = '举报（' + length + '）';
-                        this.reportTotal = this.reportLists.length > 0 ? this.reportLists.length : 1;
                     })
             },
             backMainPage() {
@@ -665,7 +622,6 @@
                     this.$del(delSubCom + para.id)
                         .then(function (response) {
                             self.msgLoading = false;
-                            //NProgress.done();
                             self.$message({
                                 message: '删除成功',
                                 type: 'success'
@@ -685,7 +641,6 @@
             this.getAnCateDic();
             this.getCategory();
         }
-
     }
 </script>
 
@@ -709,9 +664,7 @@
         }
     }
 
-    .backUp {
-        float: right;
-    }
+
 
     .left {
         float: left;
@@ -740,90 +693,39 @@
         }
     }
 
-    .mainContent {
-        width: 80%;
-        margin: 10px auto;
-        .topicType {
-            color: #866;
-            font-weight: 600;
-        }
-        .pubTime {
-            line-height: 60px;
-        }
-        .content {
-            text-align: justify;
-            text-indent: 28px;
-        }
-        img {
-            height: 120px;
-            margin: 10px 15px;
-        }
-        .el-dialog__body {
-            img {
-                margin: 0;
-            }
-        }
-        .tips {
-            &:after {
-                content: '';
-                display: block;
-                clear: both;
-            }
-            li {
-                display: inline-block;
-                vertical-align: middle;
-                padding-left: 45px;
-                margin: 5px 5px 15px;
-                width: 40px;
-                height: 40px;
-                line-height: 40px;
-                background: url(../../assets/icon_show.png) no-repeat left center;
-                background-size: 40px 30px;
-                &:first-child {
-                    background-size: 40px 40px;
-                }
-                &:nth-child(2) {
-                    background-image: url(../../assets/icon_praise.png);
-                }
-                &:nth-child(3) {
-                    background-image: url(../../assets/icon_comment.png);
-                }
-            }
-        }
-        .bottomTips {
-            .el-tab-pane {
-                .comCont {
-                    li {
-                        border-bottom: 1px solid #ddd;
-                        padding: 10px 0;
-                        label {
-                            display: inline-block;
-                            width: 20%;
-                            color: #aaa;
-                            vertical-align: top;
+    .bottomTips {
+        .el-tab-pane {
+            .comCont {
+                li {
+                    border-bottom: 1px solid #ddd;
+                    padding: 10px 0;
+                    label {
+                        display: inline-block;
+                        width: 20%;
+                        color: #aaa;
+                        vertical-align: top;
+                    }
+                    .commentR {
+                        display: inline-block;
+                        text-align: justify;
+                        width: 78%;
+                        .comRBody {
+                            border: 1px solid #ccc;
+                            padding: 5px 8px;
+                            margin: 5px 0;
+                            color: #888;
+                            background: #f3f3f3;
                         }
-                        .commentR {
-                            display: inline-block;
-                            text-align: justify;
-                            width: 78%;
-                            .comRBody {
-                                border: 1px solid #ccc;
-                                padding: 5px 8px;
-                                margin: 5px 0;
-                                color: #888;
-                                background: #f3f3f3;
-                            }
-                        }
-                        .topicType {
-                            border: 1px solid #f00;
-                            border-radius: 3px;
-                            padding: 6px;
-                            color: #333;
-                        }
+                    }
+                    .topicType {
+                        border: 1px solid #f00;
+                        border-radius: 3px;
+                        padding: 6px;
+                        color: #333;
                     }
                 }
             }
-
         }
+
     }
 </style>

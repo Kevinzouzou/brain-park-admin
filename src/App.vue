@@ -10,23 +10,8 @@
 	export default {
 		name: 'app',
 		components: {},
-		mounted() {
-			// this.$ajax({
-			//     method: 'post',
-			//     url: 'api/park/queryEnterprise',
-			//     data: {
-			//         parkId: '969878f1f1149e6a7afae38636c0abc'
-			//     }
-			// }).then(res=>{
-			//     console.log(res);
-			// })
-			// localStorage.setItem("parkId",'969878f1f1149e6a7afae38636c0abc');
-			// localStorage.setItem("userId",'71f3df48263f4c74be2efbb83250e66b');
-		},
-		created() {
-
-
-		}
+		mounted() {},
+		created() {}
 	}
 </script>
 
@@ -74,5 +59,37 @@
 	.fade-enter,
 	.fade-leave-active {
 		opacity: 0;
+	}
+
+	.mt10 {
+		margin-top: 10px;
+	}
+
+	.mb10 {
+		margin-bottom: 10px;
+	}
+
+	.ml10 {
+		margin-left: 10px;
+	}
+
+	.mr10 {
+		margin-right: 10px;
+	}
+
+	.mt20 {
+		margin-top: 20px;
+	}
+
+	.mb20 {
+		margin-bottom: 20px;
+	}
+
+	.ml20 {
+		margin-left: 20px;
+	}
+
+	.mr20 {
+		margin-right: 20px;
 	}
 </style>

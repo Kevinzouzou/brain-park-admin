@@ -14,7 +14,6 @@
                             </el-form-item>
                             <el-form-item>
                                 <div class="block">
-
                                     <el-date-picker v-model="highFilters.timeValue" type="daterange" start-placeholder="开始日期" end-placeholder="结束日期" value-format="yyyy-MM-dd HH:mm:ss"
                                         :default-time="['00:00:00', '23:59:59']">
                                     </el-date-picker>
@@ -32,7 +31,7 @@
                     <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
                         <el-form :inline="true">
                             <el-form-item>
-                                <el-button type="danger" @click="highActBatchRemove" :disabled="this.sels.length===0">批量删除</el-button>
+                                <el-button type="danger" @click="highActBatchRemove" :disabled="this.sels.length === 0">批量删除</el-button>
                             </el-form-item>
                             <el-form-item>
                                 <el-button type="primary" @click="highActAdd">新增</el-button>
@@ -72,40 +71,41 @@
                     </el-col>
                     <!--新增/编辑界面-->
                     <el-dialog :title=addEditTitle :visible.sync="addEditVisible">
-                        <el-form :model="addEditForm" label-width="80px" ref="addEditForm">
-                            <el-form-item label="标题" prop="title">
+                        <el-form :model="addEditForm" label-width="120px" ref="addEditForm">
+                            <el-form-item label="标题：" prop="title">
                                 <el-input v-model="addEditForm.title" auto-complete="off"></el-input>
                             </el-form-item>
-                            <el-form-item label="类别" prop="circleSec">
+                            <el-form-item label="类别：" prop="circleSec">
                                 <el-select v-model="secCateValue" placeholder="请选择" @change="secHighValue">
                                     <el-option v-for="item in categoryList" :key="item.id" :label="item.name" :value="item.id">
                                     </el-option>
                                 </el-select>
                             </el-form-item>
-                            <el-form-item label="缩略图">
-                                <el-upload :action=url list-type="picture-card" :data="othParams" ref="upload" :on-preview="handleHAPictureCardPreview" :on-remove="handleHARemove"
-                                    :file-list="imgHAList" :on-success="moreHAShow">
-                                    <i class="el-icon-plus"></i>
+                            <el-form-item label="缩略图：">
+                                <el-upload :action="url" list-type="picture-card" :data="othParams" ref="upload" :on-preview="handleHAPictureCardPreview"
+                                    :on-remove="handleHARemove" :on-success="moreHAShow" :show-file-list="false">
+                                    <img v-if="moreHAPicList" :src="moreHAPicList" class="ThumbnailImg">
+                                    <i v-else class="el-icon-plus"></i>
                                 </el-upload>
                                 <el-dialog :visible.sync="dialogHAVisible">
                                     <img width="100%" :src="dialogHAImageUrl">
                                 </el-dialog>
                             </el-form-item>
-                            <el-form-item label="活动时间">
+                            <el-form-item label="活动时间：">
                                 <el-date-picker v-model="addEditForm.actTimerValue" type="daterange" start-placeholder="开始日期" end-placeholder="结束日期" value-format="yyyy-MM-dd HH:mm:ss"
                                     :default-time="['00:00:00', '23:59:59']">
                                 </el-date-picker>
                             </el-form-item>
-                            <el-form-item label="活动地址" prop="addInfo.location">
+                            <el-form-item label="活动地址：" prop="addInfo.location">
                                 <el-input v-model="addEditForm.addInfo.location" auto-complete="off"></el-input>
                             </el-form-item>
-                            <el-form-item label="详细介绍">
-                                <UE :id=ue @editorChange="hActAddChange"></UE>
+                            <el-form-item label="详细介绍：">
+                                <quill-editor v-model="highActContent"></quill-editor>
                             </el-form-item>
                         </el-form>
                         <div slot="footer" class="dialog-footer">
-                            <el-button @click.native="addEditVisible = false">取消</el-button>
-                            <el-button type="primary" @click.native="addHighActSubmit" :loading="addEditLoading">提交</el-button>
+                            <el-button @click="addEditVisible = false">取消</el-button>
+                            <el-button type="primary" @click="addHighActSubmit" :loading="addEditLoading">提交</el-button>
                         </div>
                     </el-dialog>
                     <!--报名-->
@@ -129,7 +129,6 @@
                         </el-table>
                         <el-pagination class="el-pages" background @size-change="highActSizeChange" @current-change="highSignsCurChange" :page-sizes="[7,8,10,20]"
                             :page-size="pagesize" layout="total,sizes, prev, pager, next, jumper" :current-page="page" :total="hASignstotal">
-
                         </el-pagination>
                     </el-dialog>
 
@@ -146,12 +145,12 @@
                                         <el-form-item>
                                             <div class="block">
                                                 <el-date-picker v-model="commerSerFilters.timeComSerValue" type="daterange" start-placeholder="开始日期" end-placeholder="结束日期"
-                                                    value-format="yyyy-MM-dd HH:mm:ss" :default-time="['00:00:00', '23:59:59']">
+                                                    value-format="yyyy-MM-dd HH:mm:ss" :picker-options="HistoryListOptions" :default-time="['00:00:00', '23:59:59']">
                                                 </el-date-picker>
                                             </div>
                                         </el-form-item>
                                         <el-form-item>
-                                            <el-input v-model="commerSerFilters.searchTitle" placeholder="搜索标题"></el-input>
+                                            <el-input prefix-icon="el-icon-search" v-model="commerSerFilters.searchTitle" placeholder="搜索标题" clearable></el-input>
                                         </el-form-item>
                                         <el-form-item>
                                             <el-button type="primary" v-on:click="getQueryCommer">查询</el-button>
@@ -180,7 +179,7 @@
                                     </el-table-column>
                                     <el-table-column prop="createTime" label="发布时间" sortable>
                                     </el-table-column>
-                                    <el-table-column prop="lookUpNum" label="浏览量" sortable>
+                                    <el-table-column prop="addInfo.lookUpNum" label="浏览量" sortable>
                                     </el-table-column>
                                     <el-table-column label="操作">
                                         <template slot-scope="scope">
@@ -198,51 +197,32 @@
                                 </el-col>
                                 <!--新增/编辑界面-->
                                 <el-dialog :title=addEditTitle :visible.sync="commerSerAEVisible">
-                                    <el-form :model="comSerAEForm" label-width="80px" ref="comSerAEForm">
+                                    <el-form :model="comSerAEForm" label-width="120px" ref="comSerAEForm">
                                         <el-form-item label="标题" prop="title">
                                             <el-input v-model="comSerAEForm.title" auto-complete="off"></el-input>
                                         </el-form-item>
                                         <el-form-item label="缩略图">
                                             <el-upload :action=url list-type="picture-card" :data="othParams" ref="upload2" :on-preview="handleComSerCardPreview" :on-remove="handleComSerRemove"
-                                                :file-list="imgComSerList" :on-success="moreComSerShow">
-                                                <i class="el-icon-plus"></i>
+                                                :on-success="uploadComSer" :show-file-list="false">
+                                                <img v-if="imgComSer " :src="imgComSer " class="ThumbnailImg">
+                                                <i v-else class="el-icon-plus"></i>
                                             </el-upload>
                                             <el-dialog :visible.sync="dialogComSerVisible">
                                                 <img width="100%" :src="dialogComSerImageUrl">
                                             </el-dialog>
                                         </el-form-item>
                                         <el-form-item label="详细介绍">
-                                            <UE :id=ue2 @editorChange="comSerAddChange"></UE>
+                                            <quill-editor v-model="comSerContent" class="editer">
+                                            </quill-editor>
                                         </el-form-item>
                                     </el-form>
                                     <div slot="footer" class="dialog-footer">
                                         <el-button @click.native="commerSerAEVisible = false">取消</el-button>
-                                        <el-button type="primary" @click.native="addComSerSubmit" :loading="comSerAELoading">提交</el-button>
+                                        <el-button type="primary" @click="addComSerSubmit" :loading="comSerAELoading">提交</el-button>
                                     </div>
                                 </el-dialog>
                             </el-tab-pane>
                             <el-tab-pane label="预约管理" name="secondSer">
-                                <!-- <el-col :span="24" justify="center">
-                                    <el-form :inline="true" :model="bookingFilters">
-                                        <el-form-item>
-                                            <span>日期范围：</span>
-                                        </el-form-item>
-                                        <el-form-item>
-                                            <div class="block">
-                                                <el-date-picker v-model="bookingFilters.timeBookingValue" type="daterange" start-placeholder="开始日期" end-placeholder="结束日期"
-                                                    value-format="yyyy-MM-dd HH:mm:ss" :default-time="['00:00:00', '23:59:59']">
-                                                </el-date-picker>
-                                            </div>
-                                        </el-form-item>
-                                        <el-form-item>
-                                            <el-input v-model="bookingFilters.searchTitle" placeholder="搜索标题"></el-input>
-                                        </el-form-item>
-                                        <el-form-item>
-                                            <el-button type="primary" v-on:click="getQueryBooking">查询</el-button>
-                                        </el-form-item>
-                                    </el-form>
-                                </el-col> -->
-                                <!--工具条-->
                                 <el-row type="flex" justify="center">
                                     <el-col :span="22" style="padding-bottom: 0px;">
                                         <el-form :inline="true">
@@ -330,14 +310,15 @@
                                                 <div style="color: #606266;">预约历史</div>
                                             </el-form-item>
                                             <el-form-item>
-                                                <el-input v-model="HistoryContentFilters.selection" class="userinfo-search" placeholder="输入课程名称或企业名称" prefix-icon="el-icon-search"></el-input>
+                                                <el-input v-model="HistoryContentFilters.selection" class="userinfo-search" placeholder="输入课程名称或企业名称" prefix-icon="el-icon-search"
+                                                    clearable></el-input>
                                             </el-form-item>
                                             <el-form-item>
                                                 <div style="color: #606266;">日期范围：</div>
                                             </el-form-item>
                                             <el-form-item>
-                                                <el-date-picker v-model="HistoryContentFilters.startTime" type="daterange" align="right" unlink-panels range-separator="至"
-                                                    start-placeholder="开始日期" end-placeholder="结束日期" :picker-options="HistoryListOptions">
+                                                <el-date-picker v-model="HistoryContentFilters.time" type="daterange" align="right" unlink-panels range-separator="至" start-placeholder="开始日期"
+                                                    end-placeholder="结束日期" :picker-options="HistoryListOptions" value-format="yyyy/MM/dd HH:mm:ss">
                                                 </el-date-picker>
                                             </el-form-item>
                                             <el-form-item>
@@ -349,24 +330,28 @@
                                         </el-form>
                                     </el-col>
                                     <!--列表-->
-                                    <el-table :data="HistoryList.slice((page-1)*HistoryListPagesize,page*HistoryListPagesize)" highlight-current-row v-loading="HistoryListLoading"
-                                        style="width: 100%;">
-                                        <el-table-column prop="addInfo.empNo" label="日期">
+                                    <el-table :data="HistoryList.slice((HistoryListPage-1)*HistoryListPagesize,HistoryListPage*HistoryListPagesize)" highlight-current-row
+                                        v-loading="HistoryListLoading" style="width: 100%;">
+                                        <el-table-column label="日期">
+                                            <template slot-scope="scope">
+                                                <span>{{scope.row.commerceCourseInfo.serveDate}}</span>
+                                                <span>{{scope.row.commerceCourseInfo.period}}</span>
+                                            </template>
                                         </el-table-column>
-                                        <el-table-column prop="addInfo.name" label="服务课程">
+                                        <el-table-column prop="commerceCourseInfo.addInfo.title" label="服务课程">
                                         </el-table-column>
-                                        <el-table-column prop="addInfo.gender" label="课程详情">
+                                        <el-table-column prop="commerceCourseInfo.addInfo.content" label="课程详情">
                                         </el-table-column>
-                                        <el-table-column prop="departmentInfo.name" label="企业名称">
+                                        <el-table-column prop="addInfo.enterprise" label="企业名称">
                                         </el-table-column>
-                                        <el-table-column prop="addInfo.position" label="电话">
+                                        <el-table-column prop="addInfo.phone" label="电话">
                                         </el-table-column>
                                     </el-table>
                                     <!--分页-->
                                     <el-col :span="24" class="toolbar">
-                                        <el-pagination background @size-change="sizeChange" @current-change="currentChange" :page-sizes="[7,8,10,20]" :page-size="HistoryListPagesize"
-                                            layout="total,sizes, prev, pager, next, jumper" :total="parkUserListTotal" :current-page="HistoryListPage"
-                                            style="float:right;">
+                                        <el-pagination background @size-change="HistoryListSizeChange" @current-change="HistoryListCurrentChange" :page-sizes="[7,8,10,20]"
+                                            :page-size="HistoryListPagesize" layout="total,sizes, prev, pager, next, jumper"
+                                            :total="HistoryListTotal" :current-page="HistoryListPage" style="float:right;">
                                         </el-pagination>
                                     </el-col>
                                 </div>
@@ -488,97 +473,9 @@
                         </el-tabs>
                     </el-col>
                 </el-tab-pane>
-                <el-tab-pane label="信息化建设" name="third">
-                    <el-col :span="24" justify="center">
-                        <el-form :inline="true" :model="infoConFilters">
-                            <el-form-item>
-                                <span>日期范围：</span>
-                            </el-form-item>
-                            <el-form-item>
-                                <div class="block">
-                                    <el-date-picker v-model="infoConFilters.timeinfoConValue" type="daterange" start-placeholder="开始日期" end-placeholder="结束日期"
-                                        value-format="yyyy-MM-dd HH:mm:ss" :default-time="['00:00:00', '23:59:59']">
-                                    </el-date-picker>
-                                </div>
-                            </el-form-item>
-                            <el-form-item>
-                                <el-input v-model="infoConFilters.searchTitle" placeholder="搜索标题"></el-input>
-                            </el-form-item>
-                            <el-form-item>
-                                <el-button type="primary" v-on:click="getQueryInfoCon">查询</el-button>
-                            </el-form-item>
-                        </el-form>
-                    </el-col>
-                    <!--工具条-->
-                    <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
-                        <el-form :inline="true">
-                            <el-form-item>
-                                <el-button type="danger" @click="infoConBatchRemove" :disabled="this.infoConSels.length===0">批量删除</el-button>
-                            </el-form-item>
-                            <el-form-item>
-                                <el-button type="primary" @click="infoConAdd">新增</el-button>
-                            </el-form-item>
-                        </el-form>
-                    </el-col>
-                    <!--列表-->
-                    <el-table :data="infoConList.slice((page-1)*pagesize,page*pagesize)" highlight-current-row v-loading="infoConLoading" @selection-change="selsInfoConChange"
-                        style="width: 100%;">
-                        <el-table-column type="selection" width="55">
-                        </el-table-column>
-                        <el-table-column type="index" width="60">
-                        </el-table-column>
-                        <el-table-column prop="title" label="标题" sortable show-overflow-tooltip>
-                        </el-table-column>
-                        <el-table-column prop="createTime" label="发布时间" sortable>
-                        </el-table-column>
-                        <el-table-column prop="lookUpNum" label="浏览量" sortable>
-                        </el-table-column>
-                        <el-table-column label="操作">
-                            <template slot-scope="scope">
-                                <el-button type="primary" size="small" @click="infoConEdit(scope.$index, scope.row)">编辑</el-button>
-                                <el-button type="danger" size="small" @click="infoConDel(scope.$index, scope.row)">删除</el-button>
-                            </template>
-                        </el-table-column>
-                    </el-table>
-                    <!--分页-->
-                    <el-col :span="24" class="toolbar">
-                        <el-pagination background @size-change="highActSizeChange" @current-change="infoConCurrentChange" :page-sizes="[7,8,10,20]"
-                            :page-size="pagesize" layout="total,sizes, prev, pager, next, jumper" :current-page="page" :total="infoConTotal"
-                            style="float:right;">
-                        </el-pagination>
-                    </el-col>
-                    <!--新增/编辑界面-->
-                    <el-dialog :title=addEditTitle :visible.sync="infoConAEVisible">
-                        <el-form :model="infoConAEForm" label-width="80px" ref="infoConAEForm">
-                            <el-form-item label="标题" prop="title">
-                                <el-input v-model="infoConAEForm.title" auto-complete="off"></el-input>
-                            </el-form-item>
-                            <el-form-item label="缩略图">
-                                <el-upload :action=url list-type="picture-card" :data="othParams" ref="upload3" :on-preview="handleInfoConCardPreview" :on-remove="handleInfoConRemove"
-                                    :file-list="imgInfoConList" :on-success="moreInfoConShow">
-                                    <i class="el-icon-plus"></i>
-                                </el-upload>
-                                <el-dialog :visible.sync="dialogInfoConVisible">
-                                    <img width="100%" :src="dialogInfoConImageUrl">
-                                </el-dialog>
-                            </el-form-item>
-                            <el-form-item label="咨询电话" prop="addInfo.telephone">
-                                <el-input v-model="infoConAEForm.addInfo.telephone" auto-complete="off"></el-input>
-                            </el-form-item>
-                            <el-form-item label="详细介绍">
-                                <UE :id=ue3 @editorChange="infoConAddChange"></UE>
-                            </el-form-item>
-                        </el-form>
-                        <div slot="footer" class="dialog-footer">
-                            <el-button @click.native="infoConAEVisible = false">取消</el-button>
-                            <el-button type="primary" @click.native="addInfoConSubmit" :loading="infoConAELoading">提交</el-button>
-                        </div>
-                    </el-dialog>
-                </el-tab-pane>
             </el-tabs>
         </div>
         <div class="secondPage" v-show="secondPageVisible" title="详情">
-            <el-button class="backUp" type="danger" @click="backToMainPage">返回</el-button>
             <el-col :span="24" justify="center">
                 <el-form :inline="true" :model="categoryFilters">
                     <el-form-item>
@@ -589,6 +486,9 @@
                     </el-form-item>
                     <el-form-item>
                         <el-button type="primary" v-on:click="categoryAdd">添加</el-button>
+                    </el-form-item>
+                    <el-form-item class="backUp">
+                        <el-button type="danger" @click="backToMainPage">返回</el-button>
                     </el-form-item>
                 </el-form>
             </el-col>
@@ -641,7 +541,6 @@
 
 <script type="text/ecmascript-6">
     import util from '../../common/js/util';
-    import UE from '../../components/ue';
     import {
         showDisplay,
         addDisplay,
@@ -662,9 +561,6 @@
     import publicFunction from '../../api/publicFunction';
 
     export default {
-        components: {
-            UE
-        },
         data() {
             return {
                 othParams: {
@@ -675,7 +571,7 @@
                 cateDic: {},
                 pagesize: 7,
                 page: 1,
-                activeName: 'second',
+                activeName: 'first',
                 secCateValue: '',
                 highFilters: {
                     searchTitle: '',
@@ -687,6 +583,7 @@
                 addEditVisible: false,
                 addEditForm: {
                     title: '',
+                    thumbUrl: '',
                     timeValue: '',
                     actTimerValue: [],
                     price: '',
@@ -701,10 +598,10 @@
                 highActLoading: false,
                 sels: [], //列表选中列
                 highActTotal: 2,
-                imgHAList: [],
+
                 dialogHAImageUrl: '',
                 dialogHAVisible: false,
-                moreHAPicList: [],
+                moreHAPicList: '',
                 ue: 'highActId',
                 highActContent: '',
                 hASignsVisible: false,
@@ -727,17 +624,13 @@
                     }
                 }],
                 hASignstotal: 1,
-                activeSer: 'secondSer',
-                timeinfoConValue: [],
+                activeSer: 'firstSer',
                 timeComSerValue: [],
                 timeBookingValue: [],
                 categoryFilters: {
                     addType: ''
                 },
-                infoConFilters: {
-                    searchTitle: '',
-                    timeinfoConValue: []
-                },
+
                 commerSerFilters: {
                     searchTitle: '',
                     timeComSerValue: []
@@ -747,27 +640,22 @@
                     timeBookingValue: []
                 },
                 categoryList: [],
-                infoConList: [],
+
                 comSerList: [],
                 bookingList: [],
                 categoryLoading: false,
-                infoConLoading: false,
+
                 comSerLoading: false,
                 bookingLoading: false,
                 categoryAEVisible: false,
-                infoConAEVisible: false,
+
                 commerSerAEVisible: false,
                 bookingVisible: false,
                 bookingInfoVisible: false,
                 categoryAEForm: {
                     name: ''
                 },
-                infoConAEForm: {
-                    title: '',
-                    addInfo: {
-                        phone: ''
-                    }
-                },
+
                 comSerAEForm: {
                     title: ''
                 },
@@ -777,24 +665,23 @@
                 },
                 comSerAELoading: false,
                 categoryAELoading: false,
-                infoConAELoading: false,
+
                 bookingAELoading: false,
                 categoryTotal: 2,
-                infoConTotal: 2,
+
                 comSerTotal: 2,
                 bookingTotal: 3,
                 imgInfoConList: [],
                 imgComSerList: [],
+                imgComSer: '',
                 dialogComSerVisible: false,
                 dialogInfoConVisible: false,
                 dialogComSerImageUrl: '',
                 dialogInfoConImageUrl: '',
-                ue2: 'comSerUEId',
-                ue3: 'infoConUEId',
                 comSerContent: '',
-                infoConContent: '',
+
                 categorySels: [], //类别管理列表选中项
-                infoConSels: [], //信息化列表选中项
+
                 comSerSels: [], //商务列表选中项
                 mainPageVisible: true,
                 secondPageVisible: false,
@@ -849,8 +736,7 @@
                 },
                 HistoryContentFilters: {
                     selection: '',
-                    startTime: '',
-                    endTime: ''
+                    time: '',
                 },
                 HistoryListPage: 1,
                 HistoryListPagesize: 7,
@@ -921,6 +807,7 @@
                 }
             };
         },
+
         methods: {
             handleClick(tab, event) {
                 this.page = 1;
@@ -999,37 +886,6 @@
                     }
                 });
             },
-            addInfoConSubmit: function () {
-                //新增  信息化建设
-                this.$refs.infoConAEForm.validate(valid => {
-                    if (valid) {
-                        this.$confirm('确认提交吗？', '提示', {}).then(() => {
-                            this.infoConAELoading = true;
-                            let para = Object.assign({}, this.infoConAEForm);
-                            let data = {
-                                parkId: localStorage.getItem('parkId'),
-                                thumbUrl: this.moreHAPicList[0],
-                                title: this.infoConAEForm.title,
-                                type: '信息化建设',
-                                detailUrl: 'null',
-                                addInfo: {
-                                    themeContent: this.infoConContent,
-                                    telephone: this.infoConAEForm.addInfo.telephone
-                                }
-                            };
-                            if (this.isEdit) {
-                                data.id = this.isEditId;
-                            }
-                            // let url='/api/displayContent/addDisplayContent';
-                            this.$post(addDisplay, data).then(res => {
-                                this.infoConAELoading = false;
-                                this.infoConAEVisible = false;
-                                this.getInfoCon();
-                            });
-                        });
-                    }
-                });
-            },
             addComSerSubmit: function () {
                 //新增  商务服务
                 this.$refs.comSerAEForm.validate(valid => {
@@ -1039,7 +895,7 @@
                             let para = Object.assign({}, this.comSerAEForm);
                             let data = {
                                 parkId: localStorage.getItem('parkId'),
-                                thumbUrl: this.moreHAPicList[0],
+                                thumbUrl: this.imgComSer,
                                 title: this.comSerAEForm.title,
                                 type: '商务服务',
                                 detailUrl: 'null',
@@ -1050,7 +906,6 @@
                             if (this.isEdit) {
                                 data.id = this.isEditId;
                             }
-                            let url = '/api/displayContent/addDisplayContent';
                             this.$post(addDisplay, data).then(res => {
                                 this.comSerAELoading = false;
                                 this.commerSerAEVisible = false;
@@ -1063,32 +918,14 @@
             selsCategoryChange: function (sels) {
                 this.categorySels = sels;
             },
-            selsInfoConChange: function (sels) {
-                this.infoConSels = sels;
-            },
             selsComSerChange: function (sels) {
                 this.comSerSels = sels;
             },
-            infoConAddChange(html) {
-                //信息化建设 ueditor
-                this.infoConContent = html;
-            },
-            comSerAddChange(html) {
-                //商务服务 ueditor
+            comSerAddChange(html) { //商务服务 ueditor
                 this.comSerContent = html;
             },
-            moreInfoConShow(res, file, fileList) {
-                this.moreHAPicList.push(res.responseList.url);
-            },
-            handleInfoConRemove(file, fileLists) {
-                console.log(file, fileLists);
-            },
-            handleInfoConCardPreview(file) {
-                this.dialogInfoConImageUrl = file.url;
-                this.dialogInfoConVisible = true;
-            },
-            moreComSerShow(res, file, fileList) {
-                this.moreHAPicList.push(res.responseList.url);
+            uploadComSer(res, file, fileList) {
+                this.imgComSer = res.responseList.url;
             },
             handleComSerRemove(file, fileLists) {
                 console.log(file, fileLists);
@@ -1097,34 +934,24 @@
                 this.dialogComSerImageUrl = file.url;
                 this.dialogComSerVisible = true;
             },
-            categoryCurrentChange(val) {
-                //类别管理分页
+            categoryCurrentChange(val) { //类别管理分页
                 this.page = val;
                 this.getCategory();
             },
-            infoConCurrentChange(val) {
-                //信息化建设分页
-                this.page = val;
-                this.getInfoCon();
-            },
-            comSerCurrentChange(val) {
-                //商务服务分页
+            comSerCurrentChange(val) { //商务服务分页
                 this.page = val;
                 this.getComSer();
             },
-            bookingCurrentChange(val) {
-                //预约管理分页
+            bookingCurrentChange(val) { //预约管理分页
                 this.page = val;
                 this.getBooking();
             },
-            getCateDic() {
-                //高端活动 类别管理获取Pid
+            getCateDic() { //高端活动 类别管理获取Pid
                 this.$get(findDic + '高端活动').then(res => {
                     this.cateDic = res[0];
                 });
             },
-            getCategory() {
-                //高端活动 类别管理列表
+            getCategory() { //高端活动 类别管理列表
                 let pname = '高端活动';
                 let url = '/api/dict/dictList/' + pname;
                 this.categoryLoading = true;
@@ -1135,45 +962,7 @@
                     this.categoryLoading = false;
                 });
             },
-            getQueryInfoCon() {
-                // 信息化建设模糊查询
-                let type = '信息化建设';
-                let url = showDisplay + type;
-                let startTime = this.infoConFilters.timeinfoConValue[0];
-                let endTime = this.infoConFilters.timeinfoConValue[1];
-                let title = this.infoConFilters.searchTitle;
-                url =
-                    startTime === undefined ?
-                    url + '' :
-                    url + '&startTime=' + startTime.replace(/-/g, '/');
-                url =
-                    endTime === undefined ?
-                    url + '' :
-                    url + '&endTime=' + endTime.replace(/-/g, '/');
-                url = title === '' ? url + '' : url + '&title=' + title;
-                this.getInfoConList(url);
-                this.infoConFilters = {
-                    timeinfoConValue: [],
-                    searchTitle: ''
-                };
-            },
-            getInfoCon() {
-                //信息化建设列表
-                let type = '信息化建设';
-                this.getInfoConList(showDisplay + type);
-            },
-            getInfoConList(url) {
-                //信息化建设列表 数据
-                this.infoConLoading = true;
-                this.$get(url).then(res => {
-                    this.infoConList = res;
-                    this.infoConTotal =
-                        this.infoConList.length > 0 ? this.infoConList.length : 1;
-                    this.infoConLoading = false;
-                });
-            },
-            getQueryCommer() {
-                // 商务服务模糊查询
+            getQueryCommer() { // 商务服务模糊查询
                 let type = '商务服务';
                 let url = showDisplay + type;
                 let startTime = this.commerSerFilters.timeComSerValue[0];
@@ -1189,18 +978,16 @@
                     url + '&endTime=' + endTime.replace(/-/g, '/');
                 url = title === '' ? url + '' : url + '&title=' + title;
                 this.getComSerList(url);
-                this.commerSerFilters = {
-                    timeComSerValue: [],
-                    searchTitle: ''
-                };
+                // this.commerSerFilters = {
+                //     timeComSerValue: [],
+                //     searchTitle: ''
+                // };
             },
-            getComSer() {
-                //商务服务列表
+            getComSer() { //商务服务列表
                 let type = '商务服务';
                 this.getComSerList(showDisplay + type);
             },
-            getComSerList(url) {
-                //商务服务列表 数据
+            getComSerList(url) { //商务服务列表 数据
                 this.comSerLoading = true;
                 this.$get(url).then(res => {
                     this.comSerList = res;
@@ -1209,8 +996,7 @@
                     this.comSerLoading = false;
                 });
             },
-            getQueryBooking() {
-                // 预约管理模糊查询
+            getQueryBooking() { // 预约管理模糊查询
                 let type = '预约管理';
                 let url = showDisplay + type;
                 let startTime = this.bookingFilters.timeBookingValue[0];
@@ -1231,13 +1017,11 @@
                     searchTitle: ''
                 };
             },
-            getBooking() {
-                //商务预约管理
+            getBooking() { //商务预约管理
                 let type = '预约管理';
                 this.getBookingList(showDisplay + type);
             },
-            getBookingList(url) {
-                //商务预约管理 数据
+            getBookingList(url) { //商务预约管理 数据
                 this.bookingLoading = true;
                 this.$get(url).then(res => {
                     this.bookingList = res;
@@ -1246,19 +1030,11 @@
                     this.bookingLoading = false;
                 });
             },
-            categoryEdit(index, row) {
-                //类别管理显示编辑界面
+            categoryEdit(index, row) { //类别管理显示编辑界面
                 this.categoryAEVisible = true;
                 this.categoryAEForm = Object.assign({}, row);
             },
-            infoConEdit(index, row) {
-                //信息化建设显示编辑界面
-                this.addEditTitle = '编辑';
-                this.isEditId = row.id;
-                this.isEdit = true;
-                this.infoConAEVisible = true;
-                this.infoConAEForm = Object.assign({}, row);
-            },
+
             //显示编辑界面
             comSerEdit(index, row) {
                 this.addEditTitle = '编辑';
@@ -1267,8 +1043,7 @@
                 this.commerSerAEVisible = true;
                 this.comSerAEForm = Object.assign({}, row);
             },
-            bookingEdit(index, row) {
-                //显示编辑界面
+            bookingEdit(index, row) { //显示编辑界面
                 this.addEditTitle = '编辑';
                 this.isEditId = row.id;
                 this.isEdit = true;
@@ -1303,29 +1078,7 @@
                     })
                     .catch(() => {});
             },
-            infoConDel(index, row) {
-                // 信息化列表删除
-                this.$confirm('确认删除该记录吗?', '提示', {
-                        type: 'warning'
-                    })
-                    .then(() => {
-                        this.infoConLoading = true;
-                        let para = {
-                            id: row.id
-                        };
-                        // let url='/api/displayContent/deleteDisplayContent/'+para.id;
-                        let self = this;
-                        this.$del(deleteDisplay + para.id).then(function (response) {
-                            self.infoConLoading = false;
-                            self.$message({
-                                message: '删除成功',
-                                type: 'success'
-                            });
-                            self.getInfoCon();
-                        });
-                    })
-                    .catch(() => {});
-            },
+
             //删除
             comSerDel(index, row) {
                 this.$confirm('确认删除该记录吗?', '提示', {
@@ -1378,33 +1131,16 @@
             categoryBatchRemove() {
                 // 类别管理批量删除
             },
-            infoConBatchRemove() {
-                // 信息化建设批量删除
-            },
+
             // 商务批量删除
             comSerBatchRemove() {},
-            infoConAdd() {
-                //信息化建设显示新增界面
-                if (this.$refs.upload3 !== undefined)
-                    this.$refs.upload3.clearFiles();
-                this.addEditTitle = '新增';
-                this.isEdit = false;
-                this.moreHAPicList.length = 0;
-                this.infoConAEVisible = true;
-                this.infoConAEForm = {
-                    title: '',
-                    addInfo: {
-                        phone: ''
-                    }
-                };
-            },
+
             comSerAdd() {
                 //显示新增界面
-                if (this.$refs.upload2 !== undefined)
-                    this.$refs.upload2.clearFiles();
+                if (this.$refs.upload2 !== undefined) this.$refs.upload2.clearFiles();
                 this.addEditTitle = '新增';
                 this.isEdit = false;
-                this.moreHAPicList.length = 0;
+                this.imgComSer = '';
                 this.commerSerAEVisible = true;
                 this.comSerAEForm = {
                     title: ''
@@ -1421,7 +1157,7 @@
                 };
             },
             //性别显示转换
-            forSex: function (row, column) {
+            forSex(row, column) {
                 return row.addInfo.userInfo.addInfo.gender == 1 ?
                     '男' :
                     row.addInfo.userInfo.addInfo.gender == 2 ? '女' : '未知';
@@ -1430,7 +1166,7 @@
                 this.highActContent = html;
             },
             moreHAShow(res, file, fileList) {
-                this.moreHAPicList.push(res.responseList.url);
+                this.moreHAPicList = res.responseList.url;
             },
             handleHARemove(file, fileLists) {
                 console.log(file, fileLists);
@@ -1448,7 +1184,7 @@
                             let para = Object.assign({}, this.addEditForm);
                             let data = {
                                 parkId: localStorage.getItem('parkId'),
-                                thumbUrl: this.moreHAPicList[0],
+                                thumbUrl: this.moreHAPicList,
                                 title: this.addEditForm.title,
                                 type: '高端活动',
                                 detailUrl: 'null',
@@ -1463,7 +1199,6 @@
                             if (this.isEdit) {
                                 data.id = this.isEditId;
                             }
-                            // let url='/api/displayContent/addDisplayContent';
                             this.$post(addDisplay, data).then(res => {
                                 this.addEditLoading = false;
                                 this.addEditVisible = false;
@@ -1485,7 +1220,7 @@
                 if (this.$refs.upload !== undefined) this.$refs.upload.clearFiles();
                 this.addEditTitle = '新增';
                 this.isEdit = false;
-                this.moreHAPicList.length = 0;
+                this.moreHAPicList = '';
                 this.highActContent = '';
                 this.addEditVisible = true;
                 this.addEditForm = {
@@ -1510,8 +1245,8 @@
                 this.secondPageVisible = false;
                 this.page = 1;
             },
+            //高端活动列表 条件查询
             getQueryHighAct() {
-                //高端活动列表 条件查询
                 let type = '高端活动';
                 let url = showDisplay + type;
                 let startTime = this.highFilters.timeValue[0];
@@ -1535,13 +1270,15 @@
                     searchTitle: ''
                 };
             },
+            // 获取高端活动列表
             getHighActivity() {
-                // 获取高端活动列表
+
                 let type = '高端活动';
                 this.getHighActList(showDisplay + type);
             },
+
+            //高端活动列表数据
             getHighActList(url) {
-                //高端活动列表数据
                 this.highActLoading = true;
                 this.$get(url).then(res => {
                     this.highActList = res;
@@ -1558,9 +1295,11 @@
                 this.addEditTitle = '编辑';
                 this.isEditId = row.id;
                 this.isEdit = true;
-                this.moreHAPicList.length = 0;
+                this.moreHAPicList = row.thumbUrl === '' ? '' : row.thumbUrl;
                 this.addEditVisible = true;
                 this.addEditForm = Object.assign({}, row);
+                this.highActContent = row.addInfo.themeContent;
+                console.log(JSON.stringify(this.addEditForm))
                 let arr = [];
                 arr.push(row.addInfo.timeStart);
                 arr.push(row.addInfo.timeEnd);
@@ -1573,34 +1312,26 @@
                     })
                     .then(() => {
                         this.highActLoading = true;
-                        //NProgress.start();
-                        let para = {
-                            id: row.id
-                        };
-                        let url =
-                            '/api/displayContent/deleteDisplayContent/' + para.id;
-                        let self = this;
-                        this.$del(deleteDisplay + para.id).then(function (response) {
-                            self.highActLoading = false;
-                            //NProgress.done();
-                            self.$message({
+                        this.$del(deleteDisplay + row.id).then(res => {
+                            this.highActLoading = false;
+                            this.$message({
                                 message: '删除成功',
                                 type: 'success'
                             });
-                            self.getHighActivity();
+                            this.getHighActivity();
                         });
                     })
                     .catch(() => {});
             },
+            //报名
             hASigns(index, row) {
-                //报名
                 this.hASignsVisible = true;
                 this.detailList = row;
                 let id = this.detailList.id;
                 this.getHighSigns(id);
             },
+            //高端活动 报名人员列表
             getHighSigns(id) {
-                //高端活动 报名人员列表
                 this.$get(userTarget + id).then(res => {
                     this.hASignsData = res;
                     this.hASignstotal =
@@ -1615,7 +1346,6 @@
                     })
                     .then(() => {
                         this.highActLoading = true;
-                        //NProgress.start();
                         let para = {
                             ids: ids
                         };
@@ -1837,13 +1567,36 @@
             // 查看历史纪录
             viewHistory() {
                 this.HistoryContentShow = true;
-                this.businessServerOrderHistoryList();
+                this.getHistoryContent();
+            },
+            getHistoryContent() {
+                console.log(JSON.stringify(this.HistoryContentFilters))
+                let url = businessServerOrderHistoryList + `&type=USER_ORDER_COMMERCE_COURSE`;
+                let selection = this.HistoryContentFilters.selection === '' ? '' :
+                    `&selection=${this.HistoryContentFilters.selection}`;
+                url = url + selection;
+                if (this.HistoryContentFilters.time !== null && this.HistoryContentFilters.time !== '') {
+                    let startTime =
+                        `&startTime=${this.HistoryContentFilters.time[0]}`;
+                    let endTime =
+                        `&endTime=${this.HistoryContentFilters.time[1]}`;
+                    url = url + startTime + endTime;
+                }
+                this.businessServerOrderHistoryList(url);
             },
             // 获取历史纪录列表
-            businessServerOrderHistoryList() {
-                this.$get(businessServerOrderHistoryList + `&type=USER_ORDER_COMMERCE_COURSE`).then(res => {
-
+            businessServerOrderHistoryList(url) {
+                this.$get(url).then(res => {
+                    this.HistoryList = res;
+                    this.HistoryListTotal = res.length;
                 })
+            },
+            HistoryListSizeChange(val) {
+                this.HistoryListPagesize = val;
+            },
+            HistoryListCurrentChange(val) {
+                this.HistoryListPage = val;
+                this.getHistoryContent();
             },
             //  获取服务课程列表
             getServiceCourse() {
@@ -1957,14 +1710,10 @@
             this.getHighActivity(); //高端活动
             this.getComSer(); //商务服务
             this.getBooking(); //预约管理
-            this.getInfoCon(); //信息化建设
             this.getCateDic(); //类别管理id
             this.getCategory(); //类别管理
             this.url = localStorage.getItem('upUrl') + uploadPic;
-            this.othParams = {
-                bucketName: 'shared-resource',
-                folderName: localStorage.getItem('parkId')
-            };
+            this.othParams.folderName = localStorage.getItem('parkId');
         }
     };
 </script>
@@ -2159,5 +1908,11 @@
         top: 0;
         background: #fff;
         left: 0;
+    }
+
+    .ThumbnailImg {
+        width: 100%;
+        height: 100%;
+        border-radius: 6px;
     }
 </style>

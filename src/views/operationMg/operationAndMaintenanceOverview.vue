@@ -8,15 +8,15 @@
                             <div class="grid-title">设备概况</div>
                             <div class="user-data">
                                 <div class="data-item">
-                                    <div class="data-num">10000</div>
+                                    <div class="data-num">{{EquipmentSituation.total}}</div>
                                     <div class="data-title">设备总数</div>
                                 </div>
                                 <div class="data-item">
-                                    <div class="data-num">100</div>
+                                    <div class="data-num">{{EquipmentSituation.todayFaul}}</div>
                                     <div class="data-title">今日故障</div>
                                 </div>
                                 <div class="data-item">
-                                    <div class="data-num">1%</div>
+                                    <div class="data-num">{{EquipmentSituation.todayFaulRate}}%</div>
                                     <div class="data-title">今日故障率</div>
                                 </div>
                             </div>
@@ -51,6 +51,9 @@
                             <div class="grid-title">设备故障数据统计</div>
                             <div class="content">
                                 <div id="equipmentFailureDataStatisticsChart" style="height:100%;width:100%;"></div>
+                                <div>
+                                    
+                                </div>
                             </div>
                         </div>
                     </el-col>
@@ -68,6 +71,11 @@
         data() {
             return {
                 url: '',
+                EquipmentSituation: {
+                    total: 0,
+                    todayFaul: 0,
+                    todayFaulRate: 0,
+                },
                 // 设备状态概况
                 EquipmentStatusOverviewOption: {
                     tooltip: {
@@ -85,19 +93,19 @@
                         radius: ['0', '50%'],
                         center: ['50%', '60%'],
                         data: [{
-                                value: 86,
+                                value: 0,
                                 name: '正常'
                             },
                             {
-                                value: 2,
+                                value: 0,
                                 name: '停用'
                             },
                             {
-                                value: 10,
+                                value: 0,
                                 name: '故障'
                             },
                             {
-                                value: 2,
+                                value: 0,
                                 name: '报废'
                             }
                         ],
@@ -150,7 +158,7 @@
                             },
                             color: function (params) {
                                 var colorList = [
-                                    '#ffc000', '#ed7d31', '#e65100'
+                                    '#ffc000', '#ed7d31', '#e65100', '#455a64', '#689f38'
                                 ];
                                 return colorList[params.dataIndex]
                             }
@@ -247,21 +255,126 @@
                 }
             }
         },
+        methods: {
+            // 设备概况
+            getEquipmentSituation() {
+                this.$get(this.url + 'equipmentSituation').then(res => {
+                    this.EquipmentSituation = publicFunction.deepCopy(this.EquipmentSituation, res);
+                })
+            },
+            // 设备类型分布
+            getEquipmentTypeDistribution() {
+                this.$get(this.url + 'equipmentTypeDistribution').then(res => {
+                    console.log(JSON.stringify(res.equipmentTypeList))
+                    let xAxisData = [];
+                    let seriesData = [];
+                    for (let i = 0; i < res.equipmentTypeList.length; i++) {
+                        xAxisData.push(res.equipmentTypeList[i].type);
+                        seriesData.push(res.equipmentTypeList[i].count);
+                    }
+                    this.deviceTypeDistributionOption.xAxis[0].data = xAxisData;
+                    this.deviceTypeDistributionOption.series[0].data = seriesData;
+                    let deviceTypeDistributionChart = echarts.init(document.getElementById(
+                        'deviceTypeDistributionChart'));
+                    deviceTypeDistributionChart.setOption(this.deviceTypeDistributionOption);
+                    window.addEventListener("resize", deviceTypeDistributionChart.resize);
+                })
+            },
+            // 设备状态概况
+            getEquipmentStateSituation() {
+                this.$get(this.url + 'equipmentStateSituation').then(res => {
+                    console.log(JSON.stringify(res))
+                    this.EquipmentStatusOverviewOption.series[0].data = [{
+                            value: res.normalEquipment,
+                            name: '正常'
+                        },
+                        {
+                            value: res.disableEquipment,
+                            name: '停用'
+                        },
+                        {
+                            value: res.faultEquipment,
+                            name: '故障'
+                        },
+                        {
+                            value: res.scrapEquipment,
+                            name: '报废'
+                        }
+                    ];
+                    let equipmentStatusOverviewChart = echarts.init(document.getElementById(
+                        'equipmentStatusOverviewChart'));
+                    equipmentStatusOverviewChart.setOption(this.EquipmentStatusOverviewOption);
+                    window.addEventListener("resize", equipmentStatusOverviewChart.resize);
+                });
+            },
+            // 设备故障数据统计
+            getEquipmentFaulStatistics() {
+                this.$get(this.url + 'equipmentFaulStatistics').then(res => {
+                    let xAxisData = [];
+                    let seriesData = [{
+                            name: '电梯',
+                            type: 'line',
+                            stack: '总量',
+                            data: []
+                        },
+                        {
+                            name: '空调',
+                            type: 'line',
+                            stack: '总量',
+                            data: []
+                        },
+                        {
+                            name: '消防设备',
+                            type: 'line',
+                            stack: '总量',
+                            data: []
+                        },
+                        {
+                            name: '其他',
+                            type: 'line',
+                            stack: '总量',
+                            data: []
+                        },
+                        {
+                            name: '整体',
+                            type: 'line',
+                            stack: '总量',
+                            data: []
+                        }
+                    ];
+                    for (let i in res.elevatorList) {
+                        seriesData[0].data.push(res.elevatorList[i].count);
+                        xAxisData.push(res.elevatorList[i].month);
+                    }
+                    for (let i in res.airConditionList) {
+                        seriesData[1].data.push(res.airConditionList[i].count);
+                    }
+                    for (let i in res.fireFightingList) {
+                        seriesData[2].data.push(res.fireFightingList[i].count);
+                    }
+                    for (let i in res.otherList) {
+                        seriesData[3].data.push(res.otherList[i].count);
+                    }
+                    for (let i in res.entiretyList) {
+                        seriesData[4].data.push(res.entiretyList[i].count);
+                    }
+                    console.log(JSON.stringify(res));
+                    this.equipmentFailureDataStatisticsOption.series = seriesData;
+                    this.equipmentFailureDataStatisticsOption.xAxis.data = xAxisData;
+
+                    let equipmentFailureDataStatisticsChart = echarts.init(document.getElementById(
+                        'equipmentFailureDataStatisticsChart'));
+                    equipmentFailureDataStatisticsChart.setOption(this.equipmentFailureDataStatisticsOption);
+                    window.addEventListener("resize", equipmentFailureDataStatisticsChart.resize);
+                });
+            }
+        },
         mounted() {
-            let equipmentStatusOverviewChart = echarts.init(document.getElementById(
-                'equipmentStatusOverviewChart'));
-            equipmentStatusOverviewChart.setOption(this.EquipmentStatusOverviewOption);
-            window.addEventListener("resize", equipmentStatusOverviewChart.resize);
-
-            let deviceTypeDistributionChart = echarts.init(document.getElementById(
-                'deviceTypeDistributionChart'));
-            deviceTypeDistributionChart.setOption(this.deviceTypeDistributionOption);
-            window.addEventListener("resize", deviceTypeDistributionChart.resize);
-
-            let equipmentFailureDataStatisticsChart = echarts.init(document.getElementById(
-                'equipmentFailureDataStatisticsChart'));
-            equipmentFailureDataStatisticsChart.setOption(this.equipmentFailureDataStatisticsOption);
-            window.addEventListener("resize", equipmentFailureDataStatisticsChart.resize);
+            this.url = publicURL.chartsURL + 'ops/';
+            this.getEquipmentSituation();
+            this.getEquipmentTypeDistribution();
+            this.getEquipmentStateSituation();
+            this.getEquipmentFaulStatistics();
         }
     };
 </script>
