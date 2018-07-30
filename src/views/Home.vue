@@ -16,16 +16,13 @@
 			<aside :class="collapsed?'menu-collapsed':'menu-expanded'">
 				<!--导航菜单-->
 				<el-menu :default-active="$route.path" class="el-menu-vertical-demo" @open="handleopen" @close="handleclose" @select="handleselect"
-				    unique-opened router v-show="!collapsed">
+						 unique-opened router v-show="!collapsed">
 					<template v-for="(item,index) in routersList" v-if="!item.hidden">
 						<el-submenu :index="index+''" v-if="!item.leaf" v-show="item.ishide">
-							<template slot="title">
-								<i :class="item.iconCls"></i>{{item.name}}</template>
-							<!-- <el-menu-item v-for="child in item.children" :index="child.path" :key="child.path" v-show="child.ishide" v-if="!child.hidden">{{child.name}}</el-menu-item> -->
-							<el-menu-item v-for="child in item.children" :index="child.path" :key="child.path">{{child.name}}</el-menu-item>
+							<template slot="title"><i :class="item.iconCls"></i>{{item.name}}</template>
+							<el-menu-item v-for="child in item.children" :index="child.path" :key="child.path" v-show="child.ishide" v-if="!child.hidden">{{child.name}}</el-menu-item>
 						</el-submenu>
-						<el-menu-item v-if="item.leaf&&item.children.length>0" :index="item.children[0].path">
-							<i :class="item.iconCls"></i>{{item.children[0].name}}</el-menu-item>
+						<el-menu-item v-if="item.leaf&&item.children.length>0" :index="item.children[0].path"><i :class="item.iconCls"></i>{{item.children[0].name}}</el-menu-item>
 					</template>
 				</el-menu>
 
@@ -62,103 +59,105 @@
 </template>
 
 <script>
-	export default {
-		data() {
-			return {
-				user: {},
-				collapsed: false,
-				sysUserName: '',
-				sysUserAvatar: '',
-				form: {
-					name: '',
-					region: '',
-					date1: '',
-					date2: '',
-					delivery: false,
-					type: [],
-					resource: '',
-					desc: ''
-				},
-				routersList: [],
+    export default {
+        data() {
+            return {
+                user:{},
+                collapsed:false,
+                sysUserName: '',
+                sysUserAvatar: '',
+                form: {
+                    name: '',
+                    region: '',
+                    date1: '',
+                    date2: '',
+                    delivery: false,
+                    type: [],
+                    resource: '',
+                    desc: ''
+                },
+                routersList:[],
 
-			}
-		},
-		methods: {
-			onSubmit() {
-				console.log('submit!');
-			},
-			handleopen() {
-				//console.log('handleopen');
-			},
-			handleclose() {
-				//console.log('handleclose');
-			},
-			handleselect: function (a, b) {},
-			//退出登录
-			logout: function () {
-				var _this = this;
-				this.$confirm('确认退出吗?', '提示', {
-					//type: 'warning'
-				}).then(() => {
-					sessionStorage.setItem('token', '');
-					// sessionStorage.removeItem('user');
-					_this.$router.push('/');
-				}).catch(() => {
+            }
+        },
+        methods: {
+            onSubmit() {
+                console.log('submit!');
+            },
+            handleopen() {
+                //console.log('handleopen');
+            },
+            handleclose() {
+                //console.log('handleclose');
+            },
+            handleselect: function (a, b) {
+            },
+            //退出登录
+            logout: function () {
+                var _this = this;
+                this.$confirm('确认退出吗?', '提示', {
+                    //type: 'warning'
+                }).then(() => {
+                    sessionStorage.setItem('token','');
+                    // sessionStorage.removeItem('user');
+                    _this.$router.push('/');
+                }).catch(() => {
 
-				});
-			},
-			//折叠导航栏
-			collapse: function () {
-				this.collapsed = !this.collapsed;
-			},
-			showMenu(i, status) {
-				this.$refs.menuCollapsed.getElementsByClassName('submenu-hook-' + i)[0].style.display = status ? 'block' : 'none';
-			},
-			getrouters() {
-				let perList = JSON.parse(sessionStorage.getItem('permission'));
-				// console.log(perList)
-				this.routersList = require('../routes.js');
-				this.routersList = this.routersList.default;
-				// console.log(this.routersList)
-				this.routersList.forEach((item, index) => {
-					if (item.children && item.children.length > 0) {
-						item.children.forEach((childitem) => {
-							if (perList.indexOf(childitem.name) !== -1) {
-								childitem.ishide = true;
-							} else {
-								childitem.ishide = false;
-							}
-							if (childitem.ishide === true) {
-								item.ishide = true;
-							} else {
-								item.ishide = false;
-							}
-						})
-					}
-				});
-				// console.log(this.routersList)
-				let rou = this.routersList;
-				rou.forEach((item, index) => {
-					if (item.hidden === false || item.ishide === false) {
-						rou.splice(index, 1);
-					}
-					if (item.children && item.children.length > 0) {
-						item.children.forEach((child, childindex) => {
-							if (child.ishide === false) {
-								item.children.splice(childindex, 1);
-							}
-						})
-					}
-				});
-				// console.log(rou)
+                });
+            },
+            //折叠导航栏
+            collapse:function(){
+                this.collapsed=!this.collapsed;
+            },
+            showMenu(i,status){
+                this.$refs.menuCollapsed.getElementsByClassName('submenu-hook-'+i)[0].style.display=status?'block':'none';
+            },
+            getrouters(){
+                let perList=JSON.parse(sessionStorage.getItem('permission'));
+                // console.log(perList)
+                this.routersList=require('../routes.js');
+                this.routersList=this.routersList.default;
+                console.log(this.routersList)
+                this.routersList.forEach((item,index)=>{
+                    if(item.children && item.children.length>0){
+                        item.children.forEach((childitem)=>{
+                            if(perList.indexOf(childitem.name)!==-1){
+                                childitem.ishide=true;
+                            }else{
+                                childitem.ishide=false;
+                            }
+                            if(childitem.ishide===true){
+                                item.ishide=true;
+                            }else{
+                                item.ishide=false;
+                            }
+                        })
+                    }
+                });
+                // console.log(this.routersList)
+                let rou=this.routersList;
+                rou.forEach((item,index)=>{
+                    if(item.children && item.children.length>0){
+                        item.children.forEach((child,childindex)=>{
+                            if(child.ishide===false){
+                                item.children.splice(childindex,1);
+                            }
+                        })
+                    }
+                    if(item.hidden===false || item.ishide===false){
+                        rou.splice(index,1);
+                    }
+                });
+                console.log(rou)
 
-			}
-		},
-		mounted() {
-			this.user = JSON.parse(sessionStorage.getItem('user'));
-			this.getrouters();
-		}
-	}
+            },
+        },
+        mounted() {
+            this.user =JSON.parse(sessionStorage.getItem('user'));
+            this.getrouters();
+        }
+    }
+
 </script>
 
 <style scoped lang="scss">
@@ -173,7 +172,7 @@
 			height: 60px;
 			line-height: 60px;
 			background: $color-primary;
-			color: #fff;
+			color:#fff;
 			.userinfo {
 				text-align: right;
 				padding-right: 35px;
@@ -181,7 +180,7 @@
 				float: right;
 				.userinfo-inner {
 					cursor: pointer;
-					color: #fff;
+					color:#fff;
 					img {
 						width: 40px;
 						height: 40px;
@@ -190,18 +189,18 @@
 						float: right;
 					}
 				}
-				.out {
+				.out{
 					color: #fff;
 					text-decoration: none;
 					margin-left: 15px;
 				}
 			}
 			.logo {
-				height: 60px;
+				height:60px;
 				font-size: 22px;
-				padding-left: 20px;
-				padding-right: 20px;
-				border-color: rgba(238, 241, 146, 0.3);
+				padding-left:20px;
+				padding-right:20px;
+				border-color: rgba(238,241,146,0.3);
 				border-right-width: 1px;
 				border-right-style: solid;
 				img {
@@ -209,24 +208,24 @@
 					float: left;
 					margin: 10px 10px 10px 18px;
 				}
-				.logoImg {
+				.logoImg{
 					height: 30px;
 					width: 72%;
 					margin: 15px 0;
 				}
 				.txt {
-					color: #fff;
+					color:#fff;
 				}
 			}
-			.logo-width {
-				width: 230px;
+			.logo-width{
+				width:230px;
 			}
-			.logo-collapse-width {
-				width: 60px
+			.logo-collapse-width{
+				width:60px
 			}
-			.tools {
+			.tools{
 				padding: 0px 23px;
-				width: 14px;
+				width:14px;
 				height: 60px;
 				line-height: 60px;
 				cursor: pointer;
@@ -239,12 +238,12 @@
 			bottom: 0px;
 			overflow: hidden;
 			aside {
-				flex: 0 0 230px;
+				flex:0 0 230px;
 				width: 230px;
-				.el-menu {
+				.el-menu{
 					height: 100%;
-					.el-submenu {
-						.fa {
+					.el-submenu{
+						.fa{
 							vertical-align: middle;
 							margin-right: 5px;
 							width: 24px;
@@ -253,32 +252,32 @@
 						}
 					}
 				}
-				.collapsed {
-					width: 60px;
-					.item {
+				.collapsed{
+					width:60px;
+					.item{
 						position: relative;
 					}
-					.submenu {
-						position: absolute;
-						top: 0px;
-						left: 60px;
-						z-index: 99999;
-						height: auto;
-						display: none;
+					.submenu{
+						position:absolute;
+						top:0px;
+						left:60px;
+						z-index:99999;
+						height:auto;
+						display:none;
 					}
 
 				}
 			}
-			.menu-collapsed {
-				flex: 0 0 60px;
+			.menu-collapsed{
+				flex:0 0 60px;
 				width: 60px;
 			}
-			.menu-expanded {
-				flex: 0 0 230px;
+			.menu-expanded{
+				flex:0 0 230px;
 				width: 230px;
 			}
 			.content-container {
-				flex: 1;
+				flex:1;
 				overflow-y: scroll;
 				padding: 20px;
 				.breadcrumb-container {
