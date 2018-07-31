@@ -7,9 +7,8 @@
                         <el-form-item>
                             <div class="block">
                                 <!--<p>组件值：{{ timerValue }}</p>-->
-                                <el-date-picker v-model="enterFilters.timeValue" type="daterange" start-placeholder="开始日期"
-                                                end-placeholder="结束日期" value-format="yyyy-MM-dd HH:mm:ss"
-                                                :default-time="['00:00:00', '23:59:59']">
+                                <el-date-picker v-model="enterFilters.timeValue" type="daterange" start-placeholder="开始日期" end-placeholder="结束日期" value-format="yyyy/MM/dd HH:mm:ss"
+                                    :default-time="['00:00:00', '23:59:59']">
                                 </el-date-picker>
                             </div>
                         </el-form-item>
@@ -28,7 +27,7 @@
                             <el-button type="danger" @click="allDeal">全部</el-button>
                         </el-form-item>
                         <el-form-item>
-                            <el-button type="success" @click="pending">待处理</el-button>
+                            <el-button type="success" @click="pending">未完结</el-button>
                         </el-form-item>
                         <el-form-item>
                             <el-button type="primary" @click="processed">已处理</el-button>
@@ -37,21 +36,21 @@
                 </el-col>
                 <!--列表-->
                 <el-table :data="inApplyList.slice((page-1)*pagesize,page*pagesize)" highlight-current-row v-loading="inApplyLoading" style="width: 100%;">
-                    <el-table-column type="index" width="60">
+                    <el-table-column type="index" width="60" label="序号">
                     </el-table-column>
-                    <el-table-column prop="addInfo.companyName" label="公司名称" sortable>
+                    <el-table-column prop="addInfo.companyName" label="公司名称">
                     </el-table-column>
-                    <el-table-column prop="addInfo.industry" label="所属行业" sortable>
+                    <el-table-column prop="addInfo.industry" label="所属行业">
                     </el-table-column>
-                    <el-table-column prop="addInfo.contact" label="联系人" sortable>
+                    <el-table-column prop="addInfo.contact" label="联系人">
                     </el-table-column>
                     <el-table-column prop="time" label="申请时间" sortable>
                     </el-table-column>
-                    <el-table-column prop="stage" label="状态" sortable>
+                    <el-table-column prop="stage" label="状态">
                     </el-table-column>
-                    <el-table-column prop="addInfo.allocationName" label="管理人" sortable>
+                    <el-table-column prop="addInfo.allocationName" label="管理人">
                     </el-table-column>
-                    <el-table-column prop="addInfo.propertyName" label="对接人" sortable>
+                    <el-table-column prop="addInfo.propertyName" label="对接人">
                     </el-table-column>
                     <el-table-column label="操作">
                         <template slot-scope="scope">
@@ -61,15 +60,8 @@
                 </el-table>
                 <!--分页-->
                 <el-col :span="24" class="toolbar">
-                    <el-pagination background
-                                   @size-change="highActSizeChange"
-                                   @current-change="inApplyCurChange"
-                                   :page-sizes="[7,8,10,20]"
-                                   :page-size="pagesize"
-                                   layout="total, sizes, prev, pager, next, jumper"
-                                   :total="inApplyTotal"
-                                   :current-page="page"
-                                   style="float:right;">
+                    <el-pagination background @size-change="highActSizeChange" @current-change="inApplyCurChange" :page-sizes="[7,8,10,20]" :page-size="pagesize"
+                        layout="total, sizes, prev, pager, next, jumper" :total="inApplyList.length" :current-page="page" style="float:right;">
                     </el-pagination>
                 </el-col>
                 <!--查看界面-->
@@ -121,10 +113,8 @@
                     <el-form :inline="true" :model="decorateFilters">
                         <el-form-item>
                             <div class="block">
-                                <!--<p>组件值：{{ timerValue }}</p>-->
-                                <el-date-picker v-model="decorateFilters.timeDecValue" type="daterange" start-placeholder="开始日期"
-                                                end-placeholder="结束日期" value-format="yyyy-MM-dd HH:mm:ss"
-                                                :default-time="['00:00:00', '23:59:59']">
+                                <el-date-picker v-model="decorateFilters.timeDecValue" type="daterange" start-placeholder="开始日期" end-placeholder="结束日期" value-format="yyyy-MM-dd HH:mm:ss"
+                                    :default-time="['00:00:00', '23:59:59']">
                                 </el-date-picker>
                             </div>
                         </el-form-item>
@@ -143,7 +133,7 @@
                             <el-button type="danger" @click="allDealDec">全部</el-button>
                         </el-form-item>
                         <el-form-item>
-                            <el-button type="success" @click="pendingDec">待处理</el-button>
+                            <el-button type="success" @click="pendingDec">未完结</el-button>
                         </el-form-item>
                         <el-form-item>
                             <el-button type="primary" @click="processedDec">已处理</el-button>
@@ -152,21 +142,21 @@
                 </el-col>
                 <!--列表-->
                 <el-table :data="decorateList.slice((page-1)*pagesize,page*pagesize)" highlight-current-row v-loading="decorateLoading" style="width: 100%;">
-                    <el-table-column type="index" width="60">
+                    <el-table-column type="index" width="60" label="序号">
                     </el-table-column>
-                    <el-table-column prop="addInfo.companyName" label="公司名称" sortable>
+                    <el-table-column prop="addInfo.companyName" label="公司名称">
                     </el-table-column>
-                    <el-table-column prop="addInfo.location" label="位置房号" sortable>
+                    <el-table-column prop="addInfo.location" label="位置房号">
                     </el-table-column>
-                    <el-table-column prop="addInfo.contact" label="联系人" sortable>
+                    <el-table-column prop="addInfo.contact" label="联系人">
                     </el-table-column>
                     <el-table-column prop="time" label="申请时间" sortable>
                     </el-table-column>
-                    <el-table-column prop="stage" label="状态" sortable>
+                    <el-table-column prop="stage" label="状态">
                     </el-table-column>
-                    <el-table-column prop="addInfo.allocationName" label="管理人" sortable>
+                    <el-table-column prop="addInfo.allocationName" label="管理人">
                     </el-table-column>
-                    <el-table-column prop="addInfo.propertyName" label="负责人" sortable>
+                    <el-table-column prop="addInfo.propertyName" label="负责人">
                     </el-table-column>
                     <el-table-column label="操作">
                         <template slot-scope="scope">
@@ -176,15 +166,9 @@
                 </el-table>
                 <!--分页-->
                 <el-col :span="24" class="toolbar">
-                    <el-pagination background
-                                   @size-change="highActSizeChange"
-                                   @current-change="decorateCurChange"
-                                   :page-sizes="[7,8,10,20]"
-                                   :page-size="pagesize"
-                                   layout="total, sizes, prev, pager, next, jumper"
-                                   :total="decorateTotal"
-                                   :current-page="page"
-                                   style="float:right;">
+                    <el-pagination background @size-change="highActSizeChange" @current-change="decorateCurChange" :page-sizes="[7,8,10,20]"
+                        :page-size="pagesize" layout="total, sizes, prev, pager, next, jumper" :total="decorateList.length" :current-page="page"
+                        style="float:right;">
                     </el-pagination>
                 </el-col>
                 <!--查看界面-->
@@ -245,165 +229,167 @@
 </template>
 
 <script>
-    import {findProperty,showDisplay, addDisplay,proList, deleteDisplay, findDic, showDict, addDict, deleteDict} from '../../api/api'
+    import {
+        findProperty,
+        showDisplay,
+        addDisplay,
+        proList,
+        deleteDisplay,
+        findDic,
+        showDict,
+        addDict,
+        deleteDict
+    } from '../../api/api'
 
     export default {
-        data(){
+        data() {
             return {
-                page:1,
-                pagesize:7,
-                activeName:'first',
+                page: 1,
+                pagesize: 7,
+                activeName: 'first',
                 enterFilters: {
                     searchTitle: '',
-                    timeValue:[]
+                    timeValue: []
                 },
                 decorateFilters: {
                     searchTitle: '',
-                    timeDecValue:[]
+                    timeDecValue: []
                 },
-                timeValue:[],
-                timeDecValue:[],
-                inApplyList:[
-                    {
-                        time:'',
-                        addInfo:{
-                            companyName:'',
-                            industry:'',
-                            allocationName:'',
-                            propertyName:''
-                        }
+                timeValue: [],
+                timeDecValue: [],
+                inApplyList: [{
+                    time: '',
+                    addInfo: {
+                        companyName: '',
+                        industry: '',
+                        allocationName: '',
+                        propertyName: ''
                     }
-                ],
-                decorateList:[
-                    {
-                        time:'',
-                        addInfo:{
-                            companyName:'',
-                            location:'',
-                            contact:'',
-                            allocationName:'',
-                            propertyName:''
-                        }
+                }],
+                decorateList: [{
+                    time: '',
+                    addInfo: {
+                        companyName: '',
+                        location: '',
+                        contact: '',
+                        allocationName: '',
+                        propertyName: ''
                     }
-                ],
-                inApplyLoading:false,
-                decorateLoading:false,
-                viewVisible:false,
-                decViewVisible:false,
-                detailList:{
-                    stage:'',
-                    addInfo:{
-                        companyName:'',
-                        contact:'',
-                        phone:'',
-                        website:'',
-                        industry:'',
-                        email:'',
-                        decorationCompanyName:'',
-                        decorationCompanyPhone:'',
-                        decorationCompanyContact:'',
-                        decorationCompanyContactPhone:'',
-                        allocationName:'',
-                        propertyName:''
+                }],
+                inApplyLoading: false,
+                decorateLoading: false,
+                viewVisible: false,
+                decViewVisible: false,
+                detailList: {
+                    stage: '',
+                    addInfo: {
+                        companyName: '',
+                        contact: '',
+                        phone: '',
+                        website: '',
+                        industry: '',
+                        email: '',
+                        decorationCompanyName: '',
+                        decorationCompanyPhone: '',
+                        decorationCompanyContact: '',
+                        decorationCompanyContactPhone: '',
+                        allocationName: '',
+                        propertyName: ''
                     }
                 },
-                inApplyTotal:1,
-                decorateTotal:1,
 
             }
         },
-        methods:{
+        methods: {
             handleClick(tab, event) {
-                this.page=1;
+                this.page = 1;
             },
-            getQueryInApply(){//入驻申请 条件查询
-                let type='入驻申请';
-                let url=findProperty+type;
-                let startTime=this.enterFilters.timeValue[0];
-                let endTime=this.enterFilters.timeValue[1];
-                let companyName=this.enterFilters.searchTitle;
-                url=startTime===undefined?url+'':url+'&startTime='+startTime.replace(/-/g,'/');
-                url=endTime===undefined?url+'':url+'&endTime='+endTime.replace(/-/g,'/');
-                url=companyName===''?url+'':url+'&companyName='+companyName;
+            getQueryInApply() { //入驻申请 条件查询
+                let type = '入驻申请';
+                let url = findProperty + type;
+                let startTime = this.enterFilters.timeValue[0];
+                let endTime = this.enterFilters.timeValue[1];
+                let companyName = this.enterFilters.searchTitle;
+                url = startTime === undefined ? url + '' : url + '&startTime=' + startTime;
+                url = endTime === undefined ? url + '' : url + '&endTime=' + endTime;
+                url = companyName === '' ? url + '' : url + '&companyName=' + companyName;
                 this.getInApplylist(url);
-                this.enterFilters={
-                    timeValue:[],
-                    searchTitle:''
+                this.enterFilters = {
+                    timeValue: [],
+                    searchTitle: ''
                 }
             },
-            getInApply(){ //入驻申请数据
-                let type='入驻申请';
-                this.getInApplylist(findProperty+type);
+            getInApply() { // 入驻申请数据
+                let type = '入驻申请';
+                this.getInApplylist(findProperty + type);
             },
-            getInApplylist(url){//入驻申请列表数据
-                this.inApplyLoading=true;
+            getInApplylist(url) { // 入驻申请列表数据
+                this.inApplyLoading = true;
                 this.$get(url)
                     .then((res) => {
-                        this.inApplyList=res;
-                        this.inApplyTotal=this.inApplyList.length>0?this.inApplyList.length:1;
-                        this.inApplyLoading=false;
+                        this.inApplyList = res;
+                        this.inApplyLoading = false;
                     })
             },
-            getQueryDecorate(){//装修申请 条件查询
-                let type='装修申请';
-                let url=findProperty+type;
-                let startTime=this.decorateFilters.timeDecValue[0];
-                let endTime=this.decorateFilters.timeDecValue[1];
-                let companyName=this.decorateFilters.searchTitle;
-                url=startTime===undefined?url+'':url+'&startTime='+startTime.replace(/-/g,'/');
-                url=endTime===undefined?url+'':url+'&endTime='+endTime.replace(/-/g,'/');
-                url=companyName===''?url+'':url+'&companyName='+companyName;
+            getQueryDecorate() { // 装修申请 条件查询
+                let type = '装修申请';
+                let url = findProperty + type;
+                let startTime = this.decorateFilters.timeDecValue[0];
+                let endTime = this.decorateFilters.timeDecValue[1];
+                let companyName = this.decorateFilters.searchTitle;
+                url = startTime === undefined ? url + '' : url + '&startTime=' + startTime.replace(/-/g, '/');
+                url = endTime === undefined ? url + '' : url + '&endTime=' + endTime.replace(/-/g, '/');
+                url = companyName === '' ? url + '' : url + '&companyName=' + companyName;
                 this.getDecorateList(url);
-                this.decorateFilters={
-                    timeDecValue:[],
-                    searchTitle:''
+                this.decorateFilters = {
+                    timeDecValue: [],
+                    searchTitle: ''
                 }
             },
-            getDecorate(){ //装修申请数据
-                let type='装修申请';
-                this.getDecorateList(findProperty+type);
+            getDecorate() { //装修申请数据
+                let type = '装修申请';
+                this.getDecorateList(findProperty + type);
             },
-            getDecorateList(url){//装修申请列表数据
-                this.decorateLoading=true;
+            getDecorateList(url) { //装修申请列表数据
+                this.decorateLoading = true;
                 this.$get(url)
                     .then((res) => {
-                        this.decorateList=res;
-                        this.decorateTotal=this.decorateList.length>0?this.decorateList.length:1;
-                        this.decorateLoading=false;
+                        this.decorateList = res;
+                        this.decorateLoading = false;
                     })
             },
-            allDeal(){ //全部
+            allDeal() { //全部
                 this.getInApply();
             },
-            pending(){ //待处理
-                let url=findProperty+'入驻申请'+'&stage=待处理';
+            pending() { //待处理
+                let url = findProperty + '入驻申请' + '&stage=未完结';
                 this.getInApplylist(url);
             },
-            processed(){ //已处理
-                let url=findProperty+'入驻申请'+'&stage=已处理';
+            processed() { //已处理
+                let url = findProperty + '入驻申请' + '&stage=已处理';
                 this.getInApplylist(url);
             },
-            allDealDec(){ //全部
+            allDealDec() { //全部
                 this.getDecorate();
             },
-            pendingDec(){ //待处理
-                let url=findProperty+'装修申请'+'&stage=待处理';
-                this.getInApplylist(url);
+            pendingDec() { //待处理
+                let url = findProperty + '装修申请' + '&stage=未完结';
+                this.getDecorateList(url);
             },
-            processedDec(){ //已处理
-                let url=findProperty+'装修申请'+'&stage=已处理';
-                this.getInApplylist(url);
+            processedDec() { //已处理
+                let url = findProperty + '装修申请' + '&stage=已处理';
+                this.getDecorateList(url);
             },
-            inApplyView(index, row){
-                this.viewVisible=true;
-                this.detailList=row;
+            inApplyView(index, row) {
+                this.viewVisible = true;
+                this.detailList = row;
             },
-            decorateView(index, row){
-                this.decViewVisible=true;
-                this.detailList=row;
+            decorateView(index, row) {
+                this.decViewVisible = true;
+                this.detailList = row;
             },
             highActSizeChange(val) {
-                this.pagesize=val;
+                this.pagesize = val;
             },
             inApplyCurChange(val) {
                 this.page = val;
@@ -413,9 +399,8 @@
                 this.page = val;
                 this.getDecorate();
             },
-
         },
-        mounted(){
+        mounted() {
             this.getInApply();
             this.getDecorate();
         }
@@ -423,19 +408,20 @@
 </script>
 
 <style lang="scss" scoped>
-    .right{
+    .right {
         position: absolute;
         right: 23px;
         top: 55px;
     }
-    .inView{
-        .el-form{
-            .el-form-item{
+
+    .inView {
+        .el-form {
+            .el-form-item {
                 display: inline-block;
                 width: 48%;
             }
         }
-        .title{
+        .title {
             font-weight: bold;
         }
     }

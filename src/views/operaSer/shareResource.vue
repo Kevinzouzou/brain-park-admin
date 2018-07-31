@@ -979,7 +979,8 @@
                     parkId: localStorage.getItem('parkId'),
                     useDate: useDate,
                     period: period,
-                    state: '维修'
+                    state: '维修',
+                    addInfo: {}
                 };
                 this.$post(addSharedResourceReservation, data).then(res => {
                     let startDate = this.seventDaysData[0].fulldate;
@@ -1093,7 +1094,6 @@
             },
             ApplicationRecordListPageCurrentChange(val) {
                 this.ApplicationRecordListPage = val;
-                // this.getBookSharedResourceList(bookSharedResourceList);
                 this.applicationRecordListSeach();
             },
             handleClick(tab, event) {
@@ -1135,22 +1135,10 @@
                     };
                     week[i].date =
                         Stamp.getMonth() + 1 + '月' + Stamp.getDate() + '日';
-                    let month = Stamp.getMonth() + 1;
-                    if (month < 10) {
-                        week[i].fulldate =
-                            Stamp.getFullYear() +
-                            `-0` +
-                            month +
-                            `-` +
-                            Stamp.getDate();
-                    } else {
-                        week[i].fulldate =
-                            Stamp.getFullYear() +
-                            `-` +
-                            month +
-                            `-` +
-                            Stamp.getDate();
-                    }
+                    let year = Stamp.getFullYear();
+                    let month = (Stamp.getMonth() + 1) < 10 ? '0' + Stamp.getMonth() : Stamp.getMonth();
+                    let day = Stamp.getDate() < 10 ? '0' + Stamp.getDate() : Stamp.getDate();
+                    week[i].fulldate = year + '-' + month + '-' + day;
                     switch (Stamp.getDay()) {
                         case 0:
                             week[i].day = '周日';
@@ -1231,10 +1219,7 @@
             },
         },
         mounted() {
-            this.imgData = {
-                bucketName: 'shared-resource',
-                folderName: localStorage.getItem('parkId')
-            };
+            this.imgData.folderName = localStorage.getItem('parkId');
             this.imageUploadUrl = localStorage.getItem('upUrl') + uploadPic;
             this.getSharedResourceList(sharedResourceList);
             this.seventDaysData = this.getWeek();

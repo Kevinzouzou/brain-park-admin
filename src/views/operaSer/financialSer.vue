@@ -102,18 +102,13 @@
                         </el-table-column>
                         <el-table-column prop="createTime" label="申请时间" show-overflow-tooltip>
                         </el-table-column>
-                        <el-table-column prop="type" label="企业名称">
+                        <el-table-column prop="addInfo.enterprise" label="企业名称">
                         </el-table-column>
-                        <el-table-column prop="createTime" label="联系人">
+                        <el-table-column prop="addInfo.name" label="联系人">
                         </el-table-column>
-                        <el-table-column prop="addInfo.lookUpNum" label="联系电话">
+                        <el-table-column prop="addInfo.phone" label="联系电话">
                         </el-table-column>
-                        <el-table-column label="操作" width="备注">
-                            <template slot-scope="scope">
-                                <el-button type="success" size="small" @click="corporateCheck(scope.$index, scope.row)">订单</el-button>
-                                <el-button type="primary" size="small" @click="corporateEdit(scope.$index, scope.row)">编辑</el-button>
-                                <el-button type="danger" size="small" @click="corporateDel(scope.$index, scope.row)">删除</el-button>
-                            </template>
+                        <el-table-column label="备注">
                         </el-table-column>
                     </el-table>
                     <!--分页-->
@@ -286,9 +281,13 @@
                             let data = this.corporateForm;
                             data.parkId = localStorage.getItem("parkId");
                             data.type = '金融服务';
-                            data.detailUrl = "null";
+                            data.detailUrl = "";
                             this.$post(addDisplay, data)
                                 .then((res) => {
+                                    this.$message({
+                                        message: '提交成功',
+                                        type: 'success'
+                                    });
                                     this.addEditCorporateVisible = false;
                                     this.getCorporate();
                                 });

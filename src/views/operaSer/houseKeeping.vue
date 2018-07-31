@@ -6,7 +6,7 @@
                     <el-col :span="24">
                         <el-form :inline="true" :model="serviceFilter">
                             <el-form-item label="服务分类：">
-                                <el-select placeholder="请选择服务分类" v-model="serviceFilter.subtype" @change="housekeepingListSeach()">
+                                <el-select placeholder="请选择服务分类" v-model="serviceFilter.subType" @change="housekeepingListSeach()">
                                     <el-option label="全部" value="全部"></el-option>
                                     <el-option label="装修服务" value="装修服务"></el-option>
                                     <el-option label="搬迁服务" value="搬迁服务"></el-option>
@@ -367,7 +367,7 @@
                 HousekeepingListPagesize: 7,
                 activeName: 'ServiceManagement',
                 serviceFilter: {
-                    subtype: '全部',
+                    subType: '全部',
                     thirdPartOrPhone: ''
                 },
                 HousekeepingListLoading: false,
@@ -466,11 +466,11 @@
             },
             // 搜索家政服务列表
             housekeepingListSeach() {
-                let subtype = this.serviceFilter.subtype;
+                let subType = this.serviceFilter.subType;
                 let thirdPartOrPhone = this.serviceFilter.thirdPartOrPhone;
                 let url = housekeepingList;
-                if (subtype !== '全部') {
-                    url += `&subtype=${subtype}`;
+                if (subType !== '全部') {
+                    url += `&subType=${subType}`;
                 }
                 if (thirdPartOrPhone !== '') {
                     url += `&thirdPartOrPhone=${thirdPartOrPhone}`;
