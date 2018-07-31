@@ -444,7 +444,7 @@
             },
             pageCurrentChange(val) {
                 this.page = val;
-                this.getQueryParkStaffList();
+                // this.getQueryParkStaffList();
             },
             // 获取企业名单
             getSettledEnterpriseList() {

@@ -1,8 +1,8 @@
 let publicFunction = {
-    toType: function (obj) {
+    toType(obj) {
         return ({}).toString.call(obj).match(/\s([a-zA-Z]+)/)[1].toLowerCase()
     },
-    filterNull: function (o) {
+    filterNull(o) {
         for (var key in o) {
             if (o[key] === null) {
                 delete o[key]
@@ -17,8 +17,8 @@ let publicFunction = {
         }
         return o
     },
-     // 删除对象里孩子为空的属性
-     killChildren(data) {
+    // 删除对象里孩子为空的属性
+    killChildren(data) {
         for (let i = 0; i < data.length; i++) {
             if (data[i].children.length === 0) {
                 delete data[i].children;
@@ -28,7 +28,7 @@ let publicFunction = {
         }
         return data;
     },
-    deepCopy: function (object, beCopied) {
+    deepCopy(object, beCopied) {
         for (let i in object) {
             if (
                 Object.prototype.toString.call(beCopied[i]) ===
@@ -68,7 +68,6 @@ let publicFunction = {
     }
 }
 
- 
+
 
 export default publicFunction;
- 

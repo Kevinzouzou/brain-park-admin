@@ -123,7 +123,7 @@
                                 <el-input v-model="anCategoryFilters.addType" placeholder="添加公告类别"></el-input>
                             </el-form-item>
                             <el-form-item>
-                                <el-button type="primary" v-on:click="anCategoryAdd">添加</el-button>
+                                <el-button type="primary" @click="anCategoryAdd">添加</el-button>
                             </el-form-item>
                             <el-form-item class="pull-right">
                                 <el-button type="danger" @click="backToFirstAn">返回</el-button>
@@ -602,21 +602,45 @@
                 if (this.isEdit) {
                     data.id = this.isEditId;
                 }
-                this.$post(addDisplay, data)
-                    .then((res) => {
-                        this.addEditAnVisible = false;
-                        this.getAnnounceMg();
-                    })
+                if (data.title === "") {
+                    this.$message({
+                        message: '请填写标题',
+                        type: 'error'
+                    });
+                } else if (data.addInfo.subtype === "") {
+                    this.$message({
+                        message: '请选择类别',
+                        type: 'error'
+                    });
+                } else if (data.thumbUrl === "") {
+                    this.$message({
+                        message: '请上传图片',
+                        type: 'error'
+                    });
+                } else if (data.addInfo.themeContent === "") {
+                    this.$message({
+                        message: '请填写详细介绍',
+                        type: 'error'
+                    });
+                } else {
+                    this.$post(addDisplay, data)
+                        .then((res) => {
+                            this.$message({
+                                message: '提交成功',
+                                type: 'success'
+                            });
+                            this.addEditAnVisible = false;
+                            this.getAnnounceMg();
+                        })
+                }
             },
             //园区公告 删除
             AnDel(index, row) {
                 this.$confirm('确认删除该记录吗?', '提示', {
                     type: 'warning'
                 }).then(() => {
-                    this.Loading = true;
                     this.$del(deleteDisplay + row.id)
                         .then(res => {
-                            this.Loading = false;
                             this.$message({
                                 message: '删除成功',
                                 type: 'success'
@@ -627,7 +651,6 @@
             },
             // 园区公告类别管理添加
             anCategoryAdd() {
-                this.Loading = true;
                 let data = {
                     parkId: localStorage.getItem("parkId"),
                     name: this.anCategoryFilters.addType,
@@ -636,12 +659,22 @@
                     pname: this.cateDic.name,
                     addInfo: {}
                 };
-                this.$post(addDict, data)
-                    .then((res) => {
-                        this.Loading = false;
-                        this.getAnCategory();
+                if (this.anCategoryFilters.addType === "") {
+                    this.$message({
+                        message: '请先填写类别名称',
+                        type: 'error'
                     });
-                this.anCategoryFilters.addType = '';
+                } else {
+                    this.$post(addDict, data)
+                        .then((res) => {
+                            this.$message({
+                                message: '添加成功',
+                                type: 'success'
+                            });
+                            this.getAnCategory();
+                        });
+                    this.anCategoryFilters.addType = '';
+                }
             },
             // 园区公告类别管理获取Pid
             getAnCateDic() {
@@ -725,7 +758,7 @@
             // 园区公告类别管理 显示编辑界面
             anCateEdit(index, row) {
                 this.anCateVisible = true;
-                this.anCateForm = Object.assign({}, row);
+                this.anCateForm = row;
             },
             // 园区公告 类别管理 删除
             anCateDel(index, row) {
@@ -750,10 +783,8 @@
                 this.$confirm('确认删除该记录吗?', '提示', {
                     type: 'warning'
                 }).then(() => {
-                    this.Loading = true;
                     this.$del(deleteDict + row.id)
                         .then(res => {
-                            this.Loading = false;
                             this.$message({
                                 message: '删除成功',
                                 type: 'success'
@@ -858,6 +889,10 @@
                         data.parkId = localStorage.getItem("parkId");
                         this.$post(addDisplay, data)
                             .then((res) => {
+                                this.$message({
+                                    message: '提交成功',
+                                    type: 'success'
+                                });
                                 this.addEditInformVisible = false;
                                 this.getInform();
                             })
@@ -905,7 +940,6 @@
 
             // 惠通知类别管理添加
             informCateAdd() {
-                this.Loading = true;
                 let data = {
                     parkId: localStorage.getItem("parkId"),
                     name: this.informCateFilters.addType,
@@ -914,12 +948,22 @@
                     pname: this.informCateDic.name,
                     addInfo: {}
                 };
-                this.$post(addDict, data)
-                    .then((res) => {
-                        this.Loading = false;
-                        this.getInformCategory();
+                if (this.informCateFilters.addType === "") {
+                    this.$message({
+                        message: '请先填写类别名称',
+                        type: 'error'
                     });
-                this.informCateFilters.addType = '';
+                } else {
+                    this.$post(addDict, data)
+                        .then((res) => {
+                            this.$message({
+                                message: '添加成功',
+                                type: 'success'
+                            });
+                            this.getInformCategory();
+                        });
+                    this.informCateFilters.addType = '';
+                }
             },
             // 惠通知类别管理获取Pid
             getInformCateDic() {

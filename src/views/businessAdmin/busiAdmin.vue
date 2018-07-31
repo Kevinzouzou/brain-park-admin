@@ -83,11 +83,10 @@
                 </el-row>
                 <el-row>
                     <el-col :span="11">
-                        <el-form-item label="企业图片：">
-                            <el-upload :action='imageUploadUrl' list-type="picture-card" :show-file-list="false" :data="imgData" :on-success="successUploadImg">
-                                <img v-if="adminAEForm.addInfo.logo" :src="adminAEForm.addInfo.logo" class="logoImg">
-                                <i v-else class="el-icon-plus"></i>
-                            </el-upload>
+                        <el-form-item label="入驻时间：" prop="addInfo.enterTime">
+                            <el-date-picker style="margin-right: 10px;" value-format="yyyy-MM-dd HH:mm:ss" v-model="adminAEForm.addInfo.enterTime" type="date"
+                                placeholder="选择日期" :picker-options="pickerOptions">
+                            </el-date-picker>
                         </el-form-item>
                     </el-col>
                     <el-col :span="11">
@@ -103,14 +102,15 @@
                 </el-row>
                 <el-row>
                     <el-col :span="11">
-                        <el-form-item label="入驻时间：" prop="addInfo.enterTime">
-                            <el-date-picker style="margin-right: 10px;" value-format="yyyy-MM-dd HH:mm:ss" v-model="adminAEForm.addInfo.enterTime" type="date"
-                                placeholder="选择日期" :picker-options="pickerOptions">
-                            </el-date-picker>
+                        <el-form-item label="企业图片：">
+                            <el-upload :action='imageUploadUrl' list-type="picture-card" :show-file-list="false" :data="imgData" :on-success="successUploadImg">
+                                <img v-if="adminAEForm.addInfo.logo" :src="adminAEForm.addInfo.logo" class="logoImg">
+                                <i v-else class="el-icon-plus"></i>
+                            </el-upload>
                         </el-form-item>
                     </el-col>
                     <el-col :span="11">
-                        <el-form-item label="地址：" class="secAddress">
+                        <el-form-item label="地址：" label-width="170px">
                             <el-cascader :options="treeList" v-model="selOptions" :props="dataProps" @change="handleChange">
                             </el-cascader>
                         </el-form-item>
@@ -171,7 +171,6 @@
                     folderName: ''
                 },
                 newArea: [],
-                departmentTreeData: '', // 地址数据
                 dataProps: {
                     value: 'id',
                     children: 'children',
@@ -180,14 +179,6 @@
                 selOptions: [],
                 treeList: [],
                 industry: '',
-                secAreaValue: '',
-                secBuildValue: '',
-                secFloorValue: '',
-                secRoomValue: '',
-                selectLabel: '',
-                areaLabel: '',
-                buildLabel: '',
-                floorLabel: '',
                 roomLabel: '',
                 zoneId: '',
                 dialogAnVisible: false,
@@ -260,7 +251,6 @@
                     lastTime: '2018-06-20 19:10:15',
                     modifyName: '李小四'
                 },
-                morePicList: []
             };
         },
         methods: {
@@ -342,12 +332,11 @@
                 }
             },
             getTree() {
-                let type = '&type=区域';
-                this.$get(treeUrl + type).then(res => {
+                this.$get(treeUrl + '&type=区域').then(res => {
                     this.treeList = publicFunction.killChildren(res[0].children);
                 });
             },
-            //企业管理列表
+            // 企业管理列表
             getAdminList() {
                 this.getAnData(settledEnterpriseList);
             },
@@ -381,6 +370,7 @@
             },
             // 显示编辑界面
             editEnterprise(index, row) {
+                if (this.$refs.adminAEForm !== undefined) this.$refs.adminAEForm.resetFields();
                 this.selOptions = [];
                 this.addEditTitle = '编辑';
                 this.isEditId = row.id;
@@ -446,26 +436,15 @@
             }
         },
         mounted() {
-            this.imgData = {
-                bucketName: 'shared-resource',
-                folderName: localStorage.getItem('parkId')
-            };
+            this.imgData.folderName = localStorage.getItem('parkId');
             this.imageUploadUrl = localStorage.getItem('upUrl') + uploadPic;
-            this.getAdminList(); //企业管理
-            this.getTree(); //获取区域信息
+            this.getAdminList(); // 企业管理
+            this.getTree(); // 获取区域信息
         }
     };
 </script>
 
 <style lang="scss">
-    .secAddress {
-        .el-select {
-            display: inline-block;
-            width: 145px;
-            margin-right: 10px;
-        }
-    }
-
     .logoImg {
         width: 100%;
         height: 100%;
