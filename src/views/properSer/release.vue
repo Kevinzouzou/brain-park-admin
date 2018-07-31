@@ -102,31 +102,31 @@
                     {{detailList.addInfo.items || ' - '}}
                 </el-form-item>
             </el-form>
-            <span class="title" v-if="dutys.step1===1">公司审核</span>
-            <el-form label-width="90px" v-if="dutys.step1===1">
+            <span class="title" v-if="detailList.addInfo.flows && detailList.addInfo.flows.length>0">公司审核</span>
+            <el-form label-width="90px" v-if="detailList.addInfo.flows && detailList.addInfo.flows.length>0">
                 <el-form-item label="审核人：">
-                    {{dutys.name1 || ' - '}}
+                    {{detailList.addInfo.flows[0].name || ' - '}}
                 </el-form-item>
                 <el-form-item label="处理时间：">
-                    {{dutys.handleTime1 || ' - '}}
+                    {{detailList.addInfo.flows[0].handleTime || ' - '}}
                 </el-form-item>
             </el-form>
-            <span class="title" v-if="dutys.step2===2">管理处审核</span>
-            <el-form label-width="90px" v-if="dutys.step2===2">
+            <span class="title" v-if="detailList.addInfo.flows && detailList.addInfo.flows.length>1">管理处审核</span>
+            <el-form label-width="90px" v-if="detailList.addInfo.flows && detailList.addInfo.flows.length>1">
                 <el-form-item label="负责人：">
-                    {{dutys.name2 || ' - '}}
+                    {{detailList.addInfo.flows[1].name || ' - '}}
                 </el-form-item>
                 <el-form-item label="处理时间：">
-                    {{dutys.handleTime2 || ' - '}}
+                    {{detailList.addInfo.flows[1].handleTime || ' - '}}
                 </el-form-item>
             </el-form>
-            <span class="title" v-if="dutys.step3===3">保安审核</span>
-            <el-form label-width="90px" v-if="dutys.step3===3">
+            <span class="title" v-if="detailList.addInfo.flows && detailList.addInfo.flows.length>2">保安审核</span>
+            <el-form label-width="90px" v-if="detailList.addInfo.flows && detailList.addInfo.flows.length>2">
                 <el-form-item label="负责人：">
-                    {{dutys.name3 || ' - '}}
+                    {{detailList.addInfo.flows[2].name || ' - '}}
                 </el-form-item>
                 <el-form-item label="处理时间：">
-                    {{dutys.handleTime3 || ' - '}}
+                    {{detailList.addInfo.flows[2].handleTime || ' - '}}
                 </el-form-item>
             </el-form>
         </el-dialog>
@@ -174,7 +174,6 @@
                        flows:[]
                    }
                },
-               dutys:{},
 
 
            }
@@ -222,23 +221,6 @@
            releaseView(index, row){
                this.viewVisible=true;
                this.detailList=row;
-               if(this.detailList.addInfo.flows && this.detailList.addInfo.flows.length>0){
-                   this.detailList.addInfo.flows.forEach((item)=>{
-                       if(item.step===1){
-                           this.dutys.name1=item.name;
-                           this.dutys.step1=item.step;
-                           this.dutys.handleTime1=item.handleTime;
-                       }else if(item.step===2){
-                           this.dutys.name2=item.name;
-                           this.dutys.step2=item.step;
-                           this.dutys.handleTime2=item.handleTime;
-                       }else if(item.step===3){
-                           this.dutys.name3=item.name;
-                           this.dutys.step3=item.step;
-                           this.dutys.handleTime3=item.handleTime;
-                       }
-                   })
-               }
            },
            sizeChange(val) {
                this.pagesize=val;
