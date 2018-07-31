@@ -60,6 +60,7 @@
 
 <script>
     export default {
+
         data() {
             return {
                 user:{},
@@ -117,19 +118,15 @@
                 // console.log(perList)
                 this.routersList=require('../routes.js');
                 this.routersList=this.routersList.default;
-                console.log(this.routersList)
+                // console.log(this.routersList)
                 this.routersList.forEach((item,index)=>{
                     if(item.children && item.children.length>0){
                         item.children.forEach((childitem)=>{
                             if(perList.indexOf(childitem.name)!==-1){
                                 childitem.ishide=true;
-                            }else{
-                                childitem.ishide=false;
-                            }
-                            if(childitem.ishide===true){
                                 item.ishide=true;
                             }else{
-                                item.ishide=false;
+                                childitem.ishide=false;
                             }
                         })
                     }
@@ -137,19 +134,21 @@
                 // console.log(this.routersList)
                 let rou=this.routersList;
                 rou.forEach((item,index)=>{
-                    if(item.children && item.children.length>0){
-                        item.children.forEach((child,childindex)=>{
-                            if(child.ishide===false){
-                                item.children.splice(childindex,1);
-                            }
-                        })
-                    }
-                    if(item.hidden===false || item.ishide===false){
+                    if(item.ishide===false || item.hidden && item.hidden!==true){
                         rou.splice(index,1);
-                    }
-                });
-                console.log(rou)
+                    }else if(item.ishide===true){
+                        if(item.children && item.children.length>0){
+                            item.children.forEach((child,childindex)=>{
+                                if(child.ishide===false){
+                                    item.children.splice(childindex,1);
+                                }
+                            })
+                        }
+					}
 
+
+                });
+                // console.log(rou)
             },
         },
         mounted() {

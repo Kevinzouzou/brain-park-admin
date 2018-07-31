@@ -2,26 +2,26 @@
     <section>
         <el-row :gutter="20">
             <el-col :span="7">
-                <el-col :span="24" justify="center" class="topBar">
+                <el-col :span="24" justify="center" class="topBa toolbar">
                     <el-form :inline="true">
                         <el-form-item>
                             <el-input v-model="keyword" placeholder="输入区域关键字进行过滤"></el-input>
                         </el-form-item>
                     </el-form>
                 </el-col>
-                <el-col :span="24" style="padding-bottom: 0px;" class="toolbar">
-                    <el-form :inline="true">
-                        <el-form-item>
-                            <el-button type="primary" @click="downloadTemp">下载模板</el-button>
-                        </el-form-item>
-                        <el-form-item>
-                            <el-button type="primary" @click="importArea">导入区域</el-button>
-                        </el-form-item>
-                        <el-form-item>
-                            <el-button type="success" @click="exportArea">导出区域</el-button>
-                        </el-form-item>
-                    </el-form>
-                </el-col>
+                <!--<el-col :span="24" style="padding-bottom: 0px;" class="toolbar">-->
+                    <!--<el-form :inline="true">-->
+                        <!--<el-form-item>-->
+                            <!--<el-button type="primary" @click="downloadTemp">下载模板</el-button>-->
+                        <!--</el-form-item>-->
+                        <!--<el-form-item>-->
+                            <!--<el-button type="primary" @click="importArea">导入区域</el-button>-->
+                        <!--</el-form-item>-->
+                        <!--<el-form-item>-->
+                            <!--<el-button type="success" @click="exportArea">导出区域</el-button>-->
+                        <!--</el-form-item>-->
+                    <!--</el-form>-->
+                <!--</el-col>-->
                 <el-col :span="24">
                     <el-tree
                             class="district-tree"
@@ -468,7 +468,7 @@
         }
     }
     .el-tree{
-        height: 40rem;
+        height: 45rem;//40rem;
         overflow: auto;
     }
 

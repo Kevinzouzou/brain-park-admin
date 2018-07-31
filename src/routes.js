@@ -49,13 +49,6 @@ let routes = [
         name: '',
         hidden: true
     },
-    // {
-    //     path: '*',
-    //     hidden: true,
-    //     // redirect: { path: '/circle' }
-    //     redirect: { path: '/404' }
-    // },
-
     {
         path: '/',
         component: Home,
@@ -138,11 +131,11 @@ let routes = [
                 component: resolve => require(['./views/properSer/release.vue'], resolve),
                 name: '放行申请'
             },
-            {
-                path: '/equipInspection',
-                component: resolve => require(['./views/properSer/equipInspection.vue'], resolve),
-                name: '设备巡检'
-            }
+            // {
+            //     path: '/equipInspection',
+            //     component: resolve => require(['./views/properSer/equipInspection.vue'], resolve),
+            //     name: '设备巡检'
+            // }
          ]
     },
     {
@@ -169,7 +162,7 @@ let routes = [
             {
                 path: '/workBook',
                 component: resolve => require(['./views/officeSer/workBook.vue'], resolve),
-                name: '工作手册' 
+                name: '工作手册'
             }
             // {
             //     path: '/contacts',

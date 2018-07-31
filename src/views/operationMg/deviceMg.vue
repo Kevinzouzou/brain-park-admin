@@ -31,12 +31,12 @@
                     <el-form-item>
                         <el-button type="primary" @click="deviceAdd">新增</el-button>
                     </el-form-item>
-                    <el-form-item>
-                        <el-button type="success" @click="exportTable">导出到表格</el-button>
-                    </el-form-item>
-                    <el-form-item>
-                        <el-button type="success" @click="importDevice">导入设备清单</el-button>
-                    </el-form-item>
+                    <!--<el-form-item>-->
+                        <!--<el-button type="success" @click="exportTable">导出到表格</el-button>-->
+                    <!--</el-form-item>-->
+                    <!--<el-form-item>-->
+                        <!--<el-button type="success" @click="importDevice">导入设备清单</el-button>-->
+                    <!--</el-form-item>-->
                 </el-form>
             </el-col>
             <!--列表-->

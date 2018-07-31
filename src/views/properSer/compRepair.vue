@@ -47,9 +47,15 @@
                     </el-table-column>
                     <el-table-column prop="stage" label="状态" sortable>
                     </el-table-column>
-                    <el-table-column prop="addInfo.flows[0].name" label="管理人" sortable>
+                    <el-table-column label="管理人" sortable>
+                        <template slot-scope="scope">
+                            <span>{{scope.row.addInfo.flows && scope.row.addInfo.flows.length>0?scope.row.addInfo.flows[0].name:'-'}}</span>
+                        </template>
                     </el-table-column>
-                    <el-table-column prop="addInfo.flows[1].name" label="负责人" sortable>
+                    <el-table-column label="负责人" sortable>
+                        <template slot-scope="scope">
+                            <span>{{scope.row.addInfo.flows && scope.row.addInfo.flows.length>1?scope.row.addInfo.flows[1].name:'-'}}</span>
+                        </template>
                     </el-table-column>
                     <el-table-column label="操作">
                         <template slot-scope="scope">
@@ -93,18 +99,18 @@
                             </div>
                         </el-form-item>
                     </el-form>
-                    <span class="title" v-if="detailList.addInfo.flows">管理人员</span>
-                    <el-form label-width="90px" v-if="detailList.addInfo.flows">
+                    <span class="title" v-if="detailList.addInfo.flows && detailList.addInfo.flows.length>0">管理人员</span>
+                    <el-form label-width="90px" v-if="detailList.addInfo.flows && detailList.addInfo.flows.length>0">
                         <el-form-item label="管理人：">
                             {{detailList.addInfo.flows[0].name || '无数据'}}
                         </el-form-item>
                         <el-form-item label="处理时间：">
                             {{detailList.addInfo.flows[0].handleTime || '无数据'}}
                         </el-form-item>
-                        <el-form-item v-if="detailList.addInfo.flows[1]" label="负责人：">
+                        <el-form-item v-if="detailList.addInfo.flows.length>1" label="负责人：">
                             {{detailList.addInfo.flows[1].name || '无数据'}}
                         </el-form-item>
-                        <el-form-item v-if="detailList.addInfo.flows[1]" label="处理时间：">
+                        <el-form-item v-if="detailList.addInfo.flows.length>1" label="处理时间：">
                             {{detailList.addInfo.flows[1].handleTime || '无数据'}}
                         </el-form-item>
                         <el-form-item label="处理意见：">
@@ -163,9 +169,15 @@
                     </el-table-column>
                     <el-table-column prop="stage" label="状态" sortable>
                     </el-table-column>
-                    <el-table-column prop="addInfo.flows[0].name" label="管理人" sortable>
+                    <el-table-column label="管理人" sortable>
+                        <template slot-scope="scope">
+                            <span>{{scope.row.addInfo.flows && scope.row.addInfo.flows.length>0?scope.row.addInfo.flows[0].name:'-'}}</span>
+                        </template>
                     </el-table-column>
-                    <el-table-column prop="addInfo.flows[1].name" label="维修人" sortable>
+                    <el-table-column label="维修人" sortable>
+                        <template slot-scope="scope">
+                            <span>{{scope.row.addInfo.flows && scope.row.addInfo.flows.length>1?scope.row.addInfo.flows[1].name:'-'}}</span>
+                        </template>
                     </el-table-column>
                     <el-table-column label="操作">
                         <template slot-scope="scope">
@@ -209,18 +221,18 @@
                             </div>
                         </el-form-item>
                     </el-form>
-                    <span class="title" v-if="detailList.addInfo.flows">管理人员</span>
-                    <el-form label-width="90px" v-if="detailList.addInfo.flows">
+                    <span class="title" v-if="detailList.addInfo.flows && detailList.addInfo.flows.length>0">管理人员</span>
+                    <el-form label-width="90px" v-if="detailList.addInfo.flows && detailList.addInfo.flows.length>0">
                         <el-form-item label="管理人：">
                             {{detailList.addInfo.flows[0].name || '无数据'}}
                         </el-form-item>
                         <el-form-item label="处理时间：">
                             {{detailList.addInfo.flows[0].handleTime || '无数据'}}
                         </el-form-item>
-                        <el-form-item label="负责人：" v-if="detailList.addInfo.flows[1].name">
+                        <el-form-item label="负责人：" v-if="detailList.addInfo.flows.length>1">
                             {{detailList.addInfo.flows[1].name || '无数据'}}
                         </el-form-item>
-                        <el-form-item label="处理时间：" v-if="detailList.addInfo.flows[1].name">
+                        <el-form-item label="处理时间：" v-if="detailList.addInfo.flows.length>1">
                             {{detailList.addInfo.flows[1].handleTime || '无数据'}}
                         </el-form-item>
                         <el-form-item label="维修反馈：" class="allWid">
@@ -275,7 +287,8 @@
                         time:'',
                         addInfo:{
                             companyName:'',
-                            industry:''
+                            industry:'',
+                            flows:[]
                         }
                     }
                 ],
@@ -287,7 +300,8 @@
                             location:'',
                             contact:'',
                             custodian:'',
-                            principal:''
+                            principal:'',
+                            flows:[]
                         }
                     }
                 ],

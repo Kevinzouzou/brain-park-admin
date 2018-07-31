@@ -45,11 +45,20 @@
             </el-table-column>
             <el-table-column prop="stage" label="状态" sortable>
             </el-table-column>
-            <el-table-column prop="addInfo.flows[0].name" label="公司负责人" sortable>
+            <el-table-column label="公司负责人" sortable>
+                <template slot-scope="scope">
+                    <span>{{scope.row.addInfo.flows && scope.row.addInfo.flows.length>0?scope.row.addInfo.flows[0].name:'-'}}</span>
+                </template>
             </el-table-column>
             <el-table-column prop="addInfo.flows[1].name" label="物业管理人" sortable>
+                <template slot-scope="scope">
+                    <span>{{scope.row.addInfo.flows && scope.row.addInfo.flows.length>1?scope.row.addInfo.flows[1].name:'-'}}</span>
+                </template>
             </el-table-column>
             <el-table-column prop="addInfo.flows[2].name" label="保安" sortable>
+                <template slot-scope="scope">
+                    <span>{{scope.row.addInfo.flows && scope.row.addInfo.flows.length>2?scope.row.addInfo.flows[1].name:'-'}}</span>
+                </template>
             </el-table-column>
             <el-table-column label="操作">
                 <template slot-scope="scope">

@@ -33,12 +33,12 @@
             </el-table-column>
             <el-table-column prop="addInfo.name" label="姓名" sortable>
                 <template slot-scope="scope">
-                    <span @click="perSched(scope.$index, scope.row)" style="color: #00a2d4;">{{scope.row.addInfo.name}}</span>
+                    <span @click="perSched(scope.$index, scope.row)" style="color: #00a2d4;cursor: pointer;">{{scope.row.addInfo.name}}</span>
                 </template>
             </el-table-column>
             <el-table-column prop="addInfo.position" label="职务" sortable>
             </el-table-column>
-            <el-table-column prop="addInfo.department" label="部门" sortable>
+            <el-table-column prop="addInfo.infoTreeInfo.name" label="部门" sortable>
             </el-table-column>
             <template v-for="(data ,index) in datas">
                 <el-table-column :label="data" width="120" style="text-align: center;">

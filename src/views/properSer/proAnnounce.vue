@@ -26,7 +26,7 @@
         <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
             <el-form :inline="true">
                 <el-form-item>
-                    <el-button type="danger" @click="BatchRemove" :disabled="this.sels.length===0">批量删除</el-button>
+                    <el-button type="danger" @click="BatchRemove">批量删除</el-button>
                 </el-form-item>
                 <el-form-item>
                     <el-button type="primary" @click="announceAdd">新增</el-button>
@@ -75,7 +75,8 @@
                     <el-input v-model="announceAEForm.title" auto-complete="off"></el-input>
                 </el-form-item>
                 <el-form-item label="详细介绍">
-                    <UE :id=ue @editorChange="AddChange"></UE>
+                    <quill-editor v-model="announceAEForm.addInfo.themeContent"></quill-editor>
+                    <!--<UE :id=ue @editorChange="AddChange"></UE>-->
                 </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
@@ -107,7 +108,10 @@
                 isEditId:'',             
                 announceAEVisible:false,
                 announceAEForm:{
-                    title:''
+                    title:'',
+                    addInfo:{
+                        themeContent:''
+                    }
                 },
                 announceList:[],
                 sels:[],   //列表选中项
@@ -121,14 +125,37 @@
         },
         methods:{
             BatchRemove(){  // 批量删除
-
+                if (this.sels.length === 0) {
+                    this.$message({
+                        message: '请先选择公告',
+                        type: 'info'
+                    });
+                } else {
+                    this.$confirm('确认删除选中的公告？', '提示', {
+                        type: 'warning'
+                    }).then(() => {
+                        for (let i of this.sels) {
+                            this.$del(deleteDisplay + i.id).then(res => {
+                                this.$notify({
+                                    title: '成功',
+                                    message: `已删除"${i.title}"活动`,
+                                    type: 'success'
+                                });
+                                this.getAnnounceList();
+                            });
+                        }
+                    }).catch(() => {});
+                }
             },
             announceAdd(){  //显示新增界面
                 this.addEditTitle='新增';
                 this.isEdit=false;
                 this.announceAEVisible=true;
                 this.announceAEForm={
-                    title:''
+                    title:'',
+                    addInfo:{
+                        themeContent:''
+                    }
                 };
             },
             getQueryAnnounce(){ // 物业公告模糊查询
@@ -209,7 +236,7 @@
                                 type:'物业公告',
                                 detailUrl:'null',
                                 addInfo:{
-                                    themeContent:this.announceContent
+                                    themeContent:this.announceAEForm.addInfo.themeContent
                                 }
                             };
                             if(this.isEdit){
