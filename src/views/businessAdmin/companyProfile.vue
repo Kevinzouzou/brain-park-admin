@@ -109,7 +109,7 @@
                     tooltip: {
                         trigger: 'item',
                         formatter: "{b}: {c} ({d}%)",
-                    },  
+                    },
                     color: ['#4EB8FF', '#F5A623', '#F53252', '#7ED321'],
                     legend: {
                         orient: '',
@@ -166,7 +166,7 @@
                         },
                     }]
                 },
-                 // 企业流动率（最近12个月）
+                // 企业流动率（最近12个月）
                 BusinessTurnoverOption: {
                     color: ['#3398DB'],
                     tooltip: {
@@ -287,8 +287,9 @@
                     },
                     grid: {
                         left: '3%',
-                        right: '4%',
-                        bottom: '3%',
+                        right: '3%',
+                        top: '10%',
+                        bottom: '10%',
                         containLabel: true
                     },
                     xAxis: [{
@@ -395,7 +396,7 @@
                         enterTotal.push(res.enterpriseEnterTendencyList[i].enterTotal);
                     }
                     this.EntryTrendOption.xAxis.data = month;
-                    this.EntryTrendOption.series.data = enterTotal;
+                    this.EntryTrendOption.series[0].data = enterTotal;
                     let EntryTrend = echarts.init(document.getElementById('EntryTrend'));
                     EntryTrend.setOption(this.EntryTrendOption);
                     window.addEventListener("resize", EntryTrend.resize);

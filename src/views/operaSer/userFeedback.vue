@@ -5,8 +5,13 @@
                 <el-form-item>
                     反馈来源筛选：
                     <el-select v-model="secFebackValue" placeholder="请选择" @change="secQueryFeBackValue">
-                        <el-option v-for="item in feBackList" :key="item.id" :label="item.name" :value="item.id">
+                        <el-option label="全部来源" value="">
                         </el-option>
+                        <el-option label="物业端APP" value="物业 App">
+                        </el-option>
+                        <el-option label="用户端APP" value="用户 App">
+                        </el-option>
+
                     </el-select>
                     <!--<div class="pullRight">-->
                     <!--用户端APP：{{userAppNum}}-->
@@ -17,7 +22,7 @@
         </el-col>
         <!--列表-->
         <el-table :data="feedBackList.slice((page-1)*pagesize,page*pagesize)" highlight-current-row v-loading="feBackLoading" style="width: 100%;">
-            <el-table-column type="序号" width="60">
+            <el-table-column prop="id" label="ID">
             </el-table-column>
             <el-table-column prop="time" label="时间">
             </el-table-column>
@@ -67,7 +72,7 @@
                 </el-form-item>
                 <el-form-item label="反馈内容：">
                     <div class="content">{{detailList.addInfo.remark || ' - '}}</div>
-                    <div class="imgs" v-if="detailList.addInfo.images && detailList.addInfo.images.length>0">
+                    <div class="imgs" v-if="detailList.addInfo.images && detailList.addInfo.images.length > 0">
                         <img v-for="item in detailList.addInfo.images.slice(0,6)" :src="item" @click="handlePictureCardPreview(item)">
                         <el-dialog :visible.sync="dialogVisible" style="z-index: 2020;" :append-to-body="true">
                             <img width="100%" style="height: 100%;" :src="dialogImageUrl" alt="">
@@ -107,10 +112,6 @@
                 proAppNum: 0, //物业端APP数
                 secFebackValue: '',
                 feBackList: [{
-                        id: '001',
-                        name: '全部来源'
-                    },
-                    {
                         id: '002',
                         name: '物业端APP'
                     },
@@ -137,6 +138,9 @@
                 dialogAdsVisible: false,
                 selectLabel: '',
                 detailList: {
+                    userInfo: {
+                        phone: '',
+                    },
                     addInfo: {
                         remark: '',
                         images: [],
@@ -214,15 +218,9 @@
                 this.dialogAdsImageUrl = file.url;
                 this.dialogAdsVisible = true;
             },
-            secQueryFeBackValue(value) {
-                let obj = {};
-                obj = this.feBackList.find((item) => { //遍历的数据源
-                    return item.id === value; //筛选出匹配数据
-                });
-                this.selectLabel = obj.name;
-                let type = '&type=意见反馈';
-                let url = findSuggest + type;
-                url = this.selectLabel === '全部来源' ? url + '' : url + '&source=' + this.selectLabel;
+            secQueryFeBackValue() {
+                let url = findSuggest + '&type=意见反馈';
+                url = this.secFebackValue === '' ? url + '' : url + '&source=' + this.secFebackValue;
                 this.getFeedBackList(url);
             },
             secAdsValue(value) {

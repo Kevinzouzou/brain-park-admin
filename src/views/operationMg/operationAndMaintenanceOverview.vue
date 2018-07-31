@@ -52,7 +52,7 @@
                             <div class="content">
                                 <div id="equipmentFailureDataStatisticsChart" style="height:100%;width:100%;"></div>
                                 <div>
-                                    
+
                                 </div>
                             </div>
                         </div>
@@ -205,7 +205,7 @@
                         trigger: 'axis'
                     },
                     legend: {
-                        data: ['电梯', '空调', '消防设备', '其他', '整体']
+                        data: ['电梯', '空调', '消防设备', '整体', '其他']
                     },
                     grid: {
                         left: '4%',
@@ -225,31 +225,30 @@
                             name: '电梯',
                             type: 'line',
                             stack: '总量',
-                            data: [120, 132, 101, 134, 90, 230]
+                            data: []
                         },
                         {
                             name: '空调',
                             type: 'line',
                             stack: '总量',
-                            data: [220, 182, 191, 234, 290, 330]
+                            data: []
                         },
                         {
                             name: '消防设备',
                             type: 'line',
                             stack: '总量',
-                            data: [150, 232, 201, 154, 190, 330]
-                        },
-                        {
-                            name: '其他',
-                            type: 'line',
-                            stack: '总量',
-                            data: [320, 332, 301, 334, 390, 330]
+                            data: []
                         },
                         {
                             name: '整体',
                             type: 'line',
                             stack: '总量',
-                            data: [820, 932, 901, 934, 1290, 1330]
+                            data: []
+                        }, {
+                            name: '其他',
+                            type: 'line',
+                            stack: '总量',
+                            data: []
                         }
                     ]
                 }
@@ -265,7 +264,6 @@
             // 设备类型分布
             getEquipmentTypeDistribution() {
                 this.$get(this.url + 'equipmentTypeDistribution').then(res => {
-                    console.log(JSON.stringify(res.equipmentTypeList))
                     let xAxisData = [];
                     let seriesData = [];
                     for (let i = 0; i < res.equipmentTypeList.length; i++) {
@@ -283,7 +281,6 @@
             // 设备状态概况
             getEquipmentStateSituation() {
                 this.$get(this.url + 'equipmentStateSituation').then(res => {
-                    console.log(JSON.stringify(res))
                     this.EquipmentStatusOverviewOption.series[0].data = [{
                             value: res.normalEquipment,
                             name: '正常'
@@ -312,6 +309,11 @@
                 this.$get(this.url + 'equipmentFaulStatistics').then(res => {
                     let xAxisData = [];
                     let seriesData = [{
+                            name: '其他',
+                            type: 'line',
+                            stack: '总量',
+                            data: []
+                        }, {
                             name: '电梯',
                             type: 'line',
                             stack: '总量',
@@ -330,35 +332,29 @@
                             data: []
                         },
                         {
-                            name: '其他',
-                            type: 'line',
-                            stack: '总量',
-                            data: []
-                        },
-                        {
                             name: '整体',
                             type: 'line',
                             stack: '总量',
                             data: []
-                        }
+                        },
                     ];
+                    for (let i in res.otherList) {
+                        seriesData[0].data.push(res.otherList[i].count);
+                    }
                     for (let i in res.elevatorList) {
-                        seriesData[0].data.push(res.elevatorList[i].count);
+                        seriesData[1].data.push(res.elevatorList[i].count);
                         xAxisData.push(res.elevatorList[i].month);
                     }
                     for (let i in res.airConditionList) {
-                        seriesData[1].data.push(res.airConditionList[i].count);
+                        seriesData[2].data.push(res.airConditionList[i].count);
                     }
                     for (let i in res.fireFightingList) {
-                        seriesData[2].data.push(res.fireFightingList[i].count);
-                    }
-                    for (let i in res.otherList) {
-                        seriesData[3].data.push(res.otherList[i].count);
+                        seriesData[3].data.push(res.fireFightingList[i].count);
                     }
                     for (let i in res.entiretyList) {
                         seriesData[4].data.push(res.entiretyList[i].count);
                     }
-                    console.log(JSON.stringify(res));
+
                     this.equipmentFailureDataStatisticsOption.series = seriesData;
                     this.equipmentFailureDataStatisticsOption.xAxis.data = xAxisData;
 

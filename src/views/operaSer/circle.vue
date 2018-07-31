@@ -762,8 +762,8 @@
                 }).catch(() => {});
             },
             backgroundImgUploadSuccess(res, file, fileList) {
-                this.addForm.addInfo.bgUrl = res.responseList.url
-                this.editForm.addInfo.bgUrl = res.responseList.url
+                this.addForm.addInfo.bgUrl = res.responseList.url;
+                this.editForm.addInfo.bgUrl = res.responseList.url;
             },
             changeUpload: function (file, fileList) {
                 this.fileList = fileList;

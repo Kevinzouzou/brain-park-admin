@@ -289,7 +289,7 @@
                     highlight-current-row v-loading="ListLoading" style="width: 100%;">
                     <el-table-column prop="id" label="ID">
                     </el-table-column>
-                    <el-table-column prop="type" label="服务名称">
+                    <el-table-column prop="addInfo.serviceName" label="服务名称">
                     </el-table-column>
                     <el-table-column prop="addInfo.itemName" label="子服务">
                     </el-table-column>
@@ -561,10 +561,10 @@
                 this.ApplicationListPage = val;
                 this.getPolicyList();
             },
-            policyListPagesizeChange() {
+            policyListPagesizeChange(val) {
                 this.policyListPagesize = val;
             },
-            policyListPageCurrentChange() {
+            policyListPageCurrentChange(val) {
                 this.policyListPage = val;
                 this.getPolicyList();
             },
