@@ -154,7 +154,7 @@
                 addEditCorporateVisible: false,
                 CorporateFinanceOrder: false,
                 corporateForm: {
-                    detailUrl: 'null',
+                    detailUrl: '',
                     title: '',
                     thumbUrl: '',
                     addInfo: {
@@ -197,6 +197,7 @@
                 this.corporateForm = {
                     title: '',
                     thumbUrl: '',
+                    detailUrl: "",
                     addInfo: {
                         themeContent: ''
                     }
@@ -209,8 +210,15 @@
             // 显示编辑界面
             corporateEdit(index, row) {
                 this.addEditTitle = '编辑';
+                this.corporateForm = {
+                    id: '',
+                    title: '',
+                    thumbUrl: '',
+                    addInfo: {
+                        themeContent: ''
+                    }
+                };
                 this.corporateForm = publicFunction.deepCopy(this.corporateForm, row);
-                this.corporateForm.id = row.id;
                 this.addEditCorporateVisible = true;
             },
             // 显示金融产品订单
@@ -281,7 +289,7 @@
                             let data = this.corporateForm;
                             data.parkId = localStorage.getItem("parkId");
                             data.type = '金融服务';
-                            data.detailUrl = "";
+
                             this.$post(addDisplay, data)
                                 .then((res) => {
                                     this.$message({
