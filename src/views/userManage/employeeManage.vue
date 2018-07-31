@@ -728,7 +728,7 @@
             sendTheMessage() {
                 let password = this.appPassword;
                 let data = {
-                    phoneNumbers: '18813958331',
+                    phoneNumbers: this.editParkUserForm.phone,
                     signName: '松湖智谷',
                     templateCode: 'SMS_137421065',
                     templateParam: {

@@ -96,8 +96,8 @@
                         </el-form>
                     </el-col>
                     <!--列表-->
-                    <el-table :data="CorporateFinanceOrderList.slice((page-1)*pagesize,page*pagesize)" highlight-current-row v-loading="corporateLoading"
-                        style="width: 100%;">
+                    <el-table :data="CorporateFinanceOrderList.slice((CorporateFinanceOrderPage-1)*CorporateFinanceOrderSize,CorporateFinanceOrderPage*CorporateFinanceOrderSize)"
+                        highlight-current-row v-loading="corporateLoading" style="width: 100%;">
                         <el-table-column prop="id" label="ID" type="index" width="60">
                         </el-table-column>
                         <el-table-column prop="createTime" label="申请时间" show-overflow-tooltip>
@@ -113,9 +113,9 @@
                     </el-table>
                     <!--分页-->
                     <el-col :span="24" class="toolbar">
-                        <el-pagination background @size-change="highSizeChange" @current-change="corporateCurChange" :page-sizes="[7,8,10,20]" :page-size="pagesize"
-                            layout="total, sizes, prev, pager, next, jumper" :total="CorporateFinanceOrderList.length" :current-page="page"
-                            style="float:right;">
+                        <el-pagination background @size-change="CorporateFinanceOrderSizeChange" @current-change="CorporateFinanceOrderCurChange"
+                            :page-sizes="[7,8,10,20]" :page-size="CorporateFinanceOrderSize" layout="total, sizes, prev, pager, next, jumper"
+                            :total="CorporateFinanceOrderList.length" :current-page="CorporateFinanceOrderPage" style="float:right;">
                         </el-pagination>
                     </el-col>
                 </div>
@@ -139,6 +139,8 @@
             return {
                 page: 1,
                 pagesize: 7,
+                CorporateFinanceOrderPage: 1,
+                CorporateFinanceOrderSize: 7,
                 imgData: {
                     bucketName: 'shared-resource',
                     folderName: ''
@@ -161,6 +163,7 @@
                         themeContent: ''
                     }
                 },
+                CorporateFinanceOrderId: '',
             }
         },
         methods: {
@@ -226,11 +229,27 @@
                 this.CorporateFinanceOrder = true;
                 this.CorporateFinanceOrderTitle = row.title;
                 this.corporateLoading = true;
+                this.CorporateFinanceOrderPage = 1;
                 this.$get(userTarget + row.id)
                     .then((res) => {
                         this.CorporateFinanceOrderList = res;
                         this.corporateLoading = false;
                     });
+            },
+            getCorporateOrder(id) {
+                this.corporateLoading = true;
+                this.$get(userTarget + id)
+                    .then((res) => {
+                        this.CorporateFinanceOrderList = res;
+                        this.corporateLoading = false;
+                    });
+            },
+            CorporateFinanceOrderSizeChange(val) {
+                this.CorporateFinanceOrderSize = val;
+            },
+            CorporateFinanceOrderCurChange(val) {
+                this.CorporateFinanceOrderPage = val;
+                this.getCorporateOrder(this.CorporateFinanceOrderId);
             },
             // 删除
             corporateDel(index, row) {
@@ -289,7 +308,6 @@
                             let data = this.corporateForm;
                             data.parkId = localStorage.getItem("parkId");
                             data.type = '金融服务';
-
                             this.$post(addDisplay, data)
                                 .then((res) => {
                                     this.$message({
