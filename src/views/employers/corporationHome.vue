@@ -1246,10 +1246,6 @@
                 this.page = 1;
             },
 
-
-
-
-
             //性别显示转换
             forSex(row, column) {
                 return row.addInfo.userInfo.addInfo.gender == 1 ?
@@ -1267,10 +1263,6 @@
             highSignsCurChange(val) {
                 this.page = val;
                 this.getHighSigns();
-            },
-            // 重置表单
-            resetForm(formName) {
-                this.$refs[formName].resetFields();
             },
             // 获取当前一周/下周/后周时间
             getWeek() {

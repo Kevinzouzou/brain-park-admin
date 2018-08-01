@@ -31,8 +31,7 @@
                     </el-form>
                 </el-col>
                 <!--列表-->
-                <el-table :data="parkUserList.slice((page-1)*pagesize,page*pagesize)" highlight-current-row v-loading="parkUserListLoading"
-                    style="width: 100%;">
+                <el-table :data="parkUserList.slice((page-1)*pagesize,page*pagesize)" highlight-current-row v-loading="Loading" style="width: 100%;">
                     <el-table-column prop="addInfo.empNo" label="工号" width="80">
                     </el-table-column>
                     <el-table-column prop="addInfo.name" label="姓名" sortable>
@@ -63,7 +62,7 @@
                 <!--分页-->
                 <el-col :span="24" class="toolbar">
                     <el-pagination background @size-change="sizeChange" @current-change="currentChange" :page-sizes="[7,8,10,20]" :page-size="pagesize"
-                        layout="total,sizes, prev, pager, next, jumper" :total="parkUserListTotal" :current-page="page" style="float:right;">
+                        layout="total,sizes, prev, pager, next, jumper" :total="parkUserList.length" :current-page="page" style="float:right;">
                     </el-pagination>
                 </el-col>
                 <!--分页-->
@@ -85,14 +84,14 @@
                     <el-row :gutter="24">
                         <el-col :span="10">
                             <el-form-item label="姓名：" required prop="addInfo.name">
-                                <el-input placeholder="姓名" v-model="addParkUserForm.addInfo.name"></el-input>
+                                <el-input placeholder="姓名" v-model="addParkUserForm.addInfo.name" clearable></el-input>
                             </el-form-item>
                             <el-form-item label="所属部门：" required prop="addInfo.departmentId">
                                 <el-cascader change-on-select :show-all-levels="false" :options="departmentTreeData" v-model="addParkUserForm.addInfo.departmentId"
-                                    :props="departmentTreeDataProps"></el-cascader>
+                                    :props="departmentTreeDataProps" clearable></el-cascader>
                             </el-form-item>
                             <el-form-item label="手机号码：" prop="phone" required>
-                                <el-input placeholder="手机号码" v-model="addParkUserForm.phone"></el-input>
+                                <el-input placeholder="手机号码" v-model="addParkUserForm.phone" clearable></el-input>
                             </el-form-item>
                         </el-col>
                         <el-col :span="10">
@@ -103,10 +102,10 @@
                                 </el-select>
                             </el-form-item>
                             <el-form-item label="职位：" required prop="addInfo.position">
-                                <el-input placeholder="职位" v-model="addParkUserForm.addInfo.position"></el-input>
+                                <el-input placeholder="职位" v-model="addParkUserForm.addInfo.position" clearable></el-input>
                             </el-form-item>
                             <el-form-item label="邮箱地址：" required prop="addInfo.email">
-                                <el-input placeholder="邮箱地址" v-model="addParkUserForm.addInfo.email"></el-input>
+                                <el-input placeholder="邮箱地址" v-model="addParkUserForm.addInfo.email" clearable></el-input>
                             </el-form-item>
                         </el-col>
                         <el-col :span="4">
@@ -131,7 +130,7 @@
             </el-row>
             <div slot="footer" class="dialog-footer">
                 <el-button @click="addParkUserFormVisible = false">取 消</el-button>
-                <el-button type="primary" @click="addParkUser('addParkUserForm')">提交</el-button>
+                <el-button type="primary" @click="addParkUser()">提交</el-button>
             </div>
         </el-dialog>
         <!--弹出框 新增用户-->
@@ -271,7 +270,7 @@
             </el-form>
             <div slot="footer" class="dialog-footer" v-show="editParkUserFormShow">
                 <el-button @click="editParkUserFormVisible = false">取 消</el-button>
-                <el-button type="primary" @click="updateParkUserInfo('editParkUserForm')">修改</el-button>
+                <el-button type="primary" @click="updateParkUserInfo()">修改</el-button>
             </div>
         </el-dialog>
         <!--弹出框 员工详情-->
@@ -288,6 +287,7 @@
         uploadPic,
         sendMessage
     } from '../../api/api';
+    import publicFunction from '../../api/publicFunction';
     export default {
         data() {
             return {
@@ -300,8 +300,7 @@
                     folderName: ''
                 },
                 parkUserList: [], // 员工列表
-                parkUserListTotal: 0, // 员工总数
-                parkUserListLoading: false, // 员工列表loading控件
+                Loading: false, // 员工列表loading控件
                 parkUserListFilters: { //员工列表筛选
                     nameOrPhone: '',
                     male: false,
@@ -483,7 +482,7 @@
             },
             //获取员工列表
             getParkUserList(url, headOfTheTeam) {
-                this.parkUserListLoading = true;
+                this.Loading = true;
                 this.$get(url).then(res => {
                     let data = [];
                     if (headOfTheTeam) {
@@ -494,44 +493,50 @@
                         data = res;
                     }
                     this.parkUserList = data;
-                    this.parkUserListTotal = data.length;
-                    this.parkUserListLoading = false;
+                    this.Loading = false;
                 });
             },
             // 添加员工
-            addParkUser(formName) {
-                this.$refs[formName].validate(valid => {
+            addParkUser() {
+                this.$refs.addParkUserForm.validate(valid => {
                     if (valid) {
                         let data = this.addParkUserForm;
                         data.parkId = localStorage.getItem('parkId');
                         data.type = 2; // 添加员工
-                        data.addInfo.departmentId = this.addParkUserForm.addInfo.departmentId.pop();
-                        data.isSendPwd =
-                            this.addParkUserForm.isSendPwd === true ? 1 : 0;
-                        data.addInfo.isManager =
-                            this.addParkUserForm.addInfo.isManager === true ? 1 : 0;
+                        data.addInfo.departmentId = data.addInfo.departmentId.pop();
+                        data.isSendPwd = data.isSendPwd === true ? 1 : 0;
+                        data.addInfo.isManager = data.addInfo.isManager === true ? 1 : 0;
                         this.$post(addParkUser, data).then(res => {
                             if (res.operationResult === 'failure') {
                                 let title = res.failureMsg;
-                                let name = res.responseList.name;
-                                let phone = res.responseList.phone;
-                                let post = res.responseList.post;
-                                let id = res.responseList.id;
+                                let name = res.responseList[0].addInfo.name;
+                                let phone = res.responseList[0].phone;
+                                let position = res.responseList[0].addInfo.position;
+                                let id = res.responseList[0].id;
                                 this.$alert(
-                                    `<span>姓名：${name}</span></br><span>电话：${phone}</span></br><span>职位：${post}</span></br><span>ID：${id}</span></br>`,
+                                    `<span>姓名：${name}</span></br><span>电话：${phone}</span></br><span>职位：${position}</span></br><span>ID：${id}</span></br>`,
                                     title, {
                                         dangerouslyUseHTMLString: true
                                     }
                                 );
                             } else {
-                                this.departmentTreeData = this.departmentTreeData;
-                                this.getParkUserList(parkUserList);
-                                this.resetForm('addParkUserForm');
-                                this.addParkUserForm.addInfo.departmentId = [];
-                                this.$message({
-                                    message: '添加成功',
-                                    type: 'success'
-                                });
+                                this.addParkUserForm = { //添加员工数据表单
+                                    phone: '',
+                                    addInfo: {
+                                        name: '',
+                                        gender: '',
+                                        position: '',
+                                        email: '',
+                                        isManager: false,
+                                        hiredate: [],
+                                        departmentId: [],
+                                        avatar: ''
+                                    },
+                                    isSendPwd: false
+                                };
+                                this.$refs.addParkUserForm.resetFields();
+                                this.$message.success('添加成功');
+                                this.getParkUserList(parkUserList, false);
                             }
                         });
                     } else {
@@ -545,7 +550,6 @@
                 this.addParkUserForm.addInfo.avatar = res.responseList.url;
             },
             handleEditParkUserAvatarSuccess(res, file) {
-                console.log(file);
                 this.editParkUserForm.addInfo.avatar = res.responseList.url;
             },
             beforeAvatarUpload(file) {
@@ -559,25 +563,24 @@
                 }
                 return isJPG && isLt2M;
             },
-            // 编辑员工窗口
-            parkUserEdit: function (index, row) {
+            // 打开编辑员工窗口
+            parkUserEdit(index, row) {
                 this.appPassword = '';
                 this.editParkUserFormVisible = true;
                 this.editParkUserFormShow = false;
-                this.editParkUserForm = this.deepCopy(this.editParkUserForm, row);
+                this.editParkUserForm = publicFunction.deepCopy(this.editParkUserForm, row);
                 this.editParkUserForm.addInfo.isManager =
                     row.addInfo.isManager === 1 ? true : false;
                 this.editParkUserForm.addInfo.departmentId = this.editParkUserForm.departmentInfo.sequence
                     .split('.')
                     .slice(1);
-                console.log(JSON.stringify(this.editParkUserForm))
             },
-            updateParkUserInfo(formName) {
-                this.$refs[formName].validate(valid => {
+            // 编辑员工 
+            updateParkUserInfo() {
+                this.$refs.editParkUserForm.validate(valid => {
                     if (valid) {
                         let data = this.editParkUserForm;
                         data.parkId = localStorage.getItem('parkId');
-                        console.log(this.editParkUserForm.addInfo.departmentId)
                         let departmentId = this.editParkUserForm.addInfo.departmentId;
                         data.addInfo.departmentId = departmentId[departmentId.length - 1];
                         data.addInfo.isManager =
@@ -585,16 +588,15 @@
                             1 :
                             0;
                         delete data.departmentInfo;
-                        console.log(JSON.stringify(this.editParkUserForm));
                         this.$put(updateParkUserInfo, data).then(res => {
                             if (res.operationResult === 'failure') {
                                 let title = res.failureMsg;
-                                let name = res.responseList.name;
-                                let phone = res.responseList.phone;
-                                let post = res.responseList.post;
-                                let id = res.responseList.id;
+                                let name = res.responseList[0].addInfo.name;
+                                let phone = res.responseList[0].phone;
+                                let position = res.responseList[0].addInfo.position;
+                                let id = res.responseList[0].id;
                                 this.$alert(
-                                    `<span>姓名：${name}</span></br><span>电话：${phone}</span></br><span>职位：${post}</span></br><span>ID：${id}</span></br>`,
+                                    `<span>姓名：${name}</span></br><span>电话：${phone}</span></br><span>职位：${position}</span></br><span>ID：${id}</span></br>`,
                                     title, {
                                         dangerouslyUseHTMLString: true
                                     }
@@ -603,10 +605,7 @@
                                 this.editParkUserFormVisible = false;
                                 this.resetForm('editParkUserForm');
                                 this.getParkUserList(parkUserList);
-                                this.$message({
-                                    message: '修改成功',
-                                    type: 'success'
-                                });
+                                this.$message.success('修改成功');
                                 this.editParkUserForm = {
                                     id: '',
                                     type: 2,
@@ -636,7 +635,7 @@
                 });
             },
             // 删除员工
-            parkUserDel: function (index, row) {
+            parkUserDel(index, row) {
                 this.$confirm(
                         '删除员工将同时取消该员工的物管服务APP登录权限，是否删除？',
                         '注意', {
@@ -644,16 +643,13 @@
                         }
                     )
                     .then(() => {
-                        this.parkUserListLoading = true;
-                        let para = {
-                            id: row.id
-                        };
-                        this.$del(deleteUser + para.id).then(response => {
-                            this.$message({
-                                message: '删除成功',
-                                type: 'success'
-                            });
-                            this.getParkUserList(parkUserList);
+                        this.$del(deleteUser + row.id).then(res => {
+                            if (res.operationResult === 'failure') {
+                                this.$message.error(`${res.failureMsg}`);
+                            } else {
+                                this.$message.success('删除成功');
+                                this.getParkUserList(parkUserList);
+                            }
                         });
                     })
                     .catch(() => {});
@@ -678,6 +674,7 @@
                     departmentId === '' ?
                     url + '' :
                     url + '&departmentId=' + departmentId;
+                this.page = 1;
                 this.getParkUserList(url, headOfTheTeam);
             },
             // 点击树形结构查询员工列表
@@ -711,17 +708,11 @@
                         data.password = this.appPassword;
                         data.type = 2;
                         this.$put(updateParkUserInfo, data).then(res => {
-                            this.$message({
-                                type: 'success',
-                                message: '重置成功!'
-                            });
+                            this.$message.success('重置成功');
                         });
                     })
                     .catch(() => {
-                        this.$message({
-                            type: 'info',
-                            message: '已取消'
-                        });
+                        this.$message.info('已取消');
                     });
             },
             // 发送重置密码给员工
@@ -738,10 +729,7 @@
                     }
                 };
                 if (password === '') {
-                    this.$message({
-                        type: 'info',
-                        message: '请先重置员工密码'
-                    });
+                    this.$message.info('请先重置员工密码');
                 } else {
                     this.$confirm(
                             '此操作将发送员工的新密码到该员工的手机上， 是否继续?',
@@ -753,26 +741,16 @@
                             }
                         )
                         .then(() => {
-                            console.log(JSON.stringify(data));
                             this.$post(sendMessage, data).then(res => {
                                 if (res.operationResult === 'failure') {
-                                    this.$message({
-                                        type: 'error',
-                                        message: `${res.failureMsg}`
-                                    });
+                                    this.$message.error(`${res.failureMsg}`);
                                 } else {
-                                    this.$message({
-                                        type: 'success',
-                                        message: '发送成功!'
-                                    });
+                                    this.$message.success('发送成功');
                                 }
                             });
                         })
                         .catch(() => {
-                            this.$message({
-                                type: 'info',
-                                message: '已取消'
-                            });
+                            this.$message.info('已取消');
                         });
                 }
             },
@@ -781,50 +759,10 @@
             },
             currentChange(val) {
                 this.page = val;
-                this.getQueryParkUserList();
             },
             resetForm(formName) {
                 this.$refs[formName].resetFields();
             },
-            // 拷贝对象
-            deepCopy(object, beCopied) {
-                for (let i in object) {
-                    if (
-                        Object.prototype.toString.call(beCopied[i]) ===
-                        '[object String]'
-                    ) {
-                        object[i] = beCopied[i];
-                    } else if (
-                        Object.prototype.toString.call(beCopied[i]) ===
-                        '[object Number]'
-                    ) {
-                        object[i] = beCopied[i];
-                    } else if (
-                        Object.prototype.toString.call(beCopied[i]) ===
-                        '[object Object]'
-                    ) {
-                        this.deepCopy(object[i], beCopied[i]);
-                    } else if (
-                        Object.prototype.toString.call(beCopied[i]) ===
-                        '[object Undefined]'
-                    ) {
-                        object[i] = object[i];
-                    } else if (
-                        Object.prototype.toString.call(beCopied[i]) ===
-                        '[object Boolean]'
-                    ) {
-                        object[i] = beCopied[i];
-                    } else if (
-                        Object.prototype.toString.call(beCopied[i]) ===
-                        '[object Array]'
-                    ) {
-                        object[i] = beCopied[i];
-                    } else {
-                        object[i] = '';
-                    }
-                }
-                return object;
-            }
         },
         mounted() {
             this.getParkUserList(parkUserList);

@@ -59,7 +59,7 @@
         <el-row :gutter="24">
             <el-col :span="24" class="toolbar">
                 <el-pagination background @size-change="pageSizeChange" @current-change="pageCurrentChange" :page-sizes="[7,8,10,20]" :page-size="pagesize"
-                    layout="total,sizes, prev, pager, next, jumper" :current-page="page" :total="parkOperatorListTotal" style="float:right;">
+                    layout="total,sizes, prev, pager, next, jumper" :current-page="page" :total="parkOperatorList.length" style="float:right;">
                 </el-pagination>
             </el-col>
         </el-row>

@@ -25,7 +25,7 @@
 
         <!--列表-->
         <el-table :data="adminList.slice((page-1)*pagesize,page*pagesize)" highlight-current-row v-loading="adminLoading" style="width: 100%;">
-            <el-table-column type="index" width="60">
+            <el-table-column type="index" label="序号" width="60">
             </el-table-column>
             <el-table-column prop="name" label="企业名称" sortable>
             </el-table-column>
@@ -84,8 +84,8 @@
                 <el-row>
                     <el-col :span="11">
                         <el-form-item label="入驻时间：" prop="addInfo.enterTime">
-                            <el-date-picker style="margin-right: 10px;" value-format="yyyy-MM-dd HH:mm:ss" v-model="adminAEForm.addInfo.enterTime" type="date"
-                                placeholder="选择日期" :picker-options="pickerOptions">
+                            <el-date-picker value-format="yyyy-MM-dd HH:mm:ss" v-model="adminAEForm.addInfo.enterTime" type="date" placeholder="选择日期"
+                                :picker-options="pickerOptions">
                             </el-date-picker>
                         </el-form-item>
                     </el-col>
@@ -103,15 +103,16 @@
                 <el-row>
                     <el-col :span="11">
                         <el-form-item label="企业图片：">
-                            <el-upload :action='imageUploadUrl' list-type="picture-card" :show-file-list="false" :data="imgData" :on-success="successUploadImg">
-                                <img v-if="adminAEForm.addInfo.logo" :src="adminAEForm.addInfo.logo" class="logoImg">
-                                <i v-else class="el-icon-plus"></i>
+                            <el-upload class="avatar-uploader" :action='imageUploadUrl' :show-file-list="false" :data="imgData" :on-success="successUploadImg">
+                                <img v-if="adminAEForm.addInfo.logo" :src="adminAEForm.addInfo.logo" class="avatar">
+                                <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                             </el-upload>
                         </el-form-item>
                     </el-col>
                     <el-col :span="11">
                         <el-form-item label="地址：" label-width="170px">
-                            <el-cascader :options="treeList" v-model="selOptions" :props="dataProps" @change="handleChange">
+                            <!-- <el-cascader :options="treeList" v-model="selOptions" :props="dataProps" @change="handleChange"> -->
+                            <el-cascader :options="treeList" v-model="selOptions" :props="dataProps">
                             </el-cascader>
                         </el-form-item>
                     </el-col>
@@ -123,9 +124,6 @@
                             </el-input>
                         </el-form-item>
                     </el-col>
-                </el-row>
-                <el-row>
-
                 </el-row>
             </el-form>
             <!--<el-form label-width="100px" v-if="isEdit">-->
@@ -179,7 +177,7 @@
                 selOptions: [],
                 treeList: [],
                 industry: '',
-                roomLabel: '',
+                // roomLabel: '',
                 zoneId: '',
                 dialogAnVisible: false,
                 page: 1,
@@ -265,7 +263,6 @@
             },
             //显示新增界面
             newEnterprise() {
-                this.newArea = [];
                 this.selOptions = [];
                 this.addEditTitle = '新增';
                 this.isEdit = false;
@@ -293,6 +290,7 @@
                         }
                     ]
                 };
+                console.log(JSON.stringify(this.selOptions))
             },
             // 企业管理模糊查询
             getQueryAdmin() {
@@ -303,13 +301,6 @@
                 this.adminFilters = {
                     enterName: ''
                 };
-            },
-            handleChange(val) {
-                this.newArea = [];
-                let data = this.selOptions;
-                let list = this.treeList;
-                this.seachAreaName(data, list, 0);
-                this.zoneId = this.newArea[3].id;
             },
             seachAreaName(data, beSeachData, index) {
                 for (let j = 0; j < beSeachData.length; j++) {
@@ -331,6 +322,7 @@
                     }
                 }
             },
+            // 获取区域树形数据
             getTree() {
                 this.$get(treeUrl + '&type=区域').then(res => {
                     this.treeList = publicFunction.killChildren(res[0].children);
@@ -359,10 +351,7 @@
                         this.adminLoading = true;
                         this.$del(deleteEnterprise + row.id).then(res => {
                             this.adminLoading = false;
-                            this.$message({
-                                message: '删除成功',
-                                type: 'success'
-                            });
+                            this.$message.success('删除成功');
                             this.getAdminList();
                         });
                     })
@@ -377,13 +366,10 @@
                 this.isEdit = true;
                 this.adminAEVisible = true;
                 this.adminAEForm = publicFunction.deepCopy(this.adminAEForm, row);
-                this.roomLabel = row.zoneInfo[row.zoneInfo.length - 1].name;
-                this.zoneId = row.zoneInfo[row.zoneInfo.length - 1].id;
-                if (row.zoneInfo[1]) this.selOptions.push(row.zoneInfo[1].id);
-                if (row.zoneInfo[2]) this.selOptions.push(row.zoneInfo[2].id);
-                if (row.zoneInfo[3]) this.selOptions.push(row.zoneInfo[3].id);
-                if (row.zoneInfo[4]) this.selOptions.push(row.zoneInfo[4].id);
-                this.newArea = this.selOptions;
+                for (let i of row.zoneInfo) {
+                    this.selOptions.push(i.id);
+                }
+                this.selOptions.shift();
             },
             //分页
             sizeChange(val) {
@@ -391,41 +377,38 @@
             },
             currentChange(val) {
                 this.page = val;
-                this.getAdminList();
             },
             //新增
             addAdminSubmit() {
                 this.$refs.adminAEForm.validate(valid => {
                     if (valid) {
                         this.$confirm('确认提交吗？', '提示', {}).then(() => {
-                            let address = '松湖智谷园区' + this.newArea[0].name +
-                                this.newArea[1].name +
-                                this.newArea[2].name +
-                                this.newArea[3].name;
+                            this.newArea = [];
+                            this.seachAreaName(this.selOptions, this.treeList, 0);
+                            this.adminAEForm.address = '松湖智谷园区'
+                            for (let i of this.newArea) {
+                                this.adminAEForm.address += i.name
+                            }
                             let data = {
                                 parkId: localStorage.getItem('parkId'),
-                                address: address,
                                 name: this.adminAEForm.name,
+                                address: this.adminAEForm.address,
                                 addInfo: {
-                                    zoneId: this.zoneId,
-                                    industry: this.adminAEForm.addInfo.industry,
-                                    logo: this.adminAEForm.addInfo.logo,
-                                    enterTime: this.adminAEForm.addInfo.enterTime,
                                     intro: this.adminAEForm.addInfo.intro,
                                     businessModel: this.adminAEForm.addInfo.businessModel,
+                                    zoneId: this.selOptions[this.selOptions.length - 1],
+                                    logo: this.adminAEForm.addInfo.logo,
+                                    industry: this.adminAEForm.addInfo.industry,
+                                    enterTime: this.adminAEForm.addInfo.enterTime,
                                 }
                             };
                             let message = '添加成功';
                             if (this.isEdit) {
                                 data.id = this.isEditId;
                                 message = '修改成功';
-                                data.address = this.adminAEForm.address;
                             }
                             this.$post(addOrUpdatedEnterprise, data).then(res => {
-                                this.$message({
-                                    message: message,
-                                    type: 'success'
-                                });
+                                this.$message.success(message);
                                 this.$refs.adminAEForm.resetFields();
                                 this.adminAEVisible = false;
                                 this.getAdminList();

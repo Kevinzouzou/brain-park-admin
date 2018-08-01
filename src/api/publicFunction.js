@@ -7,12 +7,12 @@ let publicFunction = {
             if (o[key] === null) {
                 delete o[key]
             }
-            if (toType(o[key]) === 'string') {
+            if (publicFunction.toType(o[key]) === 'string') {
                 o[key] = o[key].trim()
-            } else if (toType(o[key]) === 'object') {
-                o[key] = filterNull(o[key])
-            } else if (toType(o[key]) === 'array') {
-                o[key] = filterNull(o[key])
+            } else if (publicFunction.toType(o[key]) === 'object') {
+                o[key] = publicFunction.filterNull(o[key])
+            } else if (publicFunction.toType(o[key]) === 'array') {
+                o[key] = publicFunction.filterNull(o[key])
             }
         }
         return o
