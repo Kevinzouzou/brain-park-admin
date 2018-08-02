@@ -809,22 +809,22 @@
                         createTime:'2018-06-06 12:30:45',
                         inspectTime:'工作日',
                         cycle:'',
+                        name:'A区1栋空调巡检',
+                        state:'停用',
                         addInfo:{
                             executeNum:3,
                             inspector:'李四',
-                            state:'停用',
-                            name:'A区1栋空调巡检',
                         }
                     },
                     {
                         createTime:'2018-06-16 10:23:15',
                         inspectTime:'每日',
                         cycle:'',
+                        name:'A区1栋消防设备巡检',
+                        state:'启用',
                         addInfo:{
                             executeNum:5,
                             inspector:'张三',
-                            state:'启用',
-                            name:'A区1栋消防设备巡检',
                         }
                     },
                 ],
@@ -1347,18 +1347,8 @@
                     type: 'warning'
                 }).then(() => {
                     this.inspectNodeLoading = true;
-                    let para = { id: row.id };
-                    let self=this;
-                    this.$del(delEquip+para.id)
-                        .then(function(response) {
-                            self.inspectNodeLoading = false;
-                            self.$message({
-                                message: '删除成功',
-                                type: 'success'
-                            });
-                            self.getInspectRouteMg();
-                            console.log("delete")
-                        });
+                    this.insNodeList.splice(index,1);
+                    this.inspectNodeLoading = false;
                 }).catch(() => {
 
                 });

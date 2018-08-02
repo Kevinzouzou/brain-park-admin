@@ -27,7 +27,8 @@ axios.interceptors.request.use(
 axios.interceptors.response.use(function (response) {
     if (response.data.code == '1001' || response.data.code == '1002') { //具体的判断token失效的参数
         sessionStorage.setItem("token", '');
-        window.location.href = '/#/login' //需求方要求一旦出错立即跳转登录，所以采取这种侵入式的手段。
+        // window.location.href = '/#/login' //需求方要求一旦出错立即跳转登录，所以采取这种侵入式的手段。
+        window.location.href = '/#/' //需求方要求一旦出错立即跳转登录，所以采取这种侵入式的手段。
     } else {
         return response
     }

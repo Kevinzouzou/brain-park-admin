@@ -131,11 +131,11 @@ let routes = [
                 component: resolve => require(['./views/properSer/release.vue'], resolve),
                 name: '放行申请'
             },
-            // {
-            //     path: '/equipInspection',
-            //     component: resolve => require(['./views/properSer/equipInspection.vue'], resolve),
-            //     name: '设备巡检'
-            // }
+            {
+                path: '/equipInspection',
+                component: resolve => require(['./views/properSer/equipInspection.vue'], resolve),
+                name: '设备巡检'
+            }
          ]
     },
     {
