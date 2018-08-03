@@ -60,6 +60,11 @@ let publicFunction = {
                 '[object Array]'
             ) {
                 object[i] = beCopied[i];
+            } else if (
+                Object.prototype.toString.call(beCopied[i]) ===
+                '[object Null]'
+            ) {
+                object[i] = '';
             } else {
                 object[i] = '';
             }

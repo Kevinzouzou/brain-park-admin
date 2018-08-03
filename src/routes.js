@@ -5,6 +5,7 @@ import Login from './views/Login.vue'
 import NotFound from './views/404.vue'
 import Home from './views/Home.vue'
 import Main from './views/Main.vue'
+
 // 运营服务
 import operaSitua from './views/operaSer/operaSitua.vue'
 import circle from './views/operaSer/circle.vue'
@@ -20,10 +21,6 @@ import shareResource from './views/operaSer/shareResource.vue'
 import apartmentRental from './views/operaSer/apartmentRental.vue'
 import operationalProfile from './views/operaSer/operationalProfile.vue'
 
-import serEffect from './views/employers/serEffect.vue'
-import corporationHome from './views/employers/corporationHome.vue'
-import businessProcess from './views/employers/businessProcess.vue'
-import leaseContract from './views/employers/leaseContract.vue'
 // 用户管理
 import userProfile from './views/userManage/userProfile.vue'
 import userOperation from './views/userManage/userOperation.vue'
@@ -31,37 +28,42 @@ import employeeManage from './views/userManage/employeeManage.vue'
 import departmentOrganization from './views/userManage/departmentOrganization.vue'
 import operatorAccountManage from './views/userManage/operatorAccountManage.vue'
 import operatorRoleManage from './views/userManage/operatorRoleManage.vue'
+
 // 企业管理
 import busiAdmin from './views/businessAdmin/busiAdmin.vue'
 import companyProfile from './views/businessAdmin/companyProfile.vue'
 
+// 企业服务
+import servicePerformanceOverview from './views/employers/servicePerformanceOverview.vue'
 import governmentService from './views/employers/governmentService.vue'
 import ITservice from './views/employers/ITservice.vue'
 import talentService from './views/employers/talentService.vue'
-
+import corporationHome from './views/employers/corporationHome.vue'
+import businessProcess from './views/employers/businessProcess.vue'
+import leaseContract from './views/employers/leaseContract.vue'
 
 
 Vue.use(Router)
 let routes = [
     {
-        path: '/',
-        component: Login,
-        name: '',
-        hidden: true
+        path:        '/',
+        component:   Login,
+        name:        '',
+        hidden:      true
     },
     {
-        path: '/',
-        component: Home,
-        name: '用户管理',
-        // redirect:'/userProfile',
-        iconCls: 'fa fa-user-o',
-        children: [
-            { path: '/userProfile', component: userProfile, name: '用户概况' },
-            { path: '/userOperation', component: userOperation, name: '用户操作' },
-            { path: '/employeeManage', component: employeeManage, name: '员工管理' },
-            { path: '/departmentOrganization', component: departmentOrganization, name: '部门组织架构' },
-            { path: '/operatorAccountManage', component: operatorAccountManage, name: '操作员账号管理' },
-            { path: '/operatorRoleManage', component: operatorRoleManage, name: '操作员角色管理' },
+        path:        '/',
+        component:   Home,
+        name:        '用户管理',
+        // redirect: '/userProfile',
+        iconCls:     'fa fa-user-o',
+        children:    [
+            { path:  '/userProfile',             component: userProfile,             name: '用户概况' },
+            { path:  '/userOperation',           component: userOperation,           name: '用户操作' },
+            { path:  '/employeeManage',          component: employeeManage,          name: '员工管理' },
+            { path:  '/departmentOrganization',  component: departmentOrganization,  name: '部门组织架构' },
+            { path:  '/operatorAccountManage',   component: operatorAccountManage,   name: '操作员账号管理' },
+            { path:  '/operatorRoleManage',      component: operatorRoleManage,      name: '操作员角色管理' },
         ]
     },
     {
@@ -70,8 +72,8 @@ let routes = [
         name: '企业管理',
         iconCls: 'el-icon-service',
         children: [
-            { path: '/companyProfile', component: companyProfile, name: '企业概况' },
-            { path: '/busiAdmin', component: busiAdmin, name: '企业操作' },
+            { path: '/companyProfile',  component: companyProfile,  name: '企业概况' },
+            { path: '/busiAdmin',       component: busiAdmin,       name: '企业操作' },
         ]
     },
     {
@@ -81,18 +83,18 @@ let routes = [
         name: '运营服务',
         iconCls: 'el-icon-document',
         children: [
-            { path: '/operationalProfile', component: operationalProfile, name: '运营概况' },
-            { path: '/circle', component: circle, name: '圈子' },
-            { path: '/topic', component: topic, name: '话题' },
-            { path: '/adConfig', component: adConfig, name: '广告配置' },
-            // { path: '/pushConfig', component: pushConfig, name: '推送配置' },
-            { path: '/financialSer', component: financialSer, name: '金融服务' },
-            // { path: '/merchants', component: merchants, name: '商家联盟' },
-            { path: '/userFeedback', component: userFeedback, name: '用户反馈处理' },
-            { path: '/information', component: information, name: '信息公告' },
-            { path: '/shareResource', component: shareResource, name: '共享资源' },
-            { path: '/apartmentRental', component: apartmentRental, name: '公寓租赁资源' },
-            { path: '/houseKeeping', component: houseKeeping, name: '家政服务' },
+            { path:    '/operationalProfile',  component: operationalProfile,  name: '运营概况' },
+            { path:    '/circle',              component: circle,              name: '圈子' },
+            { path:    '/topic',               component: topic,               name: '话题' },
+            { path:    '/adConfig',            component: adConfig,            name: '广告配置' },
+            // { path: '/pushConfig', component:          pushConfig, name:          '推送配置' },
+            { path:    '/financialSer',        component: financialSer,        name: '金融服务' },
+            // { path: '/merchants', component:           merchants, name:           '商家联盟' },
+            { path:    '/userFeedback',        component: userFeedback,        name: '用户反馈处理' },
+            { path:    '/information',         component: information,         name: '信息公告' },
+            { path:    '/shareResource',       component: shareResource,       name: '共享资源' },
+            { path:    '/apartmentRental',     component: apartmentRental,     name: '公寓租赁资源' },
+            { path:    '/houseKeeping',        component: houseKeeping,        name: '家政服务' },
         ]
     },
     {
@@ -101,12 +103,12 @@ let routes = [
         name: '企业服务',
         iconCls: 'el-icon-message',
         children: [
-            // { path: '/serEffect', component: serEffect, name: '服务效能概况' },
-            { path: '/corporationHome', component: corporationHome, name: '企业之家' },
-            { path: '/businessProcess', component: businessProcess, name: '流程业务' },
-            { path: '/governmentService', component: governmentService, name: '政务服务' },
-            { path: '/ITservice', component: ITservice, name: 'IT服务' },
-            { path: '/talentService', component: talentService, name: '人才服务' },
+            { path: '/servicePerformanceOverview',  component: servicePerformanceOverview,  name: '服务效能概况' },
+            { path: '/corporationHome',             component: corporationHome,             name: '企业之家' },
+            { path: '/businessProcess',             component: businessProcess,             name: '流程业务' },
+            { path: '/governmentService',           component: governmentService,           name: '政务服务' },
+            { path: '/ITservice',                   component: ITservice,                   name: 'IT服务' },
+            { path: '/talentService',               component: talentService,               name: '人才服务' },
             // { path: '/leaseContract', component: leaseContract, name: '租赁合同管理' }
         ]
     },

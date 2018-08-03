@@ -14,18 +14,18 @@
                 <el-form-item>
                     <el-button type="primary" v-on:click="getQueryAdmin">搜索</el-button>
                 </el-form-item>
-                <!-- <el-form-item>
+                <el-form-item>
                     <el-button type="success" @click="exportData">导出到表格</el-button>
                 </el-form-item>
                 <el-form-item>
                     <el-button type="success" @click="importIn">导入名单</el-button>
-                </el-form-item> -->
+                </el-form-item>
             </el-form>
         </el-col>
 
         <!--列表-->
         <el-table :data="adminList.slice((page-1)*pagesize,page*pagesize)" highlight-current-row v-loading="adminLoading" style="width: 100%;">
-            <el-table-column type="index" label="序号" width="60">
+            <el-table-column prop="id" label="ID">
             </el-table-column>
             <el-table-column prop="name" label="企业名称" sortable>
             </el-table-column>
@@ -37,9 +37,18 @@
             </el-table-column>
             <el-table-column prop="zoneInfo[4].name" label="房号" sortable>
             </el-table-column>
+            <el-table-column prop="addInfo.area" label="租赁面积(平方米)" sortable width="160">
+            </el-table-column>
             <el-table-column prop="addInfo.industry" label="所属行业" sortable>
             </el-table-column>
+            <el-table-column prop="addInfo.businessModel" label="企业性质" sortable>
+            </el-table-column>
             <el-table-column prop="addInfo.enterTime" label="入驻时间" sortable>
+            </el-table-column>
+            <el-table-column label="撤离时间" sortable>
+                <template slot-scope="scope">
+                    {{scope.row.addInfo.outTime||'入驻中'}}
+                </template>
             </el-table-column>
             <el-table-column label="操作" width="150">
                 <template slot-scope="scope">
@@ -57,7 +66,7 @@
         <!--新增/编辑界面-->
         <el-dialog :title=addEditTitle :visible.sync="adminAEVisible">
             <el-form :model="adminAEForm" :label-position="'right'" label-width="160px" ref="adminAEForm" :rules="rules">
-                <el-row :gutter="24">
+                <el-row>
                     <el-col :span="11">
                         <el-form-item label="企业名称：" prop="name">
                             <el-input v-model="adminAEForm.name"></el-input>
@@ -81,16 +90,17 @@
                         </el-form-item>
                     </el-col>
                 </el-row>
+
                 <el-row>
                     <el-col :span="11">
-                        <el-form-item label="入驻时间：" prop="addInfo.enterTime">
-                            <el-date-picker value-format="yyyy-MM-dd HH:mm:ss" v-model="adminAEForm.addInfo.enterTime" type="date" placeholder="选择日期"
-                                :picker-options="pickerOptions">
-                            </el-date-picker>
+                        <el-form-item label="租赁面积：" prop="addInfo.area">
+                            <el-input v-model="adminAEForm.addInfo.area">
+                                <template slot="append">米</template>
+                            </el-input>
                         </el-form-item>
                     </el-col>
                     <el-col :span="11">
-                        <el-form-item label="企业性质：" label-width="170px">
+                        <el-form-item label="企业性质：">
                             <el-select v-model="adminAEForm.addInfo.businessModel" placeholder="请选择">
                                 <el-option label="私有" value="私有"></el-option>
                                 <el-option label="国有" value="国有"></el-option>
@@ -99,6 +109,7 @@
                             </el-select>
                         </el-form-item>
                     </el-col>
+
                 </el-row>
                 <el-row>
                     <el-col :span="11">
@@ -110,10 +121,26 @@
                         </el-form-item>
                     </el-col>
                     <el-col :span="11">
-                        <el-form-item label="地址：" label-width="170px">
+                        <el-form-item label="地址：">
                             <!-- <el-cascader :options="treeList" v-model="selOptions" :props="dataProps" @change="handleChange"> -->
                             <el-cascader :options="treeList" v-model="selOptions" :props="dataProps">
                             </el-cascader>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+                <el-row>
+                    <el-col :span="11">
+                        <el-form-item label="入驻时间：" prop="addInfo.enterTime">
+                            <el-date-picker style="width:100%" value-format="yyyy-MM-dd HH:mm:ss" v-model="adminAEForm.addInfo.enterTime" type="date"
+                                placeholder="选择日期" :picker-options="pickerOptions">
+                            </el-date-picker>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="11" v-show="isEdit">
+                        <el-form-item label="撤离时间：">
+                            <el-date-picker style="width:100%" value-format="yyyy-MM-dd HH:mm:ss" v-model="adminAEForm.addInfo.outTime" type="date" placeholder="入驻中"
+                                :picker-options="pickerOptions">
+                            </el-date-picker>
                         </el-form-item>
                     </el-col>
                 </el-row>
@@ -193,10 +220,12 @@
                     name: '',
                     addInfo: {
                         industry: '',
+                        enterTime: '',
+                        outTime: '',
                         logo: '',
                         intro: '',
-                        enterTime: '',
                         businessModel: '',
+                        area: ''
                     },
                     zoneInfo: [{
                             name: ''
@@ -230,6 +259,11 @@
                         trigger: 'blur'
                     }],
                     addInfo: {
+                        area: [{
+                            required: true,
+                            message: '请填写企业租赁面积',
+                            trigger: 'blur'
+                        }],
                         industry: [{
                             required: true,
                             message: '请选择所属行业',
@@ -272,9 +306,11 @@
                     addInfo: {
                         industry: '',
                         enterTime: '',
+                        outTime: '',
                         logo: '',
                         intro: '',
                         businessModel: '',
+                        area: ''
                     },
                     zoneInfo: [{
                             name: ''
@@ -290,7 +326,6 @@
                         }
                     ]
                 };
-                console.log(JSON.stringify(this.selOptions))
             },
             // 企业管理模糊查询
             getQueryAdmin() {
@@ -365,7 +400,21 @@
                 this.isEditId = row.id;
                 this.isEdit = true;
                 this.adminAEVisible = true;
+                this.adminAEForm = {
+                    id: '',
+                    name: '',
+                    addInfo: {
+                        industry: '',
+                        enterTime: '',
+                        outTime: '',
+                        logo: '',
+                        intro: '',
+                        businessModel: '',
+                        area: ''
+                    }
+                };
                 this.adminAEForm = publicFunction.deepCopy(this.adminAEForm, row);
+                console.log(row);
                 for (let i of row.zoneInfo) {
                     this.selOptions.push(i.id);
                 }
@@ -394,12 +443,14 @@
                                 name: this.adminAEForm.name,
                                 address: this.adminAEForm.address,
                                 addInfo: {
+                                    area: this.adminAEForm.addInfo.area,
                                     intro: this.adminAEForm.addInfo.intro,
                                     businessModel: this.adminAEForm.addInfo.businessModel,
                                     zoneId: this.selOptions[this.selOptions.length - 1],
                                     logo: this.adminAEForm.addInfo.logo,
                                     industry: this.adminAEForm.addInfo.industry,
                                     enterTime: this.adminAEForm.addInfo.enterTime,
+                                    outTime: this.adminAEForm.addInfo.outTime,
                                 }
                             };
                             let message = '添加成功';

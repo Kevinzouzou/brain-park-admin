@@ -14,18 +14,23 @@
                 </el-row>
                 <!--列表-->
                 <el-table :data="circleList.slice((page-1)*pagesize,page*pagesize)" highlight-current-row v-loading="listLoading" style="width: 100%;">
-                    <el-table-column type="index">
+                    <el-table-column prop="id" label="ID">
                     </el-table-column>
-                    <el-table-column prop="title" label="圈子名称" sortable show-overflow-tooltip>
+                    <el-table-column prop="title" label="圈子名称" show-overflow-tooltip>
                     </el-table-column>
                     <el-table-column label="圈子logo">
                         <template slot-scope="scope">
                             <img :src="scope.row.thumbUrl" width="40" height="40" style="border-radius: 6px;" />
                         </template>
                     </el-table-column>
-                    <el-table-column prop="createTime" label="创建时间" sortable>
+                    <el-table-column label="背景图">
+                        <template slot-scope="scope">
+                            <img :src="scope.row.addInfo.bgUrl" width="40" height="40" style="border-radius: 6px;" />
+                        </template>
                     </el-table-column>
-                    <el-table-column prop="joinNum" label="已加入成员数" sortable>
+                    <el-table-column prop="joinNum" label="已加入成员数">
+                    </el-table-column>
+                    <el-table-column prop="createTime" label="创建时间">
                     </el-table-column>
                     <el-table-column label="操作" width="150">
                         <template slot-scope="scope">

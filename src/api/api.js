@@ -63,55 +63,55 @@ export const delParkTreeUrl=`/parkInfoTree/deleteParkInfoTree/`;  //删除组织
 export const countsEnterUrl=`/settledEnterprise/findSettledEnterpriseCountByZoneId/`+localStorage.getItem("parkId")+'/';  //查询区域中企业的数量
 export const inspectTaskListUrl=`/inspectionTask/inspectionTaskList?parkId=`+localStorage.getItem("parkId");  //巡检任务列表
 
-export const delInsTaskUrl=`/inspectionTask/deleteInspectionTask/`;  //删除巡检任务
-export const addUpdateInsTaskUrl=`/inspectionTask/addOrUpdateInspectionTask`;  //添加或修改巡检任务
-export const loginUrl=`/logIn?parkId=`+localStorage.getItem("parkId");  //登录
+export const delInsTaskUrl       = `/inspectionTask/deleteInspectionTask/`;  //删除巡检任务
+export const addUpdateInsTaskUrl = `/inspectionTask/addOrUpdateInspectionTask`;  //添加或修改巡检任务
+export const loginUrl            = `/logIn?parkId = `+localStorage.getItem("parkId");  //登录
 
 // 用户管理
-export const parkStaffList = `/parkStaff/parkStaffList?parkId=${parkId}`;                                   // 获取用户列表
-export const addOrUpdateParkStaff = `/parkStaff/addOrUpdateParkStaff`;                                      // 添加或更新用户
-export const deleteStaff = `/parkStaff/deleteStaff/`;                                                       // 删除用户
-export const settledEnterpriseList = `/settledEnterprise/settledEnterpriseList?parkId=${parkId}`;           // 获取企业名单
-export const parkUserList = `/parkUserPermission/parkUserList?parkId=${parkId}&type=2`;                     // 获取员工列表
-export const parkOperatorList = `/parkUser/parkOperatorList?parkId=${parkId}&type=3`                        // 获取操作员列表
-export const addParkUser = `/parkUser/addParkUser`;                                                         // 添加员工/操作员
-export const updateParkUserInfo = `/parkUser/updateParkUserInfo`;                                           // 修改员工/操作员
-export const deleteUser = `/parkUser/deleteUser/`;                                                          // 删除员工/操作员 
-export const findUserByRoleId = `/parkUser/findUserByRoleId/${parkId}/`;                                    // 查找使用此角色的操作员
-export const findUserNumByDepartmentId = `/parkUser/findUserNumByDepartmentId/${parkId}/`;                  // 通过部门Id查找用户数量
-export const parkRoleList = `/parkRole/parkRoleList?parkId=${parkId}`                                       // 查询角色列表
-export const addOrUpdateParkRole = `/parkRole/addOrUpdateParkRole`                                          // 添加或修改角色
-export const deleteParkRole = `/parkRole/deleteParkRole/`;                                                  // 删除角色
-export const parkInfoTreeList = `/parkInfoTree/parkInfoTreeList?parkId=${parkId}&type=`;                    // 获取组织架构树形结构
-export const deleteParkInfoTree =`/parkInfoTree/deleteParkInfoTree/`;                                       // 删除组织结构/区域
-export const parkInfoTreeAddZoneInfo = `/parkInfoTree/parkInfoTreeAddZoneInfo/${parkId}/`;                  // 查找组织架构所在区域信息
-export const addOrUpdateParkInfoTree = `/parkInfoTree/addOrUpdateParkInfoTree`;                             // 添加或修改组织架构/区域
-export const sendMessage = `/shortMessage/sendMessage`                                                      // 发送短信
+export const parkStaffList             = `/parkStaff/parkStaffList?parkId                 = ${parkId}`;          // 获取用户列表
+export const addOrUpdateParkStaff      = `/parkStaff/addOrUpdateParkStaff`;                                      // 添加或更新用户
+export const deleteStaff               = `/parkStaff/deleteStaff/`;                                              // 删除用户
+export const settledEnterpriseList     = `/settledEnterprise/settledEnterpriseList?parkId = ${parkId}`;          // 获取企业名单
+export const parkUserList              = `/parkUserPermission/parkUserList?parkId         = ${parkId}&type = 2`; // 获取员工列表
+export const parkOperatorList          = `/parkUser/parkOperatorList?parkId               = ${parkId}&type = 3`  // 获取操作员列表
+export const addParkUser               = `/parkUser/addParkUser`;                                                // 添加员工/操作员
+export const updateParkUserInfo        = `/parkUser/updateParkUserInfo`;                                         // 修改员工/操作员
+export const deleteUser                = `/parkUser/deleteUser/`;                                                // 删除员工/操作员 
+export const findUserByRoleId          = `/parkUser/findUserByRoleId/${parkId}/`;                                // 查找使用此角色的操作员
+export const findUserNumByDepartmentId = `/parkUser/findUserNumByDepartmentId/${parkId}/`;                       // 通过部门Id查找用户数量
+export const parkRoleList              = `/parkRole/parkRoleList?parkId                   = ${parkId}`           // 查询角色列表
+export const addOrUpdateParkRole       = `/parkRole/addOrUpdateParkRole`                                         // 添加或修改角色
+export const deleteParkRole            = `/parkRole/deleteParkRole/`;                                            // 删除角色
+export const parkInfoTreeList          = `/parkInfoTree/parkInfoTreeList?parkId           = ${parkId}&type = `;  // 获取组织架构树形结构
+export const deleteParkInfoTree        = `/parkInfoTree/deleteParkInfoTree/`;                                    // 删除组织结构/区域
+export const parkInfoTreeAddZoneInfo   = `/parkInfoTree/parkInfoTreeAddZoneInfo/${parkId}/`;                     // 查找组织架构所在区域信息
+export const addOrUpdateParkInfoTree   = `/parkInfoTree/addOrUpdateParkInfoTree`;                                // 添加或修改组织架构/区域
+export const sendMessage               = `/shortMessage/sendMessage`                                             // 发送短信
 
-export const housekeepingList = `/displayContent/housekeepingList?parkId=${parkId}`                             // 家政服务列表
-export const addOrUpdateDisplayContent = `/displayContent/addOrUpdateDisplayContent`                            // 添加或修改展示性信息
-export const crowdorderingApplication = `/propertyApplication/crowdorderingApplication?parkId=${parkId}`        // 拼单记录列表
-export const updatePropertyApplication = `/propertyApplication/updatePropertyApplication`                       // 修改物业拼单记录列表
-export const sharedResourceList = `/sharedResource/sharedResourceList?parkId=${parkId}`                         // 共享资源列表
-export const addOrUpdateSharedResource = `/sharedResource/addOrUpdateSharedResource`                            // 添加或修改共享资源对象
-export const deleteSharedResource = `/sharedResource/deleteSharedResource/`                                     // 删除共享资源对象
-export const sharedResourceReservationList = `/sharedResourceReservation/sharedResourceReservationList`         // 查询共享资源列表
-export const bookSharedResourceList = `/userTargetAssociation/bookSharedResourceList?parkId=${parkId}&type=USER_ORDER_SHARED_RESOURCE`          // 共享资源申请列表
-export const updateUserTargetAssociation = `/userTargetAssociation/updateUserTargetAssociation`                 // 修改共享资源申请列表
-export const addSharedResourceReservation = `/sharedResourceReservation/addSharedResourceReservation`           // 添加共享资源预定
-export const deleteSharedResourceReservation = `/sharedResourceReservation/deleteSharedResourceReservation/`    // 删除共享资源预定信息
-export const apartmentResourcesList = `/displayContent/apartmentResourcesList?parkId=${parkId}`                 // 公寓租赁列表
+export const housekeepingList                = `/displayContent/housekeepingList?parkId                      = ${parkId}`   // 家政服务列表
+export const addOrUpdateDisplayContent       = `/displayContent/addOrUpdateDisplayContent`                                  // 添加或修改展示性信息
+export const crowdorderingApplication        = `/propertyApplication/crowdorderingApplication?parkId         = ${parkId}`   // 拼单记录列表
+export const updatePropertyApplication       = `/propertyApplication/updatePropertyApplication`                             // 修改物业拼单记录列表
+export const sharedResourceList              = `/sharedResource/sharedResourceList?parkId                    = ${parkId}`   // 共享资源列表
+export const addOrUpdateSharedResource       = `/sharedResource/addOrUpdateSharedResource`                                  // 添加或修改共享资源对象
+export const deleteSharedResource            = `/sharedResource/deleteSharedResource/`                                      // 删除共享资源对象
+export const sharedResourceReservationList   = `/sharedResourceReservation/sharedResourceReservationList`                   // 查询共享资源列表
+export const bookSharedResourceList          = `/userTargetAssociation/bookSharedResourceList?parkId         = ${parkId}&type = USER_ORDER_SHARED_RESOURCE`          // 共享资源申请列表
+export const updateUserTargetAssociation     = `/userTargetAssociation/updateUserTargetAssociation`                         // 修改共享资源申请列表
+export const addSharedResourceReservation    = `/sharedResourceReservation/addSharedResourceReservation`                    // 添加共享资源预定
+export const deleteSharedResourceReservation = `/sharedResourceReservation/deleteSharedResourceReservation/`                // 删除共享资源预定信息
+export const apartmentResourcesList          = `/displayContent/apartmentResourcesList?parkId                = ${parkId}`   // 公寓租赁列表
 
 // 商务服务
-export const commerceCourseListByTime = `/commerceCourse/commerceCourseListByTime?parkId=${parkId}`                     // 预约管理列表
-export const addOrUpCommerceCourse = `/commerceCourse/addOrUpCommerceCourse?parkId=${parkId}`                           // 添加或修改上门预约课程
-export const deleteCommerceCourse = `/commerceCourse/deleteCommerceCourse/`                                             // 删除上门预约课程
-export const commerceCourseList = `/commerceCourseList/${parkId}`                                                       // 上门预约课程列表
-export const deleteUserTargetAssociation = `/userTargetAssociation/deleteUserTargetAssociation/`                        // 删除用户目标关联
-export const businessServerOrderHistoryList = `/userTargetAssociation/businessServerOrderHistoryList?parkId=${parkId}`  // 商务课程预约管理历史记录
+export const commerceCourseListByTime        = `/commerceCourse/commerceCourseListByTime?parkId              = ${parkId}`                     // 预约管理列表
+export const addOrUpCommerceCourse           = `/commerceCourse/addOrUpCommerceCourse?parkId                 = ${parkId}`                           // 添加或修改上门预约课程
+export const deleteCommerceCourse            = `/commerceCourse/deleteCommerceCourse/`                                             // 删除上门预约课程
+export const commerceCourseList              = `/commerceCourseList/${parkId}`                                                       // 上门预约课程列表
+export const deleteUserTargetAssociation     = `/userTargetAssociation/deleteUserTargetAssociation/`                        // 删除用户目标关联
+export const businessServerOrderHistoryList  = `/userTargetAssociation/businessServerOrderHistoryList?parkId = ${parkId}`  // 商务课程预约管理历史记录
 
-export const policyList = `/displayContent/policyList?parkId=${parkId}&type=政策解读`                                    // 查询政策解读
-export const PolicyServiceApplication = `/propertyApplication/serviceApplication?parkId=${parkId}&type=政务服务`         // 查询政策解读申请记录
-export const ITServiceApplication = `/propertyApplication/serviceApplication?parkId=${parkId}&type=IT服务`               // 查询IT服务申请记录
-export const TalentServiceApplication = `/propertyApplication/serviceApplication?parkId=${parkId}&type=人才服务`               // 查询IT服务申请记录
+export const policyList                      = `/displayContent/policyList?parkId                            = ${parkId}&type = 政策解读`         // 查询政策解读
+export const PolicyServiceApplication        = `/propertyApplication/serviceApplication?parkId               = ${parkId}&type = 政务服务`         // 查询政策解读申请记录
+export const ITServiceApplication            = `/propertyApplication/serviceApplication?parkId               = ${parkId}&type = IT服务`           // 查询IT服务申请记录
+export const TalentServiceApplication        = `/propertyApplication/serviceApplication?parkId               = ${parkId}&type = 人才服务`         // 查询IT服务申请记录
 
