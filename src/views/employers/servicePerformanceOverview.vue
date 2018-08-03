@@ -43,13 +43,13 @@
                         <div class="grid-content  ">
                             <div class="grid-title">本月热门高端活动</div>
                             <div class="content">
-                                <div style="width:100%;height:200px;padding:20px;box-sizing: border-box;">
+                                <div style="width:100%;height:260px;padding:20px;box-sizing: border-box;">
                                     <el-table :data="monthHotHighActivity" border>
                                         <el-table-column type="index" label="排名" align="center">
                                         </el-table-column>
-                                        <el-table-column prop="name" label="活动名称" align="center">
+                                        <el-table-column prop="title" label="活动名称" align="center">
                                         </el-table-column>
-                                        <el-table-column prop="address" label="报名人数" align="center">
+                                        <el-table-column prop="count" label="报名人数" align="center">
                                         </el-table-column>
                                     </el-table>
                                 </div>
@@ -60,13 +60,13 @@
                         <div class="grid-content  ">
                             <div class="grid-title">本月热门商务服务</div>
                             <div class="content">
-                                <div style="width:100%;height:200px;padding:20px;box-sizing: border-box;">
+                                <div style="width:100%;height:260px;padding:20px;box-sizing: border-box;">
                                     <el-table :data="monthHotBusinessService" border>
                                         <el-table-column type="index" label="排名" align="center">
                                         </el-table-column>
-                                        <el-table-column prop="name" label="活动名称" align="center">
+                                        <el-table-column prop="title" label="活动名称" align="center">
                                         </el-table-column>
-                                        <el-table-column prop="address" label="报名人数" align="center">
+                                        <el-table-column prop="count" label="报名人数" align="center">
                                         </el-table-column>
                                     </el-table>
                                 </div>
@@ -79,7 +79,7 @@
                         <div class="grid-content  ">
                             <div class="grid-title">近一周服务申请分布</div>
                             <div class="content">
-                                <div id="" style="width:100%;height:200px"></div>
+                                <div id="serviceDistributionChart" style="width:100%;height:200px"></div>
                             </div>
                         </div>
                     </el-col>
@@ -89,7 +89,7 @@
                         <div class="grid-content  ">
                             <div class="grid-title">本月高频受理服务</div>
                             <div class="content">
-                                <div id="" style="width:100%;height:200px"></div>
+                                <div id="MonthHighAcceptanceServiceChart" style="width:100%;height:350px"></div>
                             </div>
                         </div>
                     </el-col>
@@ -176,6 +176,91 @@
                         },
                     }]
                 },
+
+                serviceDistributionOption: {
+                    color: ['#ed7d31'],
+                    tooltip: {
+                        trigger: 'axis',
+                        axisPointer: { // 坐标轴指示器，坐标轴触发有效
+                            type: 'shadow' // 默认为直线，可选为：'line' | 'shadow'
+                        }
+                    },
+                    grid: {
+                        left: '5%',
+                        right: '5%',
+                        bottom: '10%',
+                        top: '10%',
+                        containLabel: true
+                    },
+                    xAxis: [{
+                        type: 'category',
+                        data: [],
+                        axisTick: {
+                            alignWithLabel: true
+                        }
+                    }],
+                    yAxis: [{
+                        type: 'value'
+                    }],
+                    series: [{
+                        name: '数量',
+                        type: 'bar',
+                        barWidth: '60%',
+                        data: [],
+                         label: {
+                            normal: {
+                                show: true,
+                                formatter: '{c}',
+                                position: 'top'
+                            },
+                        }
+                    }]
+                },
+
+                //  本月高频受理服务
+                MonthHighAcceptanceServiceOption: {
+                    color: ['#70ad47'],
+                    tooltip: {
+                        trigger: 'axis',
+                        axisPointer: {
+                            type: 'shadow'
+                        }
+                    },
+                    legend: {
+                        data: []
+                    },
+                    grid: {
+                        left: '5%',
+                        right: '5%',
+                        bottom: '10%',
+                        top: '10%',
+                        containLabel: true
+                    },
+                    xAxis: {
+                        type: 'value',
+                        axisLabel: {
+                            show: true,
+                            interval: 'auto',
+                            formatter: '{value}'
+                        },
+                    },
+                    yAxis: {
+                        type: 'category',
+                        data: []
+                    },
+                    series: [{
+                        name: '数量',
+                        type: 'bar',
+                        data: [],
+                        label: {
+                            normal: {
+                                show: true,
+                                formatter: '{c}',
+                                position: 'right'
+                            },
+                        }
+                    }]
+                },
             };
         },
         methods: {
@@ -223,13 +308,62 @@
             // 近一周服务申请分布
             getServiceDistribution() {
                 this.$get(this.url + 'serviceDistribution').then(res => {
-                    console.log(res)
+                    let xAxisData = [];
+                    let seriesData = [];
+                    for (let item of res.talentsServiceList) {
+                        xAxisData.push(item.subtype);
+                        seriesData.push(item.count);
+                    }
+                    for (let item of res.policyServiceList) {
+                        xAxisData.push(item.subtype);
+                        seriesData.push(item.count);
+                    }
+                    for (let item of res.ITServiceList) {
+                        xAxisData.push(item.subtype);
+                        seriesData.push(item.count);
+                    }
+                    for (let item of res.highActivityList) {
+                        xAxisData.push(item.subtype);
+                        seriesData.push(item.count);
+                    }
+                    for (let item of res.businessServiceList) {
+                        xAxisData.push(item.subtype);
+                        seriesData.push(item.count);
+                    }
+                    this.serviceDistributionOption.xAxis[0].data = xAxisData;
+                    this.serviceDistributionOption.series[0].data = seriesData;
+                    let serviceDistributionChart = echarts.init(document.getElementById(
+                        'serviceDistributionChart'));
+                    serviceDistributionChart.setOption(this.serviceDistributionOption);
+                    window.addEventListener("resize", serviceDistributionChart.resize);
                 });
             },
             // 本月高频受理服务
             getMonthHighAcceptanceService() {
                 this.$get(this.url + 'monthHighAcceptanceService').then(res => {
-                    console.log(res)
+                    let arr = res.rankList;
+                    let len = arr.length;
+                    for (let i = 0; i < len; i++) {
+                        for (let j = 0; j < len - 1 - i; j++) {
+                            if (arr[j].count > arr[j + 1].count) { //相邻元素两两对比
+                                let temp = arr[j + 1]; //元素交换
+                                arr[j + 1] = arr[j];
+                                arr[j] = temp;
+                            }
+                        }
+                    }
+                    let yAxisData = [];
+                    let seriesData = [];
+                    for (let i = 0; i < arr.length; i++) {
+                        yAxisData.push(arr[i].subtype);
+                        seriesData.push(arr[i].count);
+                    }
+                    this.MonthHighAcceptanceServiceOption.yAxis.data = yAxisData;
+                    this.MonthHighAcceptanceServiceOption.series[0].data = seriesData;
+                    let MonthHighAcceptanceServiceChart = echarts.init(document.getElementById(
+                        'MonthHighAcceptanceServiceChart'));
+                    MonthHighAcceptanceServiceChart.setOption(this.MonthHighAcceptanceServiceOption);
+                    window.addEventListener("resize", MonthHighAcceptanceServiceChart.resize);
                 });
             },
         },
