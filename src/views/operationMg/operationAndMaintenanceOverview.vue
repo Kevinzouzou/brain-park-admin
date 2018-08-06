@@ -28,7 +28,7 @@
                         <div class="grid-content equipmentStatusOverview">
                             <div class="grid-title">设备状态概况</div>
                             <div class="content">
-                                <div id="equipmentStatusOverviewChart" style="height:100%;width:100%;"></div>
+                                <div id="equipmentStatusOverviewChart" style="height: 370px;width:100%;"></div>
                             </div>
                         </div>
                     </el-col>
@@ -50,9 +50,34 @@
                         <div class="grid-content equipmentFailureDataStatistics">
                             <div class="grid-title">设备故障数据统计</div>
                             <div class="content">
-                                <div id="equipmentFailureDataStatisticsChart" style="height:100%;width:100%;"></div>
-                                <div>
-
+                                <div id="equipmentFailureDataStatisticsChart" style="height: 300px;width:100%;"></div>
+                                <div style="padding:20px">
+                                    <table class="tabel">
+                                        <tr>
+                                            <th>设备</th>
+                                            <th v-for="item in tableData.time">{{item}}</th>
+                                        </tr>
+                                        <tr>
+                                            <td>电梯</td>
+                                            <td v-for="item in tableData.elevatorList">{{item}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>空调</td>
+                                            <td v-for="item in tableData.airConditionList">{{item}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>消防设备</td>
+                                            <td v-for="item in tableData.fireFightingList">{{item}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>整体</td>
+                                            <td v-for="item in tableData.entiretyList">{{item}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>其他</td>
+                                            <td v-for="item in tableData.otherList">{{item}}</td>
+                                        </tr>
+                                    </table>
                                 </div>
                             </div>
                         </div>
@@ -75,6 +100,14 @@
                     total: 0,
                     todayFaul: 0,
                     todayFaulRate: 0,
+                },
+                tableData: {
+                    time: [],
+                    otherList: [],
+                    elevatorList: [],
+                    airConditionList: [],
+                    fireFightingList: [],
+                    entiretyList: []
                 },
                 // 设备状态概况
                 EquipmentStatusOverviewOption: {
@@ -307,6 +340,12 @@
             // 设备故障数据统计
             getEquipmentFaulStatistics() {
                 this.$get(this.url + 'equipmentFaulStatistics').then(res => {
+                    let tableDataTime = [];
+                    let otherList = [];
+                    let elevatorList = [];
+                    let airConditionList = [];
+                    let fireFightingList = [];
+                    let entiretyList = [];
                     let xAxisData = [];
                     let seriesData = [{
                             name: '其他',
@@ -340,24 +379,34 @@
                     ];
                     for (let i in res.otherList) {
                         seriesData[0].data.push(res.otherList[i].count);
+                        xAxisData.push(res.otherList[i].month);
+                        otherList.push(res.otherList[i].count);
+                        tableDataTime.push(res.otherList[i].month);
                     }
                     for (let i in res.elevatorList) {
                         seriesData[1].data.push(res.elevatorList[i].count);
-                        xAxisData.push(res.elevatorList[i].month);
+                        elevatorList.push(res.elevatorList[i].count);
                     }
                     for (let i in res.airConditionList) {
                         seriesData[2].data.push(res.airConditionList[i].count);
+                        airConditionList.push(res.airConditionList[i].count);
                     }
                     for (let i in res.fireFightingList) {
                         seriesData[3].data.push(res.fireFightingList[i].count);
+                        fireFightingList.push(res.fireFightingList[i].count);
                     }
                     for (let i in res.entiretyList) {
                         seriesData[4].data.push(res.entiretyList[i].count);
+                        entiretyList.push(res.entiretyList[i].count);
                     }
-
                     this.equipmentFailureDataStatisticsOption.series = seriesData;
                     this.equipmentFailureDataStatisticsOption.xAxis.data = xAxisData;
-
+                    this.tableData.time = tableDataTime;
+                    this.tableData.otherList = otherList;
+                    this.tableData.elevatorList = elevatorList;
+                    this.tableData.airConditionList = airConditionList;
+                    this.tableData.fireFightingList = fireFightingList;
+                    this.tableData.entiretyList = entiretyList;
                     let equipmentFailureDataStatisticsChart = echarts.init(document.getElementById(
                         'equipmentFailureDataStatisticsChart'));
                     equipmentFailureDataStatisticsChart.setOption(this.equipmentFailureDataStatisticsOption);
@@ -433,11 +482,7 @@
         }
     }
 
-    .equipmentStatusOverview {
-        .content {
-            height: 350px;
-        }
-    }
+
 
     .deviceTypeDistribution {
         .content {
@@ -445,9 +490,26 @@
         }
     }
 
-    .equipmentFailureDataStatistics {
-        .content {
-            height: 300px;
+    .tabel {
+        width: 100%;
+        text-align: center;
+        border-collapse: collapse;
+        border: 1px solid #ebeef5;
+        background: #fff;
+        tr {
+            th {
+                color: #606266;
+                padding: 12px 0;
+            }
+            td {
+                border: 1px solid #ebeef5;
+                padding: 12px 0;
+                min-width: 0;
+                box-sizing: border-box;
+                text-overflow: ellipsis;
+                vertical-align: middle;
+                position: relative;
+            }
         }
     }
 </style>
