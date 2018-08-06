@@ -39,7 +39,7 @@
                             </el-form>
                         </el-col>
                         <!--列表-->
-                        <el-table :data="topicList.slice((page-1)*pagesize,page*pagesize)" highlight-current-row v-loading="topicLoading" @selection-change="selsTopicChange"
+                        <el-table :data="topicList.slice((page-1)*pagesize,page*pagesize)" highlight-current-row v-loading="Loading" @selection-change="selsTopicChange"
                             style="width: 100%;">
                             <el-table-column type="selection" width="55">
                             </el-table-column>
@@ -101,7 +101,7 @@
                             </el-form>
                         </el-col>
                         <!--列表-->
-                        <el-table :data="cateList.slice((page-1)*pagesize,page*pagesize)" highlight-current-row v-loading="cateLoading" @selection-change="selsCateChange"
+                        <el-table :data="cateList.slice((page-1)*pagesize,page*pagesize)" highlight-current-row v-loading="Loading" @selection-change="selsCateChange"
                             style="width: 100%;">
                             <el-table-column type="selection" width="55">
                             </el-table-column>
@@ -141,7 +141,7 @@
                 </el-tab-pane>
                 <el-tab-pane label="留言管理" name="second">
                     <!--列表-->
-                    <el-table :data="msgList.slice((msgListPage-1)*msgListPageSize,msgListPage*msgListPageSize)" highlight-current-row v-loading="msgLoading"
+                    <el-table :data="msgList.slice((msgListPage-1)*msgListPageSize,msgListPage*msgListPageSize)" highlight-current-row v-loading="Loading"
                         style="width: 100%;">
                         <el-table-column prop="id" label="ID">
                         </el-table-column>
@@ -199,7 +199,7 @@
                             <img style="vertical-align: top;width:100px;margin-right:10px;border-radius: 6px;" v-for="item in detailList.addInfo.urlList"
                                 :src="item" @click="handlePictureCardPreview(item)">
                             <el-dialog :visible.sync="dialogVisible">
-                                <img width="100%" style="height: 100%;" :src="dialogImageUrl" alt="">
+                                <img width="100%" style="height: 100%;" :src="dialogImageUrl">
                             </el-dialog>
                         </el-col>
                     </el-row>
@@ -295,13 +295,12 @@
                     timeTopicValue: []
                 },
                 topicList: [],
-                topicLoading: false,
                 selectTopicArr: [], //列表选中列
                 activeBT: 'firstTips',
                 commentLists: [],
                 reportLists: [],
                 msgList: [],
-                msgLoading: false,
+                Loading: false,
                 detailList: {
                     id: "",
                     parkId: "",
@@ -326,15 +325,14 @@
                 },
                 category: '',
                 cateList: [],
-                cateLoading: false,
-                anCateSels: [], //类别管理列表选中项
+                anCateSels: [], // 类别管理列表选中项
                 anCateVisible: false,
                 anCateForm: {},
                 cateDic: {},
             }
         },
         methods: {
-            //编辑类别管理
+            // 编辑类别管理
             editAnCateSubmit() {
                 this.$refs.anCateForm.validate((valid) => {
                     if (valid) {
@@ -385,11 +383,11 @@
             },
             // 类别管理列表
             getCategory() {
-                this.cateLoading = true;
+                this.Loading = true;
                 this.$get(showDict + '话题')
                     .then((res) => {
                         this.cateList = res;
-                        this.cateLoading = false;
+                        this.Loading = false;
                     })
             },
             // 类别管理获取Pid
@@ -466,11 +464,11 @@
             },
             // 话题 列表数据
             getTopicList(url) {
-                this.topicLoading = true;
+                this.Loading = true;
                 this.$get(url)
                     .then((res) => {
                         this.topicList = res;
-                        this.topicLoading = false;
+                        this.Loading = false;
                     })
             },
             // 按条件模糊查询
@@ -488,11 +486,11 @@
             },
             // 获取留言列表
             getMsg() {
-                this.msgLoading = true;
+                this.Loading = true;
                 this.$get(subComs)
                     .then((res) => {
                         this.msgList = res;
-                        this.msgLoading = false;
+                        this.Loading = false;
                     })
             },
             //话题批量屏蔽
@@ -583,14 +581,14 @@
                 this.getSubComment(this.detailList.id);
                 this.getTipsOff(this.detailList.id);
             },
-            //获取留言
+            // 获取留言
             getSubComment(id) {
                 this.$get(subsUrl + id)
                     .then((res) => {
                         this.commentLists = res;
                     })
             },
-            //举报
+            // 举报
             getTipsOff(id) {
                 this.$get(tipsOffUrl + id)
                     .then((res) => {
@@ -609,31 +607,21 @@
                 this.page = val;
                 this.getTipsOff(this.detailList.id);
             },
-            //屏蔽
+            // 屏蔽
             msgDel: function (index, row) {
                 this.$confirm('确认删除该记录吗?', '提示', {
                     type: 'warning'
                 }).then(() => {
-                    this.msgLoading = true;
-                    let para = {
-                        id: row.id
-                    };
-                    let self = this;
-                    this.$del(delSubCom + para.id)
-                        .then(function (response) {
-                            self.msgLoading = false;
-                            self.$message({
+                    this.$del(delSubCom + row.id)
+                        .then( res=>{
+                            this.$message({
                                 message: '删除成功',
                                 type: 'success'
                             });
-                            self.getMsg();
+                            this.getMsg();
                         });
-                }).catch(() => {
-
-                });
+                }).catch(() => {});
             },
-
-
         },
         mounted() {
             this.getTopic();

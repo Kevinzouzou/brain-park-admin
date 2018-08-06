@@ -6,8 +6,10 @@
                     <el-col :span="24" justify="center">
                         <el-form :inline="true" :model="highFilters">
                             <el-form-item>
-                                <el-button type="primary" @click="cateMg">类别管理</el-button>
+                                <el-button type="primary" @click="cateMg">高端活动类别管理</el-button>
                                 <el-select v-model="highFilters.secCateValue" placeholder="请选择">
+                                    <el-option label="全部" value="">
+                                    </el-option>
                                     <el-option v-for="item in categoryList" :key="item.id" :label="item.name" :value="item.name">
                                     </el-option>
                                 </el-select>
@@ -31,7 +33,7 @@
                     <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
                         <el-form :inline="true">
                             <el-form-item>
-                                <el-button type="danger" @click="highActBatchRemove" :disabled="true">批量删除</el-button>
+                                <el-button type="danger" @click="highActBatchRemove">批量删除</el-button>
                             </el-form-item>
                             <el-form-item>
                                 <el-button type="primary" @click="highActAdd">新增</el-button>
@@ -39,7 +41,7 @@
                         </el-form>
                     </el-col>
                     <!--列表-->
-                    <el-table :data="highActList.slice((page-1)*pagesize,page*pagesize)" highlight-current-row v-loading="highActLoading" @selection-change="selsHighActChange"
+                    <el-table :data="highActList.slice((page-1)*pagesize,page*pagesize)" highlight-current-row v-loading="Loading" @selection-change="selsHighActChange"
                         style="width: 100%;">
                         <el-table-column type="selection" width="55">
                         </el-table-column>
@@ -72,17 +74,17 @@
                     </el-col>
                     <!--新增/编辑界面-->
                     <el-dialog :title="addEditTitle" :visible.sync="addEditVisible">
-                        <el-form :model="addEditForm" label-width="100px" ref="addEditForm">
+                        <el-form :model="addEditForm" label-width="100px" ref="addEditForm" :rules="addEditFormRules">
                             <el-row>
                                 <el-col :span="22">
-                                    <el-form-item label="标题：" required>
+                                    <el-form-item label="标题：" required prop="title">
                                         <el-input v-model="addEditForm.title" auto-complete="off"></el-input>
                                     </el-form-item>
                                 </el-col>
                             </el-row>
                             <el-row>
                                 <el-col :span="22">
-                                    <el-form-item label="类别：" required>
+                                    <el-form-item label="类别：" required prop="addInfo.subtype">
                                         <el-select v-model="addEditForm.addInfo.subtype" placeholder="请选择">
                                             <el-option v-for="item in categoryList" :key="item.id" :label="item.name" :value="item.name">
                                             </el-option>
@@ -102,7 +104,7 @@
                             </el-row>
                             <el-row>
                                 <el-col :span="22">
-                                    <el-form-item label="活动时间：" required>
+                                    <el-form-item label="活动时间：" required prop="actTimerValue">
                                         <el-date-picker v-model="addEditForm.actTimerValue" type="daterange" start-placeholder="开始日期" end-placeholder="结束日期" value-format="yyyy/MM/dd HH:mm:ss"
                                             :default-time="['00:00:00', '23:59:59']">
                                         </el-date-picker>
@@ -111,7 +113,7 @@
                             </el-row>
                             <el-row>
                                 <el-col :span="22">
-                                    <el-form-item label="活动地址：" required>
+                                    <el-form-item label="活动地址：" required prop="addInfo.location">
                                         <el-input v-model="addEditForm.addInfo.location" auto-complete="off"></el-input>
                                     </el-form-item>
                                 </el-col>
@@ -131,26 +133,37 @@
                     </el-dialog>
                     <!--报名-->
                     <el-dialog title="报名人员" :visible.sync="hASignsVisible" width="70%">
-                        <div>
-                            <span>活动标题：</span>
-                            <span>{{detailList.title}}</span>
-                        </div>
-                        <div>
-                            <span>活动时间：</span>
-                            <span>{{detailList.addInfo.startTime}}</span> ~
-                            <span>{{detailList.addInfo.endTime}}</span>
-                        </div>
-                        <el-table :data="hASignsData.slice((page-1)*pagesize,page*pagesize)">
-                            <el-table-column type="index" label="序号"></el-table-column>
-                            <el-table-column prop="addInfo.name" label="姓名"></el-table-column>
-                            <el-table-column prop="addInfo.enterprise" label="公司"></el-table-column>
-                            <el-table-column prop="addInfo.phone" label="手机"></el-table-column>
-                            <!-- <el-table-column prop="addInfo.gender" label="性别" :formatter="forSex"></el-table-column> -->
-                            <el-table-column prop="createTime" label="报名时间"></el-table-column>
-                        </el-table>
-                        <el-pagination class="el-pages" background @size-change="highActSizeChange" @current-change="highSignsCurChange" :page-sizes="[7,8,10,20]"
-                            :page-size="pagesize" layout="total,sizes, prev, pager, next, jumper" :current-page="page" :total="hASignsData.length">
-                        </el-pagination>
+                        <el-form :model="detailList" label-width="120px">
+                            <el-row>
+                                <el-col :span="22">
+                                    <el-form-item label="活动标题：" style="margin-bottom:0px;">
+                                        <span>{{detailList.title}}</span>
+                                    </el-form-item>
+                                </el-col>
+                                <el-col :span="22">
+                                    <el-form-item label="活动时间：">
+                                        <span>{{detailList.addInfo.timeStart}}</span> 至
+                                        <span>{{detailList.addInfo.timeEnd}}</span>
+                                    </el-form-item>
+                                </el-col>
+                            </el-row>
+                            <el-row>
+                                <el-col :span="22" :offset="1">
+                                    <el-table :data="hASignsData.slice((page-1)*pagesize,page*pagesize)">
+                                        <el-table-column type="index" label="序号"></el-table-column>
+                                        <el-table-column prop="addInfo.name" label="姓名"></el-table-column>
+                                        <el-table-column prop="addInfo.enterprise" label="公司"></el-table-column>
+                                        <el-table-column prop="addInfo.phone" label="手机"></el-table-column>
+                                        <!-- <el-table-column prop="addInfo.gender" label="性别" :formatter="forSex"></el-table-column> -->
+                                        <el-table-column prop="createTime" label="报名时间"></el-table-column>
+                                    </el-table>
+                                    <el-pagination class="el-pages" background @size-change="highActSizeChange" @current-change="highSignsCurChange" :page-sizes="[7,8,10,20]"
+                                        :page-size="pagesize" layout="total,sizes, prev, pager, next, jumper" :current-page="page"
+                                        :total="hASignsData.length">
+                                    </el-pagination>
+                                </el-col>
+                            </el-row>
+                        </el-form>
                     </el-dialog>
                 </el-tab-pane>
                 <el-tab-pane label="商务服务" name="second">
@@ -181,7 +194,7 @@
                                 <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
                                     <el-form :inline="true">
                                         <el-form-item>
-                                            <el-button type="danger" @click="comSerBatchRemove" :disabled="this.comSerSels.length===0">批量删除</el-button>
+                                            <el-button type="danger" @click="comSerBatchRemove">批量删除</el-button>
                                         </el-form-item>
                                         <el-form-item>
                                             <el-button type="primary" @click="comSerAdd">新增</el-button>
@@ -189,7 +202,7 @@
                                     </el-form>
                                 </el-col>
                                 <!--列表-->
-                                <el-table :data="comSerList.slice((page-1)*pagesize,page*pagesize)" highlight-current-row v-loading="comSerLoading" @selection-change="selsComSerChange"
+                                <el-table :data="comSerList.slice((page-1)*pagesize,page*pagesize)" highlight-current-row v-loading="Loading" @selection-change="selsComSerChange"
                                     style="width: 100%;">
                                     <el-table-column type="selection" width="55">
                                     </el-table-column>
@@ -413,16 +426,16 @@
                                 </el-row>
                                 <el-dialog title="新增课程" :visible.sync="ServiceCourseAddVisible">
                                     <el-row :gutter="20">
-                                        <el-form :model="ServiceCourseAddForm" label-width="160px" :rules="ServiceCourseAddFormRules" ref="ServiceCourseAddForm">
+                                        <el-form :model="ServiceCourseAddForm" label-width="120px" :rules="ServiceCourseAddFormRules" ref="ServiceCourseAddForm">
                                             <el-row :gutter="24">
-                                                <el-col :span="10">
+                                                <el-col :span="12">
                                                     <el-form-item label="课程名称：" prop="title">
                                                         <el-input v-model="ServiceCourseAddForm.title"></el-input>
                                                     </el-form-item>
                                                 </el-col>
                                             </el-row>
                                             <el-row>
-                                                <el-col :span="20">
+                                                <el-col :span="22">
                                                     <el-form-item label="课程详情：" prop="addInfo.themeContent">
                                                         <el-input style="width:100%" type="textarea" v-model="ServiceCourseAddForm.addInfo.themeContent"></el-input>
                                                     </el-form-item>
@@ -437,16 +450,16 @@
                                 </el-dialog>
                                 <el-dialog title="编辑课程" :visible.sync="ServiceCourseEditVisible">
                                     <el-row :gutter="20">
-                                        <el-form :model="ServiceCourseForm" label-width="160px" :rules="ServiceCourseAddFormRules" ref="ServiceCourseForm">
+                                        <el-form :model="ServiceCourseForm" label-width="120px" :rules="ServiceCourseAddFormRules" ref="ServiceCourseForm">
                                             <el-row :gutter="24">
-                                                <el-col :span="10">
+                                                <el-col :span="12">
                                                     <el-form-item label="课程名称：" prop="title">
                                                         <el-input v-model="ServiceCourseForm.title"></el-input>
                                                     </el-form-item>
                                                 </el-col>
                                             </el-row>
                                             <el-row>
-                                                <el-col :span="20">
+                                                <el-col :span="22">
                                                     <el-form-item label="课程详情：" prop="addInfo.themeContent">
                                                         <el-input style="width:100%" type="textarea" v-model="ServiceCourseForm.addInfo.themeContent"></el-input>
                                                     </el-form-item>
@@ -469,16 +482,16 @@
             <el-col :span="24" justify="center">
                 <el-form :inline="true" :model="categoryFilters">
                     <el-form-item>
-                        <span>快速添加分类：</span>
+                        <span>高端活动类别 快速添加：</span>
                     </el-form-item>
                     <el-form-item>
                         <el-input v-model="categoryFilters.addType" placeholder="添加类别"></el-input>
                     </el-form-item>
                     <el-form-item>
-                        <el-button type="primary" v-on:click="categoryAdd">添加</el-button>
+                        <el-button type="primary" @click="categoryAdd">添加</el-button>
                     </el-form-item>
                     <el-form-item class="pull-right">
-                        <el-button type="danger" @click="backToMainPage">返回</el-button>
+                        <el-button type="danger" @click="backToMainPage">返回高端活动</el-button>
                     </el-form-item>
                 </el-form>
             </el-col>
@@ -486,12 +499,12 @@
             <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
                 <el-form :inline="true">
                     <el-form-item>
-                        <el-button type="danger" @click="categoryBatchRemove" :disabled="this.categorySels.length===0">批量删除</el-button>
+                        <el-button type="danger" @click="categoryBatchRemove">批量删除</el-button>
                     </el-form-item>
                 </el-form>
             </el-col>
             <!--列表-->
-            <el-table :data="categoryList.slice((page-1)*pagesize,page*pagesize)" highlight-current-row v-loading="categoryLoading" @selection-change="selsCategoryChange"
+            <el-table :data="categoryList.slice((page-1)*pagesize,page*pagesize)" highlight-current-row v-loading="Loading" @selection-change="selsCategoryChange"
                 style="width: 100%;">
                 <el-table-column type="selection" width="55">
                 </el-table-column>
@@ -522,7 +535,7 @@
                 </el-form>
                 <div slot="footer" class="dialog-footer">
                     <el-button @click.native="categoryAEVisible = false">取消</el-button>
-                    <el-button type="primary" @click.native="editCategorySubmit" :loading="categoryAELoading">提交</el-button>
+                    <el-button type="primary" @click.native="editCategorySubmit">提交</el-button>
                 </div>
             </el-dialog>
         </div>
@@ -584,48 +597,49 @@
                         timeStart: "",
                     }
                 },
-                highActLabel: '',
+                addEditFormRules: {
+                    title: [{
+                        required: true,
+                        message: '请填写标题',
+                        trigger: 'blur'
+                    }],
+                    actTimerValue: [{
+                        required: true,
+                        message: '请选择活动时间',
+                        trigger: 'blur'
+                    }],
+                    addInfo: {
+                        subtype: [{
+                            required: true,
+                            message: '请选择类别',
+                            trigger: 'blur'
+                        }],
+                        location: [{
+                            required: true,
+                            message: '请选择活动地址',
+                            trigger: 'blur'
+                        }],
+                    }
+                },
                 highActList: [],
-                highActLoading: false,
+                Loading: false,
                 sels: [], //列表选中列
-
-                dialogHAImageUrl: '',
-                dialogHAVisible: false,
-                moreHAPicList: '',
-                ue: 'highActId',
                 highActContent: '',
                 hASignsVisible: false,
-                message: {
-                    title: '外交部:朝方关闭核试验场有助于政治解决半岛问题',
-                    startTime: '2018-01-02',
-                    endTime: '2018-02-03'
-                },
                 hASignsData: [],
                 activeSer: 'firstSer',
                 timeComSerValue: [],
-                timeBookingValue: [],
                 categoryFilters: {
                     addType: ''
                 },
-
                 commerSerFilters: {
                     searchTitle: '',
                     timeComSerValue: ''
                 },
-                bookingFilters: {
-                    searchTitle: '',
-                    timeBookingValue: []
-                },
                 categoryList: [],
-
                 comSerList: [],
-                bookingList: [],
-                categoryLoading: false,
-                comSerLoading: false,
                 categoryAEVisible: false,
                 commerSerAEVisible: false,
-                bookingVisible: false,
-                bookingInfoVisible: false,
                 categoryAEForm: {
                     name: ''
                 },
@@ -638,49 +652,31 @@
                         themeContent: ''
                     }
                 },
-                bookingAEForm: {
-                    title: '',
-                    activityTime: ''
-                },
-                categoryAELoading: false,
-                bookingAELoading: false,
-                imgInfoConList: [],
-                imgComSerList: [],
-                dialogComSerVisible: false,
-                dialogInfoConVisible: false,
-                dialogComSerImageUrl: '',
-                dialogInfoConImageUrl: '',
-                comSerContent: '',
                 categorySels: [], //类别管理列表选中项
                 comSerSels: [], //商务列表选中项
                 mainPageVisible: true,
                 secondPageVisible: false,
-                activeTopicName: 'first',
-                bookDialogList: {
-                    amTime: '2018-05-15 20:19',
-                    amCompany: '深圳一不留神有限公司',
-                    amPerson: '赵钱孙  ',
-                    amPhone: '13789729878',
-                    pmTime: '2018-05-15 20:19',
-                    pmCompany: '深圳一而再再而三有限公司',
-                    pmPerson: '周吴郑',
-                    pmPhone: '13789729878'
-                },
                 isEdit: false,
                 isEditId: '',
                 detailList: {
+                    id: "",
+                    parkId: "",
+                    type: "高端活动",
+                    title: "",
+                    detailUrl: "",
+                    thumbUrl: "",
+                    createTime: "",
                     addInfo: {
-                        publisher: {
-                            addInfo: {
-                                nickName: '',
-                                avatarUrl: ''
-                            }
-                        },
-                        addInfo: {
-                            startTime: '',
-                            endTime: ''
-                        }
-                    }
+                        timeEnd: "",
+                        lookUpNum: 0,
+                        timeStart: "",
+                        subtype: "",
+                        themeContent: "",
+                        location: ""
+                    },
+                    isEnabled: 1,
+                    deleted: 1,
+                    applyNum: 0
                 },
                 // 商务服务-预约管理
                 selectWeek: '本周',
@@ -779,49 +775,200 @@
         },
 
         methods: {
-            handleClick(tab, event) {
+            // 高端活动页面----------开始
+
+            // 高端活动 类别管理获取Pid
+            getCateDic() {
+                this.$get(findDic + '高端活动').then(res => {
+                    this.cateDic = res[0];
+                });
+            },
+            // 高端活动 类别管理列表
+            getCategory() {
+                this.Loading = true;
+                this.$get(showDict + '高端活动').then(res => {
+                    this.categoryList = res;
+                    this.Loading = false;
+                });
+            },
+            // 高端活动 类别管理显示编辑界面
+            categoryEdit(index, row) {
+                this.categoryAEVisible = true;
+                this.categoryAEForm = row;
+            },
+            // 类别管理列表删除
+            categoryDel(index, row) {
+                this.$confirm('确认删除该记录吗?', '提示', {
+                        type: 'warning'
+                    })
+                    .then(() => {
+                        this.$del(deleteDict + row.id).then(res => {
+                            this.$message({
+                                message: '删除成功',
+                                type: 'success'
+                            });
+                            this.getCategory();
+                        });
+                    })
+                    .catch(() => {});
+            },
+            // 高端活动类别批量选择
+            selsCategoryChange(val) {
+                this.categorySels = val;
+            },
+            // 类别管理批量删除
+            categoryBatchRemove() {
+                if (this.categorySels.length === 0) {
+                    this.$message({
+                        message: '请先选择类别',
+                        type: 'info'
+                    });
+                } else {
+                    this.$confirm('确认删除选中的类别？', '提示', {
+                        type: 'warning'
+                    }).then(() => {
+                        for (let i of this.categorySels) {
+                            this.$del(deleteDict + i.id).then(res => {
+                                this.$notify({
+                                    title: '成功',
+                                    message: `已删除"${i.name}"类别`,
+                                    type: 'success'
+                                });
+                                this.getCateDic();
+                                this.getCategory();
+                            });
+                        }
+                    }).catch(() => {});
+                }
+
+            },
+            // 类别管理分页
+            categoryCurrentChange(val) {
+                this.page = val;
+                this.getCategory();
+            },
+            // 打开新增高端活动弹框
+            highActAdd() {
+                this.addEditForm = {
+                    title: '',
+                    thumbUrl: '',
+                    timeValue: '',
+                    actTimerValue: [],
+                    addInfo: {
+                        location: "",
+                        subtype: "",
+                        themeContent: "",
+                        timeEnd: "",
+                        timeStart: "",
+                    }
+                };
+                this.addEditTitle = '新增';
+                this.isEdit = false;
+                this.highActContent = '';
+                this.addEditVisible = true;
+                if (this.$refs.addEditForm !== undefined) this.$refs.addEditForm.resetFields();
+            },
+            // 高端活动图片上传
+            HighActImgUpload(res, file, fileList) {
+                this.addEditForm.thumbUrl = res.responseList.url;
+            },
+            // 新增或修改高端活动
+            addHighActSubmit() {
+                this.$refs.addEditForm.validate(valid => {
+                    if (valid) {
+                        if (this.addEditForm.thumbUrl === '') {
+                            this.$message({
+                                message: '请上传图片',
+                                type: 'error'
+                            });
+                        } else if (this.addEditForm.addInfo.themeContent === '') {
+                            this.$message({
+                                message: '请填写详细介绍',
+                                type: 'error'
+                            });
+                        } else {
+                            let data = {
+                                type: '高端活动',
+                                parkId: localStorage.getItem('parkId'),
+                                thumbUrl: this.addEditForm.thumbUrl,
+                                title: this.addEditForm.title,
+                                addInfo: {
+                                    subtype: this.addEditForm.addInfo.subtype,
+                                    themeContent: this.addEditForm.addInfo.themeContent,
+                                    location: this.addEditForm.addInfo.location,
+                                    timeStart: this.addEditForm.actTimerValue[0],
+                                    timeEnd: this.addEditForm.actTimerValue[1]
+                                }
+                            };
+                            if (this.isEdit) {
+                                data.id = this.isEditId;
+                            }
+                            this.$post(addDisplay, data).then(res => {
+                                this.$message({
+                                    message: '提交成功',
+                                    type: 'success'
+                                });
+                                this.$refs.addEditForm.resetFields();
+                                this.addEditVisible = false;
+                                this.getHighActivity();
+                            });
+                        }
+                    }
+                });
+            },
+
+            // 打开高端活动-类别管理
+            cateMg() {
+                this.mainPageVisible = false;
+                this.secondPageVisible = true;
                 this.page = 1;
             },
-            // 高端活动类别管理添加
-            categoryAdd() {
-                this.categoryLoading = true;
-                let data = {
-                    parkId: localStorage.getItem('parkId'),
-                    name: this.categoryFilters.addType,
-                    code: this.cateDic.code + '.' + this.categoryFilters.addType,
-                    pid: this.cateDic.id,
-                    pname: this.cateDic.name,
-                    addInfo: {}
-                };
-                this.$post(addDict, data).then(res => {
-                    this.categoryLoading = false;
-                    this.getCategory();
-                });
-                this.categoryFilters.addType = '';
+            // 返回高端活动
+            backToMainPage() {
+                this.mainPageVisible = true;
+                this.secondPageVisible = false;
+                this.page = 1;
             },
-            // 编辑类别管理
-            editCategorySubmit: function () {
-                this.$confirm('确认提交吗？', '提示', {}).then(() => {
-                    this.categoryAELoading = true;
-                    let data = {
-                        parkId: localStorage.getItem('parkId'),
-                        name: this.categoryAEForm.name,
-                        code: this.cateDic.code +
-                            '.' +
-                            this.categoryAEForm.name,
-                        pid: this.cateDic.id,
-                        pname: this.cateDic.name,
-                        id: this.categoryAEForm.id,
-                        addInfo: {}
-                    };
-                    this.$post(addDict, data).then(res => {
-                        this.categoryAELoading = false;
-                        this.categoryAEVisible = false;
-                        this.getCategory();
-                    });
+
+            // 获取高端活动列表
+            getHighActivity() {
+                this.getHighActList(showDisplay + '高端活动');
+            },
+
+            // 获取高端活动列表数据
+            getHighActList(url) {
+                this.Loading = true;
+                this.$get(url).then(res => {
+                    this.highActList = res;
+                    this.Loading = false;
                 });
             },
-            //   商务服务图片上传
+            // 高端活动列表 条件查询
+            getQueryHighAct() {
+                let type = '高端活动';
+                let url = showDisplay + type;
+                let startTime = this.highFilters.timeValue[0];
+                let endTime = this.highFilters.timeValue[1];
+                let subType = this.highFilters.secCateValue;
+                let title = this.highFilters.searchTitle;
+                url =
+                    startTime === undefined ?
+                    url + '' :
+                    url + '&startTime=' + startTime;
+                url =
+                    endTime === undefined ?
+                    url + '' :
+                    url + '&endTime=' + endTime;
+                url = title === '' ? url + '' : url + '&title=' + title;
+                url = subType === '' ? url + '' : url + '&subType=' + subType;
+                this.getHighActList(url);
+                // this.highFilters = {
+                //     secCateValue: '',
+                //     timeValue: [],
+                //     searchTitle: ''
+                // };
+            },
+            // 商务服务图片上传
             uploadComSer(res, file, fileList) {
                 this.comSerAEForm.thumbUrl = res.responseList.url;
             },
@@ -859,43 +1006,127 @@
                     }
                 });
             },
-            // 分页
-            selsCategoryChange(val) {
-                this.categorySels = val;
+            // 高端活动 打开编辑界面
+            hAedit(index, row) {
+                if (this.$refs.addEditForm !== undefined) this.$refs.addEditForm.resetFields();
+                this.addEditTitle = '编辑';
+                this.isEditId = row.id;
+                this.isEdit = true;
+                this.addEditVisible = true;
+                this.addEditForm = publicFunction.deepCopy(this.addEditForm, row);
+                let arr = [];
+                arr.push(row.addInfo.timeStart);
+                arr.push(row.addInfo.timeEnd);
+                this.addEditForm.actTimerValue = arr;
             },
-            selsComSerChange(val) {
-                this.comSerSels = val;
+            // 删除高端活动
+            hADel(index, row) {
+                this.$confirm('确认删除该记录吗?', '提示', {
+                        type: 'warning'
+                    })
+                    .then(() => {
+                        this.$del(deleteDisplay + row.id).then(res => {
+                            this.$message({
+                                message: '删除成功',
+                                type: 'success'
+                            });
+                            this.getHighActivity();
+                        });
+                    })
+                    .catch(() => {});
             },
-            // 类别管理分页
-            categoryCurrentChange(val) {
-                this.page = val;
-                this.getCategory();
-            },
-            // 商务服务分页
-            comSerCurrentChange(val) {
-                this.page = val;
-                this.getComSer();
-            },
-            // 高端活动 类别管理获取Pid
-            getCateDic() {
-                this.$get(findDic + '高端活动').then(res => {
-                    this.cateDic = res[0];
-                });
-            },
-            // 高端活动 类别管理列表
-            getCategory() {
-                let pname = '高端活动';
-                let url = '/api/dict/dictList/' + pname;
-                this.categoryLoading = true;
-                this.$get(showDict + pname).then(res => {
-                    this.categoryList = res;
 
-                    this.categoryLoading = false;
+            // 高端活动复选框
+            selsHighActChange(val) {
+                this.sels = val;
+            },
+            //高端活动批量删除
+            highActBatchRemove() {
+                if (this.sels.length === 0) {
+                    this.$message({
+                        message: '请先选择高端活动',
+                        type: 'info'
+                    });
+                } else {
+                    this.$confirm('确认删除选中的高端活动？', '提示', {
+                        type: 'warning'
+                    }).then(() => {
+                        for (let i of this.sels) {
+                            this.$del(deleteDisplay + i.id).then(res => {
+                                this.$notify({
+                                    title: '成功',
+                                    message: `已删除"${i.title}"活动`,
+                                    type: 'success'
+                                });
+                                this.getHighActivity();
+                            });
+                        }
+                    }).catch(() => {});
+                }
+            },
+            // 高端活动报名弹框
+            hASigns(index, row) {
+                this.hASignsVisible = true;
+                this.detailList = publicFunction.deepCopy(this.detailList, row);
+                this.getHighSigns(row.id);
+            },
+            //高端活动获取报名人员列表
+            getHighSigns(id) {
+                this.$get(userTarget + id).then(res => {
+                    this.hASignsData = res;
                 });
             },
+            // 高端活动类别管理添加
+            categoryAdd() {
+                if (this.categoryFilters.addType === '') {
+                    this.$message({
+                        message: '请先填写类别名称',
+                        type: 'error'
+                    });
+                } else {
+                    let data = {
+                        parkId: localStorage.getItem('parkId'),
+                        name: this.categoryFilters.addType,
+                        code: this.cateDic.code + '.' + this.categoryFilters.addType,
+                        pid: this.cateDic.id,
+                        pname: this.cateDic.name,
+                        addInfo: {}
+                    };
+                    this.$post(addDict, data).then(res => {
+                        this.getCategory();
+                        this.$message({
+                            message: '添加成功',
+                            type: 'success'
+                        });
+                    });
+                    this.categoryFilters.addType = '';
+                }
+            },
+            // 编辑类别管理
+            editCategorySubmit: function () {
+                this.$confirm('确认提交吗？', '提示', {}).then(() => {
+                    let data = {
+                        parkId: localStorage.getItem('parkId'),
+                        name: this.categoryAEForm.name,
+                        code: this.cateDic.code +
+                            '.' +
+                            this.categoryAEForm.name,
+                        pid: this.cateDic.id,
+                        pname: this.cateDic.name,
+                        id: this.categoryAEForm.id,
+                        addInfo: {}
+                    };
+                    this.$post(addDict, data).then(res => {
+                        this.categoryAEVisible = false;
+                        this.getCategory();
+                    });
+                });
+            },
+            // 高端活动页面----------结束
+            // 商务服务页面----------开始
+
             // 商务服务模糊查询
             getQueryCommer() {
-                console.log(this.commerSerFilters);
                 let type = '商务服务';
                 let url = showDisplay + type;
                 if (this.commerSerFilters.timeComSerValue !== null && this.commerSerFilters.timeComSerValue !== '') {
@@ -920,20 +1151,14 @@
             },
             //  商务服务列表数据
             getComSerList(url) {
-                this.comSerLoading = true;
+                this.Loading = true;
                 this.$get(url).then(res => {
                     this.comSerList = res;
-                    this.comSerLoading = false;
+                    this.Loading = false;
                 });
             },
-            //类别管理显示编辑界面
-            categoryEdit(index, row) {
-                this.categoryAEVisible = true;
-                this.categoryAEForm = Object.assign({}, row);
-            },
-            //显示商务服务新增界面
+            // 显示商务服务新增界面
             comSerAdd() {
-                if (this.$refs.upload2 !== undefined) this.$refs.upload2.clearFiles();
                 this.addEditTitle = '新增';
                 this.commerSerAEVisible = true;
                 this.comSerAEForm = {
@@ -945,7 +1170,7 @@
                     }
                 };
             },
-            //显示商务服务编辑界面
+            // 显示商务服务编辑界面
             comSerEdit(index, row) {
                 this.comSerAEForm = {
                     id: '',
@@ -963,33 +1188,15 @@
                 this.commerSerAEVisible = true;
                 this.comSerAEForm = publicFunction.deepCopy(this.comSerAEForm, row);
             },
-            // 类别管理列表删除
-            categoryDel(index, row) {
-                this.$confirm('确认删除该记录吗?', '提示', {
-                        type: 'warning'
-                    })
-                    .then(() => {
-                        this.$del(deleteDict + row.id).then(res => {
-                            this.$message({
-                                message: '删除成功',
-                                type: 'success'
-                            });
-                            this.getCategory();
-                        });
-                    })
-                    .catch(() => {});
-            },
-
-
             //删除商务服务
             comSerDel(index, row) {
                 this.$confirm('确认删除该记录吗?', '提示', {
                         type: 'warning'
                     })
                     .then(() => {
-                        this.comSerLoading = true;
+                        this.Loading = true;
                         this.$del(deleteDisplay + row.id).then(res => {
-                            this.comSerLoading = false;
+                            this.Loading = false;
                             this.$message({
                                 message: '删除成功',
                                 type: 'success'
@@ -999,14 +1206,45 @@
                     })
                     .catch(() => {});
             },
+            // 商务服务批量选择
+            selsComSerChange(val) {
+                this.comSerSels = val;
+            },
+            // 商务服务批量删除
+            comSerBatchRemove() {
+                if (this.comSerSels.length === 0) {
+                    this.$message({
+                        message: '请先选择商务服务',
+                        type: 'info'
+                    });
+                } else {
+                    this.$confirm('确认删除选中的商务服务？', '提示', {
+                        type: 'warning'
+                    }).then(() => {
+                        for (let i of this.comSerSels) {
+                            this.$del(deleteDisplay + i.id).then(res => {
+                                this.$notify({
+                                    title: '成功',
+                                    message: `已删除"${i.title}"商务服务`,
+                                    type: 'success'
+                                });
+                                this.getComSer();
+                            });
+                        }
+                    }).catch(() => {});
+                }
+            },
 
-            // 类别管理批量删除
-            categoryBatchRemove() {},
+            // 商务服务分页
+            comSerCurrentChange(val) {
+                this.page = val;
+                this.getComSer();
+            },
+            // 商务服务页面----------结束
 
-            // 商务批量删除
-            comSerBatchRemove() {},
-
-
+            handleClick(tab, event) {
+                this.page = 1;
+            },
 
             //性别显示转换
             forSex(row, column) {
@@ -1014,189 +1252,7 @@
                     '男' :
                     (row.addInfo.userInfo.addInfo.gender == 2 ? '女' : '未知');
             },
-
-            // 高端活动图片上传
-            HighActImgUpload(res, file, fileList) {
-                this.addEditForm.thumbUrl = res.responseList.url;
-            },
-
-            // 新增或修改高端活动
-            addHighActSubmit: function () {
-                this.$refs.addEditForm.validate(valid => {
-                    if (valid) {
-                        this.$confirm('确认提交吗？', '提示', {}).then(() => {
-                            let data = {
-                                type: '高端活动',
-                                parkId: localStorage.getItem('parkId'),
-                                thumbUrl: this.addEditForm.thumbUrl,
-                                title: this.addEditForm.title,
-                                addInfo: {
-                                    subtype: this.addEditForm.addInfo.subtype,
-                                    themeContent: this.addEditForm.addInfo.themeContent,
-                                    location: this.addEditForm.addInfo.location,
-                                    timeStart: this.addEditForm.actTimerValue[0],
-                                    timeEnd: this.addEditForm.actTimerValue[1]
-                                }
-                            };
-                            if (this.isEdit) {
-                                data.id = this.isEditId;
-                            }
-                            this.$post(addDisplay, data).then(res => {
-                                this.$message({
-                                    message: '提交成功',
-                                    type: 'success'
-                                });
-                                this.addEditVisible = false;
-                                this.getHighActivity();
-                            });
-                        });
-                    }
-                });
-            },
-            // 打开新增高端活动弹框
-            highActAdd() {
-                this.addEditForm = {
-                    title: '',
-                    thumbUrl: '',
-                    timeValue: '',
-                    actTimerValue: [],
-                    addInfo: {
-                        location: "",
-                        subtype: "",
-                        themeContent: "",
-                        timeEnd: "",
-                        timeStart: "",
-                    }
-                };
-                if (this.$refs.upload !== undefined) this.$refs.upload.clearFiles();
-                this.addEditTitle = '新增';
-                this.isEdit = false;
-                this.moreHAPicList = '';
-                this.highActContent = '';
-                this.addEditVisible = true;
-            },
-            // 打开类别管理
-            cateMg() {
-                this.mainPageVisible = false;
-                this.secondPageVisible = true;
-                this.page = 1;
-            },
-            // 返回高端活动
-            backToMainPage() {
-                this.mainPageVisible = true;
-                this.secondPageVisible = false;
-                this.page = 1;
-            },
-            //高端活动列表 条件查询
-            getQueryHighAct() {
-                let type = '高端活动';
-                let url = showDisplay + type;
-                let startTime = this.highFilters.timeValue[0];
-                let endTime = this.highFilters.timeValue[1];
-                let subType = this.highFilters.secCateValue;
-                let title = this.highFilters.searchTitle;
-                url =
-                    startTime === undefined ?
-                    url + '' :
-                    url + '&startTime=' + startTime;
-                url =
-                    endTime === undefined ?
-                    url + '' :
-                    url + '&endTime=' + endTime;
-                url = title === '' ? url + '' : url + '&title=' + title;
-                url = subType === '' ? url + '' : url + '&subType=' + subType;
-                this.getHighActList(url);
-                // this.highFilters = {
-                //     secCateValue: '',
-                //     timeValue: [],
-                //     searchTitle: ''
-                // };
-            },
-            // 获取高端活动列表
-            getHighActivity() {
-                let type = '高端活动';
-                this.getHighActList(showDisplay + type);
-            },
-
-            // 获取高端活动列表数据
-            getHighActList(url) {
-                this.highActLoading = true;
-                this.$get(url).then(res => {
-                    this.highActList = res;
-                    this.highActLoading = false;
-                });
-            },
-            // 高端活动复选框
-            selsHighActChange(val) {
-                this.sels = val;
-            },
-            // 显示高端活动编辑界面
-            hAedit(index, row) {
-                this.addEditTitle = '编辑';
-                this.isEditId = row.id;
-                this.isEdit = true;
-                this.addEditVisible = true;
-                this.addEditForm = publicFunction.deepCopy(this.addEditForm, row);
-                let arr = [];
-                arr.push(row.addInfo.timeStart);
-                arr.push(row.addInfo.timeEnd);
-                this.addEditForm.actTimerValue = arr;
-                console.log(JSON.stringify(this.addEditForm))
-            },
-            // 删除高端活动
-            hADel(index, row) {
-                this.$confirm('确认删除该记录吗?', '提示', {
-                        type: 'warning'
-                    })
-                    .then(() => {
-                        this.highActLoading = true;
-                        this.$del(deleteDisplay + row.id).then(res => {
-                            this.highActLoading = false;
-                            this.$message({
-                                message: '删除成功',
-                                type: 'success'
-                            });
-                            this.getHighActivity();
-                        });
-                    })
-                    .catch(() => {});
-            },
-            // 高端活动报名弹框
-            hASigns(index, row) {
-                this.hASignsVisible = true;
-                this.detailList = row;
-                this.getHighSigns(row.id);
-            },
-            //高端活动 报名人员列表
-            getHighSigns(id) {
-                this.$get(userTarget + id).then(res => {
-                    this.hASignsData = res;
-                });
-            },
-            //高端活动批量删除
-            highActBatchRemove: function () {
-                if (this.sels.length === 0) {
-                    this.$message({
-                        message: '请先选择高端活动',
-                        type: 'info'
-                    });
-                } else {
-                    this.$confirm('确认删除选中的高端活动？', '提示', {
-                        type: 'warning'
-                    }).then(() => {
-                        for (let i of this.sels) {
-                            this.$del(deleteDisplay + i.id).then(res => {
-                                this.$notify({
-                                    title: '成功',
-                                    message: `已删除"${i.title}"活动`,
-                                    type: 'success'
-                                });
-                                this.getHighActivity();
-                            });
-                        }
-                    }).catch(() => {});
-                }
-            },
+            // 分页
             highActSizeChange(val) {
                 this.pagesize = val;
             },
@@ -1207,10 +1263,6 @@
             highSignsCurChange(val) {
                 this.page = val;
                 this.getHighSigns();
-            },
-            // 重置表单
-            resetForm(formName) {
-                this.$refs[formName].resetFields();
             },
             // 获取当前一周/下周/后周时间
             getWeek() {
@@ -1327,7 +1379,7 @@
                     this.getServiceCourse(); // 获取服务课程
                 });
             },
-            // 添加或修改上门预约课程
+            // 预约管理-添加或修改上门预约课程
             addOrUpCommerceCourse(item) {
                 for (let i = 0; i < this.ServiceCourseOption.length; i++) {
                     if (item.addInfo.title === this.ServiceCourseOption[i].title) {
@@ -1366,7 +1418,7 @@
                     });
                 }
             },
-            // 预约状态查看
+            // 预约管理-预约状态查看
             CommerceCourseStateCheck(item) {
                 this.ScheduledStateVisible = true;
                 this.CommerceCourseState = publicFunction.deepCopy(
@@ -1374,7 +1426,7 @@
                     item
                 );
             },
-            // 删除预定企业
+            // 预约管理-删除预定企业
             deleteUserTarget(index, row) {
                 this.$confirm('确认删除该目标用户的预定状态?', '提示', {
                         confirmButtonText: '确定',
@@ -1400,11 +1452,12 @@
                         });
                     });
             },
-            // 查看历史纪录
+            // 预约管理-查看历史纪录
             viewHistory() {
                 this.HistoryContentShow = true;
                 this.getHistoryContent();
             },
+            // 预约管理-获取历史纪录
             getHistoryContent() {
                 let url = businessServerOrderHistoryList + `&type=USER_ORDER_COMMERCE_COURSE`;
                 let selection = this.HistoryContentFilters.selection === '' ? '' :
@@ -1419,16 +1472,18 @@
                 }
                 this.businessServerOrderHistoryList(url);
             },
-            // 获取历史纪录列表
+            // 预约管理-获取历史纪录列表
             businessServerOrderHistoryList(url) {
                 this.$get(url).then(res => {
                     this.HistoryList = res;
                     this.HistoryListTotal = res.length;
                 })
             },
+            // 预约管理-历史纪录列表分页
             HistoryListSizeChange(val) {
                 this.HistoryListPagesize = val;
             },
+            // 预约管理-历史纪录列表分页
             HistoryListCurrentChange(val) {
                 this.HistoryListPage = val;
                 this.getHistoryContent();

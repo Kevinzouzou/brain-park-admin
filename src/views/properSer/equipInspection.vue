@@ -49,18 +49,18 @@
                         </el-table-column>
                         <el-table-column prop="state" label="状态" sortable>
                         </el-table-column>
-                        <el-table-column prop="addInfo.inspector" label="巡检员" sortable>
+                        <el-table-column prop="userInfo.addInfo.name" label="巡检员" sortable>
                         </el-table-column>
-                        <el-table-column prop="addInfo.lastInspectTime" label="最近巡检时间" sortable>
+                        <el-table-column prop="recentInspectDate" label="最近巡检时间" sortable>
                         </el-table-column>
-                        <el-table-column prop="addInfo.doneState" label="完成状况" sortable>
+                        <el-table-column prop="completeState" label="完成状况" sortable>
                         </el-table-column>
                         <el-table-column label="操作">
                             <template slot-scope="scope">
                                 <el-button type="success" size="small" @click="detailEdit(scope.$index, scope.row)">
                                     {{scope.row.addInfo.state==='停用'?'详情':'详情 / 编辑'}}
                                 </el-button>
-                                <el-button type="info" size="small" @click="historyRecord(scope.$index, scope.row)">历史记录</el-button>
+                                <el-button type="primary" size="small" @click="historyRecord(scope.$index, scope.row)">历史记录</el-button>
                             </template>
                         </el-table-column>
                     </el-table>
@@ -124,13 +124,13 @@
                         </el-table-column>
                         <el-table-column prop="createTime" label="创建日期" sortable>
                         </el-table-column>
-                        <el-table-column prop="addInfo.executeNum" label="已执行次数" sortable>
+                        <el-table-column prop="alreadyInspectTime" label="已执行次数" sortable>
                         </el-table-column>
                         <el-table-column label="操作">
                             <template slot-scope="scope">
                                 <el-button type="success" size="small" @click="routeEdit(scope.$index, scope.row)">编辑</el-button>
                                 <el-button type="info" size="small" @click="enableOrdisable(scope.$index, scope.row)" :disabled="scope.row.state==='故障' || scope.row.state==='报废'">
-                                    {{scope.row.addInfo.state==='停用'?'启用':'停用'}}
+                                    {{scope.row.state==='停用'?'启用':'停用'}}
                                 </el-button>
                                 <el-button type="danger" size="small" @click="routeDel(scope.$index, scope.row)">删除</el-button>
                             </template>
@@ -181,7 +181,8 @@
         </div>
         <div v-show="detailPage">
             <div style="text-align: right;">
-                <el-button type="danger" @click="backMainPage">返回</el-button>
+                <el-button v-show="!inspectHisView" type="danger" @click="backMainPage">返回</el-button>
+                <el-button v-show="inspectHisView" type="danger" @click="backHisPage">返回</el-button>
             </div>
             <el-form label-width="90px" class="inView">
                 <el-form-item label="巡检路线：">
@@ -198,10 +199,13 @@
                         <span v-if="detailList.cycle" v-for="item in detailList.cycle.split(',')" :key="item">{{week[item] || '无数据'}} </span>
                     </span>
                 </el-form-item>
-                <el-form-item label="最近巡检：">
-                    {{detailList.addInfo.lastInspectTime || '无数据'}}
+                <el-form-item v-show="!inspectHisView" label="最近巡检：">
+                    {{detailList.recentInspectDate || '无数据'}} {{detailList.completeState || '完成状况无数据'}}
                 </el-form-item>
-                <el-form-item label="巡检人："  class="allWid">
+                <el-form-item v-show="inspectHisView" label="巡检任务：">
+                    {{hisInspectDate || '无数据'}} {{hisCompleteState || '完成状况无数据'}}
+                </el-form-item>
+                <el-form-item v-show="!inspectHisView" label="巡检人：" class="allWid">
                     <el-select v-model="detailList.addInfo.department" disabled>
                         <el-option v-for="item in departList" :key="item.id" :label="item.name" :value="item.name">
                         </el-option>
@@ -210,11 +214,16 @@
                         <el-option v-for="item in groupList" :key="item.id" :label="item.name" :value="item.name">
                         </el-option>
                     </el-select>
-                    <el-select v-model="detailList.addInfo.inspector" :disabled="detailList.addInfo.state==='停用'?true:false" placeholder="请选择">
-                        <el-option v-for="item in personList" :key="item.id" :label="item.name" :value="item.name">
+                    <el-select v-model="detailList.userInfo.addInfo.name" :disabled="detailList.state==='停用'?true:false" placeholder="请选择" @change="personChoice">
+                        <el-option v-for="item in personList" :key="item.id" :label="item.addInfo.name" :value="item.id">
                         </el-option>
                     </el-select>
                     <el-button type="primary" v-show="changeMember" style="margin-left: 15px" @click.native="saveChangeMem">保存</el-button>
+                </el-form-item>
+                <el-form-item v-show="inspectHisView" label="巡检人：" class="allWid">
+                    {{detailList.addInfo.department}}
+                    {{detailList.addInfo.group}}
+                    {{recordUserName}}
                 </el-form-item>
             </el-form>
             <el-col :span="24" class="toolbar" justify="center">
@@ -232,17 +241,17 @@
             <el-table :data="inspectResultList.slice((page-1)*pagesize,page*pagesize)" highlight-current-row v-loading="inspectResultLoading" style="width: 100%;">
                 <el-table-column type="index" width="60">
                 </el-table-column>
-                <el-table-column prop="addInfo.name" label="设备名称" sortable>
+                <el-table-column prop="name" label="设备名称" sortable>
                 </el-table-column>
-                <el-table-column prop="category" label="类别" sortable>
+                <el-table-column prop="type" label="类别" sortable>
                 </el-table-column>
-                <el-table-column prop="addInfo.location" label="设备位置" sortable show-overflow-tooltip>
+                <el-table-column prop="location" label="设备位置" sortable show-overflow-tooltip>
                 </el-table-column>
-                <el-table-column prop="addInfo.inspector" label="巡检人" sortable>
+                <el-table-column prop="inspectRecord.userInfo.addInfo.name" label="巡检人" sortable>
                 </el-table-column>
-                <el-table-column prop="inspectTime" label="巡检时间" sortable>
+                <el-table-column prop="inspectRecord.createTime" label="巡检时间" sortable>
                 </el-table-column>
-                <el-table-column prop="addInfo.result" label="巡检结果" sortable>
+                <el-table-column prop="inspectRecord.state" label="巡检结果" sortable>
                 </el-table-column>
                 <el-table-column label="操作">
                     <template slot-scope="scope">
@@ -284,7 +293,7 @@
                     </span>
                 </el-form-item>
                 <el-form-item label="最近巡检：">
-                    {{detailList.addInfo.lastInspectTime || '无数据'}}
+                    {{detailList.recentInspectDate || '无数据'}} {{detailList.completeState || '完成状况无数据'}}
                 </el-form-item>
                 <el-form-item label="巡检人："  class="allWid">
                     <el-select v-model="detailList.addInfo.department" disabled>
@@ -295,8 +304,8 @@
                         <el-option v-for="item in groupList" :key="item.id" :label="item.name" :value="item.name">
                         </el-option>
                     </el-select>
-                    <el-select v-model="detailList.addInfo.inspector" disabled>
-                        <el-option v-for="item in personList" :key="item.id" :label="item.name" :value="item.name">
+                    <el-select v-model="detailList.userInfo.addInfo.name" disabled>
+                        <el-option v-for="item in personList" :key="item.id" :label="item.addInfo.name" :value="item.addInfo.name">
                         </el-option>
                     </el-select>
                 </el-form-item>
@@ -334,13 +343,13 @@
             <el-table :data="recordList.slice((page-1)*pagesize,page*pagesize)" highlight-current-row v-loading="recordLoading" style="width: 100%;">
                 <el-table-column type="index" width="60">
                 </el-table-column>
-                <el-table-column prop="inspectTime" label="巡检时间" sortable>
+                <el-table-column prop="inspectDate" label="巡检时间" sortable>
                 </el-table-column>
-                <el-table-column prop="addInfo.inspector" label="巡检员" sortable>
+                <el-table-column prop="userInfo.addInfo.name" label="巡检员" sortable>
                 </el-table-column>
-                <el-table-column prop="addInfo.doneState" label="完成状况" sortable>
+                <el-table-column prop="completeState" label="完成状况" sortable>
                 </el-table-column>
-                <el-table-column prop="addInfo.faultCon" label="故障情况" sortable>
+                <el-table-column prop="faultState" label="故障情况" sortable>
                 </el-table-column>
                 <el-table-column label="操作">
                     <template slot-scope="scope">
@@ -366,11 +375,11 @@
             <div style="text-align: right;">
                 <el-button type="danger" @click="backMainPage">返回</el-button>
             </div>
-            <el-form :model="routeForm" label-width="90px" ref="routeForm" class="routeDetail">
-                <el-form-item label="巡检路线：" prop="addInfo.name">
+            <el-form :model="routeForm" label-width="90px" class="routeDetail">
+                <el-form-item label="巡检路线：">
                     <el-input v-model="routeForm.name" auto-complete="off"></el-input>
                 </el-form-item>
-                <el-form-item label="巡检周期：" prop="type">
+                <el-form-item label="巡检周期：">
                     <el-checkbox-group v-model="routeForm.type">
                         <el-checkbox label="星期日" name="type"></el-checkbox>
                         <el-checkbox label="星期一" name="type"></el-checkbox>
@@ -381,7 +390,7 @@
                         <el-checkbox label="星期六" name="type"></el-checkbox>
                     </el-checkbox-group>
                 </el-form-item>
-                <el-form-item label="路线节点：" prop="location">
+                <el-form-item label="路线节点：">
                     <el-button type="success" @click.native="addNodeDevice">添加节点设备</el-button>
                     <el-checkbox v-model="routeChecked">新增后启用</el-checkbox>
                 </el-form-item>
@@ -409,60 +418,35 @@
         <el-dialog class="inView" title="检查记录" :visible.sync="viewRecordVisible">
             <el-form label-width="90px" class="inView">
                 <el-form-item label="设备名称：">
-                    {{viewList.addInfo.name || ' - '}}
+                    {{viewList.name || ' - '}}
                 </el-form-item>
                 <el-form-item label="设备类型：">
-                    {{viewList.category || ' - '}}
+                    {{viewList.type || ' - '}}
                 </el-form-item>
                 <el-form-item label="设备位置：">
-                    {{viewList.addInfo.location || ' - '}}
+                    {{viewList.location || ' - '}}
                 </el-form-item>
                 <el-form-item label="巡检人：">
-                    {{viewList.addInfo.inspector || ' - '}}
+                    {{viewList.inspectRecord && viewList.inspectRecord.userInfo && viewList.inspectRecord.userInfo.addInfo && viewList.inspectRecord.userInfo.addInfo.name?viewList.inspectRecord.userInfo.addInfo.name: ' - '}}
                 </el-form-item>
                 <el-form-item label="巡检结果：">
-                    {{viewList.addInfo.result || ' - '}}
+                    {{viewList.inspectRecord && viewList.inspectRecord.state?viewList.inspectRecord.state:' - '}}
                 </el-form-item>
                 <el-form-item label="巡检时间：">
-                    {{viewList.inspectTime || ' - '}}
+                    {{viewList.inspectRecord && viewList.inspectRecord.createTime?viewList.inspectRecord.createTime:' - '}}
                 </el-form-item>
-                <el-form-item label="巡检记录：" class="allWid">
-                    {{viewList.addInfo.remark || ' - '}}
-                    <div class="imgs" v-if="viewList.addInfo.image && viewList.addInfo.image.length>0">
-                        <img v-for="item in viewList.addInfo.image.slice(0,6)" :src="item" @click="handlePictureCardPreview(item)">
+                <el-form-item label="记录：" class="allWid">
+                    {{viewList.inspectRecord && viewList.inspectRecord.remark?viewList.inspectRecord.remark:' - '}}
+                    <div class="imgs" v-if="viewList.addInfo.image">
+                    <!--<div class="imgs" v-if="viewList.addInfo.image && viewList.addInfo.image.length>0">-->
+                        <!--<img v-for="item in viewList.addInfo.image.slice(0,6)" :src="item" @click="handlePictureCardPreview(item)">-->
+                        <img :src="viewList.addInfo.image" @click="handlePictureCardPreview(viewList.addInfo.image)">
                         <el-dialog :visible.sync="dialogVisible" style="z-index: 2020;" :append-to-body="true">
                             <img width="100%" style="height: 100%;" :src="dialogImageUrl" alt="">
                         </el-dialog>
                     </div>
                 </el-form-item>
             </el-form>
-        </el-dialog>
-        <!--巡检记录详情-->
-        <el-dialog title="巡检详情" :visible.sync="inspectRecordVisible">
-            巡检记录详情
-            <!--<el-form :model="deviceAEForm" label-width="80px" ref="deviceAEForm">-->
-            <!--<el-form-item label="设备名称" prop="name">-->
-            <!--<el-input v-model="deviceAEForm.name" auto-complete="off"></el-input>-->
-            <!--</el-form-item>-->
-            <!--<el-form-item label="巡检周期" prop="duration">-->
-            <!--<el-input v-model="deviceAEForm.duration" auto-complete="off">-->
-            <!--<template slot="append">（天）</template>-->
-            <!--</el-input>-->
-            <!--</el-form-item>-->
-            <!--<el-form-item label="设备地址" prop="location">-->
-            <!--<el-input v-model="deviceAEForm.location" auto-complete="off"></el-input>-->
-            <!--</el-form-item>-->
-            <!--<el-form-item label="设备编号" prop="serial">-->
-            <!--<el-input v-model="deviceAEForm.serial" auto-complete="off"></el-input>-->
-            <!--</el-form-item>-->
-            <!--&lt;!&ndash;<el-form-item label="">&ndash;&gt;-->
-            <!--&lt;!&ndash;<el-button type="success" @click="printQrCode">生成并打印设备二维码</el-button>&ndash;&gt;-->
-            <!--&lt;!&ndash;</el-form-item>&ndash;&gt;-->
-            <!--</el-form>-->
-            <!--<div slot="footer" class="dialog-footer">-->
-                <!--<el-button @click.native="inspectRecordVisible = false">取消</el-button>-->
-                <!--<el-button type="primary" @click.native="addDeviceSubmit" :loading="deviceAELoading">提交</el-button>-->
-            <!--</div>-->
         </el-dialog>
         <!--选中需要巡检的设备-->
         <el-dialog title="选中需要巡检的设备" :visible.sync="choiceDeviceVisible">
@@ -506,11 +490,15 @@
 </template>
 
 <script>
-    import {inspectTaskListUrl, delInsTaskUrl, addUpdateInsTaskUrl, inspectUrl,equipUrl,delEquip,addEquip, showDisplay, addDisplay,proList, deleteDisplay, findDic, showDict, addDict, deleteDict} from '../../api/api'
-
+    import {inspectTaskListUrl, delInsTaskUrl, addUpdateInsTaskUrl, parkUserList, inspectBySelUrl, historyListlUrl, inspectUrl,equipUrl,delEquip,addEquip, showDisplay, addDisplay,proList, deleteDisplay, findDic, showDict, addDict, deleteDict} from '../../api/api'
+    import publicFunction from  '../../api/publicFunction';
     export default {
         data(){
             return {
+                recordUserName:'',
+                hisInspectDate:'',
+                hisCompleteState:'',
+                inspectHisView:false,
                 routeChecked:'',
                 sels: [],//列表选中列
                 changeMember:false,
@@ -553,24 +541,7 @@
                         name: '技术组'
                     },
                 ],
-                personList: [
-                    {
-                        id: 1,
-                        name: '张三'
-                    },
-                    {
-                        id: 2,
-                        name: '李四'
-                    },
-                    {
-                        id: 3,
-                        name: '王五'
-                    },
-                    {
-                        id: 4,
-                        name: '赵六'
-                    },
-                ],
+                personList: [],
                 mainPage:true,
                 detailPage:false,
                 historyPage:false,
@@ -678,205 +649,13 @@
                 },
                 timeValue:[],
                 timeDeviceValue:[],
-                inspectList:[
-                    {
-                        cycle:'0,1,2,3,4',
-                        state:'启用',
-                        name:'A区1栋消防设备巡检',
-                        addInfo:{
-                            inspector:'张三',
-                            doneState:'完成',
-                            lastInspectTime:'2017-07-12'
-                        }
-                    },
-                    {
-                        cycle:'0,1,2,3,4,5,6',
-                        state:'启用',
-                        name:'A区1栋消防设备巡检',
-                        addInfo:{
-                            inspector:'张三',
-                            doneState:'完成',
-                            lastInspectTime:'2017-07-12'
-                        }
-                    },
-                    {
-                        cycle:'0,1,2,4,5,6',
-                        state:'启用',
-                        name:'A区1栋消防设备巡检',
-                        addInfo:{
-                            inspector:'张三',
-                            doneState:'完成',
-                            lastInspectTime:'2017-07-12'
-                        }
-                    },
-                    {
-                        cycle:'0,6',
-                        state:'停用',
-                        name:'A区1栋空调巡检',
-                        addInfo:{
-                            inspector:'李四',
-                            doneState:'未完成',
-                            lastInspectTime:'2017-07-12'
-                        }
-                    },
-                ],
-                inspectResultList:[
-                    {
-                        inspectTime:'2018-06-06 13:30:00',
-                        category:'电梯',
-                        addInfo:{
-                            inspector:'张三',
-                            location:'东区一号楼大厅',
-                            result:'正常',
-                            name:'公共电梯',
-                            remark:'4楼门打不开，运行不稳定',
-                        }
-                    },
-                    {
-                        inspectTime:'2018-05-05 14:00:09',
-                        category:'消防设备',
-                        addInfo:{
-                            inspector:'李四',
-                            location:'西区会议室东角',
-                            result:'故障',
-                            name:'灭火器A01',
-                            remark:'正常使用，没问题',
-                            image:[],
-                        }
-                    },
-                    {
-                        inspectTime:'2018-05-05 14:00:09',
-                        category:'其他',
-                        addInfo:{
-                            inspector:'王五',
-                            location:'西区三期风气楼会客厅',
-                            result:'未巡检',
-                            name:'饮水机02',
-                            remark:'可以正常使用',
-                        }
-                    },
-                    {
-                        inspectTime:'2018-06-06 13:30:00',
-                        category:'电梯',
-                        addInfo:{
-                            inspector:'张三',
-                            location:'东区一号楼大厅',
-                            result:'正常',
-                            name:'公共电梯',
-                            remark:'4楼门打不开，运行不稳定',
-                        }
-                    },
-                    {
-                        inspectTime:'2018-05-05 14:00:09',
-                        category:'其他',
-                        addInfo:{
-                            inspector:'王五',
-                            location:'西区三期风气楼会客厅',
-                            result:'未巡检',
-                            name:'饮水机02',
-                            remark:'可以正常使用',
-                        }
-                    },
-                ],
-                recordList:[
-                    {
-                        inspectTime:'2018-06-06 13:30:00',
-                        addInfo:{
-                            inspector:'张三',
-                            doneState:'完成',
-                            faultCon:'无',
-                        }
-                    },
-                    {
-                        inspectTime:'2018-05-05 14:00:09',
-                        addInfo:{
-                            inspector:'李四',
-                            doneState:'未完成',
-                            faultCon:'无',
-                        }
-                    },
-                    {
-                        inspectTime:'2018-05-05 14:00:09',
-                        addInfo:{
-                            inspector:'王五',
-                            doneState:'完成',
-                            faultCon:'有',
-                        }
-                    },
-                ],
-                routeList:[
-                    {
-                        createTime:'2018-06-06 12:30:45',
-                        inspectTime:'工作日',
-                        cycle:'',
-                        name:'A区1栋空调巡检',
-                        state:'停用',
-                        addInfo:{
-                            executeNum:3,
-                            inspector:'李四',
-                        }
-                    },
-                    {
-                        createTime:'2018-06-16 10:23:15',
-                        inspectTime:'每日',
-                        cycle:'',
-                        name:'A区1栋消防设备巡检',
-                        state:'启用',
-                        addInfo:{
-                            executeNum:5,
-                            inspector:'张三',
-                        }
-                    },
-                ],
+                inspectList:[],
+                inspectResultList:[],
+                recordList:[],
+                routeList:[],
                 insNodeList:[],
-                inspectNodeList:[
-                    {
-                        category:'电梯',
-                        location:'东区一号楼大厅',
-                        name:'公用电梯一',
-                    },
-                    {
-                        category:'消防设备',
-                        location:'西区会议室东角',
-                        name:'灭火器A01',
-                    },
-                    {
-                        category:'电梯',
-                        location:'东区一号楼大厅',
-                        name:'公用电梯一',
-                    },
-                    {
-                        category:'消防设备',
-                        location:'西区会议室东角',
-                        name:'灭火器A01',
-                    },
-                ],
-                allInspectNodeList:[
-                    {
-                        type:'电梯',
-                        location:'东区一号楼大厅',
-                        name:'公用电梯一',
-
-                    },
-                    {
-                        type:'消防设备',
-                        location:'西区会议室东角',
-                        name:'灭火器A01',
-
-                    },
-                    {
-                        type:'电梯',
-                        location:'东区一号楼大厅',
-                        name:'公用电梯一',
-
-                    },
-                    {
-                        type:'消防设备',
-                        location:'西区会议室东角',
-                        name:'灭火器A01',
-
-                    },
-                ],
+                inspectNodeList:[],
+                allInspectNodeList:[],
                 inspectLoading:false,
                 inspectResultLoading:false,
                 recordLoading:false,
@@ -890,23 +669,46 @@
                     name:'',
                     state:'',
                     createTime:'',
+                    recentInspectDate:'',
                     addInfo:{
                         remark:'',
                         inspector:'',
                         department:'',
                         group:'',
-                        lastInspectTime:'',
                         equipmentInfo:{
                             location:'',
                             name:'',
                             serial:''
                         }
+                    },
+                    userInfo:{
+                        addInfo:{
+                            gender:"男",
+                            departmentId:"112",
+                            name:"彭于晏",
+                            isManager:1,
+                            isScheduling:"1",
+                            emoNo:"cd425b",
+                            position:"架构师",
+                            avatar:"http://shared-resource.oss-cn-beijing.aliyuncs.com/969878f1f1149e6a7afae38636c0abc/8211071354101990136.png",
+                            hiredate:"2018-07-07T02:37:46.802Z",
+                            email:"123456@qq.com"
+                        }
                     }
                 },
                 viewList:{
+                    userInfo:{
+                        addInfo:{
+                            name:''
+                        }
+                    },
+                    inspectRecord:{
+                        state:'',
+                        createTime:'',
+                        remark:'',
+                    },
                     inspectTime:'',
                     addInfo:{
-                        remark:'',
                         name:'',
                         state:'',
                         inspector:'',
@@ -941,6 +743,8 @@
                 abnorNum:3, //异常登记次数
                 deviceAELoading:false,
                 week:['星期日','星期一','星期二','星期三','星期四','星期五','星期六'],
+                equipmentIdList:'',
+                userid:'',
 
             }
         },
@@ -948,20 +752,35 @@
             selsChange: function (sels) {
                 this.sels = sels;
             },
+            personChoice(val){
+                let obj = {};
+                obj = this.personList.find((item)=>{//遍历的数据源
+                    return item.id === val;//筛选出匹配数据
+                });
+                this.userid=obj.id;
+            },
             queryInspectState(value){
                 let obj = {};
                 obj = this.inspecStaList.find((item)=>{//遍历的数据源
                     return item.id === value;//筛选出匹配数据
                 });
                 this.selectLabel=obj.name;
-                // let position="";
-                // position=this.selectLabel==='全部'?'':'&position='+this.selectLabel;
-                // this.getAdsList(position);
+                let url=inspectBySelUrl+'&taskId='+this.detailList.id+'&equipmentIdList='+
+                    this.equipmentIdList+'&recentDate='+this.detailList.recentInspectDate;
+                url=this.selectLabel==='全部'?url+'':url+'&state='+this.selectLabel;
+                this.getInsBySelList(url);
             },
             backMainPage(){
                 this.mainPage=true;
                 this.detailPage=false;
                 this.historyPage=false;
+                this.routeAddEditPage=false;
+                this.page=1;
+            },
+            backHisPage(){
+                this.mainPage=false;
+                this.detailPage=false;
+                this.historyPage=true;
                 this.routeAddEditPage=false;
                 this.page=1;
             },
@@ -1005,12 +824,12 @@
                 this.getInspect(url);
             },
             getQueryRecord(){//巡检任务历史记录 条件查询
-                let url=equipUrl;
-                let startTime=this.recordFilters.timeRecordValue[0];
-                let endTime=this.recordFilters.timeRecordValue[1];
-                url=startTime===undefined?url+'':url+'&startTime='+startTime.replace(/-/g,'/');
-                url=endTime===undefined?url+'':url+'&endTime='+endTime.replace(/-/g,'/');
-                // this.getInspectRouteMgList(url);
+                let url=historyListlUrl+'&taskId='+this.detailList.id;
+                let startDate=this.recordFilters.timeRecordValue[0];
+                let endDate=this.recordFilters.timeRecordValue[1];
+                url=startDate===undefined?url+'':url+'&startDate='+startDate.slice(0,10);
+                url=endDate===undefined?url+'':url+'&endDate='+endDate.slice(0,10);
+                this.getHistoryList(url);
                 this.recordFilters={
                     timeRecordValue:[],
                     secDoneValue:'',
@@ -1023,9 +842,9 @@
                     return item.id === value;//筛选出匹配数据
                 });
                 this.selectLabel=obj.name;
-                // let position="";
-                // position=this.selectLabel==='全部'?'':'&position='+this.selectLabel;
-                // this.getAdsList(position);
+                let url=historyListlUrl+'&taskId='+this.detailList.id;
+                url=this.selectLabel==='全部状态'?url+'':url+'&completeState='+this.selectLabel;
+                this.getHistoryList(url);
             },
             queryRecordFault(value){
                 let obj = {};
@@ -1033,9 +852,9 @@
                     return item.id === value;//筛选出匹配数据
                 });
                 this.selectLabel=obj.name;
-                // let position="";
-                // position=this.selectLabel==='全部'?'':'&position='+this.selectLabel;
-                // this.getAdsList(position);
+                let url=historyListlUrl+'&taskId='+this.detailList.id;
+                url=this.selectLabel==='全部'?url+'':url+'&faultState='+this.selectLabel;
+                this.getHistoryList(url);
             },
             getInspection(){ //巡检记录数据
                 this.getInspect(inspectTaskListUrl);
@@ -1129,25 +948,62 @@
             },
             saveChangeMem(){//保存 更换巡检人
                 this.$confirm('确认保存吗？', '提示', {}).then(() => {
-                    this.detailPage = true;
-
-
                     this.detailPage = false;
                     this.historyPage = false;
                     this.mainPage = true;
                     this.changeMember=false;
-                    // this.getInspectRouteMg();
+                    this.changePerson();
                 });
+            },
+            changePerson(){
+                let data={
+                    parkId:localStorage.getItem("parkId"),
+                    state: this.detailList.state,
+                    name: this.detailList.name,
+                    cycle:this.detailList.cycle,
+                    id:this.detailList.id,
+                    userId:this.userid,
+                    addInfo:{
+                        equipments:this.detailList.addInfo.equipments
+                    }
+                };
+                this.$post(addUpdateInsTaskUrl,data)
+                    .then((res)=>{
+                        this.getInspection();
+                    })
             },
             detailEdit(index, row){ //显示详情/编辑
                 this.mainPage=false;
                 this.detailPage=true;
                 this.historyPage=false;
+                this.inspectHisView=false;
                 this.page=1;
                 this.changeMember=row.addInfo.state==='停用'?false:true;
                 this.detailList=Object.assign({}, row);
                 this.detailList.addInfo.department="物业部";
                 this.detailList.addInfo.group='工程组';
+                if(!row.userInfo){
+                    this.detailList.userInfo=Object.assign({},{
+                        addInfo:{
+                            name:''
+                        }
+                    });
+                    this.detailList=Object.assign({},this.detailList);
+                }
+                this.equipmentIdList=row.addInfo.equipments.join(',');
+                let url=inspectBySelUrl+'&taskId='+this.detailList.id+'&equipmentIdList='+
+                    this.equipmentIdList+'&recentDate='+this.detailList.recentInspectDate;
+                this.userid=row.userId;
+                this.getInsBySelList(url);
+            },
+            getInsBySelList(url){//巡检任务 列表数据
+                this.inspectResultLoading=true;
+                this.$get(url)
+                    .then((res) => {
+                        this.inspectResultList=res;
+                        this.inspectResultTotal=this.inspectResultList.length>0?this.inspectResultList.length:1;
+                        this.inspectResultLoading=false;
+                    })
             },
             historyRecord(index, row){// 显示历史记录
                 this.mainPage=false;
@@ -1155,8 +1011,27 @@
                 this.historyPage=true;
                 this.page=1;
                 this.detailList=Object.assign({}, row);
+                if(!row.userInfo){
+                    this.detailList.userInfo=Object.assign({},{
+                        addInfo:{
+                            name:''
+                        }
+                    });
+                    this.detailList=Object.assign({},this.detailList);
+                }
                 this.detailList.addInfo.department='物业部';
                 this.detailList.addInfo.group='工程组';
+                let url=historyListlUrl+'&taskId='+this.detailList.id;
+                this.getHistoryList(url);
+            },
+            getHistoryList(url){//巡检任务 列表数据
+                this.recordLoading=true;
+                this.$get(url)
+                    .then((res) => {
+                        this.recordList=res;
+                        this.recordTotal=this.recordList.length>0?this.recordList.length:1;
+                        this.recordLoading=false;
+                    })
             },
             viewRecord(index,row){//显示检查记录
                 this.viewList=Object.assign({}, row);
@@ -1183,7 +1058,7 @@
             },
             addNodeDevice(){//添加节点设备
                 this.choiceDeviceVisible=true;
-                this.getAllInsNodeList(equipUrl);
+                // this.getAllInsNodeList(equipUrl);
             },
             getAllInsNodeList(url){//设备管理列表数据
                 this.allInspectNodeLoading=true;
@@ -1238,9 +1113,10 @@
                     this.insNodeList.forEach((item)=>{
                         equipments.push(item.id);
                     });
+                    let state=this.routeChecked?'启用':'停用';
                     let data={
                         parkId:localStorage.getItem("parkId"),
-                        state: "启用",
+                        state: state,
                         name: this.routeForm.name,
                         cycle:brr.join(','),
                         addInfo:{
@@ -1250,7 +1126,7 @@
                     if(this.isEdit){
                         data.id=this.isEditId;
                     }
-                    console.log(this.routeChecked)
+
                     this.$post(addUpdateInsTaskUrl,data)
                         .then((res)=>{
                             this.routeAddEditPage = false;
@@ -1269,17 +1145,50 @@
                 }
             },
             recordDetail(index, row) {//显示 巡检记录详情
-                this.inspectRecordVisible = true;
-                // this.deviceAEForm = Object.assign({}, row);
+                this.hisInspectDate=row.inspectDate;
+                this.recordUserName=row.userInfo && row.userInfo.addInfo && row.userInfo.addInfo.name?row.userInfo.addInfo.name:'无数据';
+                this.hisCompleteState=row.completeState;
+                this.inspectHisView=true;
+                this.mainPage=false;
+                this.detailPage=true;
+                this.historyPage=false;
+                this.page=1;
+                // this.changeMember=row.addInfo.state==='停用'?false:true;
+                this.changeMember=false;
+                this.detailList.addInfo.department="物业部";
+                this.detailList.addInfo.group='工程组';
+                if(!row.userInfo){
+                    this.detailList.userInfo=Object.assign({},{
+                        addInfo:{
+                            name:''
+                        }
+                    });
+                    this.detailList=Object.assign({},this.detailList);
+                }
+                this.equipmentIdList=this.detailList.addInfo.equipments.join(',');
+                // this.equipmentIdList=row.addInfo.equipments.join(',');
+                let url=inspectBySelUrl+'&taskId='+this.detailList.id+'&equipmentIdList='+
+                    this.equipmentIdList+'&recentDate='+row.inspectDate;
+                this.userid=this.detailList.userId;
+                this.getInsBySelList(url);
             },
             routeEdit(index, row) {//显示编辑界面
                 this.mainPage=false;
                 this.routeAddEditPage=true;
                 this.page=1;
+                this.insNodeList=[];
+                this.routeChecked=row.state==='启用'?true:false;
                 this.inspectNodeLoading=true;
-                this.insNodeList=this.inspectNodeList;
+                this.allInspectNodeList.forEach((item)=>{
+                    if(row.addInfo.equipments){
+                        row.addInfo.equipments.forEach((rowitem)=>{
+                            if(rowitem===item.id){
+                                this.insNodeList.push(item);
+                            }
+                        })
+                    }
+                });
                 this.inspectNodeLoading=false;
-                // this.addEditTitle='编辑';
                 this.isEditId=row.id;
                 this.isEdit=true;
                 // this.deviceAEVisible = true;
@@ -1298,24 +1207,21 @@
                     type: 'warning'
                 }).then(() => {
                     let state=row.state;
-                    state=state==='正常'?'停用':state==='停用'?'正常':state;
+                    state=state==='启用'?'停用':state==='停用'?'启用':state;
                     let data={
                         id:row.id,
                         parkId:localStorage.getItem("parkId"),
-                        name:row.name,
-                        type:row.type,
-                        useTime:row.useTime.slice(0,10),
                         state:state,
-                        location:row.location,
+                        name:row.name,
+                        cycle:row.cycle,
                         addInfo:{
-                            image:row.addInfo.image,
-                            info:row.addInfo.info
+                            equipments:row.addInfo.equipments
                         }
                     };
-                    // this.$post(addEquip,data)
-                    //     .then((res)=>{
-                    //         this.getInspectRouteMg();
-                    //     })
+                    this.$post(addUpdateInsTaskUrl,data)
+                        .then((res)=>{
+                            this.getInspectRouteMg();
+                        })
                 }).catch(() => {
 
                 });
@@ -1353,11 +1259,18 @@
 
                 });
             },
+            getUserList() {  //获取员工列表
+                this.$get(parkUserList).then(res => {
+                    this.personList = res;
+                });
+            },
 
         },
         mounted(){
             this.getInspection();//巡检任务
             this.getInspectRouteMg();//巡检路线管理
+            this.getUserList();//获取员工列表
+            this.getAllInsNodeList(equipUrl);//所以需要查询的设备管理列表数据
         }
     }
 </script>

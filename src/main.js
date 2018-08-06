@@ -53,12 +53,13 @@ const router = new VueRouter({
 });
 
 router.beforeEach((to, from, next) => {
-    // if(!sessionStorage.getItem('token')){
-    if(!localStorage.getItem('parkId')){
+    if (to.path == '/') {
+        sessionStorage.removeItem('token');
+    }
+    let token = sessionStorage.getItem('token');
+    if (!token && to.path != '/') {
         next({
             path: '/', //登录
-            // name: 'login',
-            // component: resolve => require(['view/login/login.vue'], resolve),
         })
     } else {
         next()

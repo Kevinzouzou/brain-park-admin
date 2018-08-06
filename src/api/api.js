@@ -66,8 +66,10 @@ export const inspectTaskListUrl=`/inspectionTask/inspectionTaskList?parkId=`+loc
 export const delInsTaskUrl=`/inspectionTask/deleteInspectionTask/`;  //删除巡检任务
 export const addUpdateInsTaskUrl=`/inspectionTask/addOrUpdateInspectionTask`;  //添加或修改巡检任务
 export const loginUrl=`/logIn?parkId=`+localStorage.getItem("parkId");  //登录
+export const inspectBySelUrl = `/inspectionRecord/findInspectionRecordBySelection?parkId=${parkId}`;
+export const historyListlUrl = `/inspectionTask/historyInspectionTaskList?parkId=${parkId}`;
 
-// 用户管理
+// 用户管理                                // 获取用户列表
 export const parkStaffList = `/parkStaff/parkStaffList?parkId=${parkId}`;                                   // 获取用户列表
 export const addOrUpdateParkStaff = `/parkStaff/addOrUpdateParkStaff`;                                      // 添加或更新用户
 export const deleteStaff = `/parkStaff/deleteStaff/`;                                                       // 删除用户

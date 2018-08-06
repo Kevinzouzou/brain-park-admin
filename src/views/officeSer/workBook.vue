@@ -231,7 +231,9 @@
                             this.wBookAELoading = true;
                             let data={
                                 parkId:localStorage.getItem("parkId"),
-                                thumbUrl:this.moreFileList[0],
+                                // thumbUrl:this.moreFileList[0],
+                                thumbUrl:'null',
+                                detailUrl:this.moreFileList[0],
                                 title:this.workBookAEForm.title,
                                 type:'工作手册',
                                 addInfo:{}

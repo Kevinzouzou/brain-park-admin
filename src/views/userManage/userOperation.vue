@@ -65,7 +65,7 @@
         <el-row :gutter="24">
             <el-col :span="24" class="toolbar">
                 <el-pagination background @size-change="pageSizeChange" @current-change="pageCurrentChange" :page-sizes="[7,8,10,20]" :page-size="pagesize"
-                    layout="total,sizes, prev, pager, next, jumper" :current-page="page" :total="parkStaffListTotal" style="float:right;">
+                    layout="total,sizes, prev, pager, next, jumper" :current-page="page" :total="parkStaffList.length" style="float:right;">
                 </el-pagination>
             </el-col>
         </el-row>
@@ -208,7 +208,6 @@
                 pagesize: 7,
                 ParkStaffListLoading: false,
                 parkStaffList: [],
-                parkStaffListTotal: 0,
                 basicStatistics: {
                     ownerNum: 0,
                     managerNum: 0,
@@ -305,7 +304,6 @@
                 this.ParkStaffListLoading = true;
                 this.$get(url).then(res => {
                     this.parkStaffList = typeof res === 'undefined' ? [] : res.staffList;
-                    this.parkStaffListTotal = this.parkStaffList.length;
                     this.ParkStaffListLoading = false;
                     this.basicStatistics.ownerNum = res.ownerNum;
                     this.basicStatistics.managerNum = res.managerNum;
@@ -422,29 +420,15 @@
                     enterpriseName === '' ?
                     url + '' :
                     url + '&enterpriseName=' + enterpriseName;
+                this.page = 1;
                 this.getParkStaffList(url);
             },
-            // 图片上传
-            handleAvatarSuccess(res, file) {
-                this.editUserInfoForm.addInfo.avatarUrl = res.responseList;
-            },
-            beforeAvatarUpload(file) {
-                const isJPG = file.type === 'image/jpeg';
-                const isLt2M = file.size / 1024 / 1024 < 2;
-                if (!isJPG) {
-                    this.$message.error('上传头像图片只能是 JPG 格式!');
-                }
-                if (!isLt2M) {
-                    this.$message.error('上传头像图片大小不能超过 2MB!');
-                }
-                return isJPG && isLt2M;
+            // 翻页
+            pageCurrentChange(val) {
+                this.page = val;
             },
             pageSizeChange(val) {
                 this.pagesize = val;
-            },
-            pageCurrentChange(val) {
-                this.page = val;
-                this.getQueryParkStaffList();
             },
             // 获取企业名单
             getSettledEnterpriseList() {
