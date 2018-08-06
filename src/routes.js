@@ -34,7 +34,7 @@ import busiAdmin from './views/businessAdmin/busiAdmin.vue'
 import companyProfile from './views/businessAdmin/companyProfile.vue'
 
 // 企业服务
-import servicePerformanceOverview from './views/employers/servicePerformanceOverview.vue'
+import corporateServicePerformanceOverview from './views/employers/corporateServicePerformanceOverview.vue'
 import governmentService from './views/employers/governmentService.vue'
 import ITservice from './views/employers/ITservice.vue'
 import talentService from './views/employers/talentService.vue'
@@ -103,12 +103,12 @@ let routes = [
         name: '企业服务',
         iconCls: 'el-icon-message',
         children: [
-            { path: '/servicePerformanceOverview',  component: servicePerformanceOverview,  name: '服务效能概况' },
-            { path: '/corporationHome',             component: corporationHome,             name: '企业之家' },
-            { path: '/businessProcess',             component: businessProcess,             name: '流程业务' },
-            { path: '/governmentService',           component: governmentService,           name: '政务服务' },
-            { path: '/ITservice',                   component: ITservice,                   name: 'IT服务' },
-            { path: '/talentService',               component: talentService,               name: '人才服务' },
+            { path: '/corporateServicePerformanceOverview',  component: corporateServicePerformanceOverview,  name: '服务效能概况' },
+            { path: '/corporationHome',                      component: corporationHome,                      name: '企业之家' },
+            { path: '/businessProcess',                      component: businessProcess,                      name: '流程业务' },
+            { path: '/governmentService',                    component: governmentService,                    name: '政务服务' },
+            { path: '/ITservice',                            component: ITservice,                            name: 'IT服务' },
+            { path: '/talentService',                        component: talentService,                        name: '人才服务' },
             // { path: '/leaseContract', component: leaseContract, name: '租赁合同管理' }
         ]
     },
@@ -118,6 +118,11 @@ let routes = [
         name: '物业服务',
         iconCls: 'el-icon-printer',
         children: [
+            {
+                path: '/propertyServicePerformanceOverview',
+                component: resolve => require(['./views/properSer/propertyServicePerformanceOverview.vue'], resolve),
+                name: '服务效能概况'
+            },
             {
                 path: '/compRepair',
                 component: resolve => require(['./views/properSer/compRepair.vue'], resolve),
@@ -203,7 +208,6 @@ let routes = [
         hidden: true
     },
     //{ path: '/main', component: Main },
-
 ];
 
 export default routes;

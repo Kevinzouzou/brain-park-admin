@@ -30,7 +30,7 @@
                             <el-button type="success" @click="pending">未完结</el-button>
                         </el-form-item>
                         <el-form-item>
-                            <el-button type="primary" @click="processed">已处理</el-button>
+                            <el-button type="primary" @click="processed">已完结</el-button>
                         </el-form-item>
                     </el-form>
                 </el-col>
@@ -136,7 +136,7 @@
                             <el-button type="success" @click="pendingDec">未完结</el-button>
                         </el-form-item>
                         <el-form-item>
-                            <el-button type="primary" @click="processedDec">已处理</el-button>
+                            <el-button type="primary" @click="processedDec">已完结</el-button>
                         </el-form-item>
                     </el-form>
                 </el-col>
@@ -366,7 +366,7 @@
                 this.getInApplylist(url);
             },
             processed() { //已处理
-                let url = findProperty + '入驻申请' + '&stage=已处理';
+                let url = findProperty + '入驻申请' + '&stage=已完结';
                 this.getInApplylist(url);
             },
             allDealDec() { //全部
@@ -377,7 +377,7 @@
                 this.getDecorateList(url);
             },
             processedDec() { //已处理
-                let url = findProperty + '装修申请' + '&stage=已处理';
+                let url = findProperty + '装修申请' + '&stage=已完结';
                 this.getDecorateList(url);
             },
             inApplyView(index, row) {

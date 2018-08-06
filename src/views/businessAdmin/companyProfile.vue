@@ -265,6 +265,13 @@
                         type: 'category',
                         data: []
                     },
+                    grid: {
+                        top: '10%',
+                        left: '5%',
+                        right: '5%',
+                        bottom: '10%',
+                        containLabel: true
+                    },
                     yAxis: {
                         type: 'value'
                     },
