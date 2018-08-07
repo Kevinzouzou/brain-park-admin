@@ -27,17 +27,17 @@
         <el-table :data="adminList.slice((page-1)*pagesize,page*pagesize)" highlight-current-row v-loading="adminLoading" style="width: 100%;">
             <el-table-column prop="id" label="ID">
             </el-table-column>
-            <el-table-column prop="name" label="企业名称" sortable>
+            <el-table-column prop="name" label="企业名称">
             </el-table-column>
-            <el-table-column prop="zoneInfo[1].name" label="区域" sortable>
+            <el-table-column prop="zoneInfo[1].name" label="区域">
             </el-table-column>
-            <el-table-column prop="zoneInfo[2].name" label="楼栋" sortable>
+            <el-table-column prop="zoneInfo[2].name" label="楼栋">
             </el-table-column>
-            <el-table-column prop="zoneInfo[3].name" label="楼层" sortable>
+            <el-table-column prop="zoneInfo[3].name" label="楼层">
             </el-table-column>
-            <el-table-column prop="zoneInfo[4].name" label="房号" sortable>
+            <el-table-column prop="zoneInfo[4].name" label="房号">
             </el-table-column>
-            <el-table-column prop="addInfo.area" label="租赁面积(平方米)" sortable width="160">
+            <el-table-column prop="addInfo.area" label="租赁面积(平方米)" width="160">
             </el-table-column>
             <el-table-column prop="addInfo.industry" label="所属行业" sortable>
             </el-table-column>
@@ -47,7 +47,7 @@
             </el-table-column>
             <el-table-column label="撤离时间" sortable>
                 <template slot-scope="scope">
-                    {{scope.row.addInfo.outTime||'入驻中'}}
+                    {{scope.row.addInfo.outTime || '入驻中'}}
                 </template>
             </el-table-column>
             <el-table-column label="操作" width="150">
@@ -122,7 +122,6 @@
                     </el-col>
                     <el-col :span="11">
                         <el-form-item label="地址：">
-                            <!-- <el-cascader :options="treeList" v-model="selOptions" :props="dataProps" @change="handleChange"> -->
                             <el-cascader :options="treeList" v-model="selOptions" :props="dataProps">
                             </el-cascader>
                         </el-form-item>

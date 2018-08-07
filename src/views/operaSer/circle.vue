@@ -53,7 +53,7 @@
                     <el-form :model="addForm" label-width="100px" :rules="addFormRules" ref="addForm">
                         <el-row>
                             <el-col :span="22">
-                                <el-form-item label="圈子名称" prop="title" required>
+                                <el-form-item label="圈子名称" required prop="title">
                                     <el-input v-model="addForm.title" auto-complete="off"></el-input>
                                 </el-form-item>
                             </el-col>

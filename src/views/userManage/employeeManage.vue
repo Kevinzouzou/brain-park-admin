@@ -195,7 +195,7 @@
                 <el-row :gutter="24">
                     <el-col :span="10">
                         <el-form-item label="入职时间：">
-                            {{editParkUserForm.addInfo.hiredate.slice(0,10)}}
+                            {{editParkUserForm.addInfo.hiredate}}
                         </el-form-item>
                     </el-col>
                 </el-row>
@@ -231,7 +231,7 @@
                 <el-row :gutter="24">
                     <el-col :span="10">
                         <el-form-item label="姓名：" required prop="addInfo.name">
-                            <el-input placeholder="姓名" v-model="editParkUserForm.addInfo.name"></el-input>
+                            <el-input placeholder="姓名" v-model="editParkUserForm.addInfo.name" clearable></el-input>
                         </el-form-item>
                         <el-form-item label="所属部门：" required prop="addInfo.departmentId">
                             <el-cascader :show-all-levels="false" :options="departmentTreeData" v-model="editParkUserForm.addInfo.departmentId" :props="departmentTreeDataProps"></el-cascader>
