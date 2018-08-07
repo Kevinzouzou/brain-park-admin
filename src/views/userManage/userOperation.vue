@@ -21,7 +21,7 @@
                         </el-autocomplete>
                     </el-form-item>
                     <el-form-item>
-                        <el-input v-model="ParkStaffListFilters.nameOrNickNameOrPhone" class="userinfo-search" placeholder="用户搜索，如姓名、昵称、手机" prefix-icon="el-icon-search"></el-input>
+                        <el-input v-model="ParkStaffListFilters.nameOrNickNameOrPhone" class="userinfo-search" placeholder="姓名、昵称、手机搜索" prefix-icon="el-icon-search"></el-input>
                     </el-form-item>
                     <el-form-item>
                         <el-button type="primary" @click="getQueryParkStaffList">查询</el-button>

@@ -351,7 +351,7 @@
                     phone: [{
                         required: true,
                         message: '请输入正确的电话号码',
-                        trigger: 'blur',
+                        trigger: ['blur'],
                         pattern: /^((13[0-9]|14[579]|15[0-3,5-9]|16[6]|17[0135678]|18[0-9]|19[89])+\d{8})$/
                     }],
                     addInfo: {
@@ -500,7 +500,7 @@
             addParkUser() {
                 this.$refs.addParkUserForm.validate(valid => {
                     if (valid) {
-                        let data = this.addParkUserForm;
+                        let data = JSON.parse(JSON.stringify(this.addParkUserForm));
                         data.parkId = localStorage.getItem('parkId');
                         data.type = 2; // 添加员工
                         data.addInfo.departmentId = data.addInfo.departmentId.pop();
@@ -568,6 +568,26 @@
                 this.appPassword = '';
                 this.editParkUserFormVisible = true;
                 this.editParkUserFormShow = false;
+                this.editParkUserForm = {
+                    id: '',
+                    type: 2,
+                    phone: '',
+                    addInfo: {
+                        empNo: '',
+                        name: '',
+                        gender: '',
+                        position: '',
+                        email: '',
+                        isManager: false,
+                        hiredate: '',
+                        departmentId: [],
+                        avatar: ''
+                    },
+                    departmentInfo: {
+                        name: '',
+                        sequence: ''
+                    }
+                };
                 this.editParkUserForm = publicFunction.deepCopy(this.editParkUserForm, row);
                 this.editParkUserForm.addInfo.isManager =
                     row.addInfo.isManager === 1 ? true : false;
@@ -579,7 +599,7 @@
             updateParkUserInfo() {
                 this.$refs.editParkUserForm.validate(valid => {
                     if (valid) {
-                        let data = this.editParkUserForm;
+                        let data = JSON.parse(JSON.stringify(this.editParkUserForm));
                         data.parkId = localStorage.getItem('parkId');
                         let departmentId = this.editParkUserForm.addInfo.departmentId;
                         data.addInfo.departmentId = departmentId[departmentId.length - 1];
@@ -606,26 +626,7 @@
                                 this.resetForm('editParkUserForm');
                                 this.getParkUserList(parkUserList);
                                 this.$message.success('修改成功');
-                                this.editParkUserForm = {
-                                    id: '',
-                                    type: 2,
-                                    phone: '',
-                                    addInfo: {
-                                        empNo: '',
-                                        name: '',
-                                        gender: '',
-                                        position: '',
-                                        email: '',
-                                        isManager: false,
-                                        hiredate: '',
-                                        departmentId: [],
-                                        avatar: ''
-                                    },
-                                    departmentInfo: {
-                                        name: '',
-                                        sequence: ''
-                                    }
-                                };
+
                             }
                         });
                     } else {

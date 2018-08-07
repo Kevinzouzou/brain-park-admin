@@ -46,11 +46,21 @@
                     </el-table-column>
                     <el-table-column prop="time" label="申请时间" sortable>
                     </el-table-column>
-                    <el-table-column prop="stage" label="状态">
+                    <el-table-column label="状态">
+                          <template slot-scope="scope">
+                            <span v-if="scope.row.stage === '未完结'" class="unfinished">未完结</span>
+                            <span v-else-if="scope.row.stage === '已完结'" class="finished">已完结</span>
+                        </template>
                     </el-table-column>
-                    <el-table-column prop="addInfo.allocationName" label="管理人">
+                    <el-table-column label="管理人">
+                        <template slot-scope="scope">
+                            {{scope.row.addInfo.allocationName||'-'}}
+                        </template>
                     </el-table-column>
-                    <el-table-column prop="addInfo.propertyName" label="对接人">
+                    <el-table-column label="对接人">
+                        <template slot-scope="scope">
+                            {{scope.row.addInfo.propertyName||'-'}}
+                        </template>
                     </el-table-column>
                     <el-table-column label="操作">
                         <template slot-scope="scope">
@@ -153,10 +163,20 @@
                     <el-table-column prop="time" label="申请时间" sortable>
                     </el-table-column>
                     <el-table-column prop="stage" label="状态">
+                        <template slot-scope="scope">
+                            <span v-if="scope.row.stage ==='未完结'" class="unfinished">未完结</span>
+                            <span v-else-if="scope.row.stage ==='已完结'" class="finished">已完结</span>
+                        </template>
                     </el-table-column>
-                    <el-table-column prop="addInfo.allocationName" label="管理人">
+                    <el-table-column label="管理人">
+                        <template slot-scope="scope">
+                            {{scope.row.addInfo.allocationName||'-'}}
+                        </template>
                     </el-table-column>
-                    <el-table-column prop="addInfo.propertyName" label="负责人">
+                    <el-table-column label="对接人">
+                        <template slot-scope="scope">
+                            {{scope.row.addInfo.propertyName||'-'}}
+                        </template>
                     </el-table-column>
                     <el-table-column label="操作">
                         <template slot-scope="scope">
@@ -424,5 +444,21 @@
         .title {
             font-weight: bold;
         }
+    }
+
+    .finished {
+        background-color: #67c23a;
+        border-radius: 22px;
+        padding: 3px 15px;
+        color: rgb(255, 255, 255);
+        display: inline-block;
+    }
+
+    .unfinished {
+        background-color:#e6a23c;
+        border-radius: 22px;
+        padding: 3px 15px;
+        color: rgb(255, 255, 255);
+        display: inline-block;
     }
 </style>
