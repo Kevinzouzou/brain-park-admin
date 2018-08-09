@@ -62,7 +62,7 @@
         <!--工具条-->
         <el-row :gutter="24">
             <el-col :span="24" class="toolbar">
-                <el-pagination background @size-change="ITserviceListPagesizeChange" @current-change="ITserviceListPageCurrentChange" :page-sizes="[7,8,10,20]"
+                <el-pagination background @size-change="ITserviceListPagesizeChange" @current-change="ITserviceListPageCurrentChange" :page-sizes="[8,10,20,50]"
                     :page-size="ITserviceListPagesize" layout="total,sizes, prev, pager, next, jumper" :current-page="ITserviceListPage"
                     :total="ITserviceList.length" style="float:right;">
                 </el-pagination>
@@ -152,7 +152,7 @@
         data() {
             return {
                 ITserviceListPage: 1,
-                ITserviceListPagesize: 7,
+                ITserviceListPagesize: 8,
                 ITserviceList: [],
                 ITserviceListFilter: {
                     serviceName: '全部',

@@ -58,7 +58,7 @@
         </el-table>
         <!--分页-->
         <el-col :span="24" class="toolbar">
-            <el-pagination background @size-change="highSizeChange" @current-change="adsCurChange" :page-sizes="[7,8,10,20]" :page-size="pagesize"
+            <el-pagination background @size-change="highSizeChange" @current-change="adsCurChange" :page-sizes="[8,10,20,50]" :page-size="pagesize"
                 layout="total, sizes, prev, pager, next, jumper" :total="adsList.length" :current-page="page" style="float:right;">
             </el-pagination>
         </el-col>
@@ -95,8 +95,6 @@
 <script>
     import {
         uploadPic,
-        addDisplay,
-        deleteDisplay,
         adsUrl,
         addAdsUrl,
         delAdsUrl
@@ -126,7 +124,7 @@
                     },
                 ],
                 page: 1,
-                pagesize: 7,
+                pagesize: 8,
                 adsList: [],
                 adsLoading: false,
                 adsSels: [], //选中项

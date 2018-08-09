@@ -66,7 +66,7 @@
                 <el-row :gutter="24">
                     <el-col :span="24" class="toolbar">
                         <el-pagination background @size-change="SharedResourceListPageSizeChange" @current-change="SharedResourceListPageCurrentChange"
-                            :page-sizes="[7,8,10,20]" :page-size="SharedResourceListPagesize" layout="total,sizes, prev, pager, next, jumper"
+                            :page-sizes="[8,10,20,50]" :page-size="SharedResourceListPagesize" layout="total,sizes, prev, pager, next, jumper"
                             :current-page="SharedResourceListPage" :total="SharedResourceListTotal" style="float:right;">
                         </el-pagination>
                     </el-col>
@@ -410,7 +410,7 @@
                     <el-col :span="24">
                         <el-form :inline="true" :model="applicationRecordFilter">
                             <el-form-item label="共享类型：">
-                                <el-select placeholder="请选择服务分类" v-model="applicationRecordFilter.resourceType" @change="applicationRecordListSeach()">
+                                <el-select placeholder="请选择服务分类" v-model="applicationRecordFilter.resourceType" @change="SeachapplicationRecordListButtonUse()">
                                     <el-option label="全部" value=""></el-option>
                                     <el-option label="会议室" value="会议室"></el-option>
                                     <el-option label="电子屏" value="电子屏"></el-option>
@@ -418,7 +418,7 @@
                                 </el-select>
                             </el-form-item>
                             <el-form-item label="状态：">
-                                <el-select placeholder="请选择服务分类" v-model="applicationRecordFilter.state" @change="applicationRecordListSeach()">
+                                <el-select placeholder="请选择服务分类" v-model="applicationRecordFilter.state" @change="SeachapplicationRecordListButtonUse()">
                                     <el-option label="全部" value=""></el-option>
                                     <el-option label="已预约" value="已预约"></el-option>
                                     <el-option label="已退款" value="已退款"></el-option>
@@ -428,7 +428,7 @@
                                 <el-input prefix-icon="el-icon-search" v-model="applicationRecordFilter.selection" placeholder=" 搜索名称/申请人/联系电话"></el-input>
                             </el-form-item>
                             <el-form-item>
-                                <el-button type="primary" @click="applicationRecordListSeach()">查询</el-button>
+                                <el-button type="primary" @click="SeachapplicationRecordListButtonUse()">查询</el-button>
                             </el-form-item>
                         </el-form>
                     </el-col>
@@ -475,7 +475,7 @@
                 <el-row :gutter="24">
                     <el-col :span="24" class="toolbar">
                         <el-pagination background @size-change="ApplicationRecordListPagesizeChange" @current-change="ApplicationRecordListPageCurrentChange"
-                            :page-sizes="[7,8,10,20]" :page-size="ApplicationRecordListPagesize" layout="total,sizes, prev, pager, next, jumper"
+                            :page-sizes="[8,10,20,50]" :page-size="ApplicationRecordListPagesize" layout="total,sizes, prev, pager, next, jumper"
                             :current-page="ApplicationRecordListPage" :total="ApplicationRecordListTotal" style="float:right;">
                         </el-pagination>
                     </el-col>
@@ -484,76 +484,81 @@
                 <el-dialog title="查看申请纪录" :visible.sync="ApplicationRecordCheckVisible">
                     <el-form :model="SharedResourceInfo" label-width="150px">
                         <el-row>
-                            <el-col :span="22">
+                            <el-col :span="24">
                                 <el-form-item label="资源类型：">
                                     <span>{{ApplicationRecordInfo.addInfo.resourceType}}</span>
                                 </el-form-item>
                             </el-col>
                         </el-row>
                         <el-row>
-                            <el-col :span="22">
+                            <el-col :span="24">
                                 <el-form-item label="资源名称：">
                                     <span>{{ApplicationRecordInfo.addInfo.resourceName}}</span>
                                 </el-form-item>
                             </el-col>
                         </el-row>
                         <el-row>
-                            <el-col :span="22">
+                            <el-col :span="12">
                                 <el-form-item label="地点：">
-                                    <span>{{ApplicationRecordInfo.addInfo.state}}</span>
+                                    <span>{{ApplicationRecordInfo.addInfo.resourceName}}</span>
                                 </el-form-item>
                             </el-col>
-                        </el-row>
-                        <el-row>
-                            <el-col :span="6">
-                                <el-form-item label="租金：">
-                                    <span>{{ApplicationRecordInfo.addInfo.resourceRent}}</span>
-                                </el-form-item>
-                            </el-col>
-                            <el-col :span="6">
+                            <el-col :span="12">
                                 <el-form-item label="面积：">
-                                    <span>{{ApplicationRecordInfo.addInfo.area}}</span>
-                                </el-form-item>
-                            </el-col>
-                            <el-col :span="6">
-                                <el-form-item label="容纳人数：">
-                                    <span>{{ApplicationRecordInfo.addInfo.capacity}}</span>
+                                    <span>{{ApplicationRecordInfo.sharedResourceInfo.addInfo.area}} 平方米</span>
                                 </el-form-item>
                             </el-col>
                         </el-row>
                         <el-row>
-                            <el-col :span="11">
+                            <el-col :span="12">
+                                <el-form-item label="租金：">
+                                    <span>{{ApplicationRecordInfo.addInfo.resourceRent / 100}} 元</span>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-form-item label="容纳人数：">
+                                    <span>{{ApplicationRecordInfo.sharedResourceInfo.addInfo.capacity}} 人</span>
+                                </el-form-item>
+                            </el-col>
+                        </el-row>
+                        <el-row>
+                            <el-col :span="12">
                                 <el-form-item label="申请人：">
                                     <span>{{ApplicationRecordInfo.addInfo.contactName}}</span>
                                 </el-form-item>
                             </el-col>
-                            <el-col :span="11">
+                            <el-col :span="12">
                                 <el-form-item label="联系电话：">
                                     <span>{{ApplicationRecordInfo.addInfo.contactPhone}}</span>
                                 </el-form-item>
                             </el-col>
                         </el-row>
                         <el-row>
-                            <el-col :span="11">
+                            <el-col :span="12">
                                 <el-form-item label="所属企业：">
                                     <span>{{ApplicationRecordInfo.addInfo.enterprise}}</span>
                                 </el-form-item>
                             </el-col>
-                            <el-col :span="11">
+                            <el-col :span="12">
                                 <el-form-item label="企业楼栋：">
-                                    <span>{{ApplicationRecordInfo.addInfo.state}}</span>
+                                    <span>{{ApplicationRecordInfo.sharedResourceInfo.addInfo.location}}</span>
                                 </el-form-item>
                             </el-col>
                         </el-row>
                         <el-row>
-                            <el-col :span="22">
+                            <el-col :span="12">
                                 <el-form-item label="申请时间：">
                                     <span>{{ApplicationRecordInfo.createTime}}</span>
                                 </el-form-item>
                             </el-col>
+                            <el-col :span="12">
+                                <el-form-item label="租期：">
+                                    <span>{{ApplicationRecordInfo.addInfo.dateAndPeriod[0]}}</span>
+                                </el-form-item>
+                            </el-col>
                         </el-row>
                         <el-row>
-                            <el-col :span="22">
+                            <el-col :span="24">
                                 <el-form-item label="备注信息：">
                                     <span>{{ApplicationRecordInfo.addInfo.remark}}</span>
                                 </el-form-item>
@@ -595,7 +600,7 @@
                 dialogImageUrl: '',
                 dialogVisible: false,
                 SharedResourceListPage: 1,
-                SharedResourceListPagesize: 7,
+                SharedResourceListPagesize: 8,
                 resourceFilter: {
                     type: '全部',
                     nameOrLocation: ''
@@ -692,7 +697,7 @@
                 ApplicationRecordList: [],
                 ApplicationRecordListTotal: 0,
                 ApplicationRecordListPage: 1,
-                ApplicationRecordListPagesize: 7,
+                ApplicationRecordListPagesize: 8,
                 ApplicationRecordCheckVisible: false,
                 ApplicationRecordInfo: {
                     createTime: "",
@@ -718,7 +723,23 @@
                         resourceType: "",
                         tradeNo: "",
                         state: ''
-                    }
+                    },
+                    sharedResourceInfo: {
+                        createTime: "",
+                        id: "",
+                        name: "",
+                        parkId: "",
+                        type: "",
+                        addInfo: {
+                            area: "",
+                            capacity: "",
+                            intro: "",
+                            location: "",
+                            prompt: "",
+                            rent: "",
+                            images: []
+                        }
+                    },
                 }
             };
         },
@@ -1094,7 +1115,6 @@
             },
             ApplicationRecordListPageCurrentChange(val) {
                 this.ApplicationRecordListPage = val;
-                this.applicationRecordListSeach();
             },
             handleClick(tab, event) {
                 console.log(tab, event);
@@ -1177,6 +1197,10 @@
                         0;
                     this.ApplicationRecordListLoading = false;
                 });
+            },
+            SeachapplicationRecordListButtonUse() {
+                this.ApplicationRecordListPage = 1;
+                this.applicationRecordListSeach();
             },
             // 共享资源申请列表查询
             applicationRecordListSeach() {

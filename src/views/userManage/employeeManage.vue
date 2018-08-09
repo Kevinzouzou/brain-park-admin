@@ -61,7 +61,7 @@
                 </el-table>
                 <!--分页-->
                 <el-col :span="24" class="toolbar">
-                    <el-pagination background @size-change="sizeChange" @current-change="currentChange" :page-sizes="[7,8,10,20]" :page-size="pagesize"
+                    <el-pagination background @size-change="sizeChange" @current-change="currentChange" :page-sizes="[8,10,20,50]" :page-size="pagesize"
                         layout="total,sizes, prev, pager, next, jumper" :total="parkUserList.length" :current-page="page" style="float:right;">
                     </el-pagination>
                 </el-col>
@@ -293,7 +293,7 @@
             return {
                 imageUploadUrl: '', //图片上传路径
                 page: 1,
-                pagesize: 7,
+                pagesize: 8,
                 departmentName: '',
                 imgData: {
                     bucketName: 'shared-resource',

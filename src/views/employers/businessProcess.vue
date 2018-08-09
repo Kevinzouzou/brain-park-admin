@@ -63,8 +63,9 @@
                 </el-table>
                 <!--分页-->
                 <el-col :span="24" class="toolbar">
-                    <el-pagination background @size-change="highActSizeChange" @current-change="inApplyCurChange" :page-sizes="[7,8,10,20]" :page-size="pagesize"
-                        layout="total, sizes, prev, pager, next, jumper" :total="inApplyList.length" :current-page="page" style="float:right;">
+                    <el-pagination background @size-change="highActSizeChange" @current-change="inApplyCurChange" :page-sizes="[8,10,20,50]"
+                        :page-size="pagesize" layout="total, sizes, prev, pager, next, jumper" :total="inApplyList.length" :current-page="page"
+                        style="float:right;">
                     </el-pagination>
                 </el-col>
                 <!--查看界面-->
@@ -213,7 +214,7 @@
                 </el-table>
                 <!--分页-->
                 <el-col :span="24" class="toolbar">
-                    <el-pagination background @size-change="highActSizeChange" @current-change="decorateCurChange" :page-sizes="[7,8,10,20]"
+                    <el-pagination background @size-change="highActSizeChange" @current-change="decorateCurChange" :page-sizes="[8,10,20,50]"
                         :page-size="pagesize" layout="total, sizes, prev, pager, next, jumper" :total="decorateList.length" :current-page="page"
                         style="float:right;">
                     </el-pagination>
@@ -340,7 +341,7 @@
         data() {
             return {
                 page: 1,
-                pagesize: 7,
+                pagesize: 8,
                 activeName: 'first',
                 enterFilters: {
                     searchTitle: '',

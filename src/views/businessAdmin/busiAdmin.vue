@@ -37,7 +37,7 @@
             </el-table-column>
             <el-table-column prop="zoneInfo[4].name" label="房号">
             </el-table-column>
-            <el-table-column prop="addInfo.area" label="租赁面积(平方米)" width="160">
+            <el-table-column prop="addInfo.area" label="租赁面积(平方米)">
             </el-table-column>
             <el-table-column prop="addInfo.industry" label="所属行业" sortable>
             </el-table-column>
@@ -59,7 +59,7 @@
         </el-table>
         <!--分页-->
         <el-col :span="24" class="toolbar">
-            <el-pagination background @size-change="sizeChange" @current-change="currentChange" :page-sizes="[7,8,10,20]" :page-size="pagesize"
+            <el-pagination background @size-change="sizeChange" @current-change="currentChange" :page-sizes="[8,10,20,50]" :page-size="pagesize"
                 layout="total,sizes, prev, pager, next, jumper" :total="adminList.length" :current-page="page" style="float:right;">
             </el-pagination>
         </el-col>
@@ -203,11 +203,10 @@
                 selOptions: [],
                 treeList: [],
                 industry: '',
-                // roomLabel: '',
                 zoneId: '',
                 dialogAnVisible: false,
                 page: 1,
-                pagesize: 7,
+                pagesize: 8,
                 adminFilters: {
                     enterName: ''
                 },

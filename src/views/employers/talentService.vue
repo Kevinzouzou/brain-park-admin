@@ -63,7 +63,7 @@
         <el-row :gutter="24">
             <el-col :span="24" class="toolbar">
                 <el-pagination background @size-change="TalentServiceListPagesizeChange" @current-change="TalentServiceListPageCurrentChange"
-                    :page-sizes="[7,8,10,20]" :page-size="TalentServiceListPagesize" layout="total,sizes, prev, pager, next, jumper"
+                    :page-sizes="[8,10,20,50]" :page-size="TalentServiceListPagesize" layout="total,sizes, prev, pager, next, jumper"
                     :current-page="TalentServiceListPage" :total="TalentServiceList.length" style="float:right;">
                 </el-pagination>
             </el-col>
@@ -152,7 +152,7 @@
         data() {
             return {
                 TalentServiceListPage: 1,
-                TalentServiceListPagesize: 7,
+                TalentServiceListPagesize: 8,
                 TalentServiceList: [],
                 talentServiceListFilter: {
                     serviceName: '全部',

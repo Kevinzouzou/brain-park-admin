@@ -55,7 +55,7 @@
         <el-row :gutter="24">
             <el-col :span="24" class="toolbar">
                 <el-pagination background @size-change="ApartmentRentalResourcesListPagesizeChange" @current-change="ApartmentRentalResourcesListPageCurrentChange"
-                    :page-sizes="[7,8,10,20]" :page-size="ApartmentRentalResourcesListPagesize" layout="total,sizes, prev, pager, next, jumper"
+                    :page-sizes="[8,10,20,50]" :page-size="ApartmentRentalResourcesListPagesize" layout="total,sizes, prev, pager, next, jumper"
                     :current-page="ApartmentRentalResourcesListPage" :total="ApartmentRentalResourcesListTotal" style="float:right;">
                 </el-pagination>
             </el-col>
@@ -331,7 +331,7 @@
                     folderName: localStorage.getItem('parkId')
                 },
                 ApartmentRentalResourcesListPage: 1,
-                ApartmentRentalResourcesListPagesize: 7,
+                ApartmentRentalResourcesListPagesize: 8,
                 ApartmentRentalResourcesListFilters: {
                     nameOrLocation: ''
                 },

@@ -25,7 +25,7 @@
                                 <el-input v-model="highFilters.searchTitle" placeholder="搜索标题"></el-input>
                             </el-form-item>
                             <el-form-item>
-                                <el-button type="primary" v-on:click="getQueryHighAct">查询</el-button>
+                                <el-button type="primary" @click="getQueryHighAct">查询</el-button>
                             </el-form-item>
                         </el-form>
                     </el-col>
@@ -49,7 +49,7 @@
                         </el-table-column>
                         <el-table-column prop="title" label="标题" sortable show-overflow-tooltip="">
                         </el-table-column>
-                        <el-table-column prop="type" label="类别" sortable>
+                        <el-table-column prop="addInfo.subtype" label="类别" sortable>
                         </el-table-column>
                         <el-table-column prop="createTime" label="发布时间" sortable>
                         </el-table-column>
@@ -67,7 +67,7 @@
                     </el-table>
                     <!--分页-->
                     <el-col :span="24" class="toolbar">
-                        <el-pagination background @size-change="highActSizeChange" @current-change="highActCurChange" :page-sizes="[7,8,10,20]" :page-size="pagesize"
+                        <el-pagination background @size-change="pageSizeChange" @current-change="pageNumChange" :page-sizes="[8,10,20,50]" :page-size="pagesize"
                             layout="total, sizes, prev, pager, next, jumper" :total="highActList.length" :current-page="page"
                             style="float:right;">
                         </el-pagination>
@@ -149,16 +149,15 @@
                             </el-row>
                             <el-row>
                                 <el-col :span="22" :offset="1">
-                                    <el-table :data="hASignsData.slice((page-1)*pagesize,page*pagesize)">
+                                    <el-table :data="hASignsData.slice((hASignsPage-1)*hASignsPagesize,hASignsPage*hASignsPagesize)">
                                         <el-table-column type="index" label="序号"></el-table-column>
                                         <el-table-column prop="addInfo.name" label="姓名"></el-table-column>
                                         <el-table-column prop="addInfo.enterprise" label="公司"></el-table-column>
                                         <el-table-column prop="addInfo.phone" label="手机"></el-table-column>
-                                        <!-- <el-table-column prop="addInfo.gender" label="性别" :formatter="forSex"></el-table-column> -->
                                         <el-table-column prop="createTime" label="报名时间"></el-table-column>
                                     </el-table>
-                                    <el-pagination class="el-pages" background @size-change="highActSizeChange" @current-change="highSignsCurChange" :page-sizes="[7,8,10,20]"
-                                        :page-size="pagesize" layout="total,sizes, prev, pager, next, jumper" :current-page="page"
+                                    <el-pagination class="el-pages" background @size-change="hASignsSizeChange" @current-change="highSignsCurChange" :page-sizes="[8,10,20,50]"
+                                        :page-size="hASignsPagesize" layout="total,sizes, prev, pager, next, jumper" :current-page="hASignsPage"
                                         :total="hASignsData.length">
                                     </el-pagination>
                                 </el-col>
@@ -223,9 +222,9 @@
                                 </el-table>
                                 <!--分页-->
                                 <el-col :span="24" class="toolbar">
-                                    <el-pagination background @size-change="highActSizeChange" @current-change="comSerCurrentChange" :page-sizes="[7,8,10,20]"
-                                        :page-size="pagesize" layout="total,sizes, prev, pager, next, jumper" :total="comSerList.length"
-                                        :current-page="page" style="float:right;">
+                                    <el-pagination background @size-change="pageSizeChange" @current-change="pageNumChange" :page-sizes="[8,10,20,50]" :page-size="pagesize"
+                                        layout="total,sizes, prev, pager, next, jumper" :total="comSerList.length" :current-page="page"
+                                        style="float:right;">
                                     </el-pagination>
                                 </el-col>
                                 <!--新增/编辑界面 商务服务-->
@@ -390,7 +389,7 @@
                                     </el-table>
                                     <!--分页-->
                                     <el-col :span="24" class="toolbar">
-                                        <el-pagination background @size-change="HistoryListSizeChange" @current-change="HistoryListCurrentChange" :page-sizes="[7,8,10,20]"
+                                        <el-pagination background @size-change="HistoryListSizeChange" @current-change="HistoryListCurrentChange" :page-sizes="[8,10,20,50]"
                                             :page-size="HistoryListPagesize" layout="total,sizes, prev, pager, next, jumper"
                                             :total="HistoryListTotal" :current-page="HistoryListPage" style="float:right;">
                                         </el-pagination>
@@ -445,7 +444,7 @@
                                     </el-row>
                                     <div slot="footer" class="dialog-footer">
                                         <el-button @click="ServiceCourseAddVisible = false">取消</el-button>
-                                        <el-button type="primary" @click="addServiceCourse('ServiceCourseAddForm')">确 定</el-button>
+                                        <el-button type="primary" @click="addServiceCourse()">确定</el-button>
                                     </div>
                                 </el-dialog>
                                 <el-dialog title="编辑课程" :visible.sync="ServiceCourseEditVisible">
@@ -521,9 +520,8 @@
             </el-table>
             <!--分页-->
             <el-col :span="24" class="toolbar">
-                <el-pagination background @size-change="highActSizeChange" @current-change="categoryCurrentChange" :page-sizes="[7,8,10,20]"
-                    :page-size="pagesize" layout="total,sizes, prev, pager, next, jumper" :total="categoryList.length" :current-page="page"
-                    style="float:right;">
+                <el-pagination background @size-change="pageSizeChange" @current-change="pageNumChange" :page-sizes="[8,10,20,50]" :page-size="pagesize"
+                    layout="total,sizes, prev, pager, next, jumper" :total="categoryList.length" :current-page="page" style="float:right;">
                 </el-pagination>
             </el-col>
             <!--编辑界面-->
@@ -572,8 +570,10 @@
                 },
                 imgUploadUrl: '',
                 cateDic: {},
-                pagesize: 7,
+                hASignsPage: 1,
+                hASignsPagesize: 8,
                 page: 1,
+                pagesize: 8,
                 activeName: 'first',
                 secCateValue: '',
                 highFilters: {
@@ -751,7 +751,7 @@
                 },
                 ServiceCourseAddForm: {
                     title: '',
-                    thumbUrl: '',
+                    thumbUrl: 'null',
                     addInfo: {
                         themeContent: ''
                     },
@@ -842,11 +842,7 @@
                 }
 
             },
-            // 类别管理分页
-            categoryCurrentChange(val) {
-                this.page = val;
-                this.getCategory();
-            },
+
             // 打开新增高端活动弹框
             highActAdd() {
                 this.addEditForm = {
@@ -1064,17 +1060,14 @@
                     }).catch(() => {});
                 }
             },
-            // 高端活动报名弹框
+            // 高端活动报名弹框获取报名人员列表
             hASigns(index, row) {
-                this.hASignsVisible = true;
+                this.hASignsPage = 1;
                 this.detailList = publicFunction.deepCopy(this.detailList, row);
-                this.getHighSigns(row.id);
-            },
-            //高端活动获取报名人员列表
-            getHighSigns(id) {
-                this.$get(userTarget + id).then(res => {
+                this.$get(userTarget + row.id + '&type=USER_IN_ADVANCED_ACTIVITY').then(res => {
                     this.hASignsData = res;
                 });
+                this.hASignsVisible = true;
             },
             // 高端活动类别管理添加
             categoryAdd() {
@@ -1234,35 +1227,23 @@
                     }).catch(() => {});
                 }
             },
-
-            // 商务服务分页
-            comSerCurrentChange(val) {
-                this.page = val;
-                this.getComSer();
-            },
             // 商务服务页面----------结束
 
+            // 分页
             handleClick(tab, event) {
                 this.page = 1;
             },
-
-            //性别显示转换
-            forSex(row, column) {
-                return row.addInfo.userInfo.addInfo.gender == 1 ?
-                    '男' :
-                    (row.addInfo.userInfo.addInfo.gender == 2 ? '女' : '未知');
-            },
-            // 分页
-            highActSizeChange(val) {
+            pageSizeChange(val) {
                 this.pagesize = val;
             },
-            highActCurChange(val) {
+            pageNumChange(val) {
                 this.page = val;
-                this.getHighActivity();
             },
             highSignsCurChange(val) {
-                this.page = val;
-                this.getHighSigns();
+                this.hASignsPage = val;
+            },
+            hASignsSizeChange(val) {
+                this.hASignsPagesize = val;
             },
             // 获取当前一周/下周/后周时间
             getWeek() {
@@ -1498,12 +1479,13 @@
                 this.ServiceCourseListLoding = false;
             },
             // 添加服务课程
-            addServiceCourse(formName) {
-                this.$refs[formName].validate(valid => {
+            addServiceCourse() {
+                this.$refs.ServiceCourseAddForm.validate(valid => {
                     if (valid) {
                         this.ServiceCourseAddForm.parkId = localStorage.getItem(
                             'parkId'
                         );
+                        console.log(JSON.stringify(this.ServiceCourseAddForm));
                         this.$post(addDisplay, this.ServiceCourseAddForm).then(
                             res => {
                                 if (res.operationResult === 'failure') {

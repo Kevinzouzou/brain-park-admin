@@ -69,7 +69,7 @@
                         </el-table>
                         <!--分页-->
                         <el-col :span="24" class="toolbar">
-                            <el-pagination background @size-change="handleSizeChange" @current-change="handleCurrentChange" :page-sizes="[7,8,10,20]"
+                            <el-pagination background @size-change="handleSizeChange" @current-change="handleCurrentChange" :page-sizes="[8,10,20,50]"
                                 :page-size="pagesize" layout="total,sizes, prev, pager, next, jumper" :current-page="page" :total="topicList.length"
                                 style="float:right;">
                             </el-pagination>
@@ -116,7 +116,7 @@
                         </el-table>
                         <!--分页-->
                         <el-col :span="24" class="toolbar">
-                            <el-pagination background @size-change="handleSizeChange" @current-change="cateCurrentChange" :page-sizes="[7,8,10,20]" :page-size="pagesize"
+                            <el-pagination background @size-change="handleSizeChange" @current-change="cateCurrentChange" :page-sizes="[8,10,20,50]" :page-size="pagesize"
                                 layout="total,sizes, prev, pager, next, jumper" :total="cateList.length" :current-page="page"
                                 style="float:right;">
                             </el-pagination>
@@ -162,7 +162,7 @@
                     </el-table>
                     <!--分页-->
                     <el-col :span="24" class="toolbar">
-                        <el-pagination background @size-change="msgListSizeChange" @current-change="msgListCurrentChange" :page-sizes="[7,8,10,20]"
+                        <el-pagination background @size-change="msgListSizeChange" @current-change="msgListCurrentChange" :page-sizes="[8,10,20,50]"
                             :page-size="msgListPageSize" layout="total,sizes, prev, pager, next, jumper" :current-page="msgListPage"
                             :total="msgList.length" style="float:right;">
                         </el-pagination>
@@ -283,8 +283,8 @@
                 page: 1,
                 msgListPage: 1,
                 commentListsPage: 1,
-                pagesize: 7,
-                msgListPageSize: 7,
+                pagesize: 8,
+                msgListPageSize: 8,
                 commentListsPageSize: 20,
                 mainPageVisible: true,
                 secondPageVisible: false,

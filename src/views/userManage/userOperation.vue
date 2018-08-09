@@ -64,7 +64,7 @@
         <!--工具条-->
         <el-row :gutter="24">
             <el-col :span="24" class="toolbar">
-                <el-pagination background @size-change="pageSizeChange" @current-change="pageCurrentChange" :page-sizes="[7,8,10,20]" :page-size="pagesize"
+                <el-pagination background @size-change="pageSizeChange" @current-change="pageCurrentChange" :page-sizes="[8,10,20,50]" :page-size="pagesize"
                     layout="total,sizes, prev, pager, next, jumper" :current-page="page" :total="parkStaffList.length" style="float:right;">
                 </el-pagination>
             </el-col>
@@ -205,7 +205,7 @@
             return {
                 right: 'right',
                 page: 1,
-                pagesize: 7,
+                pagesize: 8,
                 ParkStaffListLoading: false,
                 parkStaffList: [],
                 basicStatistics: {

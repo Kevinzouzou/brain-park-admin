@@ -65,7 +65,7 @@
                 <el-row :gutter="24">
                     <el-col :span="24" class="toolbar">
                         <el-pagination background @size-change="HousekeepingListPageSizeChange" @current-change="HousekeepingListPageCurrentChange"
-                            :page-sizes="[7,8,10,20]" :page-size="HousekeepingListPagesize" layout="total,sizes, prev, pager, next, jumper"
+                            :page-sizes="[8,10,20,50]" :page-size="HousekeepingListPagesize" layout="total,sizes, prev, pager, next, jumper"
                             :current-page="HousekeepingListPage" :total="HousekeepingListTotal" style="float:right;">
                         </el-pagination>
                     </el-col>
@@ -211,7 +211,7 @@
                 <el-row>
                     <el-col :span="24">
                         <el-form :inline="true" :model="crowdorderingFilter">
-                            <el-form-item label="服务分类：">
+                            <!-- <el-form-item label="服务分类：">
                                 <el-select placeholder="请选择服务分类" v-model="crowdorderingFilter.subtype" @change="housekeepingListSeach()">
                                     <el-option label="全部" value="全部"></el-option>
                                     <el-option label="装修服务" value="装修服务"></el-option>
@@ -219,7 +219,7 @@
                                     <el-option label="保洁服务" value="保洁服务"></el-option>
                                     <el-option label="园艺服务" value="园艺服务"></el-option>
                                 </el-select>
-                            </el-form-item>
+                            </el-form-item> -->
                             <el-form-item label="类型：">
                                 <el-select placeholder="请选择分类" v-model="crowdorderingFilter.itemType" @change="housekeepingListSeach()">
                                     <el-option label="全部" value="全部"></el-option>
@@ -280,7 +280,7 @@
                 <el-row :gutter="24">
                     <el-col :span="24" class="toolbar">
                         <el-pagination background @size-change="crowdorderingListPageSizeChange" @current-change="crowdorderingListPageCurrentChange"
-                            :page-sizes="[7,8,10,20]" :page-size="crowdorderingListPagesize" layout="total,sizes, prev, pager, next, jumper"
+                            :page-sizes="[8,10,20,50]" :page-size="crowdorderingListPagesize" layout="total,sizes, prev, pager, next, jumper"
                             :current-page="crowdorderingListPage" :total="crowdorderingListTotal" style="float:right;">
                         </el-pagination>
                     </el-col>
@@ -289,9 +289,17 @@
                 <el-dialog title="拼单详情" :visible.sync="crowdorderingInfoFormVisible">
                     <el-form :model="crowdorderingInfoForm" label-width="150px">
                         <el-row>
-                            <el-form-item label="服务分类：">
-                                <span v-if="crowdorderingInfoForm.addInfo">{{crowdorderingInfoForm.addInfo.subtype}}</span>
-                            </el-form-item>
+                            <el-col :span="12">
+                                <el-form-item label="服务分类：">
+                                    <span v-if="crowdorderingInfoForm.addInfo">{{crowdorderingInfoForm.addInfo.subtype}}</span>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="12">
+
+                                <el-form-item label="状态：">
+                                    <span v-if="crowdorderingInfoForm.addInfo">{{crowdorderingInfoForm.stage}}</span>
+                                </el-form-item>
+                            </el-col>
                         </el-row>
                         <el-row>
                             <el-form-item label="类型：">
@@ -299,19 +307,16 @@
                             </el-form-item>
                         </el-row>
                         <el-row>
-                            <el-form-item label="状态：">
-                                <span v-if="crowdorderingInfoForm.addInfo">{{crowdorderingInfoForm.stage}}</span>
-                            </el-form-item>
-                        </el-row>
-                        <el-row>
-                            <el-form-item label="拼单联系人：">
-                                <span v-if="crowdorderingInfoForm.addInfo">{{crowdorderingInfoForm.addInfo.contact}}</span>
-                            </el-form-item>
-                        </el-row>
-                        <el-row>
-                            <el-form-item label="联系电话：">
-                                <span v-if="crowdorderingInfoForm.addInfo">{{crowdorderingInfoForm.addInfo.phone}}</span>
-                            </el-form-item>
+                            <el-col :span="12">
+                                <el-form-item label="拼单联系人：">
+                                    <span v-if="crowdorderingInfoForm.addInfo">{{crowdorderingInfoForm.addInfo.contact}}</span>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-form-item label="联系电话：">
+                                    <span v-if="crowdorderingInfoForm.addInfo">{{crowdorderingInfoForm.addInfo.phone}}</span>
+                                </el-form-item>
+                            </el-col>
                         </el-row>
                         <el-row>
                             <el-form-item label="拼单公司：">
@@ -319,14 +324,16 @@
                             </el-form-item>
                         </el-row>
                         <el-row>
-                            <el-form-item label="公司楼栋：">
-                                <span v-if="crowdorderingInfoForm.addInfo">{{crowdorderingInfoForm.addInfo.location}}</span>
-                            </el-form-item>
-                        </el-row>
-                        <el-row>
-                            <el-form-item label="公司面积：">
-                                <span v-if="crowdorderingInfoForm.addInfo">{{crowdorderingInfoForm.addInfo.area}}</span>
-                            </el-form-item>
+                            <el-col :span="12">
+                                <el-form-item label="公司楼栋：">
+                                    <span v-if="crowdorderingInfoForm.addInfo">{{crowdorderingInfoForm.addInfo.location}}</span>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-form-item label="公司面积：">
+                                    <span v-if="crowdorderingInfoForm.addInfo">{{crowdorderingInfoForm.addInfo.area}}</span>
+                                </el-form-item>
+                            </el-col>
                         </el-row>
                         <el-row>
                             <el-form-item label="用户备注：">
@@ -364,7 +371,7 @@
                     folderName: ''
                 },
                 HousekeepingListPage: 1,
-                HousekeepingListPagesize: 7,
+                HousekeepingListPagesize: 8,
                 activeName: 'ServiceManagement',
                 serviceFilter: {
                     subType: '全部',
@@ -422,7 +429,7 @@
                     }
                 },
                 crowdorderingListPage: 1,
-                crowdorderingListPagesize: 7,
+                crowdorderingListPagesize: 8,
                 crowdorderingFilter: {
                     subtype: '全部',
                     itemType: '全部',
@@ -588,32 +595,35 @@
             crowdorderingInfoCheck(index, row) {
                 this.crowdorderingInfoFormVisible = true;
                 let dataObj = this.crowdorderingInfoForm
-                this.crowdorderingInfoForm = publicFunction.deepCopy(dataObj, row);
+                this.crowdorderingInfoForm = publicFunction.deepCopy(this.crowdorderingInfoForm, row);
             },
             //  修改物业拼单状态
             updatePropertyApplication(index, row, operating) {
-                if (index === null) {
-                    this.crowdorderingInfoForm.stage = operating;
-                } else {
-                    let dataObj = this.crowdorderingInfoForm
-                    this.crowdorderingInfoForm = publicFunction.deepCopy(dataObj, row);
-                    this.crowdorderingInfoForm.stage = operating;
+                if (index !== null) {
+                    this.crowdorderingInfoForm = publicFunction.deepCopy(this.crowdorderingInfoForm, row);
                 }
-                this.$put(updatePropertyApplication, this.crowdorderingInfoForm).then(res => {
-                    if (res.operationResult === 'failure') {
-                        this.$message({
-                            message: 'failureMsg',
-                            type: 'success'
-                        });
-                    } else {
-                        this.crowdorderingInfoFormVisible = false;
-                        this.$message({
-                            message: '操作成功',
-                            type: 'success'
-                        });
-                        this.getCrowdorderingList(crowdorderingApplication);
-                    }
-                });
+                this.$confirm(`是否确认修改状态为“${operating}”?`, '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    this.crowdorderingInfoForm.stage = operating;
+                    this.$put(updatePropertyApplication, this.crowdorderingInfoForm).then(res => {
+                        if (res.operationResult === 'failure') {
+                            this.$message({
+                                message: 'failureMsg',
+                                type: 'success'
+                            });
+                        } else {
+                            this.crowdorderingInfoFormVisible = false;
+                            this.$message({
+                                message: '操作成功',
+                                type: 'success'
+                            });
+                            this.getCrowdorderingList(crowdorderingApplication);
+                        }
+                    });
+                }).catch(() => {});
             }
         },
         mounted() {

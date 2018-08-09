@@ -27,10 +27,9 @@
                         </el-table-column>
                         <el-table-column prop="createTime" label="发布时间">
                         </el-table-column>
-                        <el-table-column prop="addInfo.lookUpNum" label="浏览量">
-                            <template slot-scope="scope">
-                                <span>{{scope.row.addInfo.lookUpNum?scope.row.addInfo.lookUpNum:0}}</span>
-                            </template>
+                        <el-table-column prop="collectNum" label="收藏">
+                        </el-table-column>
+                        <el-table-column prop="applyNum" label="订单">
                         </el-table-column>
                         <el-table-column label="操作" width="250">
                             <template slot-scope="scope">
@@ -42,7 +41,7 @@
                     </el-table>
                     <!--分页-->
                     <el-col :span="24" class="toolbar">
-                        <el-pagination background @size-change="highSizeChange" @current-change="corporateCurChange" :page-sizes="[7,8,10,20]" :page-size="pagesize"
+                        <el-pagination background @size-change="highSizeChange" @current-change="corporateCurChange" :page-sizes="[8,10,20,50]" :page-size="pagesize"
                             layout="total, sizes, prev, pager, next, jumper" :total="corporateList.length" :current-page="page"
                             style="float:right;">
                         </el-pagination>
@@ -108,13 +107,13 @@
                         </el-table-column>
                         <el-table-column prop="addInfo.phone" label="联系电话">
                         </el-table-column>
-                        <el-table-column label="备注">
+                        <el-table-column prop="addInfo.remark" label="备注">
                         </el-table-column>
                     </el-table>
                     <!--分页-->
                     <el-col :span="24" class="toolbar">
                         <el-pagination background @size-change="CorporateFinanceOrderSizeChange" @current-change="CorporateFinanceOrderCurChange"
-                            :page-sizes="[7,8,10,20]" :page-size="CorporateFinanceOrderSize" layout="total, sizes, prev, pager, next, jumper"
+                            :page-sizes="[8,10,20,50]" :page-size="CorporateFinanceOrderSize" layout="total, sizes, prev, pager, next, jumper"
                             :total="CorporateFinanceOrderList.length" :current-page="CorporateFinanceOrderPage" style="float:right;">
                         </el-pagination>
                     </el-col>
@@ -138,9 +137,9 @@
         data() {
             return {
                 page: 1,
-                pagesize: 7,
+                pagesize: 8,
                 CorporateFinanceOrderPage: 1,
-                CorporateFinanceOrderSize: 7,
+                CorporateFinanceOrderSize: 8,
                 imgData: {
                     bucketName: 'shared-resource',
                     folderName: ''
@@ -230,15 +229,7 @@
                 this.CorporateFinanceOrderTitle = row.title;
                 this.corporateLoading = true;
                 this.CorporateFinanceOrderPage = 1;
-                this.$get(userTarget + row.id)
-                    .then((res) => {
-                        this.CorporateFinanceOrderList = res;
-                        this.corporateLoading = false;
-                    });
-            },
-            getCorporateOrder(id) {
-                this.corporateLoading = true;
-                this.$get(userTarget + id)
+                this.$get(userTarget + row.id + '&type=USER_IN_FINANCE')
                     .then((res) => {
                         this.CorporateFinanceOrderList = res;
                         this.corporateLoading = false;
@@ -249,7 +240,6 @@
             },
             CorporateFinanceOrderCurChange(val) {
                 this.CorporateFinanceOrderPage = val;
-                this.getCorporateOrder(this.CorporateFinanceOrderId);
             },
             // 删除
             corporateDel(index, row) {

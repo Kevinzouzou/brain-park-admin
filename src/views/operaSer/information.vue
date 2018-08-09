@@ -64,7 +64,7 @@
                     </el-table>
                     <!--分页-->
                     <el-col :span="24" class="toolbar">
-                        <el-pagination background @size-change="highSizeChange" @current-change="announceCurChange" :page-sizes="[7,8,10,20]" :page-size="pagesize"
+                        <el-pagination background @size-change="highSizeChange" @current-change="announceCurChange" :page-sizes="[8,10,20,50]" :page-size="pagesize"
                             layout="total, sizes, prev, pager, next, jumper" :total="announceList.length" :current-page="page"
                             style="float:right;">
                         </el-pagination>
@@ -143,7 +143,7 @@
                         style="width: 100%;">
                         <el-table-column type="selection" width="55">
                         </el-table-column>
-                        <el-table-column type="index" width="60">
+                        <el-table-column type="index" label="序号" width="60">
                         </el-table-column>
                         <el-table-column prop="name" label="类别">
                         </el-table-column>
@@ -156,9 +156,9 @@
                     </el-table>
                     <!--分页-->
                     <el-col :span="24" class="toolbar">
-                        <el-pagination background @size-change="highSizeChange" @current-change="anCateCurrentChange" :page-sizes="[7,8,10,20]" :page-size="pagesize"
-                            layout="total,sizes, prev, pager, next, jumper" :total="anCategoryList.length" :current-page="page"
-                            style="float:right;">
+                        <el-pagination background @size-change="highSizeChange" @current-change="anCateCurrentChange" :page-sizes="[8,10,20,50]"
+                            :page-size="pagesize" layout="total,sizes, prev, pager, next, jumper" :total="anCategoryList.length"
+                            :current-page="page" style="float:right;">
                         </el-pagination>
                     </el-col>
                     <!--编辑界面-->
@@ -223,7 +223,7 @@
                         style="width: 100%;">
                         <el-table-column type="selection" width="55">
                         </el-table-column>
-                        <el-table-column type="index" width="60">
+                        <el-table-column type="index" width="60" label="序号">
                         </el-table-column>
                         <el-table-column prop="title" label="标题" show-overflow-tooltip>
                         </el-table-column>
@@ -242,7 +242,7 @@
                     </el-table>
                     <!--分页-->
                     <el-col :span="24" class="toolbar">
-                        <el-pagination background @size-change="highSizeChange" @current-change="informCurChange" :page-sizes="[7,8,10,20]" :page-size="pagesize"
+                        <el-pagination background @size-change="highSizeChange" @current-change="informCurChange" :page-sizes="[8,10,20,50]" :page-size="pagesize"
                             layout="total, sizes, prev, pager, next, jumper" :total="informList.length" :current-page="page"
                             style="float:right;">
                         </el-pagination>
@@ -342,7 +342,7 @@
                         style="width: 100%;">
                         <el-table-column type="selection" width="55">
                         </el-table-column>
-                        <el-table-column type="index" width="60">
+                        <el-table-column type="index" label="序号" width="60">
                         </el-table-column>
                         <el-table-column prop="name" label="类别">
                         </el-table-column>
@@ -355,9 +355,9 @@
                     </el-table>
                     <!--分页-->
                     <el-col :span="24" class="toolbar">
-                        <el-pagination background @size-change="highSizeChange" @current-change="informCateCurChange" :page-sizes="[7,8,10,20]" :page-size="pagesize"
-                            layout="total,sizes, prev, pager, next, jumper" :total="informCateList.length" :current-page="page"
-                            style="float:right;">
+                        <el-pagination background @size-change="highSizeChange" @current-change="informCateCurChange" :page-sizes="[8,10,20,50]"
+                            :page-size="pagesize" layout="total,sizes, prev, pager, next, jumper" :total="informCateList.length"
+                            :current-page="page" style="float:right;">
                         </el-pagination>
                     </el-col>
                     <!--编辑界面-->
@@ -400,7 +400,7 @@
                 },
                 activeName: 'first',
                 page: 1,
-                pagesize: 7,
+                pagesize: 8,
                 Loading: false,
                 firstAnVisible: true,
                 secondAnVisible: false,

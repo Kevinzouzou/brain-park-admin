@@ -42,7 +42,7 @@
                 <!--工具条-->
                 <el-row>
                     <el-col :span="24" class="toolbar">
-                        <el-pagination background @size-change="handleSizeChange" @current-change="handleCurrentChange" :page-sizes="[7,8,10,20]"
+                        <el-pagination background @size-change="handleSizeChange" @current-change="handleCurrentChange" :page-sizes="[8,10,20,50]"
                             :page-size="pagesize" layout="total,sizes, prev, pager, next, jumper" :current-page="page" :total="circleList.length"
                             style="float:right;">
                         </el-pagination>
@@ -219,7 +219,7 @@
 
                 <!--工具条-->
                 <el-col :span="24" class="toolbar">
-                    <el-pagination background @size-change="handleSizeChange" @current-change="handleCurrentChange" :page-sizes="[7,8,10,20]"
+                    <el-pagination background @size-change="handleSizeChange" @current-change="handleCurrentChange" :page-sizes="[8,10,20,50]"
                         :page-size="pagesize" layout="total,sizes, prev, pager, next, jumper" :current-page="page" :total="activityList.length"
                         style="float:right;">
                     </el-pagination>
@@ -244,7 +244,7 @@
                         <el-table-column prop="addInfo.enterpriseName" label="公司"></el-table-column>
                         <el-table-column prop="createTime" label="报名时间"></el-table-column>
                     </el-table>
-                    <el-pagination class="el-pages" background @size-change="handleSizeChange" @current-change="handleCurrentChange" :page-sizes="[7,8,10,20]"
+                    <el-pagination class="el-pages" background @size-change="handleSizeChange" @current-change="handleCurrentChange" :page-sizes="[8,10,20,50]"
                         :page-size="pagesize" layout="total,sizes, prev, pager, next, jumper" :current-page="page" :total="actAppliData.length">
                     </el-pagination>
                 </el-dialog>
@@ -517,7 +517,7 @@
                 },
                 users: [],
                 page: 1,
-                pagesize: 7,
+                pagesize: 8,
                 listLoading: false,
                 multipleSelection: [], //列表选中列
                 editCircleVisible: false, //编辑界面是否显示
@@ -916,7 +916,7 @@
             },
             // 获取报名名单
             getApply(id) {
-                this.$get(userTarget + id)
+                this.$get(userTarget + id+'&type=USER_IN_CIRCLE_ACTIVITY')
                     .then((res) => {
                         this.actAppliData = res;
                     })

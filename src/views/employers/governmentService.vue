@@ -56,7 +56,7 @@
             <!--工具条-->
             <el-row :gutter="24">
                 <el-col :span="24" class="toolbar">
-                    <el-pagination background @size-change="policyListPagesizeChange" @current-change="policyListPageCurrentChange" :page-sizes="[7,8,10,20]"
+                    <el-pagination background @size-change="policyListPagesizeChange" @current-change="policyListPageCurrentChange" :page-sizes="[8,10,20,50]"
                         :page-size="policyListPagesize" layout="total,sizes, prev, pager, next, jumper" :current-page="policyListPage"
                         :total="policyList.length" style="float:right;">
                     </el-pagination>
@@ -313,7 +313,7 @@
             <el-row :gutter="24">
                 <el-col :span="24" class="toolbar">
                     <el-pagination background @size-change="ApplicationListPagesizeChange" @current-change="ApplicationListPageCurrentChange"
-                        :page-sizes="[7,8,10,20]" :page-size="ApplicationListPagesize" layout="total,sizes, prev, pager, next, jumper"
+                        :page-sizes="[8,10,20,50]" :page-size="ApplicationListPagesize" layout="total,sizes, prev, pager, next, jumper"
                         :current-page="ApplicationListPage" :total="ApplicationList.length" style="float:right;">
                     </el-pagination>
                 </el-col>
@@ -415,8 +415,8 @@
             return {
                 policyListPage: 1,
                 ApplicationListPage: 1,
-                policyListPagesize: 7,
-                ApplicationListPagesize: 7,
+                policyListPagesize: 8,
+                ApplicationListPagesize: 8,
                 ListLoading: false,
                 policyVisible: false,
                 policyDetailsVisible: false,
