@@ -70,7 +70,7 @@
                 <el-pagination background
                                @size-change="sizeChange"
                                @current-change="deviceCurChange"
-                               :page-sizes="[7,8,10,20]"
+                               :page-sizes="[8,10,20,50]"
                                :page-size="pagesize"
                                layout="total, sizes, prev, pager, next, jumper"
                                :total="deviceTotal"
@@ -230,7 +230,7 @@
                     folderName:''
                 },
                 page:1,
-                pagesize:7,
+                pagesize:8,
                 addEditTitle:'新增',
                 isEdit:false,
                 isEditId:'',
@@ -554,7 +554,6 @@
             },
             deviceCurChange(val) {
                 this.page = val;
-                this.getDevice();
             },
             savePath(){//保存二维码路径
                 this.$confirm('确认保存吗？', '提示', {}).then(() => {

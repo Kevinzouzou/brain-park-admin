@@ -206,7 +206,7 @@
             },
             ITserviceListPageCurrentChange() {
                 this.ITserviceListPage = val;
-                this.getITServiceApplication();
+                // this.getITServiceApplication();
             },
             ITserviceDetailsCheck(index, row) {
                 this.ITserviceDetailsVisible = true;

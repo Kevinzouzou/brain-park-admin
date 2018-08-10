@@ -543,7 +543,7 @@
             },
             HousekeepingListPageCurrentChange(val) {
                 this.HousekeepingListPage = val;
-                this.housekeepingListSeach();
+                // this.housekeepingListSeach();
             },
             handleClick(tab, event) {
                 console.log(tab, event);
@@ -590,7 +590,7 @@
             },
             crowdorderingListPageCurrentChange(val) {
                 this.crowdorderingListPage = val;
-                this.getCrowdorderingList(crowdorderingApplication);
+                // this.getCrowdorderingList(crowdorderingApplication);
             },
             crowdorderingInfoCheck(index, row) {
                 this.crowdorderingInfoFormVisible = true;

@@ -247,7 +247,7 @@
             },
             adsCurChange(val) {
                 this.page = val;
-                this.getAdsList();
+                // this.getAdsList();
             },
             uploadAdsImgSuccess(res, file, fileList) {
                 this.adsForm.imageUrl = res.responseList.url;

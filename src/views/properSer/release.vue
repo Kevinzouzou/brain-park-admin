@@ -57,7 +57,7 @@
             </el-table-column>
             <el-table-column prop="addInfo.flows[2].name" label="保安" sortable>
                 <template slot-scope="scope">
-                    <span>{{scope.row.addInfo.flows && scope.row.addInfo.flows.length>2?scope.row.addInfo.flows[1].name:'-'}}</span>
+                    <span>{{scope.row.addInfo.flows && scope.row.addInfo.flows.length>2?scope.row.addInfo.flows[2].name:'-'}}</span>
                 </template>
             </el-table-column>
             <el-table-column label="操作">
@@ -71,7 +71,7 @@
             <el-pagination background
                            @size-change="sizeChange"
                            @current-change="compCurChange"
-                           :page-sizes="[7,8,10,20]"
+                           :page-sizes="[8,10,20,50]"
                            :page-size="pagesize"
                            layout="total, sizes, prev, pager, next, jumper"
                            :total="releaseTotal"
@@ -145,7 +145,7 @@
                    timeValue:[]
                },
                page:1,
-               pagesize:7,
+               pagesize:8,
                timeValue:[],
                releaseList:[
                    {
@@ -227,7 +227,6 @@
            },
            compCurChange(val) {
                this.page = val;
-               this.getRelease();
            },
 
 

@@ -270,7 +270,7 @@
             },
             corporateCurChange(val) {
                 this.page = val;
-                this.getCorporate();
+                // this.getCorporate();
             },
             uploadCorporateImg(res, file, fileList) {
                 this.corporateForm.thumbUrl = res.responseList.url

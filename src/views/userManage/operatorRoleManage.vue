@@ -514,7 +514,7 @@
             },
             pageCurrentChange(val) {
                 this.page = val;
-                this.getParkRoleList(parkRoleList);
+                // this.getParkRoleList(parkRoleList);
             },
 
         },

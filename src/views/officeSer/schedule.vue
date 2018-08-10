@@ -56,7 +56,7 @@
             <el-pagination background
                            @size-change="sizeChange"
                            @current-change="currentChange"
-                           :page-sizes="[7,8,10,20]"
+                           :page-sizes="[8,10,20,50]"
                            :page-size="pagesize"
                            layout="total,sizes, prev, pager, next, jumper"
                            :total="scheduleTotal"
@@ -181,7 +181,7 @@
                 nodes:'',//选中节点
                 defaultExpandKeys:[],//默认展开节点列表
                 page:1,
-                pagesize:7,
+                pagesize:8,
                 addEditTitle:'排班成员设置',
                 isEdit:false,
                 isEditId:'',
@@ -607,7 +607,6 @@
             },
             currentChange(val) {  //分页
                 this.page = val;
-                this.getSchedule();
             },
             change(){
                 this.isdisabled=this.individualForm.checkValue==='备注'?false:true;

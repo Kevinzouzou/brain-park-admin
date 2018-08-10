@@ -69,10 +69,10 @@
                         <el-pagination background
                                        @size-change="sizeChange"
                                        @current-change="compCurChange"
-                                       :page-sizes="[7,8,10,20]"
+                                       :page-sizes="[8,10,20,50]"
                                        :page-size="pagesize"
                                        layout="total, sizes, prev, pager, next, jumper"
-                                       :total="inspectTotal"
+                                       :total="inspectList.length"
                                        :current-page="page"
                                        style="float:right;">
                         </el-pagination>
@@ -141,7 +141,7 @@
                         <el-pagination background
                                        @size-change="sizeChange"
                                        @current-change="routeCurChange"
-                                       :page-sizes="[7,8,10,20]"
+                                       :page-sizes="[8,10,20,50]"
                                        :page-size="pagesize"
                                        layout="total, sizes, prev, pager, next, jumper"
                                        :total="routeTotal"
@@ -264,7 +264,7 @@
                 <el-pagination background
                                @size-change="sizeChange"
                                @current-change="inspectResultCurChange"
-                               :page-sizes="[7,8,10,20]"
+                               :page-sizes="[8,10,20,50]"
                                :page-size="pagesize"
                                layout="total, sizes, prev, pager, next, jumper"
                                :total="inspectResultTotal"
@@ -362,7 +362,7 @@
                 <el-pagination background
                                @size-change="sizeChange"
                                @current-change="recordCurChange"
-                               :page-sizes="[7,8,10,20]"
+                               :page-sizes="[8,10,20,50]"
                                :page-size="pagesize"
                                layout="total, sizes, prev, pager, next, jumper"
                                :total="recordTotal"
@@ -627,7 +627,7 @@
                 dialogImageUrl: '',
                 dialogVisible: false,
                 page:1,
-                pagesize:7,
+                pagesize:8,
                 activeName:'first',
                 inspectFilters: {
                     searchTitle: '',
@@ -864,9 +864,10 @@
                 this.$get(url)
                     .then((res) => {
                         this.inspectList=res;
-                        this.inspectTotal=this.inspectList.length>0?this.inspectList.length:1;
                         this.inspectLoading=false;
-                    })
+                    }).catch(err=>{
+                    this.$message.error('网络出错');
+                })
             },
             getQueryRoute(){//设备管理 条件查询
                 let url=inspectTaskListUrl;
@@ -1042,23 +1043,18 @@
             },
             compCurChange(val) {
                 this.page = val;
-                this.getInspection();
             },
             inspectResultCurChange(val) {
                 this.page = val;
-                // this.getInspectionResult();
             },
             recordCurChange(val) {
                 this.page = val;
-                // this.getRecord();
             },
             routeCurChange(val) {
                 this.page = val;
-                this.getInspectRouteMg();
             },
             addNodeDevice(){//添加节点设备
                 this.choiceDeviceVisible=true;
-                // this.getAllInsNodeList(equipUrl);
             },
             getAllInsNodeList(url){//设备管理列表数据
                 this.allInspectNodeLoading=true;

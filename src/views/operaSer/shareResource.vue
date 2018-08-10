@@ -1108,7 +1108,7 @@
             },
             SharedResourceListPageCurrentChange(val) {
                 this.SharedResourceListPage = val;
-                this.sharedResourceListSeach();
+                // this.sharedResourceListSeach();
             },
             ApplicationRecordListPagesizeChange(val) {
                 this.ApplicationRecordListPagesize = val;

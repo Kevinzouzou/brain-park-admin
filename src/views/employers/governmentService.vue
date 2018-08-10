@@ -559,14 +559,14 @@
             },
             ApplicationListPageCurrentChange() {
                 this.ApplicationListPage = val;
-                this.getPolicyList();
+                // this.getPolicyList();
             },
             policyListPagesizeChange(val) {
                 this.policyListPagesize = val;
             },
             policyListPageCurrentChange(val) {
                 this.policyListPage = val;
-                this.getPolicyList();
+                // this.getPolicyList();
             },
             // 添加政务服务
             addPolicy() {

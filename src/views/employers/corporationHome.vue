@@ -1467,7 +1467,6 @@
             // 预约管理-历史纪录列表分页
             HistoryListCurrentChange(val) {
                 this.HistoryListPage = val;
-                this.getHistoryContent();
             },
             //  获取服务课程列表
             getServiceCourse() {

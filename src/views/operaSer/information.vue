@@ -753,7 +753,7 @@
             // 园区公告类别管理分页
             anCateCurrentChange(val) {
                 this.page = val;
-                this.getAnCategory();
+                // this.getAnCategory();
             },
             // 园区公告类别管理 显示编辑界面
             anCateEdit(index, row) {
@@ -796,7 +796,7 @@
             // 惠通知类别管理分页
             informCateCurChange(val) {
                 this.page = val;
-                this.getInformCategory();
+                // this.getInformCategory();
             },
             //惠通知列表 条件查询
             getQueryInform() {
@@ -1083,11 +1083,11 @@
             },
             announceCurChange(val) {
                 this.page = val;
-                this.getAnnounceMg();
+                // this.getAnnounceMg();
             },
             informCurChange(val) {
                 this.page = val;
-                this.getInform();
+                // this.getInform();
             },
 
         },

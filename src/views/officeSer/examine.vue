@@ -58,7 +58,7 @@
                     <el-pagination background
                                    @size-change="sizeChange"
                                    @current-change="leaveCurChange"
-                                   :page-sizes="[7,8,10,20]"
+                                   :page-sizes="[8,10,20,50]"
                                    :page-size="pagesize"
                                    layout="total, sizes, prev, pager, next, jumper"
                                    :total="leaveTotal"
@@ -177,7 +177,7 @@
                     <el-pagination background
                                    @size-change="sizeChange"
                                    @current-change="eveCurChange"
-                                   :page-sizes="[7,8,10,20]"
+                                   :page-sizes="[8,10,20,50]"
                                    :page-size="pagesize"
                                    layout="total, sizes, prev, pager, next, jumper"
                                    :total="evecTotal"
@@ -308,7 +308,7 @@
                     <el-pagination background
                                    @size-change="sizeChange"
                                    @current-change="goOutCurChange"
-                                   :page-sizes="[7,8,10,20]"
+                                   :page-sizes="[8,10,20,50]"
                                    :page-size="pagesize"
                                    layout="total, sizes, prev, pager, next, jumper"
                                    :total="goOutTotal"
@@ -383,7 +383,7 @@
     export default {
         data(){
             return {
-                pagesize:7,
+                pagesize:8,
                 page:1,
                 activeName:'first',
                 secDepartValue: '',
@@ -639,15 +639,12 @@
             },
             leaveCurChange(val) {
                 this.page = val;
-                this.getLeaveList();
             },
             goOutCurChange(val) {
                 this.page = val;
-                this.getGoOutList();
             },
             eveCurChange(val) {
                 this.page = val;
-                this.getEvectionList();
             },
 
 

@@ -53,7 +53,7 @@
                 <el-pagination background
                                @size-change="sizeChange"
                                @current-change="compCurChange"
-                               :page-sizes="[7,8,10,20]"
+                               :page-sizes="[8,10,20,50]"
                                :page-size="pagesize"
                                layout="total, sizes, prev, pager, next, jumper"
                                :total="attendTotal"
@@ -64,7 +64,7 @@
 
         </div>
         <div class="secondPage" v-show="secondPage">
-            <el-button class="backUp" type="danger" @click="backToFirstAn">返回</el-button>
+
             <el-col :span="24" justify="center">
                 <el-form :inline="true" :model="monthFilters">
                    <el-form-item>
@@ -74,6 +74,7 @@
                         <el-button type="primary" v-on:click="getQueryMonthAttend">查询</el-button>
                     </el-form-item>
                 </el-form>
+                <el-button class="backUp" type="danger" @click="backToFirstAn">返回</el-button>
             </el-col>
             <!--工具条-->
             <el-col :span="24" class="toolbar" style="padding-bottom: 0px;"> 
@@ -101,7 +102,7 @@
                 <el-pagination background
                                @size-change="sizeChange"
                                @current-change="monAttCurChange"
-                               :page-sizes="[7,8,10,20]"
+                               :page-sizes="[8,10,20,50]"
                                :page-size="pagesize"
                                layout="total, sizes, prev, pager, next, jumper"
                                :total="monAttTotal"
@@ -138,7 +139,7 @@
                     searchTitle: ''
                 },
                 page:1,
-                pagesize:7,
+                pagesize:8,
                 timeValue:[],
                 attendList:[
                     {
@@ -324,7 +325,9 @@
                         this.monthAttendList=res;
                         this.monAttTotal=this.monthAttendList.length>0?this.monthAttendList.length:1;
                         this.monthAttendanceLoading=false;
-                    })
+                    }).catch(err=>{
+                    this.$message.error('网络出错');
+                })
             },
             backToFirstAn(){
                 this.mainPage=true;
@@ -346,11 +349,9 @@
             },
             compCurChange(val) {
                 this.page = val;
-                this.getAttendance();
             },
             monAttCurChange(val) {
                 this.page = val;
-                this.getMonthAttend();
             },
             getCurTime(){
                 let d = new Date();
@@ -370,6 +371,9 @@
 </script>
 
 <style lang="scss" scoped>
+    .backUp{
+        float: right;
+    }
     .right{
         position: absolute;
         right: 23px;

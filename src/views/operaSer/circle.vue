@@ -603,7 +603,7 @@
             },
             handleCurrentChange(val) {
                 this.page = val;
-                this.getCircle();
+                // this.getCircle();
             },
             // 获取圈子列表
             getCircle() {

@@ -207,7 +207,7 @@
             },
             TalentServiceListPageCurrentChange() {
                 this.TalentServiceListPage = val;
-                this.getTalentServiceApplication();
+                // this.getTalentServiceApplication();
             },
             TalentServiceDetailsCheck(index, row) {
                 this.TalentServiceDetailsVisible = true;

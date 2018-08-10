@@ -31,7 +31,6 @@
                             ref="tree"
                             :props="defaultProps"
                             highlight-current
-                            accordion
                             default-expand-all
                             :render-content="renderContent"
                             :expand-on-click-node="false"
@@ -291,6 +290,7 @@
                 children.splice(index, 1);
             },
             handleNodeClick(d,n,s){//点击节点
+                console.log(d,n,s)
                 this.zoneDatas=d;
                 this.zoneNodes=n;
                 // d.isEdit = false;//放弃编辑状态

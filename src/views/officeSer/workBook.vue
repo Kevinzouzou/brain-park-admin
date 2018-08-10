@@ -50,7 +50,7 @@
             <el-pagination background
                            @size-change="sizeChange"
                            @current-change="currentChange"
-                           :page-sizes="[7,8,10,20]"
+                           :page-sizes="[8,10,20,50]"
                            :page-size="pagesize"
                            layout="total,sizes, prev, pager, next, jumper"
                            :total="workBookTotal"
@@ -102,7 +102,7 @@
                 },
                 checkFile:true,
                 page:1,
-                pagesize:7,
+                pagesize:8,
                 workBookFilters: {
                     searchTitle: '',
                     workBookTimeValue:[]
@@ -222,7 +222,6 @@
             },
             currentChange(val) {  //分页
                 this.page = val;
-                this.getWorkBook();
             },
             workBookSubmit: function () {  //新增
                 this.$refs.workBookAEForm.validate((valid) => {

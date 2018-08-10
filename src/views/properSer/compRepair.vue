@@ -68,7 +68,7 @@
                     <el-pagination background
                                    @size-change="sizeChange"
                                    @current-change="compCurChange"
-                                   :page-sizes="[7,8,10,20]"
+                                   :page-sizes="[8,10,20,50]"
                                    :page-size="pagesize"
                                    layout="total, sizes, prev, pager, next, jumper"
                                    :total="compTotal"
@@ -86,9 +86,9 @@
                         <el-form-item label="投诉人：">
                             {{detailList.addInfo.contact || '无数据'}}
                         </el-form-item>
-                        <el-form-item label="租赁位置：">
-                            {{detailList.addInfo.location || '无数据'}}
-                        </el-form-item>
+                        <!--<el-form-item label="租赁位置：">-->
+                            <!--{{detailList.addInfo.location || '无数据'}}-->
+                        <!--</el-form-item>-->
                         <el-form-item label="问题描述：" class="allWid">
                             {{detailList.addInfo.remark || '无数据'}}
                             <div v-if="detailList.addInfo.imageUrls && detailList.addInfo.imageUrls.length>0">
@@ -150,10 +150,10 @@
                             <el-button type="success" @click="pendingRep">待处理</el-button>
                         </el-form-item>
                         <el-form-item>
-                            <el-button type="primary" @click="processedRep">已处理</el-button>
+                            <el-button type="primary" @click="evaluation">待评价</el-button>
                         </el-form-item>
                         <el-form-item>
-                            <el-button type="primary" @click="evaluation">已评价</el-button>
+                            <el-button type="primary" @click="processedRep">已完结</el-button>
                         </el-form-item>
                     </el-form>
                 </el-col>
@@ -190,7 +190,7 @@
                     <el-pagination background
                                    @size-change="sizeChange"
                                    @current-change="repairCurChange"
-                                   :page-sizes="[7,8,10,20]"
+                                   :page-sizes="[8,10,20,50]"
                                    :page-size="pagesize"
                                    layout="total, sizes, prev, pager, next, jumper"
                                    :total="repairTotal"
@@ -270,7 +270,7 @@
                 dialogImageUrl: '',
                 dialogVisible: false,
                 page:1,
-                pagesize:7,
+                pagesize:8,
                 activeName:'first',
                 complaintFilters: {
                     searchTitle: '',
@@ -423,12 +423,12 @@
                 let url=repSuggest+'物业报修'+'&stage=待处理';
                 this.getRepairsList(url);
             },
-            processedRep(){ //已处理
-                let url=repSuggest+'物业报修'+'&stage=已处理';
+            processedRep(){ //已完结
+                let url=repSuggest+'物业报修'+'&stage=已完结';
                 this.getRepairsList(url);
             },
-            evaluation(){ //已评价
-                let url=repSuggest+'物业报修'+'&stage=已评价';
+            evaluation(){ //待评价
+                let url=repSuggest+'物业报修'+'&stage=待评价';
                 this.getRepairsList(url);
             },
             complicantView(index, row){
@@ -444,11 +444,9 @@
             },
             compCurChange(val) {
                 this.page = val;
-                this.getComplaint();
             },
             repairCurChange(val) {
                 this.page = val;
-                this.getRepairs();
             },
 
         },

@@ -443,7 +443,7 @@
             },
             ApartmentRentalResourcesListPageCurrentChange(val) {
                 this.ApartmentRentalResourcesListPage = val;
-                this.sharedResourceListSeach();
+                // this.sharedResourceListSeach();
             },
             // 上传图片组件
             handleExceed(files, fileList) {

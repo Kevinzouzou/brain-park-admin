@@ -700,7 +700,7 @@
             },
             pageCurrentChange(val) {
                 this.page = val;
-                this.getParkOperatorList(parkOperatorList);
+                // this.getParkOperatorList(parkOperatorList);
             },
             createFilter(queryString) {
                 return restaurant => {

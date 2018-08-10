@@ -356,7 +356,7 @@
             // 类别管理分页
             cateCurrentChange(val) {
                 this.page = val;
-                this.getCategory();
+                // this.getCategory();
             },
             // 类别管理显示编辑界面
             anCateEdit(index, row) {
@@ -531,11 +531,11 @@
             },
             handleCurrentChange(val) {
                 this.page = val;
-                this.getTopic();
+                // this.getTopic();
             },
             msgListCurrentChange(val) {
                 this.msgListPage = val;
-                this.getMsg();
+                // this.getMsg();
             },
             commentListsPageCurrentChange(val) {
                 this.commentListsPage = val;
